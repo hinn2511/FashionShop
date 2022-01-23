@@ -28,7 +28,7 @@ namespace API.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<CustomerProductDto>>> GetProducts([FromQuery] ProductParams productParams)
+        public async Task<ActionResult<IEnumerable<CustomerProductDto>>> GetProductsAsCustomer([FromQuery] ProductParams productParams)
         {
 
             var products = await _unitOfWork.ProductRepository.GetProductsAsCustomerAsync(productParams);
@@ -39,19 +39,29 @@ namespace API.Controllers
 
         }
 
+        [HttpGet("{id}")]
+        public async Task<ActionResult<CustomerProductDto>> GetProductAsCustomer(int id)
+        {
+            var product = await _unitOfWork.ProductRepository.GetProductAsCustomerByIdAsync(id);
+            return Ok(product);
+        }
+
         [HttpPost("add")]
         public async Task<ActionResult<CustomerProductDto>> AddProduct(AddProductDto addProductDto)
         {
             var product = new Product();
             _mapper.Map(addProductDto, product);
+
             product.Slug = product.ProductName.GenerateSlug();
             product.Sold = 0;
             product.CreateAt = DateTime.UtcNow;
+
             _unitOfWork.ProductRepository.Add(product);
+
             if (await _unitOfWork.Complete()) 
             {
-                var addedProduct = _unitOfWork.ProductRepository.GetProductAsCustomerByIdAsync(product.Id);
-                return Ok(addedProduct);
+                var result = await _unitOfWork.ProductRepository.GetProductByIdAsync(product.Id);
+                return Ok(result);
             }
             return BadRequest("Error when add product");
         }
@@ -59,7 +69,7 @@ namespace API.Controllers
         [HttpPut("edit")]
         public async Task<ActionResult<CustomerProductDto>> UpdateProduct(UpdateProductDto updateProductDto)
         {
-            var product = await _unitOfWork.ProductRepository.GetProductByIdAsync(updateProductDto.Id);
+            var product = await _unitOfWork.ProductRepository.FindProductByIdAsync(updateProductDto.Id);
 
             if(product == null)
                 return BadRequest("Product not found");
@@ -69,10 +79,11 @@ namespace API.Controllers
             product.Slug = updateProductDto.ProductName.GenerateSlug();
 
             _unitOfWork.ProductRepository.Update(product);
+
             if (await _unitOfWork.Complete()) 
             {
-                var updateProduct = _unitOfWork.ProductRepository.GetProductAsCustomerByIdAsync(product.Id);
-                return Ok(updateProduct);
+                var result = await _unitOfWork.ProductRepository.GetProductByIdAsync(product.Id);
+                return Ok(result);
             }
             return BadRequest("Error when update product");
         }
@@ -80,12 +91,13 @@ namespace API.Controllers
         [HttpDelete("delete/{id}")]
         public async Task<ActionResult> DeleteProduct(int id)
         {
-            var product = await _unitOfWork.ProductRepository.GetProductByIdAsync(id);
+            var product = await _unitOfWork.ProductRepository.FindProductByIdAsync(id);
 
             if(product == null)
                 return BadRequest("Product not found"); 
 
             _unitOfWork.ProductRepository.Delete(product);
+
             if (await _unitOfWork.Complete()) 
             {
                 return Ok();

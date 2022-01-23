@@ -59,13 +59,21 @@ namespace API.Data
             return await _context.Products
                 .Where(p => p.Id == id)
                 .ProjectTo<CustomerProductDto>(_mapper.ConfigurationProvider)
-                .SingleOrDefaultAsync();
+                .FirstOrDefaultAsync();
         }
 
-        public async Task<Product> GetProductByIdAsync(int id)
+        public async Task<Product> FindProductByIdAsync(int id)
         {
             return await _context.Products
                 .FirstOrDefaultAsync(p => p.Id == id);
+        }
+
+        public async Task<ProductDto> GetProductByIdAsync(int id)
+        {
+            return await _context.Products
+                .Where(p => p.Id == id)
+                .ProjectTo<ProductDto>(_mapper.ConfigurationProvider)
+                .FirstOrDefaultAsync();
         }
     }
 }

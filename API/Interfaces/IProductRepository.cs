@@ -14,7 +14,8 @@ namespace API.Interfaces
         Task<CustomerProductDto> GetProductAsCustomerByIdAsync(int id);
 
         //Admin
-        Task<Product> GetProductByIdAsync(int id);
+        Task<Product> FindProductByIdAsync(int id);
+        Task<ProductDto> GetProductByIdAsync(int id);
         void Add(Product product);
         void Update(Product product);
         void Delete(Product product);

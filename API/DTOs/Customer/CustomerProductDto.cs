@@ -12,8 +12,7 @@ namespace API.DTOs.Customer
         public string Slug { get; set; }
         public string Category { get; set; }
         public double ProductPrice { get; set; }
-        public DateTime CreateAt { get; set; }
-        public int TransactionCount { get; set; }
+        public int Sold { get; set; }
         public ICollection<CustomerProductStockDto> Stocks { get; set; }
         public ICollection<CustomerProductPhotoDto> ProductPhotos { get; set; }
     }

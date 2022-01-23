@@ -14,18 +14,35 @@ namespace API.Helpers
     {
         public AutoMapperProfiles()
         {
-             CreateMap<RegisterDto, AppUser>();
+            CreateMap<RegisterDto, AppUser>();
 
-             CreateMap<Product, CustomerProductDto>()
-                .ForMember(dest => dest.Category, opt => opt.MapFrom(
-                           src => src.Category.CategoryName));
-             CreateMap<ProductPhoto, CustomerProductPhotoDto>();
-             CreateMap<Stock, CustomerProductStockDto>();
+            CreateMap<Product, CustomerProductDto>()
+               .ForMember(dest => dest.Category, opt => opt.MapFrom(
+                          src => src.Category.CategoryName));
 
-             CreateMap<AddProductDto, Product>();
+            CreateMap<Product, ProductDto>()
+               .ForMember(dest => dest.Category, opt => opt.MapFrom(
+                          src => src.Category.CategoryName));
 
-             CreateMap<UpdateProductDto, Product>();
-             
+            CreateMap<AddProductDto, Product>();
+
+            CreateMap<UpdateProductDto, Product>();
+
+            CreateMap<ProductPhoto, CustomerProductPhotoDto>();
+
+            CreateMap<Stock, CustomerProductStockDto>();
+
+            CreateMap<Category, CustomerCategoryDto>()
+               .ForMember(dest => dest.ParentCategoryName, opt => opt.MapFrom(
+                          src => src.ParentCategory.CategoryName));
+
+            CreateMap<Category, CategoryDto>()
+                .ForMember(dest => dest.ParentCategoryName, opt => opt.MapFrom(
+                       src => src.ParentCategory.CategoryName));
+                       
+            CreateMap<AddCategoryDto, Category>();
+
+            CreateMap<UpdateCategoryDto, Category>();
         }
     }
 }

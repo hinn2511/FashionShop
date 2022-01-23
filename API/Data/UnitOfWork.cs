@@ -16,7 +16,8 @@ namespace API.Data
         }
 
         public IUserRepository UserRepository => new UserRepository(_context, _mapper);
-         public IProductRepository ProductRepository => new ProductRepository(_context, _mapper);
+        public IProductRepository ProductRepository => new ProductRepository(_context, _mapper);
+        public ICategoryRepository CategoryRepository => new CategoryRepository(_context, _mapper);
 
         public async Task<bool> Complete()
         {
