@@ -1,0 +1,42 @@
+[
+  {
+    "ProductName": "Gucci T-shirt",
+    "Slug": "gucci-t-shirt",
+    "CategoryId": 3,
+    "ProductPrice": 450000000,
+    "CreateAt": "2022-01-22T05:43:53.9444655Z",
+    "Sold": 0
+  },
+  {
+    "ProductName": "Gucci Dress",
+    "Slug": "gucci-dress",
+    "CategoryId": 1,
+    "ProductPrice": 140000000,
+    "CreateAt": "2022-01-22T05:43:53.9444655Z",
+    "Sold": 0
+  },
+  {
+    "ProductName": "Chanel Bag",
+    "Slug": "chanel-bag",
+    "CategoryId": 2,
+    "ProductPrice": 240000000,
+    "CreateAt": "2022-01-22T05:43:53.9444655Z",
+    "Sold": 0
+  },
+  {
+    "ProductName": "Cannel Coat",
+    "Slug": "chanel-coat",
+    "CategoryId": 3,
+    "ProductPrice": 340000000,
+    "CreateAt": "2022-01-22T05:43:53.9444655Z",
+    "Sold": 0
+  },
+  {
+    "ProductName": "Zara Bag",
+    "Slug": "zara-bag",
+    "CategoryId": 2,
+    "ProductPrice": 740000000,
+    "CreateAt": "2022-01-22T05:43:53.9444655Z",
+    "Sold": 0
+  }
+]
