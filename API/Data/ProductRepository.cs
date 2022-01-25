@@ -41,6 +41,12 @@ namespace API.Data
         public async Task<PagedList<CustomerProductDto>> GetProductsAsCustomerAsync(ProductParams productParams)
         {
             var query = _context.Products.AsQueryable();
+            
+            if(productParams.Gender != null)
+                query = query.Where(p => p.Category.Gender == productParams.Gender);
+
+            if(productParams.Category != null)
+                query = query.Where(p => p.Category.CategoryName == productParams.Category);
 
             query = productParams.OrderBy switch
             {

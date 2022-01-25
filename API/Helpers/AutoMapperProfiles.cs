@@ -18,7 +18,9 @@ namespace API.Helpers
 
             CreateMap<Product, CustomerProductDto>()
                .ForMember(dest => dest.Category, opt => opt.MapFrom(
-                          src => src.Category.CategoryName));
+                          src => src.Category.CategoryName))
+                .ForMember(dest => dest.Gender, opt => opt.MapFrom(
+                          src => src.Category.Gender));
 
             CreateMap<Product, ProductDto>()
                .ForMember(dest => dest.Category, opt => opt.MapFrom(
@@ -32,13 +34,9 @@ namespace API.Helpers
 
             CreateMap<Stock, CustomerProductStockDto>();
 
-            CreateMap<Category, CustomerCategoryDto>()
-               .ForMember(dest => dest.ParentCategoryName, opt => opt.MapFrom(
-                          src => src.ParentCategory.CategoryName));
+            CreateMap<Category, CustomerCategoryDto>();
 
-            CreateMap<Category, CategoryDto>()
-                .ForMember(dest => dest.ParentCategoryName, opt => opt.MapFrom(
-                       src => src.ParentCategory.CategoryName));
+            CreateMap<Category, CategoryDto>();
                        
             CreateMap<AddCategoryDto, Category>();
 

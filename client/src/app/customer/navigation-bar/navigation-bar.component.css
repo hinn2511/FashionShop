@@ -1,0 +1,14 @@
+.navbar-brand {
+    font-size: xx-large;
+    font-weight: 700;
+    color: rgb(219, 174, 48);
+}
+
+.navbar-brand:hover {
+    color: rgb(179, 142, 42);
+}
+
+.navbar-toggler {
+    border: none;
+    padding-left: 0;
+}

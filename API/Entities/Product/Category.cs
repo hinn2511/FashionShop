@@ -9,8 +9,7 @@ namespace API.Entities.ProductEntities
     {
         public int Id { get; set; }
         public string CategoryName { get; set; }
-        public Category ParentCategory { get; set; }
-        public int? ParentCategoryId { get; set; }
+        public string Gender { get; set; }
         public ICollection<Product> Products { get; set; }
     }
 }

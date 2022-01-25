@@ -1,1 +1,46 @@
-/* You can add global styles to this file, and also import other style files */
+@import url('https://fonts.googleapis.com/css2?family=Outfit&display=swap');
+
+body {
+    font-family: 'Outfit', sans-serif;
+}
+
+@media (max-width: 768px) {
+    .container {
+      padding-left: 0;
+      padding-right: 0;
+    }
+}
+
+.pagination > li {
+  margin: 0 0.1rem;
+}
+
+.pagination > .pagination-first.disabled > a,
+.pagination > .pagination-prev.disabled > a,
+.pagination > .pagination-next.disabled > a,
+.pagination > .pagination-last.disabled > a {
+  text-align: center;
+  background-color: transparent !important;
+  border-color: transparent !important;
+  color: #d6d6d6;
+}
+
+
+.pagination > .pagination-first > a,
+.pagination > .pagination-prev > a,
+.pagination > .pagination-next > a,
+.pagination > .pagination-last > a,
+.pagination > .pagination-page > a {
+  text-align: center;
+  background-color: transparent !important;
+  border-color: transparent !important;
+  color: #000000;
+}
+
+.pagination > .pagination-page.active > a{
+  text-align: center;
+  background-color: black !important;
+  border-color: black !important;
+  border-radius: 3px;
+  color: #ffffff;
+}

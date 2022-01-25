@@ -9,7 +9,6 @@ namespace API.DTOs.Customer
     {
         public int Id { get; set; }
         public string CategoryName { get; set; }
-        public int ParentCategoryId { get; set; }
-        public string ParentCategoryName { get; set; }
+        public string Gender { get; set; }
     }
 }

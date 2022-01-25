@@ -8,6 +8,6 @@ namespace API.DTOs.Product
     public class AddCategoryDto
     {
         public string CategoryName { get; set; }
-        public int? ParentCategoryId { get; set; }
+        public string Gender { get; set; }
     }
 }
