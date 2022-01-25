@@ -30,17 +30,25 @@ namespace API.Helpers
 
             CreateMap<UpdateProductDto, Product>();
 
-            CreateMap<ProductPhoto, CustomerProductPhotoDto>();
+            CreateMap<ProductPhoto, CustomerProductPhotoDto>()
+                .ForMember(dest => dest.Url, opt => opt.MapFrom(
+                          src => src.Photo.Url));
 
             CreateMap<Stock, CustomerProductStockDto>();
 
             CreateMap<Category, CustomerCategoryDto>();
 
             CreateMap<Category, CategoryDto>();
-                       
+
             CreateMap<AddCategoryDto, Category>();
 
             CreateMap<UpdateCategoryDto, Category>();
+
+            CreateMap<ProductPhoto, ProductPhotoDto>()
+                .ForMember(dest => dest.Url, opt => opt.MapFrom(
+                          src => src.Photo.Url))
+                .ForMember(dest => dest.PhotoId, opt => opt.MapFrom(
+                          src => src.Photo.Id));
         }
     }
 }

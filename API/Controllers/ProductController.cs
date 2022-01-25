@@ -1,15 +1,18 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using API.DTOs;
 using API.DTOs.Customer;
 using API.DTOs.Product;
+using API.Entities.Other;
 using API.Entities.ProductEntities;
 using API.Extensions;
 using API.Helpers;
 using API.Interfaces;
 using AutoMapper;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using static API.Extensions.StringExtensions;
 
@@ -58,12 +61,12 @@ namespace API.Controllers
 
             _unitOfWork.ProductRepository.Add(product);
 
-            if (await _unitOfWork.Complete()) 
+            if (await _unitOfWork.Complete())
             {
                 var result = await _unitOfWork.ProductRepository.GetProductByIdAsync(product.Id);
                 return Ok(result);
             }
-            return BadRequest("Error when add product");
+            return BadRequest("An error occurred while adding the product.");
         }
 
         [HttpPut("edit")]
@@ -71,7 +74,7 @@ namespace API.Controllers
         {
             var product = await _unitOfWork.ProductRepository.FindProductByIdAsync(updateProductDto.Id);
 
-            if(product == null)
+            if (product == null)
                 return BadRequest("Product not found");
 
             _mapper.Map(updateProductDto, product);
@@ -80,12 +83,12 @@ namespace API.Controllers
 
             _unitOfWork.ProductRepository.Update(product);
 
-            if (await _unitOfWork.Complete()) 
+            if (await _unitOfWork.Complete())
             {
                 var result = await _unitOfWork.ProductRepository.GetProductByIdAsync(product.Id);
                 return Ok(result);
             }
-            return BadRequest("Error when update product");
+            return BadRequest("An error occurred while updating the product.");
         }
 
         [HttpDelete("delete/{id}")]
@@ -93,16 +96,102 @@ namespace API.Controllers
         {
             var product = await _unitOfWork.ProductRepository.FindProductByIdAsync(id);
 
-            if(product == null)
-                return BadRequest("Product not found"); 
+            if (product == null)
+                return BadRequest("Product not found");
 
             _unitOfWork.ProductRepository.Delete(product);
 
-            if (await _unitOfWork.Complete()) 
+            if (await _unitOfWork.Complete())
             {
                 return Ok();
             }
-            return BadRequest("Error when delete product");
+            return BadRequest("An error occurred while deleting the product.");
+        }
+
+        [HttpPost("add-product-photo/{productId}")]
+        public async Task<ActionResult<ProductPhotoDto>> AddProductPhoto(IFormFile file, int productId)
+        {
+            var product = await _unitOfWork.ProductRepository.FindProductByIdAsync(productId);
+            var result = await _photoService.AddPhotoAsync(file, 700, 700);
+
+            if (result.Error != null) return BadRequest(result.Error.Message);
+
+            var photo = new Photo
+            {
+                Url = result.SecureUrl.AbsoluteUri,
+                PublicId = result.PublicId
+            };
+
+            _unitOfWork.PhotoRepository.Add(photo);
+
+            if (await _unitOfWork.Complete())
+            {
+                var productPhoto = new ProductPhoto
+                {
+                    ProductId = productId,
+                    PhotoId = photo.Id,
+                    IsMain = product.ProductPhotos.Count == 0 ? true : false
+                };
+
+                product.ProductPhotos.Add(productPhoto);
+
+                if (await _unitOfWork.Complete())
+                {
+                    return _mapper.Map<ProductPhotoDto>(productPhoto);
+                }
+            }
+
+            return BadRequest("An error occurred while adding the image.");
+        }
+
+        [HttpPut("set-main-product-photo/{productId}/{productPhotoId}")]
+        public async Task<ActionResult> SetMainProductPhoto(int productId, int productPhotoId)
+        {
+            var product = await _unitOfWork.ProductRepository.FindProductByIdAsync(productId);
+
+            var productPhoto = product.ProductPhotos.FirstOrDefault(x => x.Id == productPhotoId);
+
+            if (productPhoto.IsMain) return BadRequest("This image is already main image.");
+
+            var currentMain = product.ProductPhotos.FirstOrDefault(x => x.IsMain);
+
+            if (currentMain != null) currentMain.IsMain = false;
+
+            productPhoto.IsMain = true;
+
+            if (await _unitOfWork.Complete()) return NoContent();
+
+            return BadRequest("An error occurred while setting the main image.");
+        }
+
+        [HttpDelete("delete-product-photo/{productId}/{productPhotoId}")]
+        public async Task<ActionResult> DeleteProductPhoto(int productId, int productPhotoId)
+        {
+            var product = await _unitOfWork.ProductRepository.FindProductByIdAsync(productId);
+
+            var productPhoto = product.ProductPhotos.FirstOrDefault(x => x.Id == productPhotoId);
+
+            if (productPhoto == null) return NotFound();
+
+            if (productPhoto.IsMain) return BadRequest("Can not delete main photo.");
+
+            var photo = await _unitOfWork.PhotoRepository.FindPhotoByIdAsync(productPhoto.PhotoId);
+
+            if (photo.PublicId != null)
+            {
+                var result = await _photoService.DeletePhotoAsync(photo.PublicId);
+
+                if (result.Error != null) return BadRequest(result.Error.Message);
+
+                product.ProductPhotos.Remove(productPhoto);
+
+                _unitOfWork.PhotoRepository.Delete(photo);
+            }
+
+            if (await _unitOfWork.Complete()) return Ok();
+
+            return BadRequest("An error occurred while deleting the image.");
+
         }
 
     }

@@ -1,4 +1,5 @@
 using System;
+using API.Entities.Other;
 using API.Entities.ProductEntities;
 using API.Entities.User;
 using Microsoft.AspNetCore.Identity;
@@ -18,13 +19,13 @@ namespace API.Data
         {
         }
 
-         public DbSet<Product> Products { get; set; }
-         public DbSet<ProductPhoto> ProductPhotos { get; set; }
-         public DbSet<Color> Colors { get; set; }
-         public DbSet<Category> Categories { get; set; }
-         public DbSet<Size> Sizes { get; set; }
-         public DbSet<Stock> Stocks { get; set; }
-
+        public DbSet<Product> Products { get; set; }
+        public DbSet<ProductPhoto> ProductPhotos { get; set; }
+        public DbSet<Color> Colors { get; set; }
+        public DbSet<Category> Categories { get; set; }
+        public DbSet<Size> Sizes { get; set; }
+        public DbSet<Stock> Stocks { get; set; }
+        public DbSet<Photo> Photos { get; set; }
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
@@ -48,7 +49,7 @@ namespace API.Data
             // builder.Entity<Product>()
             //     .HasOne(p => p.Brand)
             //     .WithMany(l => l.Products);
-            
+
             // builder.Entity<Product>()
             //     .HasOne(p => p.Area)
             //     .WithMany(l => l.Products);
@@ -112,12 +113,12 @@ namespace API.Data
             //     .HasForeignKey(pc => pc.ColorId)
             //     .IsRequired(false)
             //     .OnDelete(DeleteBehavior.Cascade);
-                
+
 
             // builder.Entity<Order>()
             //     .HasOne(p => p.Customer)
             //     .WithMany(l => l.Orders);
-            
+
             // builder.Entity<Order>()
             //     .HasOne(p => p.ShippingMethod)
             //     .WithMany(l => l.Orders);
@@ -126,7 +127,7 @@ namespace API.Data
             //     .HasOne(p => p.Promotion)
             //     .WithMany(l => l.Orders)
             //     .IsRequired(false);
-            
+
             // builder.Entity<Order>()
             //     .HasOne(p => p.PaymentMethod)
             //     .WithMany(l => l.Orders);

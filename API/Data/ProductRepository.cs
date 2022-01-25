@@ -71,6 +71,7 @@ namespace API.Data
         public async Task<Product> FindProductByIdAsync(int id)
         {
             return await _context.Products
+                .Include(p => p.ProductPhotos)
                 .FirstOrDefaultAsync(p => p.Id == id);
         }
 
