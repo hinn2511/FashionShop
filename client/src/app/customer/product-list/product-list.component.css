@@ -1,13 +1,36 @@
-.bd-placeholder-img {
-    font-size: 1.125rem;
-    text-anchor: middle;
-    -webkit-user-select: none;
-    -moz-user-select: none;
-    user-select: none;
-  }
+
+.cover {
+  background-size: cover;
+  background-repeat: no-repeat;
+  vertical-align: middle;
+}
 
   @media (min-width: 768px) {
-    .bd-placeholder-img-lg {
-      font-size: 3.5rem;
+    .cover {
+      min-height: 50vh;
     }
   }
+
+@media (max-width: 768px) {
+    .p {
+      font-size: 3.5rem;
+    }
+
+    .cover {
+      min-height: 20vh;
+    }
+}
+
+.filter-dropdown > button{
+  text-align: right;
+}
+
+.filter-dropdown > ul {
+  border: 1px solid black;
+}
+
+.dropdown-item:active
+{
+    background-color: rgb(223, 223, 223) !important;
+}
+

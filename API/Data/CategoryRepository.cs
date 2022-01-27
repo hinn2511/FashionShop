@@ -6,6 +6,7 @@ using API.DTOs.Product;
 using API.Entities.ProductEntities;
 using API.Interfaces;
 using AutoMapper;
+using AutoMapper.Configuration.Conventions;
 using AutoMapper.QueryableExtensions;
 using Microsoft.EntityFrameworkCore;
 
@@ -35,11 +36,16 @@ namespace API.Data
             _context.Categories.Remove(category);
         }
 
-        public async Task<IEnumerable<CustomerCategoryDto>> GetCategoriesAsCustomerAsync()
+        public async Task<IEnumerable<CustomerCategoryDto>> GetCategoriesAsCustomerAsync(string gender)
         {
+            if(!gender.Equals("all"))
+                return await _context.Categories
+                    .Where(c => c.Gender.ToLower() == gender)
+                    .ProjectTo<CustomerCategoryDto>(_mapper.ConfigurationProvider)
+                    .ToListAsync();
             return await _context.Categories
-                .ProjectTo<CustomerCategoryDto>(_mapper.ConfigurationProvider)
-                .ToListAsync();
+                    .ProjectTo<CustomerCategoryDto>(_mapper.ConfigurationProvider)
+                    .ToListAsync();
         }
 
 

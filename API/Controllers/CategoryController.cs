@@ -21,11 +21,11 @@ namespace API.Controllers
             _mapper = mapper;
         }
         
-        [HttpGet]
-        public async Task<ActionResult<IEnumerable<CustomerCategoryDto>>> GetCategoryAsCustomer()
+        [HttpGet("{gender}")]
+        public async Task<ActionResult<IEnumerable<CustomerCategoryDto>>> GetCategoryAsCustomer(string gender)
         {
 
-            var categories = await _unitOfWork.CategoryRepository.GetCategoriesAsCustomerAsync();
+            var categories = await _unitOfWork.CategoryRepository.GetCategoriesAsCustomerAsync(gender);
             return Ok(categories);
 
         }

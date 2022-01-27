@@ -20,7 +20,9 @@ namespace API.Helpers
                .ForMember(dest => dest.Category, opt => opt.MapFrom(
                           src => src.Category.CategoryName))
                 .ForMember(dest => dest.Gender, opt => opt.MapFrom(
-                          src => src.Category.Gender));
+                          src => src.Category.Gender))
+                .ForMember(dest => dest.Url, opt => opt.MapFrom(
+                          src => src.ProductPhotos.FirstOrDefault(pp => pp.IsMain).Photo.Url));
 
             CreateMap<Product, ProductDto>()
                .ForMember(dest => dest.Category, opt => opt.MapFrom(

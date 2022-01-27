@@ -11,6 +11,10 @@ import { ProductListComponent } from './customer/product-list/product-list.compo
 import { ProductCardComponent } from './customer/product-card/product-card.component';
 import { ProductDetailComponent } from './customer/product-detail/product-detail.component';
 import { NavigationBarComponent } from './customer/navigation-bar/navigation-bar.component';
+import { BreadcrumbComponent } from './customer/breadcrumb/breadcrumb.component';
+import { ImageGalleryComponent } from './customer/image-gallery/image-gallery.component';
+import { ImagePreviewClickDirective } from './_directives/image-preview-click.directive';
+import { ButtonImageClickDirective } from './_directives/button-image-click.directive';
 
 @NgModule({
   declarations: [
@@ -19,7 +23,11 @@ import { NavigationBarComponent } from './customer/navigation-bar/navigation-bar
     ProductListComponent,
     ProductCardComponent,
     ProductDetailComponent,
-    NavigationBarComponent
+    NavigationBarComponent,
+    BreadcrumbComponent,
+    ImageGalleryComponent,
+    ImagePreviewClickDirective,
+    ButtonImageClickDirective
   ],
   imports: [
     BrowserModule,

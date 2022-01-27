@@ -4,9 +4,22 @@ body {
     font-family: 'Outfit', sans-serif;
 }
 
+@media (min-width: 768px) {
+
+}
+
 @media (max-width: 768px) {
     .container {
       padding-left: 0;
+      padding-right: 0;
+    }
+
+    .mx-sm-0 {
+      margin-left: 0;
+      margin-right: 0;
+    }
+
+    .pr-sm-0 {
       padding-right: 0;
     }
 }
@@ -43,4 +56,67 @@ body {
   border-color: black !important;
   border-radius: 3px;
   color: #ffffff;
+}
+
+textarea:focus,
+input[type="text"]:focus,
+input[type="password"]:focus,
+input[type="datetime"]:focus,
+input[type="datetime-local"]:focus,
+input[type="date"]:focus,
+input[type="month"]:focus,
+input[type="time"]:focus,
+input[type="week"]:focus,
+input[type="number"]:focus,
+input[type="email"]:focus,
+input[type="url"]:focus,
+input[type="search"]:focus,
+input[type="tel"]:focus,
+input[type="color"]:focus,
+.uneditable-input:focus {   
+    border-color: transparent;
+    -webkit-box-shadow: 0 8px 6px -8px #76323f;
+    -moz-box-shadow: 0 8px 6px -8px #76323f;
+    box-shadow: 0 8px 6px -8px #76323f;
+    outline: 0 none;
+}
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+button:focus {
+  outline:none !important;
+  box-shadow: none !important;
+  border: 1px solid black;
+}
+
+a.link {
+  text-decoration: underline;
+}
+
+.top-50 {
+  top: 50%;
+}
+
+.end-0 {
+  right: 0;
+}
+
+.border-top-left-0 {
+  border-top-left-radius: 0;
+}
+
+.border-top-right-0 {
+  border-top-right-radius: 0;
+}
+
+.border-bottom-left-0 {
+  border-bottom-left-radius: 0;
+}
+
+.border-bottom-right-0 {
+  border-bottom-right-radius: 0;
 }

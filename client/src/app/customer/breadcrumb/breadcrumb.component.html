@@ -1,0 +1,14 @@
+<nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
+    <ol class="breadcrumb bg-transparent pl-lg-5 mb-md-0">
+        <li *ngFor="let item of breadCrumbList; let i = index" 
+            class="breadcrumb-item">
+            <a class="text-dark link"
+                routerLink="{{item.route}}">
+                {{item.name}}
+            </a>
+        </li>
+        <li class="breadcrumb-item active">
+            {{lastBreadCrumb.name}}
+        </li>
+    </ol>
+</nav>

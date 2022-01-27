@@ -1,27 +1,117 @@
 <div class="container-fluid px-0">
-    <div class="position-relative w-100 overflow-hidden p-3 text-center bg-transparent">
-        <div class="col-md-5 p-lg-5 mx-auto my-1">
-            <h4 class="display-4 fw-normal">All products</h4>
+
+    <app-breadcrumb [breadCrumbList]="breadCrumb"></app-breadcrumb>
+
+    <div class="w-100 overflow-hidden row mx-0 py-1 text-center cover"
+            [style.background-image]="'url(../../assets/cover.webp)'">
+        <div class="col-md-6 p-lg-5 mx-auto my-auto">
+            <h3 class="display-3 fw-normal">All products</h3>
         </div>
-        <div class="product-device shadow-sm d-none d-md-block"></div>
-        <div class="product-device product-device-2 shadow-sm d-none d-md-block"></div>
     </div>
 
-    <div class="row w-100">
-        <div class="col-12 col-md-3">
+    <div class="row mx-sm-0 w-100 mt-2 mt-md-4">
+        <div class="col-12 col-md-3 pl-lg-5">
+            <h4 class="">Filter</h4>
+            <hr>
+
+            <label class="label">Categories</label>
+            <div class="mt-1">
+                <ul class="list-group">
+                    <li *ngFor="let category of categories"
+                        class="list-group-item border-0">
+                        <a class="text-dark">{{ category.categoryName }}</a>
+                    </li>
+                  </ul>
+            </div>
+
+            <label class="label mt-3">Price</label>
+            <div class="mt-1">
+                <ul class="list-group">
+                    <li class="list-group-item border-0">
+                        <a class="text-dark">Less than {{ 50 | currency}}</a>
+                    </li>
+                    <li class="list-group-item border-0">
+                        <a class="text-dark">{{ 50 | currency}} - {{ 100 | currency}}</a>
+                    </li>
+                    <li class="list-group-item border-0">
+                        <a class="text-dark">{{ 100 | currency}} - {{ 200 | currency}}</a>
+                    </li>
+                    <li class="list-group-item border-0">
+                        <a class="text-dark">{{ 200 | currency}} or more</a>
+                    </li>
+                  </ul>
+            </div>
+
+            <label class="label mt-3">Size</label>
+            <div class="mt-1">
+                <ul class="list-group">
+                    <li class="list-group-item border-0">
+                        <a class="text-dark">Extra small - XS</a>
+                    </li>
+                    <li class="list-group-item border-0">
+                        <a class="text-dark">Small - S</a>
+                    </li>
+                    <li class="list-group-item border-0">
+                        <a class="text-dark">Medium - M</a>
+                    </li>
+                    <li class="list-group-item border-0">
+                        <a class="text-dark">Large - L</a>
+                    </li>
+                    <li class="list-group-item border-0">
+                        <a class="text-dark">Extra large - XL</a>
+                    </li>
+                    <li class="list-group-item border-0">
+                        <a class="text-dark">Ultra large - XXL</a>
+                    </li>
+                  </ul>
+            </div>
+
+            <button class="btn btn-dark w-100 mt-3">
+                Filtering
+            </button>
+            <button class="btn btn-outline-dark w-100 mt-3">
+                Reset filter
+            </button>
 
         </div>
-        <div class="col-12 col-md-9">
-            <div class="row w-100">
-                <div *ngFor="let product of products" class="col-6 col-md-4 col-lg-3">
-                    {{product.productName}}
+        <div class="col-12 col-md-9 pr-sm-0">
+            <div class="d-flex justify-content-end pr-4">
+                <div class="btn-group py-3 filter-dropdown" dropdown>
+                    <button dropdownToggle type="button" class="btn dropdown-toggle"
+                        aria-controls="dropdown-basic">{{productParams.orderBy}}
+                    </button>
+                    <ul id="dropdown-basic" *dropdownMenu class="dropdown-menu dropdown-menu-right" role="menu"
+                        aria-labelledby="button-basic">
+                        <li class="dropdown-item">
+                            <a class="text-dark" (click)="sort('Newest')">Newest</a>
+                        </li>
+                        <li class="dropdown-item">
+                            <a class="text-dark" (click)="sort('Price (high-low)')">Price &#40;high-low&#41;</a>
+                        </li>
+                        <li class="dropdown-item">
+                            <a class="text-dark" (click)="sort('Price (low-high)')">Price &#40;low-high&#41;</a>
+                        </li>
+                        <li class="dropdown-item">
+                            <a class="text-dark" (click)="sort('Best seller')">Best seller</a>
+                        </li>
+                    </ul>
                 </div>
+
+            </div>
+
+            <div class="row w-100">
+
+
+                <div *ngFor="let product of products" class="col-6 col-md-4 col-lg-3 pr-sm-0">
+                    <app-product-card [product]="product"></app-product-card>
+                </div>
+
             </div>
             <div class="d-flex justify-content-center" *ngIf="pagination">
                 <pagination [boundaryLinks]="true" [totalItems]="pagination.totalItems"
                     [itemsPerPage]="pagination.itemsPerPage" [(ngModel)]="pagination.currentPage"
-                    (pageChanged)="pageChanged($event)" previousText="Previous" nextText="Next"
-                    firstText="First" lastText="Last">
+                    (pageChanged)="pageChanged($event)" previousText="Previous" nextText="Next" firstText="First"
+                    lastText="Last">
                 </pagination>
             </div>
         </div>

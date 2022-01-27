@@ -1,7 +1,10 @@
 import { Component, OnInit } from '@angular/core';
+import { BreadCrumb } from 'src/app/_models/breadcrum';
+import { Category } from 'src/app/_models/category';
 import { Pagination } from 'src/app/_models/pagination';
 import { Product } from 'src/app/_models/product';
 import { ProductParams } from 'src/app/_models/productParams';
+import { CategoryService } from 'src/app/_services/category.service';
 import { ProductService } from 'src/app/_services/product.service';
 
 @Component({
@@ -11,16 +14,28 @@ import { ProductService } from 'src/app/_services/product.service';
 })
 export class ProductListComponent implements OnInit {
   products: Product[];
+  categories: Category[];
   pagination: Pagination;
   productParams: ProductParams;
-  sort: string = "Popular";
+  breadCrumb: BreadCrumb[] = [
+    {
+      name: 'Home',
+      route: '/'
+    },
+    {
+      name: 'All products',
+      route: ''
+    },
+  ];
 
-  constructor(private productService: ProductService) {
+  constructor(private productService: ProductService, private categoryService: CategoryService) {
     this.productParams = this.productService.getProductParams();
   }
 
   ngOnInit(): void {
+    this.productParams.orderBy = 'Best seller';
     this.loadProducts();
+    this.loadCategories('all');
   }
 
   loadProducts() {
@@ -32,6 +47,12 @@ export class ProductListComponent implements OnInit {
     })
   }
 
+  loadCategories(gender: string) {
+    this.categoryService.getCategories(gender).subscribe(response => {
+      this.categories = response;
+    })
+  }
+
   pageChanged(event: any) {
     if (this.productParams.pageNumber !== event.page) {
       this.productParams.pageNumber = event.page;
@@ -40,8 +61,9 @@ export class ProductListComponent implements OnInit {
     }
   }
 
-  selectSortBy(type: string) {
-    this.sort = type;
+  sort(type: string) {
+    this.productParams.orderBy = type;
+    this.loadProducts();
   }
 
   filter(params: ProductParams) {

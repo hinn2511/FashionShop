@@ -1,1 +1,18 @@
-<p>product-card works!</p>
+<div class="card card-img-wrapper shadow-sm mb-3">
+    <img class="bd-placeholder-img card-img-top p-4" src="{{product.url}}"
+         (click)="viewDetail()" >
+    <ul class="list icons animate text-center mt-3">
+        <li class="list-item">
+            <button class="btn btn-danger text-light">
+                <i class="fa fa-heart-o"></i>
+            </button>
+        </li>
+    </ul>
+    <div class="card-body mt-3">
+        <h5 class="card-text text-uppercase"
+            (click)="viewDetail()">
+                {{product.productName}}
+        </h5>
+        <h6>{{product.productPrice | currency:'VND'}}</h6>
+    </div>
+</div>

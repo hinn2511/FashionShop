@@ -10,7 +10,8 @@ namespace API.Interfaces
 {
     public interface ICategoryRepository
     {
-        Task<IEnumerable<CustomerCategoryDto>> GetCategoriesAsCustomerAsync();
+        Task<IEnumerable<CustomerCategoryDto>> GetCategoriesAsCustomerAsync(string gender);
+
         Task<Category> FindCategoryByIdAsync(int id);
         Task<CategoryDto> GetCategoryByIdAsync(int id);
         void Add(Category category);

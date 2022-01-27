@@ -50,9 +50,9 @@ namespace API.Data
 
             query = productParams.OrderBy switch
             {
-                "newest" => query.OrderByDescending(p => p.CreateAt),
-                "highestPrice" => query.OrderByDescending(p => p.ProductPrice),
-                "lowestPrice" => query.OrderBy(p => p.ProductPrice),
+                "Newest" => query.OrderByDescending(p => p.CreateAt),
+                "Price (high-low)" => query.OrderByDescending(p => p.ProductPrice),
+                "Price (low-high)" => query.OrderBy(p => p.ProductPrice),
                 _ => query.OrderByDescending(p => p.Sold)
             };
 
