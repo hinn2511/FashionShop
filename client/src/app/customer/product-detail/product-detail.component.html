@@ -1,12 +1,121 @@
-<div class="container-fluid w-100 " *ngIf="product">
-    <app-breadcrumb [breadCrumbList]="breadCrumb">    </app-breadcrumb>
-
-    <div class="row mt-3 mt-md-5 mx-0 justify-content-center">
-        <div class="col-12 col-md-6 p-0 pl-md-5">
+<div class="container-fluid w-100 px-0" *ngIf="product">
+    <div class="row mx-0 border-bottom">
+        <div class="col-12 col-md-7 p-0 border-top">
+            <div class="bg-light">
+                <app-breadcrumb [breadCrumbList]="breadCrumb"></app-breadcrumb>
                 <app-image-gallery [mainPhotoUrl]="product.url" [photos]="product.productPhotos"></app-image-gallery>
+            </div>
+
         </div>
-        <div class="col-12 col-md-6">
-            {{product.productName}}
+
+        <div class="col-12 col-md-5 border-top">
+            <div class="pl-md-4 mt-3">
+                <div class="d-inline-block d-flex justify-content-between">
+                    <h6 class="text-muted">
+                        {{product.gender}}&nbsp;&#8901;&nbsp;{{product.category}}
+                    </h6>
+                    <div class="fw-smaller pr-md-5">
+                        <i class="fa" *ngFor="let item of reviewPoints" [class.fa-star]="item == 1"
+                            [class.fa-star-half-o]="item != 1">
+                        </i>
+                        &nbsp;&nbsp;{{reviewPoint}}/5
+                    </div>
+                </div>
+                <h1 class="text-uppercase">
+                    {{product.productName}}
+                </h1>
+                <h4>
+                    {{product.productPrice | currency}}
+                </h4>
+
+
+
+                <p class="mt-4 pr-md-5 text-muted">
+                    Nam tellus elit, rutrum at nisi et, suscipit accumsan augue. Donec id ligula mauris.
+                </p>
+
+                <div class="mt-4 pr-md-5">
+                    <label for="size">Size</label>
+                    <div class="input-group mb-3">
+                        <select (change)="onSizeChange($event.target.value)"
+                            class="form-select w-100 bg-light border-0 p-2">
+                            <option *ngFor="let size of sizes" [ngValue]="size">{{size.sizeName}}</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="mt-4 pr-md-5">
+                    <label for="size">Colors</label>
+                    <ul class="list-inline ">
+                        <li class="list-inline-item" *ngFor="let item of colors">
+                            <button class="btn btn-light text-muted mb-2 mb-md-0"
+                                *ngIf="item.colorName != selectedColor.colorName ; else selected"
+                                (click)="chooseColor(item)">
+                                <i class="fa fa-circle" [ngStyle]="{'color': '#' + item.colorCode}"></i>
+                                &nbsp;{{item.colorName}}
+                            </button>
+                            <ng-template #selected>
+                                <button class="btn btn-light border-dark mb-2 mb-md-0" (click)="chooseColor(item)">
+                                    <i class="fa fa-circle" [ngStyle]="{'color': '#' + item.colorCode}"></i>
+                                    &nbsp;{{item.colorName}}
+                                </button>
+                            </ng-template>
+
+
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="mt-4 pr-md-5">
+                    <label for="size">Quantity</label>
+                    <div class="input-group mb-3" style="max-width: 200px;">
+                        <button class="btn btn-light border-top-right-0 border-bottom-right-0" type="button"
+                            id="button-addon1">-</button>
+                        <input type="number" min="0" [value]="quantity" class="form-control border-0">
+                        <button class="btn  btn-light border-top-left-0 border-bottom-left-0" type="button"
+                            id="button-addon2">+</button>
+                    </div>
+                </div>
+
+                <div class="mt-5 pr-md-5">
+                    <div class="d-flex d-inline-block">
+                        <button class="btn btn-dark flex-fill">
+                            <h5 class="text-uppercase m-0 py-2">add to cart</h5>
+                        </button>
+                        <button class="btn btn-like ml-3">
+                            <h5 class="text-uppercase m-0"><i class="fa fa-heart text-danger"></i></h5>
+                        </button>
+                    </div>
+                </div>
+
+            </div>
         </div>
+
+
     </div>
+
+    <div class="px-5 pt-4 d-sm-none">
+        <hr>
+    </div>
+
+    <div class="p-3 px-md-5">
+        <h2 class="text-uppercase">rating & reviews</h2>
+        <app-product-rating></app-product-rating>
+    </div>
+    
+
+    <div class="px-5">
+        <hr>
+    </div>
+
+    <div class="p-1 mt-3 mt-md-5 px-md-5">
+        <h2 class="text-uppercase">related products</h2>
+        <app-product-carousel></app-product-carousel>
+    </div>
+
+    <div class="p-1 mt-3 mt-md-5 px-md-5">
+        <h2 class="text-uppercase">recent view</h2>
+        <app-product-carousel></app-product-carousel>
+    </div>
+
 </div>

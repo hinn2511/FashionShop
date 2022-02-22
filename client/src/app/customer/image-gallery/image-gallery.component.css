@@ -6,6 +6,7 @@
     border: 2px solid transparent;
 }
 
+
 .img-show:focus .button, .img-show:hover .button{
     opacity: 0.9;
 }
@@ -19,12 +20,13 @@
     opacity: 1;
 }
 
-.img-container > img {
-    max-height: 500px !important;
+.img-show > img {
+    width: 100%;
+    max-height: 80vh !important;
     object-fit: contain;
 }
 
 .img-slide > img {
-    max-height: 100px !important;
+    max-height: 20vh !important;
     object-fit: contain;
 }

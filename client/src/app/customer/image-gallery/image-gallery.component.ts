@@ -1,5 +1,5 @@
-import { AfterViewInit, Component, ElementRef, Input, OnInit, QueryList, ViewChild, ViewChildren } from '@angular/core';
-import { ButtonImageClickDirective } from 'src/app/_directives/button-image-click.directive';
+import { DOCUMENT } from '@angular/common';
+import { Component, ElementRef, Inject, Input, OnInit, Renderer2, ViewChild } from '@angular/core';
 import { ProductPhoto } from 'src/app/_models/product';
 
 @Component({
@@ -9,10 +9,9 @@ import { ProductPhoto } from 'src/app/_models/product';
 })
 export class ImageGalleryComponent implements OnInit {
   @Input() photos: ProductPhoto[];
-  @Input() mainPhotoUrl: string;
   currentPositon: number;
   size: number;
-
+  
   constructor() { 
   }
 

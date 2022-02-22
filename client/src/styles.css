@@ -14,6 +14,11 @@ body {
       padding-right: 0;
     }
 
+    .pagination {
+      flex-wrap: wrap !important; 
+      justify-content: center !important;
+    } 
+
     .mx-sm-0 {
       margin-left: 0;
       margin-right: 0;
@@ -75,9 +80,9 @@ input[type="tel"]:focus,
 input[type="color"]:focus,
 .uneditable-input:focus {   
     border-color: transparent;
-    -webkit-box-shadow: 0 8px 6px -8px #76323f;
-    -moz-box-shadow: 0 8px 6px -8px #76323f;
-    box-shadow: 0 8px 6px -8px #76323f;
+    -webkit-box-shadow: 0 8px 6px -8px transparent;
+    -moz-box-shadow: 0 8px 6px -8px transparent;
+    box-shadow: 0 8px 6px -8px transparent;
     outline: 0 none;
 }
 
@@ -119,4 +124,43 @@ a.link {
 
 .border-bottom-right-0 {
   border-bottom-right-radius: 0;
+}
+
+.bg-white {
+  background-color: #ffffff;
+}
+
+.fw-smaller {
+  font-size: smaller;
+}
+
+.fw-larger {
+  font-size: larger;
+}
+
+.slide {
+  padding: 0 3vw;
+}
+
+
+div.carousel.slide > ol {
+  display: none !important;
+}
+
+.carousel-control-prev,
+.carousel-control-next{
+  height: 100%;
+  width: 50px;
+  background-size: 100%, 100%;
+}
+
+.carousel-control-prev-icon { 
+  background-image: url('../.././client/src/assets/iconmonstr-arrow-left-thin.svg');
+  width: 2vw;
+  height: 2vw;
+}
+.carousel-control-next-icon { 
+  background-image: url('../.././client/src/assets/iconmonstr-arrow-right-thin.svg');
+  width: 2vw;
+  height: 2vw;
 }

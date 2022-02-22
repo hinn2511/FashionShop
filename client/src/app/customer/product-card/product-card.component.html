@@ -1,4 +1,4 @@
-<div class="card card-img-wrapper shadow-sm mb-3">
+<div class="card card-img-wrapper border-0 mb-3" [ngClass]="shadow" (mouseover)="hover($event)" (mouseout)="hover($event)">
     <img class="bd-placeholder-img card-img-top p-4" src="{{product.url}}"
          (click)="viewDetail()" >
     <ul class="list icons animate text-center mt-3">
@@ -13,6 +13,6 @@
             (click)="viewDetail()">
                 {{product.productName}}
         </h5>
-        <h6>{{product.productPrice | currency:'VND'}}</h6>
+        <h6>{{product.productPrice | currency}}</h6>
     </div>
 </div>

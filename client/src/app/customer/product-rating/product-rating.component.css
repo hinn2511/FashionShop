@@ -1,0 +1,12 @@
+.list-group-item {
+    border: none;
+}
+
+.star-percent > p, .star-percent > i {
+    width: 5%;
+}
+
+.progress {
+    border-radius: 0 !important;
+}
+

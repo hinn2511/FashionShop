@@ -19,12 +19,12 @@ export class ButtonImageClickDirective {
 
     var imageSlide = document.getElementsByClassName("img-slide");
 
-    for (let i = 0; i < imageSlide.length; i++) {
-      imageSlide[i].classList.remove("active");
-    }
+    // for (let i = 0; i < imageSlide.length; i++) {
+    //   imageSlide[i].classList.remove("active");
+    // }
 
-    imageSlide[ this.currentPositon].classList.add("active");
+    // imageSlide[ this.currentPositon].classList.add("active");
     var prev: any = document.getElementById("preview");
-    prev.src = imageSlide[ this.currentPositon].getElementsByTagName("img")[0].src;
+    prev.src = imageSlide[this.currentPositon].getElementsByTagName("img")[0].src;
   }
 }

@@ -1,0 +1,23 @@
+.bg-light-0 {
+    background-color: rgb(238, 238, 238);
+}
+
+.btn-like:hover {
+    background-color: transparent;
+    color: black;
+}
+
+@media (max-width: 768px) {
+    .border-bottom {
+        border-bottom: none !important;
+    }
+
+    div > h2 {
+        text-align: center;
+    }
+}
+
+.btn-selected {
+    background-color: rgb(194, 194, 194);
+    color: black;
+}

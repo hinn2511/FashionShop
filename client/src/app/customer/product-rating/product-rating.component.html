@@ -1,0 +1,149 @@
+<div class="row mx-0" style="min-height: 500px">
+    <div class="col-12 col-md-4 p-0">
+        <div class="py-md-5 pr-md-5">
+            <div class="d-inline-block d-flex justify-content-between bg-warning p-4">
+                <p class="fw-larger my-0">
+                    {{reviewPoint}}/5 &nbsp;&nbsp;&nbsp;&nbsp;
+                    <i class="fa" *ngFor="let item of reviewPoints" [class.fa-star]="item == 1"
+                        [class.fa-star-half-o]="item != 1">
+                    </i>
+                </p>
+                <p class="mt-1 my-0 text-capitalize">13 reviews</p>
+            </div>
+            <div class="mt-2">
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item px-0 py-0">
+                        <div class="d-inline-block d-flex justify-content-between star-percent">
+                            <p>5</p>
+                            <p><i class="fa fa-star"></i></p>
+                            <div class="flex-fill mt-1 ml-2">
+                                <progressbar [value]="20" type="warning">20%</progressbar>
+                            </div>
+                        </div>
+                    </li>
+                    <li class="list-group-item px-0 py-0">
+                        <div class="d-inline-block d-flex justify-content-between star-percent">
+                            <p>4</p>
+                            <p><i class="fa fa-star"></i></p>
+                            <div class="flex-fill mt-1 ml-2">
+                                <progressbar [value]="20" type="warning">20%</progressbar>
+                            </div>
+                        </div>
+                    </li>
+                    <li class="list-group-item px-0 py-0">
+                        <div class="d-inline-block d-flex justify-content-between star-percent">
+                            <p>3</p>
+                            <p><i class="fa fa-star"></i></p>
+                            <div class="flex-fill mt-1 ml-2">
+                                <progressbar [value]="20" type="warning">20%</progressbar>
+                            </div>
+                        </div>
+                    </li>
+                    <li class="list-group-item px-0 py-0">
+                        <div class="d-inline-block d-flex justify-content-between star-percent">
+                            <p>2</p>
+                            <p><i class="fa fa-star"></i></p>
+                            <div class="flex-fill mt-1 ml-2">
+                                <progressbar [value]="20" type="warning">20%</progressbar>
+                            </div>
+                        </div>
+                    </li>
+                    <li class="list-group-item px-0 py-0">
+                        <div class="d-inline-block d-flex justify-content-between star-percent">
+                            <p>1</p>
+                            <p><i class="fa fa-star"></i></p>
+                            <div class="flex-fill mt-1 ml-2">
+                                <progressbar [value]="20" type="warning">20%</progressbar>
+                            </div>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-12 col-md-8 p-0 mt-1 mt-md-0">
+            <div class="card mb-3">
+                <div class="card-body">
+                    <div class="d-inline-block d-flex justify-content-between">
+                        <p>
+                            <i class="fa fa-star"></i>
+                            <i class="fa fa-star"></i>
+                            <i class="fa fa-star-o"></i>
+                            <i class="fa fa-star-o"></i>
+                            <i class="fa fa-star-o"></i>
+                            by 
+                            <a class=" text-dark link">Alex</a>
+                        </p>
+                        <p>
+                            02/10/2022
+                        </p>
+                    </div>
+                    <hr>
+                    <div>
+                        <p>
+                            {{comment}}
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <div class="card mb-3">
+                <div class="card-body">
+                    <div class="d-inline-block d-flex justify-content-between">
+                        <p>
+                            <i class="fa fa-star"></i>
+                            <i class="fa fa-star"></i>
+                            <i class="fa fa-star"></i>
+                            <i class="fa fa-star-o"></i>
+                            <i class="fa fa-star-o"></i>
+                            by 
+                            <a class=" text-dark link">Fids euvs</a>
+                        </p>
+                        <p>
+                            12/10/2021
+                        </p>
+                    </div>
+                    <hr>
+                    <div>
+                        <p>
+                            {{comment}}
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <div class="card mb-3">
+                <div class="card-body">
+                    <div class="d-inline-block d-flex justify-content-between">
+                        <p>
+                            <i class="fa fa-star"></i>
+                            <i class="fa fa-star"></i>
+                            <i class="fa fa-star"></i>
+                            <i class="fa fa-star"></i>
+                            <i class="fa fa-star-o"></i>
+                            by 
+                            <a class=" text-dark link">Majuna</a>
+                        </p>
+                        <p>
+                            11/10/2021
+                        </p>
+                    </div>
+                    <hr>
+                    <div>
+                        <p>
+                            {{comment}}
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <div class="d-flex justify-content-center justify-content-md-end ">
+                <pagination [boundaryLinks]="true" [totalItems]="18"
+                    [itemsPerPage]="3"
+                    previousText="Previous" nextText="Next" firstText="First"
+                    lastText="Last">
+                </pagination>
+            </div>
+
+    </div>
+
+
+</div>

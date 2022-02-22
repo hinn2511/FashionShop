@@ -2,15 +2,15 @@
 
     <app-breadcrumb [breadCrumbList]="breadCrumb"></app-breadcrumb>
 
-    <div class="w-100 overflow-hidden row mx-0 py-1 text-center cover"
+    <div class="w-100 overflow-hidden row mx-0 py-1 text-center border-right cover"
             [style.background-image]="'url(../../assets/cover.webp)'">
         <div class="col-md-6 p-lg-5 mx-auto my-auto">
             <h3 class="display-3 fw-normal">All products</h3>
         </div>
     </div>
 
-    <div class="row mx-sm-0 w-100 mt-2 mt-md-4">
-        <div class="col-12 col-md-3 pl-lg-5">
+    <div class="row mx-sm-0 w-100">
+        <div class="col-12 col-md-3 pl-lg-5 pt-4 bg-light">
             <h4 class="">Filter</h4>
             <hr>
 
@@ -18,7 +18,7 @@
             <div class="mt-1">
                 <ul class="list-group">
                     <li *ngFor="let category of categories"
-                        class="list-group-item border-0">
+                        class="list-group-item bg-transparent border-0">
                         <a class="text-dark">{{ category.categoryName }}</a>
                     </li>
                   </ul>
@@ -27,16 +27,16 @@
             <label class="label mt-3">Price</label>
             <div class="mt-1">
                 <ul class="list-group">
-                    <li class="list-group-item border-0">
+                    <li class="list-group-item bg-transparent border-0">
                         <a class="text-dark">Less than {{ 50 | currency}}</a>
                     </li>
-                    <li class="list-group-item border-0">
+                    <li class="list-group-item bg-transparent border-0">
                         <a class="text-dark">{{ 50 | currency}} - {{ 100 | currency}}</a>
                     </li>
-                    <li class="list-group-item border-0">
+                    <li class="list-group-item bg-transparent border-0">
                         <a class="text-dark">{{ 100 | currency}} - {{ 200 | currency}}</a>
                     </li>
-                    <li class="list-group-item border-0">
+                    <li class="list-group-item bg-transparent border-0">
                         <a class="text-dark">{{ 200 | currency}} or more</a>
                     </li>
                   </ul>
@@ -45,22 +45,22 @@
             <label class="label mt-3">Size</label>
             <div class="mt-1">
                 <ul class="list-group">
-                    <li class="list-group-item border-0">
+                    <li class="list-group-item bg-transparent border-0">
                         <a class="text-dark">Extra small - XS</a>
                     </li>
-                    <li class="list-group-item border-0">
+                    <li class="list-group-item bg-transparent border-0">
                         <a class="text-dark">Small - S</a>
                     </li>
-                    <li class="list-group-item border-0">
+                    <li class="list-group-item bg-transparent border-0">
                         <a class="text-dark">Medium - M</a>
                     </li>
-                    <li class="list-group-item border-0">
+                    <li class="list-group-item bg-transparent border-0">
                         <a class="text-dark">Large - L</a>
                     </li>
-                    <li class="list-group-item border-0">
+                    <li class="list-group-item bg-transparent border-0">
                         <a class="text-dark">Extra large - XL</a>
                     </li>
-                    <li class="list-group-item border-0">
+                    <li class="list-group-item bg-transparent border-0">
                         <a class="text-dark">Ultra large - XXL</a>
                     </li>
                   </ul>

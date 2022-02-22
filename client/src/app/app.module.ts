@@ -15,6 +15,10 @@ import { BreadcrumbComponent } from './customer/breadcrumb/breadcrumb.component'
 import { ImageGalleryComponent } from './customer/image-gallery/image-gallery.component';
 import { ImagePreviewClickDirective } from './_directives/image-preview-click.directive';
 import { ButtonImageClickDirective } from './_directives/button-image-click.directive';
+import { ProductRatingComponent } from './customer/product-rating/product-rating.component';
+import { ProductRelatedComponent } from './customer/product-related/product-related.component';
+import { ProductCarouselComponent } from './customer/product-carousel/product-carousel.component';
+import { ProductRecentViewComponent } from './customer/product-recent-view/product-recent-view.component';
 
 @NgModule({
   declarations: [
@@ -27,7 +31,11 @@ import { ButtonImageClickDirective } from './_directives/button-image-click.dire
     BreadcrumbComponent,
     ImageGalleryComponent,
     ImagePreviewClickDirective,
-    ButtonImageClickDirective
+    ButtonImageClickDirective,
+    ProductRatingComponent,
+    ProductRelatedComponent,
+    ProductCarouselComponent,
+    ProductRecentViewComponent
   ],
   imports: [
     BrowserModule,

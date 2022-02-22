@@ -9,6 +9,11 @@ import { Product } from 'src/app/_models/product';
 })
 export class ProductCardComponent implements OnInit {
   @Input() product: Product;
+  shadow:string = 'shadow-sm';
+
+  hover($event){
+    this.shadow = $event.type == 'mouseover' ? 'shadow' : 'shadow-sm';
+  }
 
   constructor(private router: Router) { }
 
