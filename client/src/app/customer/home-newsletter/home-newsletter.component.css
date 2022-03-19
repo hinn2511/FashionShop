@@ -1,0 +1,7 @@
+.container {
+    min-width: 100%;
+}
+
+.container > div {
+    background-color: rgb(255, 216, 212);
+}

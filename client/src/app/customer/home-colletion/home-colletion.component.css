@@ -1,0 +1,132 @@
+.container {
+    min-width: 100%;
+}
+
+.collection-name {
+    font-size: 4.5rem;
+}
+
+.d-flex {
+    min-width: 100%;
+}
+
+@media (max-width: 768px) {
+
+    .collection-name {
+        font-size: 2.5rem;
+    }
+
+    .w-66, .w-33 {
+        width: 100% !important;
+        height: 40vh;
+        padding: 0 5vh 5vh 5vh !important;
+    }
+
+    .collection-text {
+        top: 30% !important;
+    }
+    
+
+    .collection-text>h2 {
+        font-size: 2rem !important;
+        width: 100%;
+        text-align: center !important;
+    }
+
+    .collection-text > a {
+        width: 100%;
+        text-align: center !important;
+        display: block;
+    }
+
+    .collection-text-left {
+        left: 0 !important;
+    }
+    
+    
+    .collection-text-right {
+        right: 0% !important;
+    }
+}
+
+.w-66 {
+    width: 66%;
+    padding-left: 1%;
+    overflow: hidden;
+}
+
+.w-33 {
+    width: 33%;
+    padding-left: 1%;
+    overflow: hidden;
+}
+
+.img-container {
+    overflow: hidden;
+    height: 100%;
+}
+
+.img-container>img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.margin-top {
+    margin-top: 1%;
+}
+
+.w-33>.img-container>img, .w-66>.img-container>img {
+    height: 100%;
+    object-fit: cover;
+    transform: scale(100%);
+    transition: all 0.5s ease-in;
+
+}
+
+.w-33:hover>.img-container>img, .w-66:hover>.img-container>img {
+    transform: scale(110%);
+    transition: all 0.5s ease-out;
+}
+
+.w-33:hover>.img-container>.collection-text>h2,
+.w-66:hover>.img-container>.collection-text>h2 {
+    font-size: 4.1vw;
+    transition: all 0.5s ease-out;
+}
+
+
+.w-33:hover>.img-container>.collection-text>a,
+.w-66:hover>.img-container>.collection-text>a {
+    transition: all 0.5s ease-out;
+}
+
+.w-66:hover>.img-container>.collection-text-left>h2, .w-66:hover>.img-container>.collection-text-left>a {
+    margin-left: 1vw;
+}
+
+.w-66:hover>.img-container>.collection-text-right>h2, .w-66:hover>.img-container>.collection-text-right>a {
+    margin-right: 1vw;
+}
+
+.collection-text {
+    top: 40%;
+}
+
+.collection-text-left {
+    left: 5%;
+}
+
+
+.collection-text-right {
+    right: 5%;
+}
+
+.collection-text>h2 {
+    font-size: 4vw;
+    transition: all 0.5s ease-out;
+}
+
+.collection-text>a {
+    transition: all 0.5s ease-out;
+}

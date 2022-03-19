@@ -12,7 +12,7 @@
         border-bottom: none !important;
     }
 
-    div > h2 {
+    div>h2 {
         text-align: center;
     }
 }
@@ -20,4 +20,49 @@
 .btn-selected {
     background-color: rgb(194, 194, 194);
     color: black;
+}
+
+
+.round-button {
+    width: 30px;
+    height: 30px;
+    position: relative;
+    border-radius: 100%;
+    
+}
+
+.round-button:hover {
+    background-color: rgb(167, 167, 167);
+}
+
+.round-button-circle {
+    width: 26px;
+    height: 26px;
+    margin: 0;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    overflow: hidden;
+    border-radius: 100%;
+}
+
+.round-button-not-selected {
+    background-color: rgb(240, 240, 240);
+}
+
+.round-button-selected {
+    background-color: rgb(114, 114, 114);
+}
+
+.quantity {
+    width: 100%;
+}
+
+.quantity > button {
+    width: 15%;
+}
+
+.quantity > input {
+    width: 70%;
 }

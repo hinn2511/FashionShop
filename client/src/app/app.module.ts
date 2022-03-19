@@ -16,9 +16,14 @@ import { ImageGalleryComponent } from './customer/image-gallery/image-gallery.co
 import { ImagePreviewClickDirective } from './_directives/image-preview-click.directive';
 import { ButtonImageClickDirective } from './_directives/button-image-click.directive';
 import { ProductRatingComponent } from './customer/product-rating/product-rating.component';
-import { ProductRelatedComponent } from './customer/product-related/product-related.component';
 import { ProductCarouselComponent } from './customer/product-carousel/product-carousel.component';
 import { ProductRecentViewComponent } from './customer/product-recent-view/product-recent-view.component';
+import { HomeCarouselComponent } from './customer/home-carousel/home-carousel.component';
+import { HomeCategoriesComponent } from './customer/home-categories/home-categories.component';
+import { HomeBestSellerComponent } from './customer/home-best-seller/home-best-seller.component';
+import { HomeColletionComponent } from './customer/home-colletion/home-colletion.component';
+import { FooterComponent } from './customer/footer/footer.component';
+import { HomeNewsletterComponent } from './customer/home-newsletter/home-newsletter.component';
 
 @NgModule({
   declarations: [
@@ -33,9 +38,14 @@ import { ProductRecentViewComponent } from './customer/product-recent-view/produ
     ImagePreviewClickDirective,
     ButtonImageClickDirective,
     ProductRatingComponent,
-    ProductRelatedComponent,
     ProductCarouselComponent,
-    ProductRecentViewComponent
+    ProductRecentViewComponent,
+    HomeCarouselComponent,
+    HomeCategoriesComponent,
+    HomeBestSellerComponent,
+    HomeColletionComponent,
+    FooterComponent,
+    HomeNewsletterComponent
   ],
   imports: [
     BrowserModule,

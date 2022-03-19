@@ -1,5 +1,6 @@
+
 .container {
-    min-width: 100% !important;
+    min-width: 100%;
 }
 
 :host ::ng-deep .slide {

@@ -1,4 +1,4 @@
-import { Component, HostListener, OnInit } from '@angular/core';
+import { Component, HostListener, Input, OnInit, ViewEncapsulation } from '@angular/core';
 import { Product } from 'src/app/_models/product';
 
 @Component({
@@ -6,7 +6,9 @@ import { Product } from 'src/app/_models/product';
   templateUrl: './product-carousel.component.html',
   styleUrls: ['./product-carousel.component.css']
 })
+
 export class ProductCarouselComponent implements OnInit {
+  @Input() singleSlide: boolean;
 
   product: Product = {
     url: 'https://res.cloudinary.com/dsqfbwwmq/image/upload/v1643121899/o17gkl0actlmbwehcsnv.jpg',
@@ -40,8 +42,11 @@ export class ProductCarouselComponent implements OnInit {
   ngOnInit(): void {
     this.showItemQuantity();
     for (let i = 0; i < 9; i++) {
-      this.products.push(this.product);
+      let p = this.product;
+      p.productName = i.toString();
+      this.products.push(p);
     }
+    
   }
 
 }

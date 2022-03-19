@@ -1,0 +1,53 @@
+
+.container {
+    max-width: 100%;
+    padding: 0;
+    min-width: 100%;
+}
+
+a {
+    color: black;
+}
+
+.img-container {
+    position: relative;
+    overflow: hidden;
+    height: 15rem;
+}
+
+.img-container::after {
+    content: "";
+    display: block;
+    padding-bottom: 100%;
+}
+
+.img {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.category-container > img {
+    object-position: 50% 50%;
+    transition: all 0.2s ease-out;
+}
+
+
+
+.category-container:hover > img {
+    object-position: 90% 90%;
+    transition: all 0.2s ease-in;
+    filter: brightness(95%);
+}
+
+.category-text {
+    top: 30%;
+    left: 5%;
+}
+
+@media (max-width: 768px) { 
+    .img-container {
+        margin-top: 15px;
+    }
+}
