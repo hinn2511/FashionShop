@@ -1,0 +1,73 @@
+.card:hover img {
+    transform: scale(1.2, 1.2);
+    transition: all 0.5s ease-in-out;
+    
+}
+
+
+.card img {
+    transform: scale(1.0, 1.0);
+    max-height: 200px;
+    object-fit: cover;
+    transition: all 0.5s ease-in-out;
+}
+
+@media (max-width: 768px) {
+    .card img {
+        height: 100%;
+    }
+    .card {
+        padding-top: 2vh;
+    }
+}
+
+.card {
+    min-height: max-content;
+    max-height: fit-content;
+    cursor: pointer;
+}
+
+.card-img-wrapper {
+    overflow: hidden;
+    position: relative;
+}
+
+.icons {
+    position: absolute;
+    right: -10%;
+    top: 0;
+    
+    margin-left: auto;
+    margin-right: auto;
+    opacity: 0;
+    min-width: 30px;
+    min-height: 30px;
+}
+
+.btn {
+    border-radius: 3px 0 0 3px;
+}
+
+
+
+.card-img-wrapper:hover .icons {
+    right: 0;
+    opacity: 1;
+}
+
+.animate {
+    transition: all 0.3s ease-in-out;
+}
+
+ul {
+    list-style-type: none;
+}
+
+ul > li > button {
+    width: 40px;
+    height: 40px;
+}
+
+.form-control {
+    height: fit-content ;
+}

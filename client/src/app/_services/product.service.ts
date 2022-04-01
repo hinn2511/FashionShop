@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { of } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
-import { Product } from '../_models/product';
+import { AddProduct, EditProduct, Product } from '../_models/product';
 import { ProductParams } from '../_models/productParams';
 import { getPaginatedResult, getPaginationHeaders } from './paginationHelper';
 
@@ -59,4 +59,24 @@ export class ProductService {
     }
     return this.http.get<Product>(this.baseUrl + 'product/' + id);
   }
+
+  removeProductCache(id: number) {
+    for (let key of this.productCache.keys()) {   
+      if(this.productCache.get(key).result.find((product: Product) => product.id === id))
+        this.productCache.delete(key);
+    }
+  }
+
+  addProduct(product: AddProduct) {
+    return this.http.post<AddProduct>(this.baseUrl + 'product/add', product);
+  }
+
+  editProduct(product: EditProduct) {
+    return this.http.put<EditProduct>(this.baseUrl + 'product/edit', product);
+  }
+
+  deleteProduct(id: number) {
+    return this.http.delete(this.baseUrl + 'product/delete/' + id);
+  }
+
 }

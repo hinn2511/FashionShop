@@ -63,7 +63,7 @@ export class ProductDetailComponent implements OnInit {
   selectedSize: Size;
   selectedColor: Color;
 
-  constructor(private productService: ProductService,private route: ActivatedRoute) { }
+  constructor(private productService: ProductService, private route: ActivatedRoute) { }
 
   ngOnInit(): void {
     this.loadProduct(this.route.snapshot.queryParams['id']);

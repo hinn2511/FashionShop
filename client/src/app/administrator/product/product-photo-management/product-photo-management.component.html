@@ -1,0 +1,97 @@
+<div class="container" *ngIf="product.id !== null">
+    <div class="py-4">
+        <div class="">
+            <h3>Upload photo</h3>
+            <hr>
+            <div class="p-2 mt-4">
+                <div class="row">
+                    <div class="col-md-3">
+                        <h4>Select files</h4>
+
+                        <div ng2FileDrop [ngClass]="{'nv-file-over': hasBaseDropzoneOver }"
+                            (fileOver)="fileOverBase($event)" [uploader]="uploader"
+                            class="card bg-faded p-3 text-center mb-3 my-drop-zone">
+                            <i class="fa fa-upload fa-3x"></i>
+                            Drop photos here
+                        </div>
+
+                        <h5>Multiple</h5>
+                        <input class="form-control" type="file" ng2FileSelect [uploader]="uploader" multiple /><br />
+
+                        <div class="container mb-2"></div>
+                        <h5>Single</h5>
+
+                        <input class="form-control" type="file" ng2FileSelect [uploader]="uploader" />
+                    </div>
+
+                    <div class="col-md-9" style="margin-bottom: 40px" *ngIf="uploader?.queue?.length">
+
+                        <h4>Upload queue</h4>
+                        <p>Queue length: {{ uploader?.queue?.length }}</p>
+
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th width="50%">Name</th>
+                                    <th>Size</th>
+
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr *ngFor="let item of uploader.queue">
+                                    <td><strong>{{ item?.file?.name }}</strong></td>
+                                    <td *ngIf="uploader.options.isHTML5" nowrap>{{ item?.file?.size/1024/1024 |
+                                        number:'.2' }} MB</td>
+
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <div>
+                            <div>
+                                Queue progress:
+                                <div class="progress mb-3">
+                                    <div class="progress-bar" role="progressbar"
+                                        [ngStyle]="{ 'width': uploader.progress + '%' }"></div>
+                                </div>
+                            </div>
+                            <button type="button" class="btn btn-success btn-s mr-4" (click)="uploader.uploadAll()"
+                                [disabled]="!uploader.getNotUploadedItems().length">
+                                <span class="fa fa-upload"></span> Upload all
+                            </button>
+                            <button type="button" class="btn btn-warning btn-s mr-4" (click)="uploader.cancelAll()"
+                                [disabled]="!uploader.isUploading">
+                                <span class="fa fa-ban"></span> Cancel all
+                            </button>
+                            <button type="button" class="btn btn-danger btn-s" (click)="uploader.clearQueue()"
+                                [disabled]="!uploader.queue.length">
+                                <span class="fa fa-trash"></span> Remove all
+                            </button>
+                        </div>
+
+                    </div>
+
+
+                </div>
+
+
+            </div>
+        </div>
+    </div>
+    <div class="mt-4">
+        <h3>All photos</h3>
+
+        <hr>
+        <div class="p-2 mt-4 row">
+            <div class="col-md-3" *ngFor="let item of photos">
+                <div class="card card-img-wrapper border-0 mb-3">
+                    <img class="bd-placeholder-img card-img-top" src="{{item.url}}">
+                </div>
+                <div>
+                    <button class="btn btn-success w-100" (click)="setMainPhoto(item.id)">Set as main photo</button>
+                    <button class="btn btn-danger mt-1 w-100" (click)="deletePhoto(item.id)">Delete</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,42 +1,29 @@
 import { Component, OnInit } from '@angular/core';
-import { BreadCrumb } from 'src/app/_models/breadcrum';
-import { Category } from 'src/app/_models/category';
-import { Pagination } from 'src/app/_models/pagination';
-import { Product } from 'src/app/_models/product';
-import { ProductParams } from 'src/app/_models/productParams';
-import { CategoryService } from 'src/app/_services/category.service';
+import { AbstractControl, FormBuilder, FormControl, FormGroup, ValidatorFn, Validators } from '@angular/forms';
 import { ProductService } from 'src/app/_services/product.service';
+import { Router } from '@angular/router';
+import { Product } from 'src/app/_models/product';
+import { Pagination } from 'src/app/_models/pagination';
+import { ProductParams } from 'src/app/_models/productParams';
 
 @Component({
-  selector: 'app-product-list',
-  templateUrl: './product-list.component.html',
-  styleUrls: ['./product-list.component.css']
+  selector: 'app-product-management',
+  templateUrl: './product-management.component.html',
+  styleUrls: ['./product-management.component.css']
 })
-export class ProductListComponent implements OnInit {
+export class ProductManagementComponent implements OnInit {
   products: Product[];
-  categories: Category[];
   pagination: Pagination;
   productParams: ProductParams;
+  pageNumber = 1;
+  pageSize = 4;
 
-  breadCrumb: BreadCrumb[] = [
-    {
-      name: 'Home',
-      route: '/'
-    },
-    {
-      name: 'All products',
-      route: ''
-    },
-  ];
-
-  constructor(private productService: ProductService, private categoryService: CategoryService) {
-    this.productParams = this.productService.getProductParams();
+  constructor(private productService: ProductService) {
+    this.productParams = this.productService.resetProductParams();
   }
 
   ngOnInit(): void {
-    this.productParams.orderBy = 'Best seller';
     this.loadProducts();
-    this.loadCategories('all');
   }
 
   loadProducts() {
@@ -48,10 +35,10 @@ export class ProductListComponent implements OnInit {
     })
   }
 
-  loadCategories(gender: string) {
-    this.categoryService.getCategories(gender).subscribe(response => {
-      this.categories = response;
-    })
+  deleteProducts(id: number) {
+    this.productService.deleteProduct(id).subscribe(response => {
+      this.products = this.products.filter(p => p.id != id);
+    });
   }
 
   pageChanged(event: any) {
@@ -76,4 +63,5 @@ export class ProductListComponent implements OnInit {
     this.productParams = this.productService.resetProductParams();
     this.loadProducts();
   }
+
 }

@@ -1,0 +1,48 @@
+<div class="container">
+    <div class="d-flex justify-content-between py-4">
+        <h3>All products</h3>
+        <button class="btn btn-success" routerLink="/administrator/product/add">
+            Add product
+        </button>
+    </div>
+    <div class="table-responsive">
+        <table class="table table-striped table-hover">
+            <thead class="bg-dark text-light">
+                <tr>
+                    <th scope="col">ID</th>
+                    <th scope="col">Product name</th>
+                    <th scope="col">Category</th>
+                    <th scope="col">Price</th>
+                    <th scope="col">Gender</th>
+                    <th scope="col">Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let item of products">
+                    <td>{{item.id}}</td>
+                    <td>{{item.productName}}</td>
+                    <td>{{item.category}}</td>
+                    <td>{{item.productPrice}}</td>
+                    <td>{{item.gender}}</td>
+                    <td>
+                        <button class="btn btn-primary mr-2" routerLink="/administrator/product-photo/{{item.id}}">Photo
+                            edit</button>
+                        <button class="btn btn-warning mr-2"
+                            routerLink="/administrator/product/edit/{{item.id}}">Edit</button>
+                        <button class="btn btn-danger mr-2" (click)="deleteProducts(item.id)">Delete</button>
+                    </td>
+                </tr>
+
+            </tbody>
+        </table>
+
+    </div>
+
+
+    <div class="d-flex justify-content-center" *ngIf="pagination">
+        <pagination [boundaryLinks]="true" [totalItems]="pagination.totalItems" [itemsPerPage]="pagination.itemsPerPage"
+            [(ngModel)]="pagination.currentPage" (pageChanged)="pageChanged($event)" previousText="Previous"
+            nextText="Next" firstText="First" lastText="Last">
+        </pagination>
+    </div>
+</div>

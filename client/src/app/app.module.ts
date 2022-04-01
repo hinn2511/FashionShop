@@ -24,6 +24,15 @@ import { HomeBestSellerComponent } from './customer/home-best-seller/home-best-s
 import { HomeColletionComponent } from './customer/home-colletion/home-colletion.component';
 import { FooterComponent } from './customer/footer/footer.component';
 import { HomeNewsletterComponent } from './customer/home-newsletter/home-newsletter.component';
+import { ProductManagementComponent } from './administrator/product/product-management/product-management.component';
+import { TextInputComponent } from './_forms/text-input/text-input.component';
+import { DateInputComponent } from './_forms/date-input/date-input.component';
+import { NumberInputComponent } from './_forms/number-input/number-input.component';
+import { ReactiveFormsModule,FormsModule } from '@angular/forms';
+import { ProductPhotoManagementComponent } from './administrator/product/product-photo-management/product-photo-management.component';
+import { AddProductComponent } from './administrator/product/add-product/add-product.component';
+import { EditProductComponent } from './administrator/product/edit-product/edit-product.component';
+
 
 @NgModule({
   declarations: [
@@ -45,12 +54,21 @@ import { HomeNewsletterComponent } from './customer/home-newsletter/home-newslet
     HomeBestSellerComponent,
     HomeColletionComponent,
     FooterComponent,
-    HomeNewsletterComponent
+    HomeNewsletterComponent,
+    ProductManagementComponent,
+    TextInputComponent,
+    DateInputComponent,
+    NumberInputComponent,
+    ProductPhotoManagementComponent,
+    AddProductComponent,
+    EditProductComponent,
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
     HttpClientModule,
+    ReactiveFormsModule,
+    FormsModule,
     BrowserAnimationsModule,
     SharedModule
   ],
