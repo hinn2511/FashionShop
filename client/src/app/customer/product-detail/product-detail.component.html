@@ -70,7 +70,7 @@
                         <div class="input-group quantity mb-3">
                             <button class="btn btn-light border-top-right-0 border-bottom-right-0" type="button"
                                 id="button-addon1">-</button>
-                            <input type="number" min="0" [value]="quantity" class="form-control border-0">
+                            <input type="number" [(ngModel)]="quantity" min="0" [value]="quantity" class="form-control bg-light border-0">
                             <button class="btn btn-light border-top-left-0 border-bottom-left-0" type="button"
                                 id="button-addon2">+</button>
                         </div>
@@ -100,14 +100,10 @@
     </div>
 
     <div class="p-3 px-md-5">
-        <h2 class="text-uppercase">rating & reviews</h2>
+        <h2 class="text-uppercase mt-md-4">rating & reviews</h2>
         <app-product-rating></app-product-rating>
     </div>
 
-
-    <div class="px-5">
-        <hr>
-    </div>
 
     <div class="p-1 mt-3 mt-md-5 px-md-5">
         <h2 class="text-uppercase">related products</h2>
@@ -118,5 +114,7 @@
         <h2 class="text-uppercase">recent view</h2>
         <app-product-carousel></app-product-carousel>
     </div>
+
+    <hr>
 
 </div>

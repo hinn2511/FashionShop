@@ -32,6 +32,7 @@ import { ReactiveFormsModule,FormsModule } from '@angular/forms';
 import { ProductPhotoManagementComponent } from './administrator/product/product-photo-management/product-photo-management.component';
 import { AddProductComponent } from './administrator/product/add-product/add-product.component';
 import { EditProductComponent } from './administrator/product/edit-product/edit-product.component';
+import { CartComponent } from './customer/cart/cart.component';
 
 
 @NgModule({
@@ -62,6 +63,7 @@ import { EditProductComponent } from './administrator/product/edit-product/edit-
     ProductPhotoManagementComponent,
     AddProductComponent,
     EditProductComponent,
+    CartComponent,
   ],
   imports: [
     BrowserModule,

@@ -95,7 +95,8 @@ input::-webkit-inner-spin-button {
 button:focus {
   outline:none !important;
   box-shadow: none !important;
-  border: 1px solid black;
+  background-color: rgb(230, 230, 230);
+
 }
 
 a.link {
@@ -161,3 +162,4 @@ div.carousel.slide > ol {
   width: 2vw;
   height: 2vw;
 }
+

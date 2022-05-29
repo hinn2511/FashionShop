@@ -43,7 +43,7 @@ export class ProductDetailComponent implements OnInit {
       colorName: 'Black'
     },
     {
-      colorCode: 'eee333',
+      colorCode: 'e8d3b9',
       colorName: 'Beige'
     },
     {
@@ -51,13 +51,9 @@ export class ProductDetailComponent implements OnInit {
       colorName: 'White'
     },
     {
-      colorCode: 'ff00ff',
-      colorName: 'Titan'
-    },
-    {
-      colorCode: 'eee111',
-      colorName: 'Teal'
-    },
+      colorCode: '808080',
+      colorName: 'Gray'
+    }
   ]
 
   selectedSize: Size;
@@ -69,7 +65,7 @@ export class ProductDetailComponent implements OnInit {
     this.loadProduct(this.route.snapshot.queryParams['id']);
     this.selectedSize = this.sizes[0];
     this.selectedColor = this.colors[0];
-    this.quantity = 0;
+    this.quantity = 1;
 
   }
 
