@@ -16,6 +16,7 @@ export class NavigationBarComponent implements OnInit {
 
   navigationBarToggle() {
     this.collapseNavbar = !this.collapseNavbar;
+    console.log(this.collapseNavbar);
   }
 
   searchBarToggle() {

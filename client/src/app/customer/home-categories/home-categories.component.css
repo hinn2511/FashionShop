@@ -39,12 +39,17 @@ a {
     object-position: 60% 60%;
     transform: scale(1.1, 1.1);
     transition: all 500ms ease-in-out;
-    filter: brightness(50%);
 }
 
 .category-container:hover > .category-text > h3, 
 .category-container:hover > .category-text > div > a  {
-    color: white;
+    padding-left: 1vw;
+    transition: all 500ms ease-in-out;
+}
+
+.category-container > .category-text > h3, 
+.category-container > .category-text > div > a  {
+    transition: all 500ms ease-in-out;
 }
 
 .category-text {

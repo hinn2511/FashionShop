@@ -37,14 +37,19 @@
 }
 
 
-@media (min-width: 768px) {
+@media (min-width: 1268px) {
     .navbar-collapse {
         display: inline;
         justify-content: space-between;
     }
-
-
 }
+
+@media (min-width: 768px) {
+    .navbar-collapse {
+        justify-content: space-between;
+    }
+}
+
 
 @media (max-width: 768px) {
     .navbar-brand {

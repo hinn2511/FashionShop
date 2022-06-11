@@ -35,6 +35,7 @@ import { EditProductComponent } from './administrator/product/edit-product/edit-
 import { CartComponent } from './customer/cart/cart.component';
 import { ProductRelatedComponent } from './customer/product-related/product-related.component';
 import { SearchBarComponent } from './customer/search-bar/search-bar.component';
+import { ProductAboutComponent } from './customer/product-about/product-about.component';
 
 
 @NgModule({
@@ -68,6 +69,7 @@ import { SearchBarComponent } from './customer/search-bar/search-bar.component';
     CartComponent,
     ProductRelatedComponent,
     SearchBarComponent,
+    ProductAboutComponent,
   ],
   imports: [
     BrowserModule,
