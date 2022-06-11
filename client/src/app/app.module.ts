@@ -33,6 +33,8 @@ import { ProductPhotoManagementComponent } from './administrator/product/product
 import { AddProductComponent } from './administrator/product/add-product/add-product.component';
 import { EditProductComponent } from './administrator/product/edit-product/edit-product.component';
 import { CartComponent } from './customer/cart/cart.component';
+import { ProductRelatedComponent } from './customer/product-related/product-related.component';
+import { SearchBarComponent } from './customer/search-bar/search-bar.component';
 
 
 @NgModule({
@@ -64,6 +66,8 @@ import { CartComponent } from './customer/cart/cart.component';
     AddProductComponent,
     EditProductComponent,
     CartComponent,
+    ProductRelatedComponent,
+    SearchBarComponent,
   ],
   imports: [
     BrowserModule,

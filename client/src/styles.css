@@ -1,4 +1,5 @@
 @import url('https://fonts.googleapis.com/css2?family=Outfit&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap');
 
 body {
     font-family: 'Outfit', sans-serif;
@@ -65,6 +66,7 @@ body {
 
 textarea:focus,
 input[type="text"]:focus,
+input[type="search"]:focus,
 input[type="password"]:focus,
 input[type="datetime"]:focus,
 input[type="datetime-local"]:focus,
@@ -83,7 +85,13 @@ input[type="color"]:focus,
     -webkit-box-shadow: 0 8px 6px -8px transparent;
     -moz-box-shadow: 0 8px 6px -8px transparent;
     box-shadow: 0 8px 6px -8px transparent;
+    background-color: rgb(240, 240, 240) !important;
     outline: 0 none;
+}
+
+input {
+  background-color: rgb(235, 235, 235) !important;
+  border: none !important;
 }
 
 input::-webkit-outer-spin-button,

@@ -1,7 +1,7 @@
 <div class="container-fluid w-100 px-0" *ngIf="product">
     <div class="row mx-0 border-bottom">
         <div class="col-12 col-md-7 p-0 border-top">
-            <div class="bg-light">
+            <div class="bg-light pl-lg-5">
                 <app-breadcrumb [breadCrumbList]="breadCrumb"></app-breadcrumb>
                 <app-image-gallery [mainPhotoUrl]="product.url" [photos]="product.productPhotos"></app-image-gallery>
             </div>
@@ -9,7 +9,7 @@
         </div>
 
         <div class="col-12 col-md-5 border-top">
-            <div class="pl-md-4 mt-3">
+            <div class="pl-md-4 mt-3 pr-lg-5">
                 <div class="d-inline-block d-flex justify-content-between">
                     <h6 class="text-muted">
                         {{product.gender}}&nbsp;&#8901;&nbsp;{{product.category}}
@@ -95,26 +95,21 @@
 
     </div>
 
-    <div class="px-5 pt-4 d-sm-none">
-        <hr>
-    </div>
 
     <div class="p-3 px-md-5">
-        <h2 class="text-uppercase mt-md-4">rating & reviews</h2>
-        <app-product-rating></app-product-rating>
+        <div class="px-lg-5">
+            <h2 class="text-uppercase mt-md-4">rating & reviews</h2>
+            <app-product-rating></app-product-rating>
+        </div>
     </div>
 
 
     <div class="p-1 mt-3 mt-md-5 px-md-5">
-        <h2 class="text-uppercase">related products</h2>
-        <app-product-carousel></app-product-carousel>
+        <div class="px-lg-5">
+            <h2 class="text-uppercase">you may also like</h2>
+            <app-product-related></app-product-related>
+        </div>
     </div>
 
-    <div class="p-1 mt-3 mt-md-5 px-md-5">
-        <h2 class="text-uppercase">recent view</h2>
-        <app-product-carousel></app-product-carousel>
-    </div>
-
-    <hr>
 
 </div>

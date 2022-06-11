@@ -30,15 +30,21 @@ a {
 
 .category-container > img {
     object-position: 50% 50%;
-    transition: all 0.2s ease-out;
+    transition: all 500ms ease-in-out;
 }
 
 
 
 .category-container:hover > img {
-    object-position: 90% 90%;
-    transition: all 0.2s ease-in;
-    filter: brightness(95%);
+    object-position: 60% 60%;
+    transform: scale(1.1, 1.1);
+    transition: all 500ms ease-in-out;
+    filter: brightness(50%);
+}
+
+.category-container:hover > .category-text > h3, 
+.category-container:hover > .category-text > div > a  {
+    color: white;
 }
 
 .category-text {

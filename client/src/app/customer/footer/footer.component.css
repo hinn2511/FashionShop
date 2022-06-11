@@ -1,0 +1,12 @@
+.newsletter {
+    border: 2px solid rgb(108, 108, 108);
+    border-radius: 3px;
+}
+
+div > ul {
+    margin-top: 3vh;
+}
+
+div > input {
+    background-color: rgb(235, 235, 235);
+}

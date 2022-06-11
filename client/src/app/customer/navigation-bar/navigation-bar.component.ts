@@ -6,7 +6,8 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./navigation-bar.component.css']
 })
 export class NavigationBarComponent implements OnInit {
-  collapse: boolean = true;
+  collapseNavbar: boolean = true;
+  collapseSearchbar: boolean = true;
 
   constructor() { }
 
@@ -14,7 +15,11 @@ export class NavigationBarComponent implements OnInit {
   }
 
   navigationBarToggle() {
-    this.collapse = !this.collapse;
+    this.collapseNavbar = !this.collapseNavbar;
+  }
+
+  searchBarToggle() {
+    this.collapseSearchbar = !this.collapseSearchbar;
   }
 
 }
