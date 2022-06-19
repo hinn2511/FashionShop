@@ -16,11 +16,12 @@ export class NavigationBarComponent implements OnInit {
 
   navigationBarToggle() {
     this.collapseNavbar = !this.collapseNavbar;
-    console.log(this.collapseNavbar);
+    this.collapseSearchbar = true;
   }
 
   searchBarToggle() {
     this.collapseSearchbar = !this.collapseSearchbar;
+    this.collapseNavbar = true;
   }
 
 }

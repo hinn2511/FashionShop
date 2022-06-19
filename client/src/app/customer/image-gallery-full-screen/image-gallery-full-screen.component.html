@@ -1,0 +1,6 @@
+<div class="container-fluid full-screen postion-relative" >
+    <img *ngIf="(photoService.changeEmitted$ | async) as imageUrl" src="{{imageUrl}}" alt="">
+    <button class="btn btn-close postion-absolute btn-transparent">
+        <img class="nav-icon" src="../../../assets/x.svg" (click)="closeImage()" alt="">
+    </button>
+</div>

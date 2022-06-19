@@ -1,3 +1,14 @@
+.card  {
+    transform: scale(1, 1);
+    transition: all 0.5s ease-in-out;
+}
+
+.card:hover  {
+    transform: scale(1.1, 1.1);
+    transition: all 0.5s ease-in-out;
+    z-index: 1000;
+}
+
 .card:hover img {
     transform: scale(1.2, 1.2);
     transition: all 0.5s ease-in-out;
@@ -6,11 +17,12 @@
 }
 
 
-
 .card img {
     transform: scale(1.0, 1.0);
     transition: all 0.5s ease-in-out;
+   
 }
+
 
 @media (max-width: 768px) {
     .card img {
@@ -25,6 +37,7 @@
     min-height: max-content;
     max-height: fit-content;
     cursor: pointer;
+    border: none;
 }
 
 .card-img-wrapper {

@@ -171,3 +171,6 @@ div.carousel.slide > ol {
   height: 2vw;
 }
 
+.c-pointer {
+  cursor: pointer;
+}

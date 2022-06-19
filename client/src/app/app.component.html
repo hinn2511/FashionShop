@@ -1,5 +1,8 @@
-<app-navigation-bar></app-navigation-bar>
-<div class="container-fluid w-100 px-0 mb-5" >
-    <router-outlet></router-outlet>
+<app-image-gallery-full-screen *ngIf="showImage" (newItemEvent)="showFullScreenImageToggle()" (close)="showFullScreenImageToggle()"></app-image-gallery-full-screen>
+<div [class.full-screen-image-display]="showImage">
+    <app-navigation-bar></app-navigation-bar>
+    <div class="container-fluid w-100 px-0 mb-5 postion-relative" >
+        <router-outlet  ></router-outlet>
+    </div>
+    <app-footer></app-footer>
 </div>
-<app-footer></app-footer>

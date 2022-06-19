@@ -1,6 +1,7 @@
 import { DOCUMENT } from '@angular/common';
-import { Component, ElementRef, Inject, Input, OnInit, Renderer2, ViewChild } from '@angular/core';
+import { Component, ElementRef, EventEmitter, Inject, Input, OnInit, Output, Renderer2, ViewChild } from '@angular/core';
 import { ProductPhoto } from 'src/app/_models/product';
+import { PhotoService } from 'src/app/_services/photo.service';
 
 @Component({
   selector: 'app-image-gallery',
@@ -12,7 +13,7 @@ export class ImageGalleryComponent implements OnInit {
   currentPositon: number;
   size: number;
   
-  constructor() { 
+  constructor(private photoService: PhotoService) { 
   }
 
   ngOnInit(): void {
@@ -32,5 +33,9 @@ export class ImageGalleryComponent implements OnInit {
 
   select(index: number) {
     this.currentPositon = index;
+  }
+
+  clickOnImage(imageUrl: string) {
+    this.photoService.emitChange(imageUrl);
   }
 }

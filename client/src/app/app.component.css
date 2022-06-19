@@ -1,0 +1,20 @@
+app-image-gallery-full-screen {
+    z-index: 9999;
+    top: 0;
+    left: 0;
+    right: 0;
+    position: absolute;
+    max-width: 100%;
+}
+
+.full-screen-image-display {
+    height: 100vh;
+    overflow-y: hidden;
+}
+
+
+@media (min-width: 768px) {
+    .full-screen-image-display {
+        min-height: 100vh;
+    }
+}

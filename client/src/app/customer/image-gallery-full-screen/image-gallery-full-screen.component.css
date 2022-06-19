@@ -1,0 +1,42 @@
+.full-screen {
+    background-color: rgba(0, 0, 0, 0.9);
+    max-height: 100vh;
+}
+
+.full-screen > img {
+    margin: auto;
+    padding: 5vh 10vw;
+    width: 100%;
+    max-height: 100vh;
+    object-fit: contain;
+}
+
+.btn-close {
+    position: absolute;
+    top: 0;
+    right: 0;
+    filter: invert();
+}
+
+@media (max-width: 768px) {
+    .full-screen {
+        min-height: 100vh;
+        display: flex;
+        justify-content: center;
+    }
+
+    .full-screen > img {
+        padding-left: 5vw;
+        padding-right: 5vw;
+        margin:auto;
+        width: 100%;
+        max-height: 100%;
+        object-fit: contain;
+    }
+
+    .btn-close > img {
+        width: 5vw;
+        height: 5vh;
+    }
+    
+}

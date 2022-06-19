@@ -36,6 +36,7 @@ import { CartComponent } from './customer/cart/cart.component';
 import { ProductRelatedComponent } from './customer/product-related/product-related.component';
 import { SearchBarComponent } from './customer/search-bar/search-bar.component';
 import { ProductAboutComponent } from './customer/product-about/product-about.component';
+import { ImageGalleryFullScreenComponent } from './customer/image-gallery-full-screen/image-gallery-full-screen.component';
 
 
 @NgModule({
@@ -70,6 +71,7 @@ import { ProductAboutComponent } from './customer/product-about/product-about.co
     ProductRelatedComponent,
     SearchBarComponent,
     ProductAboutComponent,
+    ImageGalleryFullScreenComponent,
   ],
   imports: [
     BrowserModule,
