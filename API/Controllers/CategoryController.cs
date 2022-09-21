@@ -4,7 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using API.DTOs.Customer;
 using API.DTOs.Product;
-using API.Entities.ProductEntities;
+using API.Entities.ProductModel;
 using API.Interfaces;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
@@ -22,7 +22,7 @@ namespace API.Controllers
         }
         
         [HttpGet("{gender}")]
-        public async Task<ActionResult<IEnumerable<CustomerCategoryDto>>> GetCategoryAsCustomer(string gender)
+        public async Task<ActionResult<IEnumerable<CustomerCategoryDto>>> GetCategoryAsCustomer(Gender gender)
         {
 
             var categories = await _unitOfWork.CategoryRepository.GetCategoriesAsCustomerAsync(gender);

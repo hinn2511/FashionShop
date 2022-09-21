@@ -38,9 +38,9 @@ namespace API.Extensions
 
             services.AddAuthorization( opt =>
             {
-                opt.AddPolicy("BusinessOnly", policy => policy.RequireRole("Admin", "Purchasing", "Manager", "Logistic", "Sales"));
+                opt.AddPolicy("BusinessOnly", policy => policy.RequireRole("Admin", "Manager"));
                 opt.AddPolicy("CustomerOnly", policy => policy.RequireRole("Customer"));
-                opt.AddPolicy("PurchasingOnly", policy => policy.RequireRole("Purchasing"));
+                opt.AddPolicy("ManagerOnly", policy => policy.RequireRole("Manager"));
                 opt.AddPolicy("AdminOnly", policy => policy.RequireRole("Admin"));
             });   
 

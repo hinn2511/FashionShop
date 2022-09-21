@@ -1,10 +1,15 @@
 using System.Linq;
 using API.DTOs;
 using API.DTOs.Customer;
+using API.DTOs.Order;
 using API.DTOs.Product;
+using API.DTOs.Request.ConfigurationRequest;
 using API.Entities;
-using API.Entities.ProductEntities;
+using API.Entities.OrderModel;
+using API.Entities.Other;
+using API.Entities.ProductModel;
 using API.Entities.User;
+using API.Entities.WebPageModel;
 using API.Extensions;
 using AutoMapper;
 
@@ -36,7 +41,7 @@ namespace API.Helpers
                 .ForMember(dest => dest.Url, opt => opt.MapFrom(
                           src => src.Photo.Url));
 
-            CreateMap<Stock, CustomerProductStockDto>();
+            CreateMap<Option, CustomerProductStockDto>();
 
             CreateMap<Category, CustomerCategoryDto>();
 
@@ -51,6 +56,17 @@ namespace API.Helpers
                           src => src.Photo.Url))
                 .ForMember(dest => dest.PhotoId, opt => opt.MapFrom(
                           src => src.Photo.Id));
+
+            CreateMap<OrderItemRequest, OrderDetail>();
+
+            CreateMap<HomePageRequest, HomePage>();
+
+            CreateMap<CarouselRequest, Carousel>();
+
+            CreateMap<FeatureCategoryRequest, FeatureCategory>();
+
+            CreateMap<FeatureProductRequest, FeatureProduct>();
+
         }
     }
 }

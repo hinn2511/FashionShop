@@ -13,7 +13,7 @@ namespace API.DTOs.Customer
         public string Url { get; set; }
         public string Category { get; set; }
         public string Gender { get; set; }
-        public double ProductPrice { get; set; }
+        public double Price { get; set; }
         public int Sold { get; set; }
         public ICollection<CustomerProductStockDto> Stocks { get; set; }
         public ICollection<CustomerProductPhotoDto> ProductPhotos { get; set; }

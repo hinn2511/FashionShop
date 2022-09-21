@@ -1,7 +1,11 @@
 using System;
+using API.Entities.OrderModel;
 using API.Entities.Other;
-using API.Entities.ProductEntities;
+using API.Entities.OtherModel;
+using API.Entities.ProductModel;
 using API.Entities.User;
+using API.Entities.UserModel;
+using API.Entities.WebPageModel;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
@@ -21,11 +25,25 @@ namespace API.Data
 
         public DbSet<Product> Products { get; set; }
         public DbSet<ProductPhoto> ProductPhotos { get; set; }
+        public DbSet<UploadedFile> Files { get; set; }
         public DbSet<Color> Colors { get; set; }
         public DbSet<Category> Categories { get; set; }
+        public DbSet<SubCategory> SubCategories { get; set; }
+        public DbSet<Brand> Brands { get; set; }
         public DbSet<Size> Sizes { get; set; }
+        public DbSet<Option> Options { get; set; }
         public DbSet<Stock> Stocks { get; set; }
         public DbSet<Photo> Photos { get; set; }
+        public DbSet<Order> Orders { get; set; }
+        public DbSet<OrderDetail> OrderDetails { get; set; }
+        public DbSet<OrderHistory> OrderHistories { get; set; }
+        public DbSet<HomePage> HomePages { get; set; }
+        public DbSet<Carousel> Carousels { get; set; }
+        public DbSet<FeatureCategory> FeatureCategories { get; set; }
+        public DbSet<FeatureProduct> FeatureProducts { get; set; }
+        public DbSet<Cart> Carts { get; set; }
+        public DbSet<UserLike> UserLikes { get; set; }
+
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);

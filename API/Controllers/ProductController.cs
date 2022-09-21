@@ -7,7 +7,7 @@ using API.DTOs;
 using API.DTOs.Customer;
 using API.DTOs.Product;
 using API.Entities.Other;
-using API.Entities.ProductEntities;
+using API.Entities.ProductModel;
 using API.Extensions;
 using API.Helpers;
 using API.Interfaces;
@@ -49,6 +49,7 @@ namespace API.Controllers
             return Ok(product);
         }
 
+        #region product API
         [HttpPost("add")]
         public async Task<ActionResult<CustomerProductDto>> AddProduct(AddProductDto addProductDto)
         {
@@ -57,7 +58,8 @@ namespace API.Controllers
 
             product.Slug = product.ProductName.GenerateSlug();
             product.Sold = 0;
-            product.CreateAt = DateTime.UtcNow;
+            product.DateCreated = DateTime.UtcNow;
+            product.CreatedByUserId = User.GetUserId();
 
             _unitOfWork.ProductRepository.Add(product);
 
@@ -72,7 +74,7 @@ namespace API.Controllers
         [HttpPut("edit")]
         public async Task<ActionResult<CustomerProductDto>> UpdateProduct(UpdateProductDto updateProductDto)
         {
-            var product = await _unitOfWork.ProductRepository.FindProductByIdAsync(updateProductDto.Id);
+            var product = await _unitOfWork.ProductRepository.GetProductByIdAsync(updateProductDto.Id);
 
             if (product == null)
                 return BadRequest("Product not found");
@@ -94,7 +96,7 @@ namespace API.Controllers
         [HttpDelete("delete/{id}")]
         public async Task<ActionResult> DeleteProduct(int id)
         {
-            var product = await _unitOfWork.ProductRepository.FindProductByIdAsync(id);
+            var product = await _unitOfWork.ProductRepository.GetProductByIdAsync(id);
 
             if (product == null)
                 return BadRequest("Product not found");
@@ -111,7 +113,7 @@ namespace API.Controllers
         [HttpPost("add-product-photo/{productId}")]
         public async Task<ActionResult<ProductPhotoDto>> AddProductPhoto(IFormFile file, int productId)
         {
-            var product = await _unitOfWork.ProductRepository.FindProductByIdAsync(productId);
+            var product = await _unitOfWork.ProductRepository.GetProductByIdAsync(productId);
             var result = await _photoService.AddPhotoAsync(file, 700, 700);
 
             if (result.Error != null) return BadRequest(result.Error.Message);
@@ -147,7 +149,7 @@ namespace API.Controllers
         [HttpPut("set-main-product-photo/{productId}/{productPhotoId}")]
         public async Task<ActionResult> SetMainProductPhoto(int productId, int productPhotoId)
         {
-            var product = await _unitOfWork.ProductRepository.FindProductByIdAsync(productId);
+            var product = await _unitOfWork.ProductRepository.GetProductByIdAsync(productId);
 
             var productPhoto = product.ProductPhotos.FirstOrDefault(x => x.Id == productPhotoId);
 
@@ -167,7 +169,7 @@ namespace API.Controllers
         [HttpDelete("delete-product-photo/{productId}/{productPhotoId}")]
         public async Task<ActionResult> DeleteProductPhoto(int productId, int productPhotoId)
         {
-            var product = await _unitOfWork.ProductRepository.FindProductByIdAsync(productId);
+            var product = await _unitOfWork.ProductRepository.GetProductByIdAsync(productId);
 
             var productPhoto = product.ProductPhotos.FirstOrDefault(x => x.Id == productPhotoId);
 
@@ -194,5 +196,55 @@ namespace API.Controllers
 
         }
 
+        #endregion
+
+        #region product option API
+        [HttpPost("add-option")]
+        public async Task<ActionResult<CustomerProductDto>> AddProductOption(Option option)
+        {
+            option.CreatedByUserId = User.GetUserId();
+            option.DateCreated = DateTime.UtcNow;
+
+            _unitOfWork.ProductRepository.Add(option);
+            _unitOfWork.ProductRepository.Add(new Stock() {
+                Option = option,
+                Quantity = 0
+            });
+
+            if (await _unitOfWork.Complete())
+                return Ok();
+
+            return BadRequest("An error occurred while adding the product option.");
+        }
+
+        #endregion
+
+        #region product color API
+        [HttpPost("add-color")]
+        public async Task<ActionResult<CustomerProductDto>> AddProductColor(Color color)
+        {
+            _unitOfWork.ProductRepository.Add(color);
+
+            if (await _unitOfWork.Complete())
+                return Ok();
+
+            return BadRequest("An error occurred while adding the product color.");
+        }
+
+        #endregion
+
+        #region product size API
+        [HttpPost("add-size")]
+        public async Task<ActionResult<CustomerProductDto>> AddProductSize(Size size)
+        {
+            _unitOfWork.ProductRepository.Add(size);
+
+            if (await _unitOfWork.Complete())
+                return Ok();
+
+            return BadRequest("An error occurred while adding the product size.");
+        }
+
+        #endregion
     }
 }

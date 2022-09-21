@@ -7,7 +7,7 @@ using API.Data;
 using API.Entities.User;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using API.Entities.ProductEntities;
+using API.Entities.ProductModel;
 
 namespace API.Entities
 {
@@ -118,21 +118,37 @@ namespace API.Entities
             await context.SaveChangesAsync();
         }
 
-    //     public static async Task SeedProductColors(DataContext context)
-    //     {
-    //         if (await context.ProductColors.AnyAsync()) return;
+        public static async Task SeedBrands(DataContext context)
+        {
+            if (await context.Brands.AnyAsync()) return;
 
-    //         var productColorData = await System.IO.File.ReadAllTextAsync("Data/SeedData/ProductColorSeedData.json");
+            var brandData = await System.IO.File.ReadAllTextAsync("Data/SeedData/BrandSeedData.json");
 
-    //         var productColors = JsonSerializer.Deserialize<List<ProductColor>>(productColorData);
+            var brands = JsonSerializer.Deserialize<List<Brand>>(brandData);
 
-    //         foreach ( var productColor in productColors)
-    //         {
-    //             await context.ProductColors.AddAsync(productColor);
-    //         }
+            foreach ( var brand in brands)
+            {
+                await context.Brands.AddAsync(brand);
+            }
 
-    //         await context.SaveChangesAsync();
-    //     }
+            await context.SaveChangesAsync();
+        }
+
+        public static async Task SeedColors(DataContext context)
+        {
+            if (await context.Colors.AnyAsync()) return;
+
+            var colorData = await System.IO.File.ReadAllTextAsync("Data/SeedData/ColorSeedData.json");
+
+            var colors = JsonSerializer.Deserialize<List<Color>>(colorData);
+
+            foreach ( var color in colors)
+            {
+                await context.Colors.AddAsync(color);
+            }
+
+            await context.SaveChangesAsync();
+        }
 
 
     //     public static async Task SeedSubCategories(DataContext context)

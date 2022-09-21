@@ -1,22 +1,22 @@
 [
     {
         "CategoryName": "Men shoe",
-        "Gender": "Men"
+        "Gender": 1
     },
     {
         "CategoryName": "Shirt",
-        "Gender": "Men"
+        "Gender": 1
     },
     {
         "CategoryName": "Dress",
-        "Gender": "Women"
+        "Gender": 2
     },
     {
         "CategoryName": "T-shirt",
-        "Gender": "Women"
+        "Gender": 2
     },
     {
         "CategoryName": "Shirt",
-        "Gender": "Kid"
+        "Gender": 4
     }
 ]

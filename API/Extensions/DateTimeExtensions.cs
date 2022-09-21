@@ -11,5 +11,10 @@ namespace API.Extensions
             if(dob.Date > today.AddYears(-age)) age --;
             return age;
         }
+
+        public static DateTime SetToNow(this DateTime dateCreated)
+        {
+            return DateTime.UtcNow;
+        }
     }
 }
