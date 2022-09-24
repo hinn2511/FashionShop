@@ -1,6 +1,7 @@
 using System.Threading.Tasks;
 using API.Entities;
 using API.Interfaces;
+using API.Repository.BrandRepository;
 using API.Repository.ConfigurationRepository;
 using API.Repository.FileRepository;
 using API.Repository.OrderRepository;
@@ -19,12 +20,24 @@ namespace API.Data
         }
 
         public IUserRepository UserRepository => new UserRepository(_context, _mapper);
-        public IProductRepository ProductRepository => new ProductRepository(_context, _mapper);
-        public ICategoryRepository CategoryRepository => new CategoryRepository(_context, _mapper);
-        public IPhotoRepository PhotoRepository => new PhotoRepository(_context);
-        public IOrderRepository OrderRepository => new OrderRepository(_context);
-        public IFileRepository FileRepository => new FileRepository(_context);
-        public IConfigurationRepository ConfigurationRepository => new ConfigurationRepository(_context);
+        public IProductRepository ProductRepository => new ProductRepository(_context,  _context.Products);
+        public ICategoryRepository CategoryRepository => new CategoryRepository(_context, _context.Categories);
+        public ISubCategoryRepository SubCategoryRepository => new SubCategoryRepository(_context, _context.SubCategories);
+        public IPhotoRepository PhotoRepository => new PhotoRepository(_context, _context.Photos);
+        public IOrderRepository OrderRepository => new OrderRepository(_context, _context.Orders);
+        public IOrderDetailRepository OrderDetailRepository => new OrderDetailRepository(_context, _context.OrderDetails);
+        public IOrderHistoryRepository OrderHistoryRepository => new OrderHistoryRepository(_context, _context.OrderHistories);
+        public IBrandRepository BrandRepository => new BrandRepository(_context, _context.Brands);
+        public IColorRepository ColorRepository => new ColorRepository(_context, _context.Colors);
+        public IFileRepository FileRepository => new FileRepository(_context, _context.Files);
+        public ISizeRepository SizeRepository => new SizeRepository(_context, _context.Sizes);
+        public IStockRepository StockRepository => new StockRepository(_context, _context.Stocks);
+        public IProductOptionRepository ProductOptionRepository => new ProductOptionRepository(_context, _context.Options);
+        public IHomePageRepository HomePageRepository => new HomePageRepository(_context, _context.HomePages);
+        public ICarouselRepository CarouselRepository => new CarouselRepository(_context, _context.Carousels);
+        public IFeatureProductRepository FeatureProductRepository => new FeatureProductRepository(_context, _context.FeatureProducts);
+        public IFeatureCategoryRepository FeatureCategoryRepository => new FeatureCategoryRepository(_context, _context.FeatureCategories);
+
         public async Task<bool> Complete()
         {
             return await _context.SaveChangesAsync() > 0;

@@ -1,11 +1,10 @@
 using System.Threading.Tasks;
 using API.Entities.OtherModel;
+using API.Repository.GenericRepository;
 
 namespace API.Repository.FileRepository
 {
-    public interface IFileRepository
+    public interface IFileRepository : IGenericRepository<UploadedFile>
     {
-        void Create (UploadedFile uploadedFile);
-        Task<UploadedFile> GetById(int id);
     }
 }

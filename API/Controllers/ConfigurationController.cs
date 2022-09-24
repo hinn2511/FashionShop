@@ -29,7 +29,7 @@ namespace API.Controllers
         {
             var homePage = _mapper.Map<HomePage>(homePageRequest);
 
-            if(await _unitOfWork.ConfigurationRepository.GetActiveHomePage() == null)
+            if(await _unitOfWork.HomePageRepository.GetFirstBy(x => x.IsActive) == null)
                 homePage.IsActive = true;
             else
                 homePage.IsActive = false;
@@ -51,7 +51,7 @@ namespace API.Controllers
                 product.CreatedByUserId = User.GetUserId();
             }
 
-            _unitOfWork.ConfigurationRepository.Create(homePage);
+            _unitOfWork.HomePageRepository.Insert(homePage);
 
             if (await _unitOfWork.Complete())
                 return Ok();
@@ -63,29 +63,29 @@ namespace API.Controllers
         [HttpGet("current-home-page")]
         public async Task<ActionResult> GetCurrentHomePage()
         {
-            return Ok(await _unitOfWork.ConfigurationRepository.GetActiveHomePage());
+            return Ok(await _unitOfWork.HomePageRepository.GetFirstBy(x => x.IsActive));
         }
 
         [HttpPut("activating-home-page/{id}")]
         public async Task<ActionResult> ActivatingHomePage(int id)
         {
-            var currentActiveHomePage = await _unitOfWork.ConfigurationRepository.GetActiveHomePage();
+            var currentActiveHomePage = await _unitOfWork.HomePageRepository.GetFirstBy(x => x.IsActive);
 
             if (currentActiveHomePage.Id == id)
                 return BadRequest("Home page already activated.");
 
-            var newActiveHomePage = await _unitOfWork.ConfigurationRepository.GetHomePageById(id);
+            var newActiveHomePage = await _unitOfWork.HomePageRepository.GetById(id);
 
             if (newActiveHomePage == null)
                 return BadRequest("Home page not found");
 
             currentActiveHomePage.IsActive = false;
 
-            _unitOfWork.ConfigurationRepository.Update(currentActiveHomePage);
+            _unitOfWork.HomePageRepository.Update(currentActiveHomePage);
             
             newActiveHomePage.IsActive = true;
 
-            _unitOfWork.ConfigurationRepository.Update(newActiveHomePage);
+            _unitOfWork.HomePageRepository.Update(newActiveHomePage);
 
             if (await _unitOfWork.Complete())
                 return Ok();

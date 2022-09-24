@@ -4,13 +4,17 @@ using System.Linq;
 using System.Threading.Tasks;
 using API.DTOs.Customer;
 using API.DTOs.Product;
+using API.DTOs.Request.CategoryRequest;
 using API.Entities.ProductModel;
+using API.Extensions;
 using API.Interfaces;
 using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers
 {
+    [Authorize]
     public class CategoryController : BaseApiController
     {
         private readonly IMapper _mapper;
@@ -21,33 +25,34 @@ namespace API.Controllers
             _mapper = mapper;
         }
         
+        #region category
         [HttpGet("{gender}")]
         public async Task<ActionResult<IEnumerable<CustomerCategoryDto>>> GetCategoryAsCustomer(Gender gender)
         {
-
-            var categories = await _unitOfWork.CategoryRepository.GetCategoriesAsCustomerAsync(gender);
-            return Ok(categories);
-
+            return Ok(await _unitOfWork.CategoryRepository.GetAllBy(c => c.Gender == gender));
         }
 
-        [HttpPost("add")]
-        public async Task<ActionResult<CustomerCategoryDto>> AddCategory(AddCategoryDto addCategoryDto)
+        [HttpPost]
+        public async Task<ActionResult<CustomerCategoryDto>> AddCategory(CategoryRequest categoryRequest)
         {
-            var category = new Category();
-            _mapper.Map(addCategoryDto, category);
-            _unitOfWork.CategoryRepository.Add(category);
+            var category = _mapper.Map<Category>(categoryRequest);
+
+            category.CreatedByUserId = User.GetUserId();
+            category.DateCreated = DateTime.UtcNow;
+
+            _unitOfWork.CategoryRepository.Insert(category);
+
             if (await _unitOfWork.Complete()) 
             {
-                var result = await _unitOfWork.CategoryRepository.GetCategoryByIdAsync(category.Id);
-                return Ok(result);
+                return Ok();
             }
             return BadRequest("Error when add category");
         }
 
-        [HttpPut("edit")]
+        [HttpPut]
         public async Task<ActionResult<Category>> UpdateCategory(UpdateCategoryDto updateCategoryDto)
         {
-            var category = await _unitOfWork.CategoryRepository.FindCategoryByIdAsync(updateCategoryDto.Id);
+            var category = await _unitOfWork.CategoryRepository.GetById(updateCategoryDto.Id);
 
             if(category == null)
                 return BadRequest("Category not found");
@@ -58,16 +63,16 @@ namespace API.Controllers
             _unitOfWork.CategoryRepository.Update(category);
             if (await _unitOfWork.Complete()) 
             {
-                var result = await _unitOfWork.CategoryRepository.GetCategoryByIdAsync(category.Id);
+                var result = await _unitOfWork.CategoryRepository.GetById(category.Id);
                 return Ok(result);
             }
             return BadRequest("Error when update category");
         }
 
-        [HttpDelete("delete/{id}")]
+        [HttpDelete("{id}")]
         public async Task<ActionResult> DeleteCategory(int id)
         {
-            var category = await _unitOfWork.CategoryRepository.FindCategoryByIdAsync(id);
+            var category = await _unitOfWork.CategoryRepository.GetById(id);
 
             if(category == null)
                 return BadRequest("Category not found"); 
@@ -79,5 +84,72 @@ namespace API.Controllers
             }
             return BadRequest("Error when delete category");
         }
+    
+        #endregion
+
+
+        #region sub category
+        [HttpPost("subCategory")]
+        public async Task<ActionResult<CustomerCategoryDto>> AddSubCategory(SubCategoryRequest subCategoryRequest)
+        {
+
+            if (await _unitOfWork.CategoryRepository.GetById(subCategoryRequest.ParentCategoryId) == null)
+                return BadRequest("Parent category not found");
+
+            var subCategory = _mapper.Map<SubCategory>(subCategoryRequest);
+
+            subCategory.CreatedByUserId = User.GetUserId();
+            subCategory.DateCreated = DateTime.UtcNow;
+
+            _unitOfWork.SubCategoryRepository.Insert(subCategory);
+
+            if (await _unitOfWork.Complete()) 
+            {
+                return Ok();
+            }
+            return BadRequest("Error when add sub category");
+        }
+
+        [HttpPut("subCategory")]
+        public async Task<ActionResult<Category>> UpdateSubCategory(UpdateSubCategoryRequest updateSubCategoryRequest)
+        {
+            if (await _unitOfWork.SubCategoryRepository.GetById(updateSubCategoryRequest.ParentCategoryId) == null)
+                return BadRequest("Parent category not found");
+
+            var subCategory = await _unitOfWork.SubCategoryRepository.GetById(updateSubCategoryRequest.Id);
+
+            if(subCategory == null)
+                return BadRequest("Sub category not found");
+
+
+            _unitOfWork.SubCategoryRepository.Update(_mapper.Map<SubCategory>(updateSubCategoryRequest));
+
+            if (await _unitOfWork.Complete()) 
+            {
+                return Ok();
+            }
+            return BadRequest("Error when update sub category");
+        }
+
+        [HttpDelete("subCategory/{subCategoryId}")]
+        public async Task<ActionResult> DeleteSubCategoryCategory(int subCategoryId)
+        {
+             var subCategory = await _unitOfWork.SubCategoryRepository.GetById(subCategoryId);
+
+            if(subCategory == null)
+                return BadRequest("Sub category not found");
+
+            _unitOfWork.SubCategoryRepository.Delete(subCategory);
+
+            if (await _unitOfWork.Complete()) 
+            {
+                return Ok();
+            }
+
+            return BadRequest("Error when delete sub category");
+        }
+    
+
+        #endregion
     }
 }

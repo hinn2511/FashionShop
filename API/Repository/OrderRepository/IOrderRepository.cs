@@ -1,28 +1,23 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using API.Entities.OrderModel;
+using API.Helpers;
+using API.Repository.GenericRepository;
 
 namespace API.Repository.OrderRepository
 {
-    public interface IOrderRepository
+    public interface IOrderRepository : IGenericRepository<Order>
     {
-        #region order
-        Task<Order> GetOrderByIdAsync(int id);
-        void Create(Order order);
-        void Update(Order order);
-        void Delete(Order order);
+        Task<PagedList<Order>> GetOrdersAsync(OrderParams orderParams);
+    }
 
-        #endregion
+    public interface IOrderDetailRepository : IGenericRepository<OrderDetail>
+    {
 
-        #region order detail
-        void BulkCreate(List<OrderDetail> orderDetails);
-        Task<IEnumerable<OrderDetail>> GetByOrderId(int orderId);
+    }
 
-        #endregion
+    public interface IOrderHistoryRepository : IGenericRepository<OrderHistory>
+    {
 
-        #region order history
-        void Create(OrderHistory orderHistory);
-
-        #endregion
     }
 }

@@ -14,7 +14,8 @@ using System.Threading.Tasks;
 
 namespace API.Controllers
 {
-   
+    [ApiController]
+    [Route("file")]
     public class FileController : BaseApiController
     {
         private readonly IMapper _mapper;
@@ -38,7 +39,7 @@ namespace API.Controllers
         }
 
         [Authorize]
-        [HttpPost("upload")]
+        [HttpPost]
         public async Task<ActionResult> UploadFile(IFormFile file)
         {
             ValidateFile(file);
@@ -67,7 +68,7 @@ namespace API.Controllers
                     CreatedByUserId = User.GetUserId()
                 };
 
-            _unitOfWork.FileRepository.Create(uploadedFile);
+            _unitOfWork.FileRepository.Insert(uploadedFile);
 
             if(await _unitOfWork.Complete())
                 return Ok(uploadedFile.Id);
@@ -76,7 +77,7 @@ namespace API.Controllers
         }
 
 
-        [HttpGet("download/{id}")]
+        [HttpGet("{id}")]
         public async Task<ActionResult> DownloadFile(int id)
         {
             var file = await GetUploadedFileInformation(id);

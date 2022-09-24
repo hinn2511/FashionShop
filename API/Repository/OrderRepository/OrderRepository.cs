@@ -1,53 +1,63 @@
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using API.Data;
 using API.Entities.OrderModel;
+using API.Helpers;
 using API.Interfaces;
+using API.Repository.GenericRepository;
+using Microsoft.EntityFrameworkCore;
 
 namespace API.Repository.OrderRepository
 {
-    public class OrderRepository : IOrderRepository
+    public class OrderRepository : GenericRepository<Order>, IOrderRepository
     {
         private readonly DataContext _context;
 
-        public OrderRepository(DataContext context)
+        public OrderRepository(DataContext context, DbSet<Order> set) : base(context, set)
         {
             _context = context;
         }
 
-        public void BulkCreate(List<OrderDetail> orderDetails)
+        public async Task<PagedList<Order>> GetOrdersAsync(OrderParams orderParams)
         {
-            _context.OrderDetails.AddRange(orderDetails);
+            var query = _context.Orders.AsQueryable();
+
+            query.Where(o => o.DateCreated >= orderParams.From && o.DateCreated <= orderParams.To);
+            
+            if(orderParams.Id != null)
+                query = query.Where(p => p.Id == orderParams.Id);
+
+            if(orderParams.OrderStatus != null)
+                query = query.Where(p => p.CurrentStatus == orderParams.OrderStatus);
+
+            if(orderParams.CreatedByUserId != null)
+                query = query.Where(p => p.CreatedByUserId == orderParams.CreatedByUserId);
+
+            query = orderParams.OrderBy switch
+            {
+                OrderBy.Newest => query.OrderByDescending(p => p.OrderHistories.OrderBy(x => x.Id).Last().DateCreated),
+                OrderBy.Oldest => query.OrderBy(p => p.OrderHistories.OrderBy(x => x.Id).Last().DateCreated),
+                _ => query.OrderByDescending(p => p.OrderHistories.OrderBy(x => x.Id).Last().DateCreated)
+            };
+
+            return await PagedList<Order>.CreateAsync(query, orderParams.PageNumber, orderParams.PageSize);
         }
 
-        public void Create(Order order)
-        {
-            _context.Orders.Add(order);
-        }
 
-        public void Create(OrderHistory orderHistory)
-        {
-            _context.OrderHistories.Add(orderHistory);
-        }
+    }
 
-        public void Delete(Order order)
+    public class OrderDetailRepository : GenericRepository<OrderDetail>, IOrderDetailRepository
+    {
+        public OrderDetailRepository(DataContext context, DbSet<OrderDetail> set) : base(context, set)
         {
-            _context.Orders.Remove(order);
         }
+    }
 
-        public Task<IEnumerable<OrderDetail>> GetByOrderId(int orderId)
+    public class OrderHistoryRepository : GenericRepository<OrderHistory>, IOrderHistoryRepository
+    {
+        public OrderHistoryRepository(DataContext context, DbSet<OrderHistory> set) : base(context, set)
         {
-            throw new System.NotImplementedException();
-        }
-
-        public Task<Order> GetOrderByIdAsync(int id)
-        {
-            throw new System.NotImplementedException();
-        }
-
-        public void Update(Order order)
-        {
-            _context.Orders.Update(order);
         }
     }
 }

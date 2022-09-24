@@ -1,12 +1,10 @@
 using System.Threading.Tasks;
 using API.Entities.Other;
+using API.Repository.GenericRepository;
 
 namespace API.Interfaces
 {
-    public interface IPhotoRepository
+    public interface IPhotoRepository : IGenericRepository<Photo>
     {
-        Task<Photo> FindPhotoByIdAsync(int id);
-        void Add(Photo photo);
-        void Delete(Photo photo);
     }
 }

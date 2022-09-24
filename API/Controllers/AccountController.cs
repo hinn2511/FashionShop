@@ -75,15 +75,20 @@ namespace API.Controllers
 
         }
 
-        [HttpPost("reset-password")]
-        public async Task<ActionResult<UserDto>> ResetPassword(ResetPasswordDto resetPasswordDto)
+        [HttpPut("change-password")]
+        public async Task<ActionResult<UserDto>> ChangePassword(ResetPasswordDto resetPasswordDto)
         {
             var user = await _userManager.Users
                     .SingleOrDefaultAsync(u => u.UserName == resetPasswordDto.Username.ToLower());
 
-            var result = await _userManager.ResetPasswordAsync(user, resetPasswordDto.Token, resetPasswordDto.NewPassword);
-            
-            if (!result.Succeeded) return Unauthorized();
+            var loginResult = await _signInManager.CheckPasswordSignInAsync(user, resetPasswordDto.OldPassword, false);
+            if (!loginResult.Succeeded)
+                return BadRequest("Password not valid!");
+
+            var resetPasswordResult = await _userManager.ResetPasswordAsync(user, resetPasswordDto.Token, resetPasswordDto.NewPassword);
+
+            if (!resetPasswordResult.Succeeded) 
+                return BadRequest("Can not change password!");
 
             return new UserDto
             {

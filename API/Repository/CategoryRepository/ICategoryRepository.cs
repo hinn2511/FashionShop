@@ -5,16 +5,17 @@ using System.Threading.Tasks;
 using API.DTOs.Customer;
 using API.DTOs.Product;
 using API.Entities.ProductModel;
+using API.Repository.GenericRepository;
 
 namespace API.Interfaces
 {
-    public interface ICategoryRepository
+    public interface ICategoryRepository : IGenericRepository<Category>
     {
-        Task<IEnumerable<CustomerCategoryDto>> GetCategoriesAsCustomerAsync(Gender gender);
-        Task<Category> FindCategoryByIdAsync(int id);
-        Task<CategoryDto> GetCategoryByIdAsync(int id);
-        void Add(Category category);
-        void Update(Category category);
-        void Delete(Category category);
+      
+    }
+
+    public interface ISubCategoryRepository : IGenericRepository<SubCategory>
+    {
+
     }
 }

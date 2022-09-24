@@ -26,11 +26,12 @@ namespace API.Entities.OrderModel
         Shipped,
         Finished,
         Declined, 
-        Return,
         RefundRequested,
         RefundAccepted,
         RefundedAndReturn,
+        Returned,
         RefundedAndNoReturn,
+        CancelRequested,
         Cancelled,
     }
 

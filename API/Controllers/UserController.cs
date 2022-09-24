@@ -60,7 +60,7 @@ namespace API.Controllers
         [HttpPost("favorite/{productId}")]
         public async Task<ActionResult> AddToFavorite(int productId)
         {
-            if (await _unitOfWork.ProductRepository.GetProductByIdAsync(productId) == null)
+            if (await _unitOfWork.ProductRepository.GetById(productId) == null)
                 return BadRequest("Product not found");
 
             if (await _unitOfWork.UserRepository.GetUserLike(User.GetUserId(), productId) != null)
@@ -81,7 +81,7 @@ namespace API.Controllers
         [HttpDelete("favorite/{productId}")]
         public async Task<ActionResult> RemoveFromFavorite(int productId)
         {
-            if (await _unitOfWork.ProductRepository.GetProductByIdAsync(productId) == null)
+            if (await _unitOfWork.ProductRepository.GetById(productId) == null)
                 return BadRequest("Product not found");
 
             var userLike = await _unitOfWork.UserRepository.GetUserLike(User.GetUserId(), productId);
@@ -107,7 +107,7 @@ namespace API.Controllers
         [HttpPost("cart")]
         public async Task<ActionResult> AddToCart(CartRequest cartRequest)
         {
-            if (await _unitOfWork.ProductRepository.GetProductOptionById(cartRequest.OptionId) == null)
+            if (await _unitOfWork.ProductRepository.GetById(cartRequest.OptionId) == null)
                 return BadRequest("Product option not found");
 
             if (cartRequest.Quantity < 1)
@@ -140,7 +140,7 @@ namespace API.Controllers
             if (updateCartRequest.Quantity < 1)
                 return BadRequest("Quantity not valid.");
 
-            if (await _unitOfWork.ProductRepository.GetProductOptionById(updateCartRequest.OptionId) == null)
+            if (await _unitOfWork.ProductOptionRepository.GetById(updateCartRequest.OptionId) == null)
                 return BadRequest("Product option not found");
 
             cartItem.LastUpdated = DateTime.UtcNow;

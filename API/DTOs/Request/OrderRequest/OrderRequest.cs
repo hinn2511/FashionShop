@@ -9,8 +9,12 @@ namespace API.DTOs.Order
     }
 
     public class OrderItemRequest {
-        public int ProductId { get; set; }
         public int OptionId { get; set; }
         public int Quantity { get; set; }
+    }
+
+    public class CancelOrderRequest {
+        public int OrderId { get; set; }
+        public string Reason { get; set; }
     }
 }

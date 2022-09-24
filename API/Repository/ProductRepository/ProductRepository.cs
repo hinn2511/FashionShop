@@ -7,6 +7,7 @@ using API.Entities;
 using API.Entities.ProductModel;
 using API.Helpers;
 using API.Interfaces;
+using API.Repository.GenericRepository;
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using CloudinaryDotNet.Actions;
@@ -14,19 +15,16 @@ using Microsoft.EntityFrameworkCore;
 
 namespace API.Data
 {
-    public class ProductRepository : IProductRepository
+    public class ProductRepository : GenericRepository<Product>, IProductRepository
     {
         private readonly DataContext _context;
-        private readonly IMapper _mapper;
-        public ProductRepository(DataContext context, IMapper mapper)
+
+        public ProductRepository(DataContext context, DbSet<Product> set) : base(context, set)
         {
-            _mapper = mapper;
             _context = context;
         }
 
-        
-
-        public async Task<PagedList<CustomerProductDto>> GetProductsAsCustomerAsync(ProductParams productParams)
+        public async Task<PagedList<Product>> GetProductsAsCustomerAsync(ProductParams productParams)
         {
             var query = _context.Products.AsQueryable();
             
@@ -44,102 +42,36 @@ namespace API.Data
                 _ => query.OrderByDescending(p => p.Sold)
             };
 
-            return await PagedList<CustomerProductDto>
-                .CreateAsync(query.ProjectTo<CustomerProductDto>(_mapper.ConfigurationProvider).AsNoTracking(),
-                    productParams.PageNumber, productParams.PageSize);
+            return await PagedList<Product>.CreateAsync(query, productParams.PageNumber, productParams.PageSize);
         }
-        public async Task<CustomerProductDto> GetProductAsCustomerByIdAsync(int id)
-        {
-            return await _context.Products
-                .Where(p => p.Id == id)
-                .ProjectTo<CustomerProductDto>(_mapper.ConfigurationProvider)
-                .FirstOrDefaultAsync();
-        }
-
-        #region product
-
-        public async Task<Product> GetProductByIdAsync(int id)
-        {
-            return await _context.Products
-                .Include(p => p.ProductPhotos)
-                .FirstOrDefaultAsync(p => p.Id == id);
-        }
-
-
-        public async Task<IEnumerable<Product>> GetProductsByIds(IEnumerable<int> productIds)
-        {
-            return await _context.Products.Where(x => productIds.Contains(x.Id)).ToListAsync();
-        }
-
-        public void Add(Product product)
-        {
-            _context.Products.Add(product);
-        }
-        public void Update(Product product)
-        {
-            _context.Entry(product).State = EntityState.Modified;
-        }
-
-        public void Delete(Product product)
-        {
-            _context.Products.Remove(product);
-        }
-
-        #endregion
-
-        #region product option
-
-        public async Task<IEnumerable<Option>> GetProductOptionsByIds(IEnumerable<int> optionIds)
-        {
-            return await _context.Options.Where(x => optionIds.Contains(x.Id)).ToListAsync();
-        }
-
-        public async Task<Option> GetProductOptionById(int optionId)
-        {
-            return await _context.Options.FirstOrDefaultAsync(x => x.Id == optionId);
-        }
-
-        public void Add(Option option)
-        {
-            _context.Options.Add(option);
-        }
-
-        #endregion
-
-        #region product color
-        public void Add(Color color)
-        {
-            _context.Colors.Add(color);
-        }
-
-        #endregion
-
-        #region product size
-
-        public void Add(Entities.ProductModel.Size size)
-        {
-            _context.Sizes.Add(size);
-        }
-
-        #endregion
-
-        #region product stock
-
-        public async Task<Stock> GetByOptionId(int optionId)
-        {
-            return await _context.Stocks.FirstOrDefaultAsync(x => x.OptionId == optionId);
-        }
-
-        public void Add(Stock stock)
-        {
-            _context.Stocks.Add(stock);
-        }
-
-        public void Update(Stock stock)
-        {
-            _context.Entry(stock).State = EntityState.Modified;
-        }
-
-        #endregion 
     }
+
+    public class ColorRepository : GenericRepository<Color>, IColorRepository
+    {
+        public ColorRepository(DataContext context, DbSet<Color> set) : base(context, set)
+        {
+        }
+    }
+
+    public class ProductOptionRepository : GenericRepository<Option>, IProductOptionRepository
+    {
+        public ProductOptionRepository(DataContext context, DbSet<Option> set) : base(context, set)
+        {
+        }
+    }
+
+    public class SizeRepository : GenericRepository<Entities.ProductModel.Size>, ISizeRepository
+    {
+        public SizeRepository(DataContext context, DbSet<Entities.ProductModel.Size> set) : base(context, set)
+        {
+        }
+    }
+    
+    public class StockRepository : GenericRepository<Stock>, IStockRepository
+    {
+        public StockRepository(DataContext context, DbSet<Stock> set) : base(context, set)
+        {
+        }
+    }
+
 }
