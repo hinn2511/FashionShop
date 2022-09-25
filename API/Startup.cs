@@ -1,4 +1,5 @@
 using API.Extensions;
+using API.Helpers.Authorization;
 using API.Middleware;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -20,13 +21,17 @@ namespace API
         {
             services.AddApplicationServices(_config);
             services.AddControllers();
-            services.AddCors();
+            services.AddCors();            
             services.AddIdentityServices(_config);
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             app.UseMiddleware<ExceptionMiddleware>();
+
+            app.UseMiddleware<ErrorHandlerMiddleware>();
+            
+            app.UseMiddleware<JwtMiddleware>();
 
             app.UseHttpsRedirection();
 
