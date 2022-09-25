@@ -15,6 +15,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace API.Controllers
 {
+    [Authorize]
     public class AdminController : BaseApiController
     {
         private readonly UserManager<AppUser> _userManager;

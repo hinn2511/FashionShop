@@ -1,3 +1,4 @@
+using System;
 using API.Extensions;
 using API.Helpers.Authorization;
 using API.Middleware;
@@ -21,23 +22,37 @@ namespace API
         {
             services.AddApplicationServices(_config);
             services.AddControllers();
-            services.AddCors();            
+            services.AddCors(options =>
+            {
+                options.AddPolicy("OpenCORSPolicy",
+                policy =>
+                {
+                    policy.AllowAnyHeader().AllowAnyMethod().WithOrigins("https://localhost:4200")
+                        .SetPreflightMaxAge(TimeSpan.FromSeconds(2520));
+                });
+                
+            }); 
             services.AddIdentityServices(_config);
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-            app.UseMiddleware<ExceptionMiddleware>();
+
+            app.UseMiddleware<PreflightRequestMiddleware>();
+
+            // app.UseMiddleware<ExceptionMiddleware>();
 
             app.UseMiddleware<ErrorHandlerMiddleware>();
             
             app.UseMiddleware<JwtMiddleware>();
 
-            app.UseHttpsRedirection();
-
             app.UseRouting();
 
-            app.UseCors(x => x.AllowAnyHeader().AllowAnyMethod().WithOrigins("https://localhost:4200"));
+            app.UseCors("OpenCORSPolicy");
+
+            app.UseHttpsRedirection();
+
+            app.UseHttpsRedirection(); 
 
             app.UseAuthentication();
 

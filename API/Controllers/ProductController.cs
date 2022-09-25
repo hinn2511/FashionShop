@@ -13,6 +13,7 @@ using API.Entities.OtherModel;
 using API.Entities.ProductModel;
 using API.Extensions;
 using API.Helpers;
+using API.Helpers.Authorization;
 using API.Interfaces;
 using AutoMapper;
 using Microsoft.AspNetCore.Http;
@@ -21,6 +22,7 @@ using static API.Extensions.StringExtensions;
 
 namespace API.Controllers
 {
+    
     public class ProductController : BaseApiController
     {
          private static readonly Dictionary<string, string> ContentType = new()
@@ -45,6 +47,7 @@ namespace API.Controllers
             _photoService = photoService;
         }
 
+        [AllowAnonymous]
         [HttpGet]
         public async Task<ActionResult<IEnumerable<CustomerProductDto>>> GetProductsAsCustomer([FromQuery] ProductParams productParams)
         {

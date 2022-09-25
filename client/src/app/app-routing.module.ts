@@ -6,15 +6,18 @@ import { ProductManagementComponent } from './administrator/product/product-mana
 import { ProductPhotoManagementComponent } from './administrator/product/product-photo-management/product-photo-management.component';
 import { CartComponent } from './customer/cart/cart.component';
 import { HomePageComponent } from './customer/home-page/home-page.component';
+import { LoginComponent } from './customer/login/login.component';
 import { ProductDetailComponent } from './customer/product-detail/product-detail.component';
 import { ProductListComponent } from './customer/product-list/product-list.component';
+import { AuthGuard } from './_guards/auth.guard';
 
 const routes: Routes = [
   {path: '', component: HomePageComponent},
+  {path: 'login', component: LoginComponent },
   {path: 'products', component: ProductListComponent},
   {path: 'product/:slug', component: ProductDetailComponent},
   {path: 'my-cart', component: CartComponent},
-  {path: 'administrator/product', component: ProductManagementComponent},
+  {path: 'administrator/product', component: ProductManagementComponent, canActivate: [AuthGuard] },
   {path: 'administrator/product/add', component: AddProductComponent},
   {path: 'administrator/product/edit/:id', component: EditProductComponent},
   {path: 'administrator/product-photo/:id', component: ProductPhotoManagementComponent},

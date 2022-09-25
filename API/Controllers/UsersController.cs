@@ -4,8 +4,9 @@ using System.Linq;
 using System.Threading.Tasks;
 using API.DTOs;
 using API.DTOs.Request.AuthenticationRequest;
+using API.Helpers.Authorization;
 using API.Services.UserService;
-using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -30,7 +31,6 @@ namespace API.Controllers
             return Ok(response);
         }
 
-        [AllowAnonymous]
         [HttpPost("refresh-token")]
         public IActionResult RefreshToken()
         {
@@ -43,7 +43,6 @@ namespace API.Controllers
         [HttpPost("revoke-token")]
         public IActionResult RevokeToken(RevokeTokenRequest model)
         {
-            // accept refresh token in request body or cookie
             var token = model.Token ?? Request.Cookies["refreshToken"];
 
             if (string.IsNullOrEmpty(token))
@@ -74,11 +73,8 @@ namespace API.Controllers
             return Ok(user.RefreshTokens);
         }
 
-        // helper methods
-
         private void setTokenCookie(string token)
         {
-            // append cookie with refresh token to the http response
             var cookieOptions = new CookieOptions
             {
                 HttpOnly = true,

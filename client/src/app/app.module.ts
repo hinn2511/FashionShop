@@ -1,6 +1,6 @@
-import { NgModule } from '@angular/core';
+import { APP_INITIALIZER, NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
-import { HttpClientModule } from '@angular/common/http';
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -36,6 +36,11 @@ import { CartComponent } from './customer/cart/cart.component';
 import { ProductRelatedComponent } from './customer/product-related/product-related.component';
 import { SearchBarComponent } from './customer/search-bar/search-bar.component';
 import { ProductAboutComponent } from './customer/product-about/product-about.component';
+import { LoginComponent } from './customer/login/login.component';
+import { appInitializer } from './_helpers/app.initializer';
+import { JwtInterceptor } from './_interceptors/jwt.interceptor';
+import { ErrorInterceptor } from './_interceptors/error.interceptor';
+import { AuthenticationService } from './_services/authentication.service';
 
 
 @NgModule({
@@ -70,6 +75,7 @@ import { ProductAboutComponent } from './customer/product-about/product-about.co
     ProductRelatedComponent,
     SearchBarComponent,
     ProductAboutComponent,
+    LoginComponent,
   ],
   imports: [
     BrowserModule,
@@ -80,7 +86,11 @@ import { ProductAboutComponent } from './customer/product-about/product-about.co
     BrowserAnimationsModule,
     SharedModule
   ],
-  providers: [],
+  providers: [
+    { provide: APP_INITIALIZER, useFactory: appInitializer, multi: true, deps: [AuthenticationService] },
+    { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true },
+    { provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true },
+],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
