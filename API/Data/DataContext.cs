@@ -33,7 +33,6 @@ namespace API.Data
         public DbSet<Size> Sizes { get; set; }
         public DbSet<Option> Options { get; set; }
         public DbSet<Stock> Stocks { get; set; }
-        public DbSet<Photo> Photos { get; set; }
         public DbSet<Order> Orders { get; set; }
         public DbSet<OrderDetail> OrderDetails { get; set; }
         public DbSet<OrderHistory> OrderHistories { get; set; }

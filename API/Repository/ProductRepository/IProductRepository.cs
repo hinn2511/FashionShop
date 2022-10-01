@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using API.DTOs;
 using API.DTOs.Customer;
 using API.DTOs.Product;
+using API.Entities.Other;
 using API.Entities.ProductModel;
 using API.Helpers;
 using API.Repository.GenericRepository;
@@ -13,6 +14,10 @@ namespace API.Interfaces
     public interface IColorRepository : IGenericRepository<Color>
     {
 
+    }
+
+    public interface IProductPhotoRepository : IGenericRepository<ProductPhoto>
+    {
     }
 
     public interface IProductRepository : IGenericRepository<Product>

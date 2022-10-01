@@ -26,10 +26,10 @@ namespace API.Controllers
         }
         
         #region category
-        [HttpGet("{gender}")]
-        public async Task<ActionResult<IEnumerable<CustomerCategoryDto>>> GetCategoryAsCustomer(Gender gender)
+        [HttpGet]
+        public async Task<ActionResult> GetCategoryAsCustomer()
         {
-            return Ok(await _unitOfWork.CategoryRepository.GetAllBy(c => c.Gender == gender));
+            return Ok(await _unitOfWork.CategoryRepository.GetAll());
         }
 
         [HttpPost]

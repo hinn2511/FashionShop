@@ -39,9 +39,12 @@ export class ProductService {
       return of(response);
     }
     let params = getPaginationHeaders(productParams.pageNumber, productParams.pageSize);
-    params = params.append('category', productParams.category);
-    params = params.append('gender', productParams.gender);
+    if(productParams.category != null)
+      params = params.append('category', productParams.category);
+    if(productParams.gender != null)
+      params = params.append('gender', productParams.gender);
     params = params.append('orderBy', productParams.orderBy);
+    params = params.append('field', productParams.field);
     return getPaginatedResult<Product[]>(this.baseUrl + 'product', params, this.http).pipe(
       map(response => {
         this.productCache.set(Object.values(productParams).join('-'), response);

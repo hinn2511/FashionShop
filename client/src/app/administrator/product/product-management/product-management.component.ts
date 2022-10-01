@@ -49,7 +49,7 @@ export class ProductManagementComponent implements OnInit {
     }
   }
 
-  sort(type: string) {
+  sort(type: number) {
     this.productParams.orderBy = type;
     this.loadProducts();
   }

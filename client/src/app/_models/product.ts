@@ -1,18 +1,20 @@
 export interface ProductPhoto {
+    isMain: boolean;
     id: number;
     url: string;
+    publicId: string;
 }
 
 export interface Product {
     id: number;
     productName: string;
     slug: string;
-    category: string;
-    gender: string;
-    url: string;
-    productPrice: number;
+    categoryId: number;
+    brandId: number;
+    price: number;
     sold: number;
-    stocks: any[];
+    url: string;
+    description: string;
     productPhotos: ProductPhoto[];
 }
 

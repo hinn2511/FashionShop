@@ -1,8 +1,8 @@
 ﻿using API.Entities.OtherModel;
 using API.Extensions;
+using API.Helpers.Authorization;
 using API.Interfaces;
 using AutoMapper;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -14,6 +14,7 @@ using System.Threading.Tasks;
 
 namespace API.Controllers
 {
+    [Authorize]
     [ApiController]
     [Route("file")]
     public class FileController : BaseApiController
@@ -38,7 +39,7 @@ namespace API.Controllers
             _mapper = mapper;
         }
 
-        [Authorize]
+        [Role("Admin"), Role("Manager")]
         [HttpPost]
         public async Task<ActionResult> UploadFile(IFormFile file)
         {
@@ -76,11 +77,11 @@ namespace API.Controllers
             return BadRequest("Can not upload file");
         }
 
-
-        [HttpGet("{id}")]
-        public async Task<ActionResult> DownloadFile(int id)
+        [AllowAnonymous]
+        [HttpGet("{name}")]
+        public async Task<ActionResult> DownloadFile(string name)
         {
-            var file = await GetUploadedFileInformation(id);
+            var file = await GetUploadedFileInformation(name);
 
             byte[] content;
             using (var fileStream = new FileStream(file.Path, FileMode.Open, FileAccess.Read, FileShare.None, DefaultBufferSize))
@@ -93,9 +94,18 @@ namespace API.Controllers
 
         }
 
+
         public async Task<UploadedFile> GetUploadedFileInformation(int id)
         {
             var uploadedFile = await _unitOfWork.FileRepository.GetById(id);
+            if (uploadedFile == null)
+                throw new KeyNotFoundException("File not found");
+            return uploadedFile;
+        }
+
+        public async Task<UploadedFile> GetUploadedFileInformation(string name)
+        {
+            var uploadedFile = await _unitOfWork.FileRepository.GetFirstBy(x => x.Name == name);
             if (uploadedFile == null)
                 throw new KeyNotFoundException("File not found");
             return uploadedFile;

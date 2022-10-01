@@ -29,49 +29,55 @@ namespace API.Extensions
                 .AddRoleValidator<RoleValidator<AppRole>>()
                 .AddEntityFrameworkStores<DataContext>();
 
-            services.AddAuthentication(options =>
-                {
-                    // custom scheme defined in .AddPolicyScheme() below
-                    options.DefaultScheme = "JWT_OR_COOKIE";
-                    options.DefaultChallengeScheme = "JWT_OR_COOKIE";
-                })
-                .AddCookie("Cookies", options =>
+            services.AddAuthentication
+                // (options =>
+                // {
+                //     // custom scheme defined in .AddPolicyScheme() below
+                //     // options.DefaultScheme = "JWT_OR_COOKIE";
+                //     // options.DefaultChallengeScheme = "JWT_OR_COOKIE";
+                //     options.DefaultScheme = "Cookies";
+                //     options.DefaultChallengeScheme = "Cookies";
+                //     options.DefaultAuthenticateScheme = "Cookies";
+                // })
+                (CookieAuthenticationDefaults.AuthenticationScheme)
+                .AddCookie(options =>
                 {
                     options.LoginPath = "/login";
                     options.ExpireTimeSpan = TimeSpan.FromDays(1);
                 })
-                .AddJwtBearer("Bearer", options =>
-                {
-                    options.TokenValidationParameters = new TokenValidationParameters
-                    {
-                        ValidateIssuerSigningKey = true,
-                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(config["TokenKey"])),
-                        ValidateIssuer = false,
-                        ValidateAudience = false,
-                    };
-                })
-                .AddPolicyScheme("JWT_OR_COOKIE", "JWT_OR_COOKIE", options =>
-                {
-                    // runs on each request
-                    options.ForwardDefaultSelector = context =>
-                    {
-                        // filter by auth type
-                        string authorization = context.Request.Headers[HeaderNames.Authorization];
-                        if (!string.IsNullOrEmpty(authorization) && authorization.StartsWith("Bearer "))
-                            return "Bearer";
+                // .AddJwtBearer("Bearer", options =>
+                // {
+                //     options.TokenValidationParameters = new TokenValidationParameters
+                //     {
+                //         ValidateIssuerSigningKey = true,
+                //         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(config.GetSection("AppSettings:Secret").Value)),
+                //         ValidateIssuer = false,
+                //         ValidateAudience = false,
+                //     };
+                // })
+                // .AddPolicyScheme("JWT_OR_COOKIE", "JWT_OR_COOKIE", options =>
+                // {
+                //     // runs on each request
+                //     options.ForwardDefaultSelector = context =>
+                //     {
+                //         // filter by auth type
+                //         string authorization = context.Request.Headers[HeaderNames.Authorization];
+                //         if (!string.IsNullOrEmpty(authorization) && authorization.StartsWith("Bearer "))
+                //             return "Bearer";
 
-                        // otherwise always check for cookie auth
-                        return "Cookies";
-                    };
-                });
+                //         // otherwise always check for cookie auth
+                //         return "Cookies";
+                //     };
+                // })
+                ;
 
-            services.AddAuthorization(opt =>
-           {
-               opt.AddPolicy("BusinessOnly", policy => policy.RequireRole("Admin", "Manager"));
-               opt.AddPolicy("CustomerOnly", policy => policy.RequireRole("Customer"));
-               opt.AddPolicy("ManagerOnly", policy => policy.RequireRole("Manager"));
-               opt.AddPolicy("AdminOnly", policy => policy.RequireRole("Admin"));
-           });
+        //     services.AddAuthorization(opt =>
+        //    {
+        //        opt.AddPolicy("BusinessOnly", policy => policy.RequireRole("Admin", "Manager"));
+        //        opt.AddPolicy("CustomerOnly", policy => policy.RequireRole("Customer"));
+        //        opt.AddPolicy("ManagerOnly", policy => policy.RequireRole("Manager"));
+        //        opt.AddPolicy("AdminOnly", policy => policy.RequireRole("Admin"));
+        //    });
 
             return services;
         }

@@ -17,12 +17,16 @@ export class ProductPhotoManagementComponent implements OnInit {
   uploader: FileUploader;
   hasBaseDropzoneOver = false;
   baseUrl = environment.apiUrl;
+  productId: number;
   
   constructor(private productService: ProductService, private photoService: PhotoService, private route: ActivatedRoute) { }
 
   ngOnInit(): void {
-    this.loadProduct(+(this.route.snapshot.paramMap.get('id')));
-    this.loadPhotos(this.product.id);
+    this.productId = +(this.route.snapshot.paramMap.get('id'));
+    console.log(this.productId);
+    this.photos = [];
+    this.loadProduct(this.productId);
+    //this.loadPhotos(this.productId);
     this.initializeUploader();
   }
 
@@ -34,7 +38,7 @@ export class ProductPhotoManagementComponent implements OnInit {
 
   initializeUploader() {
     this.uploader = new FileUploader({
-      url: this.baseUrl + 'product/add-product-photo/' + this.product.id,
+      url: this.baseUrl + 'product/add-product-photo-local/' +  this.productId,
       authToken: 'Bearer ',
       isHTML5: true,
       allowedFileType: ['image'],
@@ -47,7 +51,8 @@ export class ProductPhotoManagementComponent implements OnInit {
     }
     this.uploader.onSuccessItem = (item, response, status, headers ) => {
       if (response) {
-        const photo: ProductPhoto = JSON.parse(response);
+         const photo: ProductPhoto = JSON.parse(response);
+        // console.log(photo);
         this.photos.push(photo);
         this.productService.removeProductCache(this.product.id);
         // const photo: ProductPhoto = JSON.parse(response);

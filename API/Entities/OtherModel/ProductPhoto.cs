@@ -5,13 +5,8 @@ using API.Entities.ProductModel;
 
 namespace API.Entities.Other
 {
-    public class ProductPhoto
+    public class ProductPhoto : Photo
     {
-        public int Id { get; set; }
-        
-        [JsonIgnore]
-        public Photo Photo { get; set; }
-        public int PhotoId { get; set; }
         public bool IsMain { get; set; }
         
         [JsonIgnore]

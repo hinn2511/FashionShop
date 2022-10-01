@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using API.DTOs;
 using API.DTOs.Customer;
 using API.DTOs.Product;
+using API.DTOs.Response;
 using API.Entities.Other;
 using API.Entities.OtherModel;
 using API.Entities.ProductModel;
@@ -47,16 +48,17 @@ namespace API.Controllers
             _photoService = photoService;
         }
 
-        [AllowAnonymous]
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<CustomerProductDto>>> GetProductsAsCustomer([FromQuery] ProductParams productParams)
+        public async Task<ActionResult> GetProductsAsCustomer([FromQuery] ProductParams productParams)
         {
 
             var products = await _unitOfWork.ProductRepository.GetProductsAsCustomerAsync(productParams);
 
             Response.AddPaginationHeader(products.CurrentPage, products.PageSize, products.TotalCount, products.TotalPages);
 
-            return Ok(products);
+            var result = _mapper.Map<List<CustomerGetAllProductResponse>>(products.ToList());
+
+            return Ok(result);
 
         }
 
@@ -64,6 +66,8 @@ namespace API.Controllers
         public async Task<ActionResult> GetProductAsCustomer(int id)
         {
             var product = await _unitOfWork.ProductRepository.GetById(id);
+            var productPhotos = await _unitOfWork.ProductPhotoRepository.GetAllBy(x => x.ProductId == product.Id);
+            product.ProductPhotos = productPhotos.ToList();
             return Ok(product);
         }
 
@@ -126,44 +130,44 @@ namespace API.Controllers
             return BadRequest("An error occurred while deleting the product.");
         }
 
-        [HttpPost("add-product-photo/{productId}")]
-        public async Task<ActionResult<ProductPhotoDto>> AddProductPhoto(IFormFile file, int productId)
-        {
-            var product = await _unitOfWork.ProductRepository.GetById(productId);
-            var result = await _photoService.AddPhotoAsync(file, 700, 700);
+        // [HttpPost("add-product-photo/{productId}")]
+        // public async Task<ActionResult<ProductPhotoDto>> AddProductPhoto(IFormFile file, int productId)
+        // {
+        //     var product = await _unitOfWork.ProductRepository.GetById(productId);
+        //     var result = await _photoService.AddPhotoAsync(file, 700, 700);
 
-            if (result.Error != null) return BadRequest(result.Error.Message);
+        //     if (result.Error != null) return BadRequest(result.Error.Message);
 
-            var photo = new Photo
-            {
-                Url = result.SecureUrl.AbsoluteUri,
-                PublicId = result.PublicId
-            };
+        //     var photo = new Photo
+        //     {
+        //         Url = result.SecureUrl.AbsoluteUri,
+        //         PublicId = result.PublicId
+        //     };
 
-            _unitOfWork.PhotoRepository.Insert(photo);
+        //     _unitOfWork.PhotoRepository.Insert(photo);
 
-            if (await _unitOfWork.Complete())
-            {
-                var productPhoto = new ProductPhoto
-                {
-                    ProductId = productId,
-                    PhotoId = photo.Id,
-                    IsMain = product.ProductPhotos.Count == 0 ? true : false
-                };
+        //     if (await _unitOfWork.Complete())
+        //     {
+        //         var productPhoto = new ProductPhoto
+        //         {
+        //             ProductId = productId,
+        //             PhotoId = photo.Id,
+        //             IsMain = product.ProductPhotos.Count == 0 ? true : false
+        //         };
 
-                product.ProductPhotos.Add(productPhoto);
+        //         product.ProductPhotos.Add(productPhoto);
 
-                if (await _unitOfWork.Complete())
-                {
-                    return _mapper.Map<ProductPhotoDto>(productPhoto);
-                }
-            }
+        //         if (await _unitOfWork.Complete())
+        //         {
+        //             return _mapper.Map<ProductPhotoDto>(productPhoto);
+        //         }
+        //     }
 
-            return BadRequest("An error occurred while adding the image.");
-        }
+        //     return BadRequest("An error occurred while adding the image.");
+        // }
 
         [HttpPost("add-product-photo-local/{productId}")]
-        public async Task<ActionResult<ProductPhotoDto>> AddProductPhotoLocal(IFormFile file, int productId)
+        public async Task<ActionResult> AddProductPhotoLocal(IFormFile file, int productId)
         {
             ValidateFile(file);
 
@@ -188,39 +192,49 @@ namespace API.Controllers
                     Name = name,
                     Extension =  file.FileName.Split(".").Last(),
                     Path = filePath,
-                    CreatedByUserId = User.GetUserId()
+                    CreatedByUserId = 0
                 };
+
 
             _unitOfWork.FileRepository.Insert(uploadedFile);
 
             var product = await _unitOfWork.ProductRepository.GetById(productId);
 
-            await _unitOfWork.Complete();
+            if (product == null)
+                return BadRequest("Product not found");
+            
+            bool IsMain = false;
 
-            var photo = new Photo
+            if (product.ProductPhotos == null)
+                IsMain = true;
+
+            var photo = new ProductPhoto
             {
-                Url = DownloadFileUrl + uploadedFile.Id,
-                PublicId = ""
+                Url = DownloadFileUrl + name,
+                PublicId = "",
+                IsMain = IsMain,
+                Product = product
             };
 
-            _unitOfWork.PhotoRepository.Insert(photo);
+            _unitOfWork.ProductPhotoRepository.Insert(photo);
 
-            if (await _unitOfWork.Complete())
-            {
-                var productPhoto = new ProductPhoto
-                {
-                    ProductId = productId,
-                    PhotoId = photo.Id,
-                    IsMain = product.ProductPhotos.Count == 0 ? true : false
-                };
+            // if (await _unitOfWork.Complete())
+            //     // return Ok();
+            // {
+                // var productPhoto = new ProductPhoto
+                // {
+                //     ProductId = productId,
+                //     PhotoId = lastPhoto.Id + 1,
+                    
+                // };
 
-                product.ProductPhotos.Add(productPhoto);
+                // _unitOfWork.ProductPhotoRepository.Insert(productPhoto);
 
                 if (await _unitOfWork.Complete())
                 {
-                    return _mapper.Map<ProductPhotoDto>(productPhoto);
+                    return Ok(_mapper.Map<ProductPhotoDto>(photo));
                 }
-            }
+            // }
 
             return BadRequest("An error occurred while adding the image.");
         }
@@ -256,7 +270,7 @@ namespace API.Controllers
 
             if (productPhoto.IsMain) return BadRequest("Can not delete main photo.");
 
-            var photo = await _unitOfWork.PhotoRepository.GetById(productPhoto.PhotoId);
+            var photo = await _unitOfWork.ProductPhotoRepository.GetById(productPhoto.Id);
 
             if (photo.PublicId != null)
             {
@@ -266,7 +280,7 @@ namespace API.Controllers
 
                 product.ProductPhotos.Remove(productPhoto);
 
-                _unitOfWork.PhotoRepository.Delete(photo);
+                _unitOfWork.ProductPhotoRepository.Delete(photo);
             }
 
             if (await _unitOfWork.Complete()) return Ok();

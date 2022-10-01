@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using API.DTOs;
 using API.DTOs.Customer;
 using API.Entities;
+using API.Entities.Other;
 using API.Entities.ProductModel;
 using API.Helpers;
 using API.Interfaces;
@@ -34,13 +35,28 @@ namespace API.Data
             if(productParams.Category != null)
                 query = query.Where(p => p.Category.CategoryName == productParams.Category);
 
-            query = productParams.OrderBy switch
+            if (productParams.OrderBy == OrderBy.Ascending) 
             {
-                "Newest" => query.OrderByDescending(p => p.DateCreated),
-                "Price (high-low)" => query.OrderByDescending(p => p.Price),
-                "Price (low-high)" => query.OrderBy(p => p.Price),
-                _ => query.OrderByDescending(p => p.Sold)
-            };
+                query = productParams.Field switch
+                {
+                    "DateCreated" => query.OrderBy(p => p.DateCreated),
+                    "Price" => query.OrderBy(p => p.Price),
+                    "Name" => query.OrderBy(p => p.ProductName),
+                    _ => query.OrderByDescending(p => p.Sold)
+                };
+            }
+            else
+            {
+                query = productParams.Field switch
+                {
+                    "DateCreated" => query.OrderByDescending(p => p.DateCreated),
+                    "Price" => query.OrderByDescending(p => p.Price),
+                    "Name" => query.OrderByDescending(p => p.ProductName),
+                    _ => query.OrderByDescending(p => p.Sold)
+                };
+            }
+
+            query = query.Include(x => x.ProductPhotos);            
 
             return await PagedList<Product>.CreateAsync(query, productParams.PageNumber, productParams.PageSize);
         }
@@ -71,6 +87,21 @@ namespace API.Data
     {
         public StockRepository(DataContext context, DbSet<Stock> set) : base(context, set)
         {
+        }
+    }
+
+    public class ProductPhotoRepository : GenericRepository<ProductPhoto>, IProductPhotoRepository
+    {
+        private readonly DataContext _context;
+
+        public ProductPhotoRepository(DataContext context, DbSet<ProductPhoto> set) : base(context, set)
+        {
+            _context = context;
+        }
+
+        public async Task<ProductPhoto> GetLastPhotoAsync()
+        {
+            return await _context.ProductPhotos.OrderBy(x => x.Id).LastOrDefaultAsync();
         }
     }
 

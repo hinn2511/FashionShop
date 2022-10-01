@@ -21,34 +21,40 @@ namespace API
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddApplicationServices(_config);
-            services.AddControllers();
-            services.AddCors(options =>
-            {
-                options.AddPolicy("OpenCORSPolicy",
-                policy =>
-                {
-                    policy.AllowAnyHeader().AllowAnyMethod().WithOrigins("https://localhost:4200")
-                        .SetPreflightMaxAge(TimeSpan.FromSeconds(2520));
-                });
+            services.AddControllers().AddJsonOptions(x => x.JsonSerializerOptions.IgnoreNullValues = true);
+            // services.AddCors(options =>
+            // {
+            //     options.AddPolicy("OpenCORSPolicy",
+            //     policy =>
+            //     {
+            //         policy.AllowAnyHeader().AllowAnyMethod().WithOrigins("https://localhost:4200").SetIsOriginAllowed(origin => true);
+            //     });
                 
-            }); 
+            // }); 
+            services.AddCors();
             services.AddIdentityServices(_config);
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
 
-            app.UseMiddleware<PreflightRequestMiddleware>();
+            // app.UseMiddleware<PreflightRequestMiddleware>();
 
-            // app.UseMiddleware<ExceptionMiddleware>();
+             app.UseMiddleware<ExceptionMiddleware>();
 
-            app.UseMiddleware<ErrorHandlerMiddleware>();
+            //app.UseMiddleware<ErrorHandlerMiddleware>();
             
             app.UseMiddleware<JwtMiddleware>();
 
             app.UseRouting();
 
-            app.UseCors("OpenCORSPolicy");
+            // app.UseCors("OpenCORSPolicy");
+
+            app.UseCors(x => x
+                .SetIsOriginAllowed(origin => true)
+                .AllowAnyMethod()
+                .AllowAnyHeader()
+                .AllowCredentials());
 
             app.UseHttpsRedirection();
 

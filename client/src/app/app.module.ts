@@ -6,7 +6,7 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { SharedModule } from './_modules/shared.module';
-import { HomePageComponent } from './customer/home-page/home-page.component';
+import { HomePageComponent } from './home-page/home-page.component';
 import { ProductListComponent } from './customer/product-list/product-list.component';
 import { ProductCardComponent } from './customer/product-card/product-card.component';
 import { ProductDetailComponent } from './customer/product-detail/product-detail.component';
@@ -41,6 +41,10 @@ import { appInitializer } from './_helpers/app.initializer';
 import { JwtInterceptor } from './_interceptors/jwt.interceptor';
 import { ErrorInterceptor } from './_interceptors/error.interceptor';
 import { AuthenticationService } from './_services/authentication.service';
+import { HasRoleDirective } from './_directives/has-role.directive';
+import { AdminSidebarComponent } from './administrator/admin-sidebar/admin-sidebar.component';
+import { AdminLoginComponent } from './administrator/admin-login/admin-login.component';
+import { AdminProductComponent } from './administrator/admin-product/admin-product.component';
 
 
 @NgModule({
@@ -76,6 +80,10 @@ import { AuthenticationService } from './_services/authentication.service';
     SearchBarComponent,
     ProductAboutComponent,
     LoginComponent,
+    HasRoleDirective,
+    AdminSidebarComponent,
+    AdminLoginComponent,
+    AdminProductComponent,
   ],
   imports: [
     BrowserModule,
@@ -87,7 +95,7 @@ import { AuthenticationService } from './_services/authentication.service';
     SharedModule
   ],
   providers: [
-    { provide: APP_INITIALIZER, useFactory: appInitializer, multi: true, deps: [AuthenticationService] },
+   // { provide: APP_INITIALIZER, useFactory: appInitializer, multi: true, deps: [AuthenticationService] },
     { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true },
     { provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true },
 ],

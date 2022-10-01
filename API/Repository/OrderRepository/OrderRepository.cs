@@ -34,12 +34,12 @@ namespace API.Repository.OrderRepository
             if(orderParams.CreatedByUserId != null)
                 query = query.Where(p => p.CreatedByUserId == orderParams.CreatedByUserId);
 
-            query = orderParams.OrderBy switch
-            {
-                OrderBy.Newest => query.OrderByDescending(p => p.OrderHistories.OrderBy(x => x.Id).Last().DateCreated),
-                OrderBy.Oldest => query.OrderBy(p => p.OrderHistories.OrderBy(x => x.Id).Last().DateCreated),
-                _ => query.OrderByDescending(p => p.OrderHistories.OrderBy(x => x.Id).Last().DateCreated)
-            };
+            // query = orderParams.OrderBy switch
+            // {
+            //     OrderBy.Newest => query.OrderByDescending(p => p.OrderHistories.OrderBy(x => x.Id).Last().DateCreated),
+            //     OrderBy.Oldest => query.OrderBy(p => p.OrderHistories.OrderBy(x => x.Id).Last().DateCreated),
+            //     _ => query.OrderByDescending(p => p.OrderHistories.OrderBy(x => x.Id).Last().DateCreated)
+            // };
 
             return await PagedList<Order>.CreateAsync(query, orderParams.PageNumber, orderParams.PageSize);
         }

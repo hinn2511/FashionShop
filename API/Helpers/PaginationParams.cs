@@ -10,15 +10,15 @@ namespace API.Helpers
             get => _pageSize;
             set => _pageSize = ( value > MaxPageSize ) ? MaxPageSize : value;
         }
+
+        public OrderBy OrderBy { get; set; } = OrderBy.Ascending;
+        public string Field { get; set; }
     }
 
     public enum OrderBy 
     {
-        Newest,
-        Oldest,
-        HighToLowPrice,
-        LowToHighPrice,
-        BestSold,
+        Ascending ,
+        Descending
         
     }
 }

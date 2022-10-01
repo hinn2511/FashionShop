@@ -83,7 +83,7 @@ export class ProductDetailComponent implements OnInit {
         route: '/'
       },
       {
-        name: this.product.gender,
+        name: this.product.productName,
         route: ''
       },
       {

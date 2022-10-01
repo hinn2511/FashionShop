@@ -7,14 +7,15 @@ using System.Text;
 using System.Threading.Tasks;
 using API.Entities.User;
 using API.Entities.UserModel;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 
 namespace API.Helpers.Authorization
 {
-     public interface IJwtUtils
+    public interface IJwtUtils
     {
-        public string GenerateJwtToken(AppUser user);
+        public Task<string> GenerateJwtToken(AppUser user);
         public int? ValidateJwtToken(string token);
         public RefreshToken GenerateRefreshToken(string ipAddress);
     }
@@ -22,20 +23,32 @@ namespace API.Helpers.Authorization
     public class JwtUtils : IJwtUtils
     {
         private readonly AppSettings _appSettings;
+        private readonly UserManager<AppUser> _userManager;
 
-        public JwtUtils(IOptions<AppSettings> appSettings)
+        public JwtUtils(IOptions<AppSettings> appSettings, UserManager<AppUser> userManager)
         {
+            _userManager = userManager;
             _appSettings = appSettings.Value;
         }
 
-        public string GenerateJwtToken(AppUser user)
+        public async Task<string> GenerateJwtToken(AppUser user)
         {
+            var claims = new List<Claim>
+            {
+                new Claim("id", user.Id.ToString()),
+                new Claim(JwtRegisteredClaimNames.UniqueName, user.UserName),
+            };
+
+            var roles = await _userManager.GetRolesAsync(user);
+
+            claims.AddRange(roles.Select(role => new Claim(ClaimTypes.Role, role)));
+
             // generate token that is valid for 15 minutes
             var tokenHandler = new JwtSecurityTokenHandler();
             var key = Encoding.ASCII.GetBytes(_appSettings.Secret);
             var tokenDescriptor = new SecurityTokenDescriptor
             {
-                Subject = new ClaimsIdentity(new[] { new Claim("id", user.Id.ToString()) }),
+                Subject = new ClaimsIdentity(claims),
                 Expires = DateTime.UtcNow.AddMinutes(15),
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
             };

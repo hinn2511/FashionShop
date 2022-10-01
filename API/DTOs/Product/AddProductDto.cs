@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using API.Entities.ProductModel;
 
 namespace API.DTOs.Product
 {
@@ -10,5 +11,6 @@ namespace API.DTOs.Product
         public string ProductName { get; set; }
         public int CategoryId { get; set; }
         public double ProductPrice { get; set; }
+        public Gender Gender { get; set; }
     }
 }

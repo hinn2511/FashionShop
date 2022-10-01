@@ -18,10 +18,9 @@ namespace API.Services.UserService
     public interface IUserService
     {
         Task<AuthenticateResponse> Authenticate(LoginDto model, string ipAddress);
-        AuthenticateResponse RefreshToken(string token, string ipAddress);
-        void RevokeToken(string token, string ipAddress);
-        IEnumerable<AppUser> GetAll();
-        AppUser GetById(int id);
+        Task<AuthenticateResponse> RefreshToken(string token, string ipAddress);
+        Task RevokeToken(string token, string ipAddress);
+        Task<AppUser> GetById(int id);
     }
 
     public class UserService : IUserService
@@ -60,7 +59,7 @@ namespace API.Services.UserService
             if (!result.Succeeded) 
                 throw new AppException("Invalid username or password");
             // authentication successful so generate jwt and refresh tokens
-            var jwtToken = _jwtUtils.GenerateJwtToken(user);
+            var jwtToken = await _jwtUtils.GenerateJwtToken(user);
             var refreshToken = _jwtUtils.GenerateRefreshToken(ipAddress);
             user.RefreshTokens.Add(refreshToken);
 
@@ -68,23 +67,21 @@ namespace API.Services.UserService
             removeOldRefreshTokens(user);
 
             // save changes to db
-            _context.Update(user);
-            _context.SaveChanges();
+            await _userManager.UpdateAsync(user);
 
             return new AuthenticateResponse(user, jwtToken, refreshToken.Token);
         }
 
-        public AuthenticateResponse RefreshToken(string token, string ipAddress)
+        public async Task<AuthenticateResponse> RefreshToken(string token, string ipAddress)
         {
-            var user = getUserByRefreshToken(token);
+            var user = await getUserByRefreshToken(token);
             var refreshToken = user.RefreshTokens.Single(x => x.Token == token);
 
             if (refreshToken.IsRevoked)
             {
                 // revoke all descendant tokens in case this token has been compromised
                 revokeDescendantRefreshTokens(refreshToken, user, ipAddress, $"Attempted reuse of revoked ancestor token: {token}");
-                _context.Update(user);
-                _context.SaveChanges();
+                await _userManager.UpdateAsync(user);
             }
 
             if (!refreshToken.IsActive)
@@ -98,18 +95,17 @@ namespace API.Services.UserService
             removeOldRefreshTokens(user);
 
             // save changes to db
-            _context.Update(user);
-            _context.SaveChanges();
+            await _userManager.UpdateAsync(user);
 
             // generate new jwt
-            var jwtToken = _jwtUtils.GenerateJwtToken(user);
+            var jwtToken = await _jwtUtils.GenerateJwtToken(user);
 
             return new AuthenticateResponse(user, jwtToken, newRefreshToken.Token);
         }
 
-        public void RevokeToken(string token, string ipAddress)
+        public async Task RevokeToken(string token, string ipAddress)
         {
-            var user = getUserByRefreshToken(token);
+            var user = await getUserByRefreshToken(token);
             var refreshToken = user.RefreshTokens.Single(x => x.Token == token);
 
             if (!refreshToken.IsActive)
@@ -117,27 +113,22 @@ namespace API.Services.UserService
 
             // revoke token and save
             revokeRefreshToken(refreshToken, ipAddress, "Revoked without replacement");
-            _context.Update(user);
-            _context.SaveChanges();
+
+            await _userManager.UpdateAsync(user);
         }
 
-        public IEnumerable<AppUser> GetAll()
+        public async Task<AppUser> GetById(int id)
         {
-            return _context.Users;
-        }
-
-        public AppUser GetById(int id)
-        {
-            var user = _context.Users.Find(id);
+            var user = await _userManager.FindByIdAsync(id.ToString());
             if (user == null) throw new KeyNotFoundException("User not found");
             return user;
         }
 
         // helper methods
 
-        private AppUser getUserByRefreshToken(string token)
+        private async Task<AppUser> getUserByRefreshToken(string token)
         {
-            var user = _context.Users.SingleOrDefault(u => u.RefreshTokens.Any(t => t.Token == token));
+            var user = await _context.Users.SingleOrDefaultAsync(u => u.RefreshTokens.Any(t => t.Token == token));
 
             if (user == null)
                 throw new AppException("Invalid token");

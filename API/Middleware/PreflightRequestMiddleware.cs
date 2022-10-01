@@ -27,6 +27,7 @@ namespace API.Middleware
     context.Response.Headers.Add("Access-Control-Allow-Headers", new[] { "Origin, X-Requested-With, Content-Type, Accept, Athorization, ActualUserOrImpersonatedUserSamAccount, IsImpersonatedUser" });
     context.Response.Headers.Add("Access-Control-Allow-Methods", new[] { "GET, POST, PUT, DELETE, OPTIONS" });
     context.Response.Headers.Add("Access-Control-Allow-Origin", new[] { "https://localhost:4200" });
+    context.Response.Headers.Add("Origin", new[] { "https://localhost:4200" });
     if (context.Request.Method == HttpMethod.Options.Method)
     {
       context.Response.StatusCode = (int)HttpStatusCode.OK;

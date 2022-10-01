@@ -4,6 +4,7 @@ using API.DTOs.Customer;
 using API.DTOs.Order;
 using API.DTOs.Product;
 using API.DTOs.Request.ConfigurationRequest;
+using API.DTOs.Response;
 using API.Entities;
 using API.Entities.OrderModel;
 using API.Entities.Other;
@@ -21,13 +22,12 @@ namespace API.Helpers
         {
             CreateMap<RegisterDto, AppUser>();
 
-            CreateMap<Product, CustomerProductDto>()
-               .ForMember(dest => dest.Category, opt => opt.MapFrom(
-                          src => src.Category.CategoryName))
-                .ForMember(dest => dest.Gender, opt => opt.MapFrom(
-                          src => src.Category.Gender))
+            CreateMap<Product, CustomerGetAllProductResponse>()
                 .ForMember(dest => dest.Url, opt => opt.MapFrom(
-                          src => src.ProductPhotos.FirstOrDefault(pp => pp.IsMain).Photo.Url));
+                          src => src.ProductPhotos.FirstOrDefault(pp => pp.IsMain).Url));
+
+            CreateMap<ProductPhoto, ProductPhotoResponse>();
+            
 
             CreateMap<Product, ProductDto>()
                .ForMember(dest => dest.Category, opt => opt.MapFrom(
@@ -39,7 +39,7 @@ namespace API.Helpers
 
             CreateMap<ProductPhoto, CustomerProductPhotoDto>()
                 .ForMember(dest => dest.Url, opt => opt.MapFrom(
-                          src => src.Photo.Url));
+                          src => src.Url));
 
             CreateMap<Option, CustomerProductStockDto>();
 
@@ -53,9 +53,9 @@ namespace API.Helpers
 
             CreateMap<ProductPhoto, ProductPhotoDto>()
                 .ForMember(dest => dest.Url, opt => opt.MapFrom(
-                          src => src.Photo.Url))
+                          src => src.Url))
                 .ForMember(dest => dest.PhotoId, opt => opt.MapFrom(
-                          src => src.Photo.Id));
+                          src => src.Id));
 
             CreateMap<OrderItemRequest, OrderDetail>();
 

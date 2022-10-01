@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { Router } from '@angular/router';
 import { User } from './_models/user';
 import { AuthenticationService } from './_services/authentication.service';
 
@@ -10,11 +11,15 @@ import { AuthenticationService } from './_services/authentication.service';
 export class AppComponent {
     user: User;
 
-    constructor(private authenticationService: AuthenticationService) {
+    constructor(private authenticationService: AuthenticationService, private router: Router) {
         this.authenticationService.user.subscribe(x => this.user = x);
     }
 
     logout() {
         this.authenticationService.logout();
+    }
+
+    hasRoute(route: string) {
+        return this.router.url.includes(route);
     }
 }

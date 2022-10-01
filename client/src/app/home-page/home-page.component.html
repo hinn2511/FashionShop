@@ -1,0 +1,16 @@
+<div *appHasRole='["Anonymous", "Customer"]'>
+    <div class="w-100">
+        <app-home-carousel></app-home-carousel>
+        <app-home-categories></app-home-categories>
+        <app-home-best-seller></app-home-best-seller>
+        <app-home-colletion></app-home-colletion>
+    </div>
+</div>
+
+
+
+<div class="w-100" *appHasRole='["Admin", "Manager"]'>
+    <!-- <div class="container-fluid w-100 px-0 mb-5" >
+        <router-outlet></router-outlet>
+    </div> -->
+</div>

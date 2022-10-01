@@ -34,7 +34,7 @@ export class ProductListComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.productParams.orderBy = 'Best seller';
+    this.productParams.field = 'Sold';
     this.loadProducts();
     this.loadCategories('all');
   }
@@ -62,7 +62,7 @@ export class ProductListComponent implements OnInit {
     }
   }
 
-  sort(type: string) {
+  sort(type: number) {
     this.productParams.orderBy = type;
     this.loadProducts();
   }

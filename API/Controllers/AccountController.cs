@@ -1,29 +1,37 @@
+using System;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 using API.Data;
 using API.DTOs;
+using API.DTOs.Request.AuthenticationRequest;
 using API.Entities;
 using API.Entities.User;
 using API.Interfaces;
+using API.Services.UserService;
 using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace API.Controllers
 {
+    
     public class AccountController : BaseApiController
     {
         private readonly ITokenService _tokenService;
         private readonly IMapper _mapper;
+        private readonly IUserService _userService;
         private readonly UserManager<AppUser> _userManager;
         private readonly SignInManager<AppUser> _signInManager;
-        public AccountController(UserManager<AppUser> userManager, SignInManager<AppUser> signInManager, ITokenService tokenService, IMapper mapper)
+        public AccountController(UserManager<AppUser> userManager, SignInManager<AppUser> signInManager, ITokenService tokenService, IMapper mapper, IUserService userService)
         {
             _signInManager = signInManager;
             _userManager = userManager;
             _mapper = mapper;
+            _userService = userService;
             _tokenService = tokenService;
         }
 
@@ -39,40 +47,47 @@ namespace API.Controllers
 
             var result = await _userManager.CreateAsync(user, registerDto.Password);
 
-            if (!result.Succeeded) return BadRequest(result.Errors);
+            if (!result.Succeeded) 
+                return BadRequest(result.Errors);
 
             var roleResult = await _userManager.AddToRoleAsync(user, "Customer");
 
-            if(!roleResult.Succeeded) return BadRequest(result.Errors);
+            if(!roleResult.Succeeded) 
+                return BadRequest(result.Errors);
 
-            return new UserDto
-            {
-                Username = user.UserName,
-                Token = await _tokenService.CreateToken(user),
-                Name = user.FirstName
-            };
+            return Ok();
         }
 
-        [HttpPost("login")]
-        public async Task<ActionResult<UserDto>> Login(LoginDto loginDto)
+        
+        [HttpPost("authenticate")]
+        public async Task<ActionResult> Authenticate(LoginDto model)
         {
-            var user = await _userManager.Users
-                    .SingleOrDefaultAsync(u => u.UserName == loginDto.Username.ToLower());
+            var response = await _userService.Authenticate(model, ipAddress());
+            setTokenCookie(response.RefreshToken);
+            return Ok(response);
+        }
 
-            if (user == null)
-                return Unauthorized("Invalid username");
-                
-            var result = await _signInManager.CheckPasswordSignInAsync(user, loginDto.Password, false);
+        [Authorize]
+        [HttpPost("refresh-token")]
+        public async Task<ActionResult> RefreshToken()
+        {
+            var refreshToken = Request.Cookies["refreshToken"];
+            var response = await _userService.RefreshToken(refreshToken, ipAddress());
+            setTokenCookie(response.RefreshToken);
+            return Ok(response);
+        }
 
-            if (!result.Succeeded) return Unauthorized();
+        [Authorize]
+        [HttpPost("revoke-token")]
+        public async Task<ActionResult> RevokeToken(RevokeTokenRequest model)
+        {
+            var token = model.Token ?? Request.Cookies["refreshToken"];
 
-            return new UserDto
-            {
-                Username = user.UserName,
-                Token = await _tokenService.CreateToken(user),
-                Name = user.FirstName
-            };
+            if (string.IsNullOrEmpty(token))
+                return BadRequest(new { message = "Token is required" });
 
+            await _userService.RevokeToken(token, ipAddress());
+            return Ok(new { message = "Token revoked" });
         }
 
         [HttpPut("change-password")]
@@ -81,8 +96,8 @@ namespace API.Controllers
             var user = await _userManager.Users
                     .SingleOrDefaultAsync(u => u.UserName == resetPasswordDto.Username.ToLower());
 
-            var loginResult = await _signInManager.CheckPasswordSignInAsync(user, resetPasswordDto.OldPassword, false);
-            if (!loginResult.Succeeded)
+            var  checkPasswordResult = await _signInManager.CheckPasswordSignInAsync(user, resetPasswordDto.OldPassword, false);
+            if (!checkPasswordResult.Succeeded)
                 return BadRequest("Password not valid!");
 
             var resetPasswordResult = await _userManager.ResetPasswordAsync(user, resetPasswordDto.Token, resetPasswordDto.NewPassword);
@@ -90,21 +105,37 @@ namespace API.Controllers
             if (!resetPasswordResult.Succeeded) 
                 return BadRequest("Can not change password!");
 
-            return new UserDto
-            {
-                Username = user.UserName,
-                Token = await _tokenService.CreateToken(user),
-                Name = user.FirstName
-            };
+            return Ok();
 
         }
 
+
+        #region private method
 
         private async Task<bool> UserExist(string username)
         {
             return await _userManager.Users.AnyAsync(u => u.UserName == username.ToLower());
         }
 
+        private void setTokenCookie(string token)
+        {
+            var cookieOptions = new CookieOptions
+            {
+                HttpOnly = true,
+                Expires = DateTime.UtcNow.AddDays(7)
+            };
+            Response.Cookies.Append("refreshToken", token, cookieOptions);
+        }
+
+        private string ipAddress()
+        {
+            if (Request.Headers.ContainsKey("X-Forwarded-For"))
+                return Request.Headers["X-Forwarded-For"];
+            else
+                return HttpContext.Connection.RemoteIpAddress.MapToIPv4().ToString();
+        }
+
+        #endregion
 
     }
 }

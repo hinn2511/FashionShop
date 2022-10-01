@@ -25,8 +25,11 @@ export class AuthenticationService {
     }
 
     login(username: string, password: string) {
-        return this.http.post<any>(`${environment.apiUrl}users/authenticate`, { username, password }, { withCredentials: true })
+        return this.http.post<any>(`${environment.apiUrl}account/authenticate`, { username, password }, { withCredentials: true })
             .pipe(map(user => {
+                user.roles = [];
+                const roles = this.getDecodedToken(user.jwtToken).role;
+                Array.isArray(roles) ? user.roles = roles : user.roles.push(roles);
                 this.userSubject.next(user);
                 this.startRefreshTokenTimer();
                 return user;
@@ -34,7 +37,7 @@ export class AuthenticationService {
     }
 
     logout() {
-        this.http.post<any>(`${environment.apiUrl}users/revoke-token`, {}, { withCredentials: true }).subscribe();
+        this.http.post<any>(`${environment.apiUrl}account/revoke-token`, {}, { withCredentials: true }).subscribe();
         this.stopRefreshTokenTimer();
         this.userSubject.next(undefined);
         this.user = new Observable<User>();
@@ -42,7 +45,7 @@ export class AuthenticationService {
     }
 
     refreshToken() {
-        return this.http.post<any>(`${environment.apiUrl}users/refresh-token`, {}, { withCredentials: true })
+        return this.http.post<any>(`${environment.apiUrl}account/refresh-token`, {}, { withCredentials: true })
             .pipe(map((user) => {
                 this.userSubject.next(user);
                 this.startRefreshTokenTimer();
@@ -62,5 +65,9 @@ export class AuthenticationService {
 
     private stopRefreshTokenTimer() {
         clearTimeout(this.refreshTokenTimeout);
+    }
+
+    private getDecodedToken(token) {
+        return JSON.parse(atob(token.split('.')[1]));
     }
 }

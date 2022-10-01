@@ -10,7 +10,7 @@ namespace API.Interfaces
     {
         IUserRepository UserRepository { get; }
         IProductRepository ProductRepository { get; }
-        IPhotoRepository PhotoRepository { get; }
+        IProductPhotoRepository ProductPhotoRepository { get; }
         ICategoryRepository CategoryRepository { get; }
         ISubCategoryRepository SubCategoryRepository { get; }
         IOrderRepository OrderRepository { get; }

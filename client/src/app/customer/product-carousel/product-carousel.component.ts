@@ -12,14 +12,14 @@ export class ProductCarouselComponent implements OnInit {
 
   product: Product = {
     url: 'https://res.cloudinary.com/dsqfbwwmq/image/upload/v1643121899/o17gkl0actlmbwehcsnv.jpg',
-    productPrice: 450,
+    price: 450,
     productName: 'Product',
-    gender: '',
     slug: '',
     id: 0,
-    category: '',
+    categoryId: 1,
     sold: 0,
-    stocks: null,
+    description: "",
+    brandId: 1,
     productPhotos: null
   }
 

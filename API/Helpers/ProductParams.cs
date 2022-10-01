@@ -6,6 +6,5 @@ namespace API.Helpers
     {
         public string Category { get; set; }
         public Gender? Gender { get; set; }
-        public string OrderBy { get; set; } = "newest";
     }
 }

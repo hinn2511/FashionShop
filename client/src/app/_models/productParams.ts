@@ -3,5 +3,7 @@ export class ProductParams {
     gender = "";
     pageNumber = 1;
     pageSize = 12;
-    orderBy = 'newest'
+    orderBy = 1;
+    field = "DateCreated";
+
 }
