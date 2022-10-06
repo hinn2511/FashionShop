@@ -3,7 +3,8 @@
 </div>
 
 <div *ngIf="!hasRoute('administrator/login')">
-  <div *appHasRole='["Anonymous", "Customer"]'>
+  <div *appHasRole='["Anonymous" ,"Customer"]'>
+   <!-- <div> -->
     <app-navigation-bar></app-navigation-bar>
     <div class="container-fluid w-100 px-0 mb-5">
       <router-outlet></router-outlet>
@@ -11,11 +12,15 @@
     <app-footer></app-footer>
   </div>
 
-  <div *appHasRole='["Admin", "Manager"]'>
+  <div *appHasRole='[ "Admin", "Manager"]'>
+    <!-- <div> -->
     <div class="w-100">
       <div class="container-fluid">
         <div class="row">
-          <nav class="col-md-3 col-lg-2 d-md-block bg-light sidebar collapse">
+          <div class="col-md-3 col-lg-2 d-md-block bg-transparent">
+          </div>
+          
+          <nav class="col-md-3 col-lg-2 d-md-block bg-light sidebar collapse position-fixed">
             <div class="position-sticky pt-3">
               <ul class="nav flex-column">
                 <li class="nav-item">
@@ -97,7 +102,21 @@
             </div>
           </nav>
 
-          <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
+          
+
+          <main class="col-md-9 ms-sm-auto col-lg-10">
+
+            <div class="w-100 py-1 d-flex justify-content-end">
+                  <a class="nav-link" routerLink="">
+                    <span data-feather="file-text"></span>
+                    <!-- Hi, {{user.username}} -->
+                    Hi, Test
+                  </a>
+                  <a class="nav-link" (click)="logout()">
+                    <span data-feather="file-text"></span>
+                    Log out
+                  </a>
+            </div>
             <router-outlet></router-outlet>
 
 

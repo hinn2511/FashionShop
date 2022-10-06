@@ -51,7 +51,7 @@ namespace API
             // app.UseCors("OpenCORSPolicy");
 
             app.UseCors(x => x
-                .SetIsOriginAllowed(origin => true)
+                .SetIsOriginAllowed(x => x == "https://localhost:4200")
                 .AllowAnyMethod()
                 .AllowAnyHeader()
                 .AllowCredentials());

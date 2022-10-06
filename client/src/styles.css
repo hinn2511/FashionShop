@@ -171,3 +171,19 @@ div.carousel.slide > ol {
   height: 2vw;
 }
 
+.rect-img-container {
+  position: relative;
+}
+
+.rect-img-container::after {
+  content: "";
+  display: block;
+  padding-bottom: 100%;
+}
+
+.rect-img {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}

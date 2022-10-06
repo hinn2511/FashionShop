@@ -1,0 +1,109 @@
+<div class="container-fluid py-3" *ngIf="product">
+
+    <div class="d-flex w-100 py-1">
+        <button class="btn btn-secondary" routerLink="/administrator/product-manager">
+            <i class="fa fa-arrow-left"></i>&nbsp;&nbsp;Back
+        </button>
+    </div>
+
+    <div class="d-flex w-100 py-2 mb-3">
+        <div class="mr-auto w-100 py-2">
+            <h3 class="text-uppercase">{{product.productName}}</h3>
+        </div>
+
+        <div class="p-2">
+            <button class="btn btn-primary" routerLink="/administrator/product-manager/photos/{{product.id}}">
+                Photos
+            </button>
+        </div>
+
+        <div class="p-2">
+            <button class="btn btn-primary">
+                Options
+            </button>
+        </div>
+
+        <div class="p-2">
+            <button class="btn btn-primary">
+                Stock
+            </button>
+        </div>
+
+        <div class="p-2">
+            <button class="btn btn-warning">
+                Edit
+            </button>
+        </div>
+        <div class="p-2">
+            <button class="btn btn-danger">
+                Delete
+            </button>
+        </div>
+
+    </div>
+
+    <div class="row">
+
+        <div class="col-12">
+            <h5 class="text-muted">Product information</h5>
+            <hr>
+        </div>
+
+        <div class="col-12 col-lg-6">
+            <label for="basic-url">Product ID</label>
+            <div class="input-group mb-3">
+                <input type="text" class="form-control" [disabled]="true" [value]="product.id" id="basic-url" aria-describedby="basic-addon3">
+            </div>
+
+            <label for="basic-url">Product name</label>
+            <div class="input-group mb-3">
+                <input type="text" class="form-control" [disabled]="true" [value]="product.productName" id="basic-url" aria-describedby="basic-addon3">
+            </div>
+
+            <label for="basic-url">Price</label>
+            <div class="input-group mb-3">
+                <input type="text" class="form-control" [disabled]="true" [value]="product.price" id="basic-url" aria-describedby="basic-addon3">
+            </div>
+        </div>
+
+        <div class="col-12 col-lg-6">
+            <label for="basic-url">Category</label>
+            <div class="input-group mb-3">
+                <input type="text" class="form-control" [disabled]="true" [value]="product.categoryId" id="basic-url" aria-describedby="basic-addon3">
+            </div>
+
+            <label for="basic-url">Sub category</label>
+            <div class="input-group mb-3">
+                <input type="text" class="form-control" [disabled]="true" [value]="product.subCategoryId" id="basic-url" aria-describedby="basic-addon3">
+            </div>
+
+            <label for="basic-url">Brand</label>
+            <div class="input-group mb-3">
+                <input type="text" class="form-control" [disabled]="true" [value]="product.brandId" id="basic-url" aria-describedby="basic-addon3">
+            </div>
+        </div>
+
+        <div class="col-12">
+            <label for="basic-url">Desciption</label>
+            <div class="input-group mb-3">
+                <textarea rows="4" class="form-control" [disabled]="true" [value]="product.description" id="basic-url" aria-describedby="basic-addon3"></textarea>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="row mt-lg-5">
+
+        <div class="col-12">
+            <h5 class="text-muted">Product photos</h5>
+            <hr>
+        </div>
+
+        <div class="col-4 col-lg-2" *ngFor="let item of product.productPhotos">
+            <div class="rect-img-container">
+                <img class="rect-img" src="{{item.url}}" alt="">
+            </div>
+        </div>
+    
+    </div>
+</div>

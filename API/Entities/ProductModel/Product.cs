@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using API.Entities.Other;
 
@@ -19,7 +20,17 @@ namespace API.Entities.ProductModel
         public double Price { get; set; }
         public int Sold { get; set; }
         public string Description { get; set; }
+        public ProductStatus Status { get; set; }
+
+        [JsonIgnore]
         public ICollection<Option> Options { get; set; }
         public ICollection<ProductPhoto> ProductPhotos { get; set; }
     }
+
+    public enum ProductStatus {
+        Active,
+        Hidden, 
+        Deleted
+    }
+
 }

@@ -12,6 +12,9 @@ import { ProductListComponent } from './customer/product-list/product-list.compo
 import { AuthGuard } from './_guards/auth.guard';
 import { AdminLoginComponent } from './administrator/admin-login/admin-login.component';
 import { AdminProductComponent } from './administrator/admin-product/admin-product.component';
+import { AdminProductAddComponent } from './administrator/admin-product-add/admin-product-add.component';
+import { AdminProductDetailComponent } from './administrator/admin-product-detail/admin-product-detail.component';
+import { AdminProductPhotoComponent } from './administrator/admin-product-photo/admin-product-photo.component';
 
 const routes: Routes = [
   {path: '', component: HomePageComponent},
@@ -21,6 +24,9 @@ const routes: Routes = [
   {path: 'my-cart', component: CartComponent},
   {path: 'administrator/login', component: AdminLoginComponent},
   {path: 'administrator/product-manager', component: AdminProductComponent, canActivate: [AuthGuard] },
+  {path: 'administrator/product-manager/add', component: AdminProductAddComponent, canActivate: [AuthGuard] },
+  {path: 'administrator/product-manager/detail/:id', component: AdminProductDetailComponent, canActivate: [AuthGuard] },
+  {path: 'administrator/product-manager/photos/:id', component: AdminProductPhotoComponent, canActivate: [AuthGuard] },
   //{path: 'administrator/product-manager', component: AdminProductComponent},
 
 

@@ -1,0 +1,11 @@
+.product-item:hover {
+    background-color: rgb(176, 176, 176);
+}
+
+.product-item {
+    z-index: 1;
+}
+
+input[type="checkbox"] {
+    z-index: 100;
+}

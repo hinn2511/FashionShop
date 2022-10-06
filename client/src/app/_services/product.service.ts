@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { of } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
-import { AddProduct, EditProduct, Product } from '../_models/product';
+import { AddProduct, Brand, Category, EditProduct, Product, SubCategory } from '../_models/product';
 import { ProductParams } from '../_models/productParams';
 import { getPaginatedResult, getPaginationHeaders } from './paginationHelper';
 
@@ -13,6 +13,19 @@ import { getPaginatedResult, getPaginationHeaders } from './paginationHelper';
 export class ProductService {
   baseUrl = environment.apiUrl;
   products: Product[] = [];
+
+  public getSelectedProductId(): number {
+    return +(localStorage.getItem("selectedProductId"));
+  }
+
+  public setSelectedProductId(value: number) {
+    localStorage.setItem("selectedProductId", value.toString())
+  }
+
+  public removeSelectedProductId() {
+    localStorage.removeItem("selectedProductId")
+  }
+
   productCache = new Map();
   productParams: ProductParams;
   
@@ -70,8 +83,12 @@ export class ProductService {
     }
   }
 
+  removeCache() {
+    this.productCache.clear();
+  }
+
   addProduct(product: AddProduct) {
-    return this.http.post<AddProduct>(this.baseUrl + 'product/add', product);
+    return this.http.post<AddProduct>(this.baseUrl + 'product/create', product);
   }
 
   editProduct(product: EditProduct) {
@@ -80,6 +97,18 @@ export class ProductService {
 
   deleteProduct(id: number) {
     return this.http.delete(this.baseUrl + 'product/delete/' + id);
+  }
+
+  getCategories() {
+    return this.http.get<Category[]>(this.baseUrl + 'category');
+  }
+
+  getSubCategories(categoryId: number) {
+    return this.http.get<SubCategory[]>(this.baseUrl + 'category/' + categoryId + "/subCategories");
+  }
+
+  getBrands() {
+    return this.http.get<Brand[]>(this.baseUrl + 'brand');
   }
 
 }

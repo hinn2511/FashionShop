@@ -10,6 +10,7 @@ using API.Extensions;
 using API.Interfaces;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers
@@ -18,29 +19,34 @@ namespace API.Controllers
     public class UserController : BaseApiController
     {
         private readonly IMapper _mapper;
+        private readonly SignInManager<AppUser> _signInManager;
         private readonly IUnitOfWork _unitOfWork;
-        public UserController(IMapper mapper, IUnitOfWork unitOfWork)
+        private readonly UserManager<AppUser> _userManager;
+        public UserController(IMapper mapper, IUnitOfWork unitOfWork, UserManager<AppUser> userManager, SignInManager<AppUser> signInManager)
         {
+            _userManager = userManager;
             _unitOfWork = unitOfWork;
             _mapper = mapper;
+            _signInManager = signInManager;
         }
+
 
         #region user information
         [HttpGet]
         public async Task<ActionResult<CustomerDto>> GetUser()
         {
-            var currentUsername = User.GetUsername();
-            return await _unitOfWork.UserRepository.GetUserAsync(currentUsername);
+            var user = await _userManager.FindByIdAsync(User.GetUserId().ToString());
+            return _mapper.Map<CustomerDto>(user);
         }
 
         [HttpPut]
         public async Task<ActionResult> UpdateUser(CustomerUpdateDto CustomerUpdateDto)
         {
-            var user = await _unitOfWork.UserRepository.GetUserByUsernameAsync(User.GetUsername());
+             var user = await _userManager.FindByIdAsync(User.GetUserId().ToString());
 
             _mapper.Map(CustomerUpdateDto, user);
 
-            _unitOfWork.UserRepository.Update(user);
+            await _userManager.UpdateAsync(user);
 
             if (await _unitOfWork.Complete()) return NoContent();
 
@@ -54,7 +60,7 @@ namespace API.Controllers
         [HttpGet("favorite")]
         public async Task<ActionResult> GetUserFavorite()
         {
-            return Ok(await _unitOfWork.UserRepository.GetAllUserLikes(User.GetUserId()));
+            return Ok();
         }
 
         [HttpPost("favorite/{productId}")]
@@ -63,10 +69,10 @@ namespace API.Controllers
             if (await _unitOfWork.ProductRepository.GetById(productId) == null)
                 return BadRequest("Product not found");
 
-            if (await _unitOfWork.UserRepository.GetUserLike(User.GetUserId(), productId) != null)
+            if (await _unitOfWork.UserLikeRepository.GetAllBy(x => x.UserId == User.GetUserId()) != null)
                 return BadRequest("The product has been liked by you.");
 
-            _unitOfWork.UserRepository.AddToFavorite(new UserLike() {
+            _unitOfWork.UserLikeRepository.Insert(new UserLike() {
                 ProductId = productId,
                 UserId = User.GetUserId(),
                 DateCreated = DateTime.UtcNow,
@@ -84,11 +90,12 @@ namespace API.Controllers
             if (await _unitOfWork.ProductRepository.GetById(productId) == null)
                 return BadRequest("Product not found");
 
-            var userLike = await _unitOfWork.UserRepository.GetUserLike(User.GetUserId(), productId);
+            var userLike = await _unitOfWork.UserLikeRepository
+                        .GetFirstBy(x => x.UserId == User.GetUserId() && x.ProductId == productId);
             if (userLike == null)
                 return BadRequest("The product has not been liked by you.");
 
-            _unitOfWork.UserRepository.RemoveFromFavorite(userLike);
+            _unitOfWork.UserLikeRepository.Delete(userLike.Id);
 
             if (await _unitOfWork.Complete())
                 return Ok();
@@ -101,7 +108,7 @@ namespace API.Controllers
         [HttpGet("cart")]
         public async Task<ActionResult> GetUserCart()
         {
-            return Ok(await _unitOfWork.UserRepository.GetCartItemsByUserId(User.GetUserId()));
+            return Ok(await _unitOfWork.CartRepository.GetAllBy(x => x.UserId == User.GetUserId()));
         }
 
         [HttpPost("cart")]
@@ -113,11 +120,14 @@ namespace API.Controllers
             if (cartRequest.Quantity < 1)
                 return BadRequest("Quantity not valid.");
 
-            if (await _unitOfWork.UserRepository.GetCartItemByUserIdAndOptId(User.GetUserId(), cartRequest.OptionId) != null)
+            if (await _unitOfWork.CartRepository
+                    .GetFirstBy(x => x.UserId == User.GetUserId() 
+                        && x.OptionId == cartRequest.OptionId) != null)
+
                 return BadRequest("Can item already exist.");
 
 
-            _unitOfWork.UserRepository.AddItemToCart(new Cart() {
+            _unitOfWork.CartRepository.Insert(new Cart() {
                 OptionId = cartRequest.OptionId,
                 UserId = User.GetUserId(),
                 Quantity = cartRequest.Quantity,
@@ -133,7 +143,9 @@ namespace API.Controllers
         [HttpPut("cart")]
         public async Task<ActionResult> UpdateCartItem(UpdateCartRequest updateCartRequest)
         {
-            var cartItem = await _unitOfWork.UserRepository.GetCartItemByUserIdAndOptId(User.GetUserId(), updateCartRequest.OptionId);
+            var cartItem = await _unitOfWork.CartRepository
+                    .GetFirstBy(x => x.UserId == User.GetUserId() 
+                        && x.OptionId == updateCartRequest.OptionId);
             if (cartItem == null)
                 return BadRequest("Can item not exist.");
 
@@ -149,7 +161,7 @@ namespace API.Controllers
             cartItem.OptionId = updateCartRequest.OptionId;
             cartItem.Quantity = updateCartRequest.Quantity;
 
-            _unitOfWork.UserRepository.UpdateCartItem(cartItem);
+            _unitOfWork.CartRepository.Update(cartItem);
 
             if (await _unitOfWork.Complete())
                 return Ok();
@@ -159,11 +171,14 @@ namespace API.Controllers
         [HttpDelete("cart/{optionId}")]
         public async Task<ActionResult> RemoveFromCart(int optionId)
         {
-            var cartItem = await _unitOfWork.UserRepository.GetCartItemByUserIdAndOptId(User.GetUserId(), optionId);
+            var cartItem = await _unitOfWork.CartRepository
+                    .GetFirstBy(x => x.UserId == User.GetUserId() 
+                        && x.OptionId == optionId);
             if (cartItem == null)
                 return BadRequest("Can item not exist.");
 
-            _unitOfWork.UserRepository.RemoveItemFromCart(cartItem);
+
+            _unitOfWork.CartRepository.Delete(cartItem.Id);
 
             if (await _unitOfWork.Complete())
                 return Ok();

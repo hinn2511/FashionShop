@@ -1,10 +1,13 @@
 using System.Linq;
+using System.Net;
 using API.DTOs;
 using API.DTOs.Customer;
 using API.DTOs.Order;
 using API.DTOs.Product;
 using API.DTOs.Request.ConfigurationRequest;
+using API.DTOs.Request.ProductRequest;
 using API.DTOs.Response;
+using API.DTOs.Response.OptionResponse;
 using API.Entities;
 using API.Entities.OrderModel;
 using API.Entities.Other;
@@ -20,20 +23,38 @@ namespace API.Helpers
     {
         public AutoMapperProfiles()
         {
+            // authentication
             CreateMap<RegisterDto, AppUser>();
 
-            CreateMap<Product, CustomerGetAllProductResponse>()
+            // Admin product
+
+            CreateMap<Product, AdminProductsResponse>()
                 .ForMember(dest => dest.Url, opt => opt.MapFrom(
                           src => src.ProductPhotos.FirstOrDefault(pp => pp.IsMain).Url));
 
-            CreateMap<ProductPhoto, ProductPhotoResponse>();
+            CreateMap<ProductPhoto, AdminProductPhotoResponse>();
+
+
+            // Customer
+
+            CreateMap<Product, CustomerProductsResponse>()
+                .ForMember(dest => dest.Url, opt => opt.MapFrom(
+                          src => src.ProductPhotos.FirstOrDefault(pp => pp.IsMain).Url));
+
+            CreateMap<ProductPhoto, CustomerProductPhotoResponse>();
+
+            CreateMap<Color, OptionColorResponse>();
+
+            CreateMap<Size, OptionSizeResponse>();
+            
             
 
             CreateMap<Product, ProductDto>()
                .ForMember(dest => dest.Category, opt => opt.MapFrom(
                           src => src.Category.CategoryName));
 
-            CreateMap<AddProductDto, Product>();
+            CreateMap<CreateProductRequest, Product>()
+                ;
 
             CreateMap<UpdateProductDto, Product>();
 

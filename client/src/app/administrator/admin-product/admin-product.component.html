@@ -1,3 +1,73 @@
-<div class="container-fluid">
+<div class="container-fluid px-3">
     <h3>Product Manager</h3>
+
+    <div class="d-flex w-100 py-2 mb-3">
+        <div class="mr-auto w-100 p-2">
+            <div class="input-group mb-3">
+                <input type="text" class="form-control" placeholder="Product..." aria-label="Recipient's username"
+                    aria-describedby="button-addon2">
+                <div class="input-group-append">
+                    <button class="btn btn-primary" type="button" id="button-addon2">Search</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="p-2">
+            <button class="btn btn-success" routerLink="/administrator/product-manager/add">
+                Create
+            </button>
+        </div>
+
+        <div class="p-2">
+            <button class="btn btn-warning">
+                Edit
+            </button>
+        </div>
+
+        <div class="p-2">
+            <button class="btn btn-danger">
+                Delete
+            </button>
+        </div>
+    </div>
+
+    <div class="table-responsive w-100">
+        <table class="table table-striped">
+            <thead class="bg-light">
+                <tr>
+                    <th scope="col">
+                        <input type="checkbox">
+                    </th>
+                    <th scope="col">Id</th>
+                    <th scope="col">Product name</th>
+                    <th scope="col">Price (USD)</th>
+                    <th scope="col">Sold</th>
+                    <th scope="col">Status</th>
+                </tr>
+            </thead>
+            <tbody>
+
+                <tr class="product-item" *ngFor="let product of products" >
+                    <td>
+                        <input type="checkbox" [value]="product.Id">
+                    </td>
+                    <td (click)="viewDetail(product.id)">{{product.id}}</td>
+                    <td (click)="viewDetail(product.id)">{{product.productName}}</td>
+                    <td (click)="viewDetail(product.id)">{{product.price}}</td>
+                    <td (click)="viewDetail(product.id)">{{product.sold}}</td>
+                    <td (click)="viewDetail(product.id)">NaN</td>
+                </tr>
+
+
+            </tbody>
+        </table>
+
+        <div class="w-100 d-flex justify-content-end mt-5" *ngIf="pagination">
+            <pagination [boundaryLinks]="true" [totalItems]="pagination.totalItems"
+                [itemsPerPage]="pagination.itemsPerPage" [(ngModel)]="pagination.currentPage"
+                (pageChanged)="pageChanged($event)" previousText="Previous" nextText="Next" firstText="First"
+                lastText="Last">
+            </pagination>
+        </div>
+    </div>
 </div>

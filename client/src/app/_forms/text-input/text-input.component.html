@@ -7,19 +7,19 @@
         placeholder={{label}}>
         <div *ngIf="ngControl.control.errors?.required"
             class="invalid-feedback">
-            Please enter {{ label }}
+            This field is required
         </div>
         <div *ngIf="ngControl.control.errors?.minlength"
             class="invalid-feedback">
-            {{label}} must have atleast {{ngControl.control.errors.minlength['requiredLength']}} characters
+            This field must have atleast {{ngControl.control.errors.minlength['requiredLength']}} characters
         </div>
         <div *ngIf="ngControl.control.errors?.maxlength"
             class="invalid-feedback">
-            {{label}} can not have more than {{ngControl.control.errors.maxlength['requiredLength']}} characters
+            This field can not have more than {{ngControl.control.errors.maxlength['requiredLength']}} characters
         </div>
         <div *ngIf="ngControl.control.errors?.pattern"
             class="invalid-feedback">
-            {{label}} not valid
+            This field not valid
         </div>
         <div *ngIf="ngControl.control.errors?.isMatching"
             class="invalid-feedback">

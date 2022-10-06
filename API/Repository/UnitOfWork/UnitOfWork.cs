@@ -19,7 +19,8 @@ namespace API.Data
             _context = context;
         }
 
-        public IUserRepository UserRepository => new UserRepository(_context, _mapper);
+        public IUserLikeRepository UserLikeRepository => new UserLikeRepository(_context, _context.UserLikes);
+        public ICartRepository CartRepository => new CartRepository(_context, _context.Carts);
         public IProductRepository ProductRepository => new ProductRepository(_context,  _context.Products);
         public ICategoryRepository CategoryRepository => new CategoryRepository(_context, _context.Categories);
         public ISubCategoryRepository SubCategoryRepository => new SubCategoryRepository(_context, _context.SubCategories);

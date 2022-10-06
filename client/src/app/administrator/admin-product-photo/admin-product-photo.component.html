@@ -1,0 +1,120 @@
+<div class="container-fluid py-3" *ngIf="product">
+
+    <div class="d-flex w-100 py-1">
+        <button class="btn btn-secondary" routerLink="/administrator/product-manager/detail/{{product.id}}">
+            <i class="fa fa-arrow-left"></i>&nbsp;&nbsp;Back
+        </button>
+    </div>
+
+    <div class="d-flex w-100 py-2 mb-3">
+        <div class="mr-auto w-100 py-2">
+            <h3 class="text-uppercase">{{product.productName}}</h3>
+        </div>
+    </div>
+    
+    <div class="d-flex w-100 py-2 mb-5">
+        <div class="mr-auto w-100 py-2">
+            <h5>Photo gallery</h5>
+            <hr>
+            <div class="row">
+                <div class="col-4 col-lg-2" *ngFor="let item of productPhotos">
+                    <div class="rect-img-container position-relative" >
+                        <img class="rect-img" [class.rect-img-faded]="item.isHidden" src="{{item.url}}" alt="">
+                    </div>
+                    <div class="rect-img-badge position-absolute">
+                        <span *ngIf="item.isMain" class="badge badge-danger">Main photo</span>
+                        <span *ngIf="!item.isMain && !item.isHidden " class="badge badge-info">Normal photo</span>
+                        <span *ngIf="item.isHidden" class="badge badge-secondary">Hidden</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    
+
+
+
+    <div class="d-flex w-100 py-2">
+        <div class="mr-auto w-100 py-2">
+            <h5>Upload photo</h5>
+            <hr>
+            <div class="mt-4">
+                <div class="row">
+                    <div class="col-md-3">
+                        <h6>Select files</h6>
+
+                        <div ng2FileDrop [ngClass]="{'nv-file-over': hasBaseDropzoneOver }"
+                            (fileOver)="fileOverBase($event)" [uploader]="uploader"
+                            class="card bg-faded p-3 text-center mb-3 my-drop-zone">
+                            <i class="fa fa-upload fa-3x"></i>
+                            Drop photos here
+                        </div>
+
+                        <h6>Multiple</h6>
+                        <input class="form-control" type="file" ng2FileSelect [uploader]="uploader" multiple /><br />
+
+                        <div class="container mb-2"></div>
+                        <h6>Single</h6>
+
+                        <input class="form-control" type="file" ng2FileSelect [uploader]="uploader" />
+                    </div>
+
+                    <div class="col-md-9" style="margin-bottom: 40px" *ngIf="uploader?.queue?.length">
+
+                        <h6>Upload queue</h6>
+                        <p>Queue length: {{ uploader?.queue?.length }}</p>
+
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th width="50%">Name</th>
+                                    <th>Size</th>
+
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr *ngFor="let item of uploader.queue">
+                                    <td><strong>{{ item?.file?.name }}</strong></td>
+                                    <td *ngIf="uploader.options.isHTML5" nowrap>{{ item?.file?.size/1024/1024 |
+                                        number:'.2' }} MB</td>
+
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <div>
+                            <div>
+                                Queue progress:
+                                <div class="progress mb-3">
+                                    <div class="progress-bar" role="progressbar"
+                                        [ngStyle]="{ 'width': uploader.progress + '%' }"></div>
+                                </div>
+                            </div>
+                            <button type="button" class="btn btn-success btn-s mr-4" (click)="uploader.uploadAll()"
+                                [disabled]="!uploader.getNotUploadedItems().length">
+                                <span class="fa fa-upload"></span> Upload all
+                            </button>
+                            <button type="button" class="btn btn-warning btn-s mr-4" (click)="uploader.cancelAll()"
+                                [disabled]="!uploader.isUploading">
+                                <span class="fa fa-ban"></span> Cancel all
+                            </button>
+                            <button type="button" class="btn btn-danger btn-s" (click)="uploader.clearQueue()"
+                                [disabled]="!uploader.queue.length">
+                                <span class="fa fa-trash"></span> Remove all
+                            </button>
+                        </div>
+
+                    </div>
+
+
+                </div>
+
+
+            </div>
+        </div>
+
+
+    </div>
+
+</div>

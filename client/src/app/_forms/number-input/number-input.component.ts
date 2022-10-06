@@ -10,21 +10,18 @@ export class NumberInputComponent implements ControlValueAccessor {
 
   @Input() label: string;
   @Input() type = 'number';
-  @Input() min: number;
-  @Input() max: number; 
 
   constructor(@Self() public ngControl: NgControl) {
     this.ngControl.valueAccessor = this;
   }
 
   writeValue(obj: any): void {
-    throw new Error('Method not implemented.');
   }
+
   registerOnChange(fn: any): void {
-    throw new Error('Method not implemented.');
   }
+  
   registerOnTouched(fn: any): void {
-    throw new Error('Method not implemented.');
   }
 
   ngOnInit(): void {

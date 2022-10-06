@@ -45,6 +45,10 @@ import { HasRoleDirective } from './_directives/has-role.directive';
 import { AdminSidebarComponent } from './administrator/admin-sidebar/admin-sidebar.component';
 import { AdminLoginComponent } from './administrator/admin-login/admin-login.component';
 import { AdminProductComponent } from './administrator/admin-product/admin-product.component';
+import { AdminProductAddComponent } from './administrator/admin-product-add/admin-product-add.component';
+import { SafeurlPipe } from './_pipes/safeurl.pipe';
+import { AdminProductDetailComponent } from './administrator/admin-product-detail/admin-product-detail.component';
+import { AdminProductPhotoComponent } from './administrator/admin-product-photo/admin-product-photo.component';
 
 
 @NgModule({
@@ -84,6 +88,10 @@ import { AdminProductComponent } from './administrator/admin-product/admin-produ
     AdminSidebarComponent,
     AdminLoginComponent,
     AdminProductComponent,
+    AdminProductAddComponent,
+    SafeurlPipe,
+    AdminProductDetailComponent,
+    AdminProductPhotoComponent,
   ],
   imports: [
     BrowserModule,
@@ -95,7 +103,7 @@ import { AdminProductComponent } from './administrator/admin-product/admin-produ
     SharedModule
   ],
   providers: [
-   // { provide: APP_INITIALIZER, useFactory: appInitializer, multi: true, deps: [AuthenticationService] },
+    { provide: APP_INITIALIZER, useFactory: appInitializer, multi: true, deps: [AuthenticationService] },
     { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true },
     { provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true },
 ],

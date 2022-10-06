@@ -22,12 +22,17 @@ namespace API.Interfaces
 
     public interface IProductRepository : IGenericRepository<Product>
     {
-        Task<PagedList<Product>> GetProductsAsCustomerAsync(ProductParams productParams);
+        Task<PagedList<Product>> GetProductsAsync(CustomerProductParams productParams);
+
+        Task<PagedList<Product>> GetProductsAsync(AdministratorProductParams productParams);
+
+        Task<Product> GetProductWithPhotoAsync(int productId);
+
     }
 
     public interface IProductOptionRepository : IGenericRepository<Option>
     {
-
+        Task<IEnumerable<Option>> GetProductOptionsAsync(int productId);
     }
 
     public interface ISizeRepository : IGenericRepository<Size>

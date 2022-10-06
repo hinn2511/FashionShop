@@ -51,18 +51,9 @@ export class ProductPhotoManagementComponent implements OnInit {
     }
     this.uploader.onSuccessItem = (item, response, status, headers ) => {
       if (response) {
-         const photo: ProductPhoto = JSON.parse(response);
-        // console.log(photo);
+        const photo: ProductPhoto = JSON.parse(response);
         this.photos.push(photo);
         this.productService.removeProductCache(this.product.id);
-        // const photo: ProductPhoto = JSON.parse(response);
-        // this.member.photos.push(photo);
-        // if (photo.isMain) {
-        //   this.user.photoUrl = photo.url;
-        //   this.member.photoUrl = photo.url;
-        //   this.accountService.setCurrentUser(this.user);
-
-        // }
       }
     }
 

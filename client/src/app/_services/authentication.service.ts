@@ -38,10 +38,17 @@ export class AuthenticationService {
 
     logout() {
         this.http.post<any>(`${environment.apiUrl}account/revoke-token`, {}, { withCredentials: true }).subscribe();
+        
+        let bussinessRole: string[] = [  "Admin", "Manager" ];
+        let logoutRoute = "/login"
+        if (this.userValue?.roles.some(r => bussinessRole)) {
+            logoutRoute = "/administrator/login";
+        }
+
         this.stopRefreshTokenTimer();
         this.userSubject.next(undefined);
         this.user = new Observable<User>();
-        this.router.navigate(['/login']);
+        this.router.navigate([logoutRoute]);
     }
 
     refreshToken() {

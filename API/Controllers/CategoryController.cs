@@ -14,7 +14,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers
 {
-    [Authorize]
+    
     public class CategoryController : BaseApiController
     {
         private readonly IMapper _mapper;
@@ -49,6 +49,7 @@ namespace API.Controllers
             return BadRequest("Error when add category");
         }
 
+        [Authorize]
         [HttpPut]
         public async Task<ActionResult<Category>> UpdateCategory(UpdateCategoryDto updateCategoryDto)
         {
@@ -89,6 +90,14 @@ namespace API.Controllers
 
 
         #region sub category
+        
+        [HttpGet("{id}/subCategories")]
+        public async Task<ActionResult> GetSubCategoriesAsCustomer(int id)
+        {
+            return Ok(await _unitOfWork.SubCategoryRepository.GetAllBy(x => x.CategoryId == id));
+        }
+
+
         [HttpPost("subCategory")]
         public async Task<ActionResult<CustomerCategoryDto>> AddSubCategory(SubCategoryRequest subCategoryRequest)
         {
