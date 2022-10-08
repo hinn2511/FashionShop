@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+using API.Entities;
 using API.Entities.ProductModel;
 
 namespace API.Helpers
@@ -16,6 +18,6 @@ namespace API.Helpers
 
     public class AdministratorProductParams : BaseProductParams
     {
-        public ProductStatus Status { get; set; }
+        public IList<Status> ProductStatus { get; set; } = new List<Status>() { Status.Active };
     }
 }

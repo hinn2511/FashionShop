@@ -35,7 +35,7 @@ namespace API.Helpers.Authorization
         {
             var claims = new List<Claim>
             {
-                new Claim("id", user.Id.ToString()),
+                new Claim(JwtRegisteredClaimNames.NameId, user.Id.ToString()),
                 new Claim(JwtRegisteredClaimNames.UniqueName, user.UserName),
             };
 
@@ -76,7 +76,7 @@ namespace API.Helpers.Authorization
                 }, out SecurityToken validatedToken);
 
                 var jwtToken = (JwtSecurityToken)validatedToken;
-                var userId = int.Parse(jwtToken.Claims.First(x => x.Type == "id").Value);
+                var userId = int.Parse(jwtToken.Claims.First(x => x.Type == JwtRegisteredClaimNames.NameId).Value);
 
                 // return user id from JWT token if validation successful
                 return userId;

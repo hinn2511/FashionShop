@@ -26,7 +26,7 @@ namespace API.Interfaces
 
         Task<PagedList<Product>> GetProductsAsync(AdministratorProductParams productParams);
 
-        Task<Product> GetProductWithPhotoAsync(int productId);
+        Task<Product> GetProductDetailWithPhotoAsync(int productId);
 
     }
 

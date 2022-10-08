@@ -13,6 +13,10 @@ namespace API.Repository.GenericRepository
         Task<T> GetFirstBy(Expression<Func<T, bool>> expression);
         void Insert(T obj);
         void Update(T obj);
-        void Delete(object id);
+        void Delete(int id);
+
+        void BulkInsert(IEnumerable<T> objs);
+        void BulkUpdate(IEnumerable<T> objs);
+        void BulkDelete(IEnumerable<int> ids);
     }
 }

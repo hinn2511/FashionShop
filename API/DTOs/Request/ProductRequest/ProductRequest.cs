@@ -19,4 +19,30 @@ namespace API.DTOs.Request.ProductRequest
     {
 
     }
+
+    public class UpdateProductRequest : ProductRequest
+    {
+
+    }
+
+    public class DeleteProductsRequest : BaseBulkRequest
+    {
+
+    }
+
+    public class HideProductsRequest : BaseBulkRequest
+    {
+
+    }
+
+    public class DeleteProductPhotosRequest : BaseBulkRequest
+    {
+
+    }
+
+    public class HideProductPhotosRequest : BaseBulkRequest
+    {
+
+    }
+
 }

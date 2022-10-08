@@ -30,7 +30,7 @@ namespace API.Data
         {
             var query = _context.Products.AsQueryable();
 
-            query = query.Where(x => x.Status != ProductStatus.Hidden || x.Status != ProductStatus.Deleted);
+            query = query.Where(x => x.Status != Status.Hidden && x.Status != Status.Deleted);
             
             if(productParams.Gender != null)
                 query = query.Where(p => p.Category.Gender == productParams.Gender);
@@ -40,12 +40,11 @@ namespace API.Data
 
             if(!string.IsNullOrEmpty(productParams.Query))
             {   
-                var words = productParams.Query.RemoveSpecialCharacters().ToUpper().Split(" ");
-                // foreach(var word in words)
-                // {
-                //     query = query.Where(x => x.ProductName.ToUpper().Contains(word));
-                // }
-                query = query.Where(x => x.ProductName.ToUpper().Split(" ", System.StringSplitOptions.None).Intersect(words).Any());
+                var words = productParams.Query.RemoveSpecialCharacters().ToUpper().Split(" ").Distinct();
+                foreach(var word in words)
+                {
+                    query = query.Where(x => x.ProductName.ToUpper().Contains(word));
+                }
             }
 
             if (productParams.OrderBy == OrderBy.Ascending) 
@@ -69,7 +68,7 @@ namespace API.Data
                 };
             }
 
-            query = query.Include(x => x.ProductPhotos);            
+            query = query.Include(x => x.ProductPhotos.Where(x => x.Status == Status.Active));            
 
             return await PagedList<Product>.CreateAsync(query, productParams.PageNumber, productParams.PageSize);
         }
@@ -78,7 +77,7 @@ namespace API.Data
         {
             var query = _context.Products.AsQueryable();
 
-            query = query.Where(x => x.Status == productParams.Status);
+            query = query.Where(x => productParams.ProductStatus.Contains(x.Status));
             
             if(productParams.Gender != null)
                 query = query.Where(p => p.Category.Gender == productParams.Gender);
@@ -88,12 +87,11 @@ namespace API.Data
 
             if(!string.IsNullOrEmpty(productParams.Query))
             {   
-                var words = productParams.Query.RemoveSpecialCharacters().ToUpper().Split(" ");
-                // foreach(var word in words)
-                // {
-                //     query = query.Where(x => x.ProductName.ToUpper().Contains(word));
-                // }
-                query = query.Where(x => x.ProductName.ToUpper().Split(" ", System.StringSplitOptions.None).Intersect(words).Any());
+                var words = productParams.Query.RemoveSpecialCharacters().ToUpper().Split(" ").Distinct();
+                foreach(var word in words)
+                {
+                    query = query.Where(x => x.ProductName.ToUpper().Contains(word));
+                }
             }            
 
             if (productParams.OrderBy == OrderBy.Ascending) 
@@ -122,9 +120,18 @@ namespace API.Data
             return await PagedList<Product>.CreateAsync(query, productParams.PageNumber, productParams.PageSize);
         }
 
-        public async Task<Product> GetProductWithPhotoAsync(int productId)
+        public async Task<Product> GetProductDetailWithPhotoAsync(int productId)
         {
-            return await _context.Products.Include(x => x.ProductPhotos).AsNoTracking().FirstOrDefaultAsync(x => x.Id == productId);
+            
+            var product = await _context.Products
+                        .Include(x => x.Category)
+                        .Include(x => x.Brand)
+                        .Include(x => x.SubCategory)
+                        .Include(x => x.ProductPhotos)
+                        .AsNoTracking()
+                        .FirstOrDefaultAsync(x => x.Id == productId);
+
+            return product;
         }
     }
     public class ColorRepository : GenericRepository<Color>, IColorRepository

@@ -7,6 +7,7 @@ using API.Entities;
 using API.Entities.User;
 using API.Entities.UserModel;
 using API.Extensions;
+using API.Helpers;
 using API.Interfaces;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
@@ -15,7 +16,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers
 {
-    [Authorize]
+    [Authorize(Policy = "CustomerOnly")]
     public class UserController : BaseApiController
     {
         private readonly IMapper _mapper;
@@ -58,9 +59,10 @@ namespace API.Controllers
         #region user favorites
 
         [HttpGet("favorite")]
-        public async Task<ActionResult> GetUserFavorite()
+        public async Task<ActionResult> GetUserFavorite(CustomerProductParams customerProductParams)
         {
-            return Ok();
+            var productsLiked = await _unitOfWork.UserLikeRepository.GetUserFavoriteProductsAsync(User.GetUserId(), customerProductParams);
+            return Ok(productsLiked);
         }
 
         [HttpPost("favorite/{productId}")]

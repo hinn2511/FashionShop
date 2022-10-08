@@ -6,7 +6,8 @@
     "Price": 450,
     "DateCreated": "2022-01-22T05:43:53.9444655Z",
     "Sold": 0, 
-    "BrandId": 1
+    "BrandId": 1,
+    "Status": 0
   },
   {
     "ProductName": "Gucci Dress",
@@ -15,7 +16,8 @@
     "Price": 140,
     "DateCreated": "2022-01-22T05:43:53.9444655Z",
     "Sold": 0, 
-    "BrandId": 1
+    "BrandId": 1,
+    "Status": 0
   },
   {
     "ProductName": "Chanel Bag",
@@ -24,7 +26,8 @@
     "Price": 240,
     "DateCreated": "2022-01-22T05:43:53.9444655Z",
     "Sold": 0, 
-    "BrandId": 1
+    "BrandId": 1,
+    "Status": 0
   },
   {
     "ProductName": "Chanel Coat",
@@ -33,7 +36,8 @@
     "Price": 340,
     "DateCreated": "2022-01-22T05:43:53.9444655Z",
     "Sold": 0, 
-    "BrandId": 1
+    "BrandId": 1,
+    "Status": 0
   },
   {
     "ProductName": "Zara Bag",
@@ -42,6 +46,7 @@
     "Price": 740,
     "DateCreated": "2022-01-22T05:43:53.9444655Z",
     "Sold": 0, 
-    "BrandId": 1
+    "BrandId": 1,
+    "Status": 0
   }
 ]

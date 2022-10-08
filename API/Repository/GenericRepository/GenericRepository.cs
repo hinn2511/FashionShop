@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace API.Repository.GenericRepository
 {
-   public class GenericRepository<T> : IGenericRepository<T> where T : class
+    public class GenericRepository<T> : IGenericRepository<T> where T : class
     {
         private DataContext _context = null;
         private DbSet<T> table = null;
@@ -36,20 +36,44 @@ namespace API.Repository.GenericRepository
         {
             table.Add(obj);
         }
+
+        public void BulkInsert(IEnumerable<T> objs)
+        {
+            table.AddRange(objs);
+        }
+
         public void Update(T obj)
         {
             table.Attach(obj);
             _context.Entry(obj).State = EntityState.Modified;
         }
-        public void Delete(object id)
+
+        public void BulkUpdate(IEnumerable<T> objs)
+        {
+            table.AttachRange(objs);
+            foreach (var obj in objs)
+                _context.Entry(obj).State = EntityState.Modified;
+        }
+
+
+        public void Delete(int id)
         {
             T existing = table.Find(id);
             table.Remove(existing);
         }
 
+        public void BulkDelete(IEnumerable<int> ids)
+        {
+            foreach (var id in ids)
+            {
+                T existing = table.Find(id);
+                table.RemoveRange(existing);
+            }
+        }
+
         public async Task<T> GetFirstBy(Expression<Func<T, bool>> expression)
         {
-             return await table.FirstOrDefaultAsync(expression);
+            return await table.FirstOrDefaultAsync(expression);
         }
     }
 }

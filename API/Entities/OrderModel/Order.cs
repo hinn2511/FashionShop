@@ -14,7 +14,7 @@ namespace API.Entities.OrderModel
         public Order Order { get; set; } 
         public int OrderId { get; set; }
         public string Note { get; set; }
-        public OrderStatus Status { get; set; }
+        public OrderStatus OrderStatus { get; set; }
     }
 
     public enum OrderStatus

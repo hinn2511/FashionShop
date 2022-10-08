@@ -70,21 +70,21 @@ namespace API.Controllers
             return BadRequest("Error when update category");
         }
 
-        [HttpDelete("{id}")]
-        public async Task<ActionResult> DeleteCategory(int id)
-        {
-            var category = await _unitOfWork.CategoryRepository.GetById(id);
+        // [HttpDelete("{id}")]
+        // public async Task<ActionResult> DeleteCategory(int id)
+        // {
+        //     var category = await _unitOfWork.CategoryRepository.GetById(id);
 
-            if(category == null)
-                return BadRequest("Category not found"); 
+        //     if(category == null)
+        //         return BadRequest("Category not found"); 
 
-            _unitOfWork.CategoryRepository.Delete(category);
-            if (await _unitOfWork.Complete()) 
-            {
-                return Ok();
-            }
-            return BadRequest("Error when delete category");
-        }
+        //     _unitOfWork.CategoryRepository.Delete(category);
+        //     if (await _unitOfWork.Complete()) 
+        //     {
+        //         return Ok();
+        //     }
+        //     return BadRequest("Error when delete category");
+        // }
     
         #endregion
 
@@ -140,23 +140,23 @@ namespace API.Controllers
             return BadRequest("Error when update sub category");
         }
 
-        [HttpDelete("subCategory/{subCategoryId}")]
-        public async Task<ActionResult> DeleteSubCategoryCategory(int subCategoryId)
-        {
-             var subCategory = await _unitOfWork.SubCategoryRepository.GetById(subCategoryId);
+        // [HttpDelete("subCategory/{subCategoryId}")]
+        // public async Task<ActionResult> DeleteSubCategoryCategory(int subCategoryId)
+        // {
+        //      var subCategory = await _unitOfWork.SubCategoryRepository.GetById(subCategoryId);
 
-            if(subCategory == null)
-                return BadRequest("Sub category not found");
+        //     if(subCategory == null)
+        //         return BadRequest("Sub category not found");
 
-            _unitOfWork.SubCategoryRepository.Delete(subCategory);
+        //     _unitOfWork.SubCategoryRepository.Delete(subCategory);
 
-            if (await _unitOfWork.Complete()) 
-            {
-                return Ok();
-            }
+        //     if (await _unitOfWork.Complete()) 
+        //     {
+        //         return Ok();
+        //     }
 
-            return BadRequest("Error when delete sub category");
-        }
+        //     return BadRequest("Error when delete sub category");
+        // }
     
 
         #endregion

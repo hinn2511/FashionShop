@@ -32,7 +32,25 @@ namespace API.Helpers
                 .ForMember(dest => dest.Url, opt => opt.MapFrom(
                           src => src.ProductPhotos.FirstOrDefault(pp => pp.IsMain).Url));
 
+            CreateMap<Product, AdminProductDetailResponse>()
+                .ForMember(dest => dest.Url, opt => opt.MapFrom(
+                          src => src.ProductPhotos.FirstOrDefault(pp => pp.IsMain).Url))
+                .ForMember(dest => dest.BrandName, opt => opt.MapFrom(
+                          src => src.Brand.Name))
+                .ForMember(dest => dest.CategoryId, opt => opt.MapFrom(
+                          src => src.Category.Id))
+                .ForMember(dest => dest.CategoryName, opt => opt.MapFrom(
+                          src => src.Category.CategoryName))
+                .ForMember(dest => dest.SubCategoryId, opt => opt.MapFrom(
+                          src => src.SubCategory.Id))
+                .ForMember(dest => dest.SubCategoryName, opt => opt.MapFrom(
+                          src => src.SubCategory.CategoryName));
+
             CreateMap<ProductPhoto, AdminProductPhotoResponse>();
+
+            CreateMap<CreateProductRequest, Product>();
+
+            CreateMap<UpdateProductRequest, Product>();
 
 
             // Customer
@@ -40,6 +58,20 @@ namespace API.Helpers
             CreateMap<Product, CustomerProductsResponse>()
                 .ForMember(dest => dest.Url, opt => opt.MapFrom(
                           src => src.ProductPhotos.FirstOrDefault(pp => pp.IsMain).Url));
+
+            CreateMap<Product, CustomerProductDetailResponse>()
+                .ForMember(dest => dest.Url, opt => opt.MapFrom(
+                          src => src.ProductPhotos.FirstOrDefault(pp => pp.IsMain).Url))
+                .ForMember(dest => dest.BrandName, opt => opt.MapFrom(
+                          src => src.Brand.Name))
+                .ForMember(dest => dest.CategoryId, opt => opt.MapFrom(
+                          src => src.Category.Id))
+                .ForMember(dest => dest.CategoryName, opt => opt.MapFrom(
+                          src => src.Category.CategoryName))
+                .ForMember(dest => dest.SubCategoryId, opt => opt.MapFrom(
+                          src => src.SubCategory.Id))
+                .ForMember(dest => dest.SubCategoryName, opt => opt.MapFrom(
+                          src => src.SubCategory.CategoryName));
 
             CreateMap<ProductPhoto, CustomerProductPhotoResponse>();
 
@@ -53,10 +85,9 @@ namespace API.Helpers
                .ForMember(dest => dest.Category, opt => opt.MapFrom(
                           src => src.Category.CategoryName));
 
-            CreateMap<CreateProductRequest, Product>()
-                ;
+            
 
-            CreateMap<UpdateProductDto, Product>();
+            
 
             CreateMap<ProductPhoto, CustomerProductPhotoDto>()
                 .ForMember(dest => dest.Url, opt => opt.MapFrom(

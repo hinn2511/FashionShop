@@ -12,6 +12,13 @@ namespace API.Extensions
         public static string GenerateSlug(this string phrase)
         {
             string str = phrase.ToLower();
+            StringBuilder sb = new StringBuilder();
+            foreach (char c in str)
+            {
+                if ((c >= '0' && c <= '9') || (c >= 'A' && c <= 'Z') || (c >= 'a' && c <= 'z'))        
+                    sb.Append(c);
+            }
+            str = sb.ToString();
             // invalid chars           
             str = Regex.Replace(str, @"[^a-z0-9\s-]", "");
             // convert multiple spaces into one space   

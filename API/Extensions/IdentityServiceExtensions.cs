@@ -29,7 +29,7 @@ namespace API.Extensions
                 .AddRoleValidator<RoleValidator<AppRole>>()
                 .AddEntityFrameworkStores<DataContext>();
 
-            services.AddAuthentication
+            services
                 // (options =>
                 // {
                 //     // custom scheme defined in .AddPolicyScheme() below
@@ -39,22 +39,29 @@ namespace API.Extensions
                 //     options.DefaultChallengeScheme = "Cookies";
                 //     options.DefaultAuthenticateScheme = "Cookies";
                 // })
-                (CookieAuthenticationDefaults.AuthenticationScheme)
+                // .AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+
+                .AddAuthentication(options =>
+                {
+                    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                    options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+                    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+                })
                 .AddCookie(options =>
                 {
                     options.LoginPath = "/login";
                     options.ExpireTimeSpan = TimeSpan.FromDays(1);
                 })
-                // .AddJwtBearer("Bearer", options =>
-                // {
-                //     options.TokenValidationParameters = new TokenValidationParameters
-                //     {
-                //         ValidateIssuerSigningKey = true,
-                //         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(config.GetSection("AppSettings:Secret").Value)),
-                //         ValidateIssuer = false,
-                //         ValidateAudience = false,
-                //     };
-                // })
+                .AddJwtBearer("Bearer", options =>
+                {
+                    options.TokenValidationParameters = new TokenValidationParameters
+                    {
+                        ValidateIssuerSigningKey = true,
+                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(config.GetSection("AppSettings:Secret").Value)),
+                        ValidateIssuer = false,
+                        ValidateAudience = false,
+                    };
+                })
                 // .AddPolicyScheme("JWT_OR_COOKIE", "JWT_OR_COOKIE", options =>
                 // {
                 //     // runs on each request
@@ -71,13 +78,13 @@ namespace API.Extensions
                 // })
                 ;
 
-        //     services.AddAuthorization(opt =>
-        //    {
-        //        opt.AddPolicy("BusinessOnly", policy => policy.RequireRole("Admin", "Manager"));
-        //        opt.AddPolicy("CustomerOnly", policy => policy.RequireRole("Customer"));
-        //        opt.AddPolicy("ManagerOnly", policy => policy.RequireRole("Manager"));
-        //        opt.AddPolicy("AdminOnly", policy => policy.RequireRole("Admin"));
-        //    });
+            services.AddAuthorization(opt =>
+           {
+               opt.AddPolicy("BusinessOnly", policy => policy.RequireAuthenticatedUser().RequireRole("Admin", "Manager"));
+               opt.AddPolicy("AdminOnly", policy => policy.RequireAuthenticatedUser().RequireRole("Admin"));
+               opt.AddPolicy("ManagerOnly", policy => policy.RequireAuthenticatedUser().RequireRole("Manager"));
+               opt.AddPolicy("CustomerOnly", policy => policy.RequireAuthenticatedUser().RequireRole("Customer"));
+           });
 
             return services;
         }

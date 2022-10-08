@@ -12,7 +12,7 @@ namespace API.Helpers
         }
 
         public OrderBy OrderBy { get; set; } = OrderBy.Ascending;
-        public string Field { get; set; }
+        public string Field { get; set; } = "Id";
     }
 
     public enum OrderBy 
