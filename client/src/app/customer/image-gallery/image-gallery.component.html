@@ -2,7 +2,7 @@
     <div class="container bg-transparent px-lg-0">
         <div class="img-container w-100">
             <div class="img-show rect-img-container position-relative">
-                <img class="rect-img" src="{{photos[0].url}}" alt="Image" id="preview">
+                <img class="rect-img" src="{{photos[0]?.url}}" alt="Image" id="preview">
                 <div *ngIf="photos.length > 1" class="button position-absolute top-50">
                     <button class="btn btn-light border-top-left-0 border-bottom-left-0" 
                         ButtonImageClick 

@@ -81,13 +81,21 @@ namespace API.Controllers
         [HttpPost("revoke-token")]
         public async Task<ActionResult> RevokeToken(RevokeTokenRequest model)
         {
-            var token = model.Token ?? Request.Cookies["refreshToken"];
+            var token = model.Token != "" ? model.Token : Request.Cookies["refreshToken"];
 
             if (string.IsNullOrEmpty(token))
                 return BadRequest(new { message = "Token is required" });
 
             await _userService.RevokeToken(token, ipAddress());
             return Ok(new { message = "Token revoked" });
+        }
+
+        [Authorize]
+        [HttpGet("{id}/refresh-tokens")]
+        public async Task<IActionResult> GetRefreshTokens(int id)
+        {
+            var user = await _userManager.FindByIdAsync(id.ToString());
+            return Ok(user.RefreshTokens);
         }
 
         [HttpPut("change-password")]

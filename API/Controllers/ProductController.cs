@@ -82,7 +82,7 @@ namespace API.Controllers
         public async Task<ActionResult> GetProductAsCustomer(int id)
         {
             var product = await _unitOfWork.ProductRepository.GetProductDetailWithPhotoAsync(id);
-            FilterProductPhoto(product, true, true);
+            FilterProductPhoto(product);
             var result = _mapper.Map<CustomerProductDetailResponse>(product);
             if (User.GetUserId() != 0)
             {
@@ -500,16 +500,9 @@ namespace API.Controllers
 
         #region  private method
 
-        private static void FilterProductPhoto(Product product, bool includeHiddenPhoto, bool includeDeletePhoto)
+        private static void FilterProductPhoto(Product product)
         {
-            var productPhoto = product.ProductPhotos.AsEnumerable();
-            if (!includeHiddenPhoto)
-                productPhoto = product.ProductPhotos?.Where(x => x.Status != Status.Hidden);
-
-            if (!includeDeletePhoto)
-                productPhoto = product.ProductPhotos?.Where(x => x.Status != Status.Deleted);
-
-            product.ProductPhotos = productPhoto.ToList();
+            product.ProductPhotos = product.ProductPhotos.Where(x => x.Status == Status.Active).ToList();
         }
 
         #endregion

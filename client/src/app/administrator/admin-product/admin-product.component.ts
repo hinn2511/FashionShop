@@ -2,8 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { BreadCrumb } from 'src/app/_models/breadcrum';
 import { Pagination } from 'src/app/_models/pagination';
-import { Product } from 'src/app/_models/product';
-import { ProductParams } from 'src/app/_models/productParams';
+import { ManagerProduct, Product } from 'src/app/_models/product';
+import { ManagerProductParams } from 'src/app/_models/productParams';
 import { ProductService } from 'src/app/_services/product.service';
 
 @Component({
@@ -13,13 +13,13 @@ import { ProductService } from 'src/app/_services/product.service';
 })
 export class AdminProductComponent implements OnInit {
 
-  products: Product[];
+  products: ManagerProduct[];
   pagination: Pagination;
-  productParams: ProductParams;
+  productParams: ManagerProductParams;
   selectAll: boolean;
 
   constructor(private productService: ProductService, private router: Router) {
-    this.productParams = this.productService.getProductParams();
+    this.productParams = this.productService.getManagerProductParams();
    }
 
   ngOnInit(): void {
@@ -30,9 +30,9 @@ export class AdminProductComponent implements OnInit {
   }
 
   loadProducts() {
-    this.productService.setProductParams(this.productParams);
+    this.productService.setManagerProductParams(this.productParams);
 
-    this.productService.getProducts(this.productParams).subscribe(response => {
+    this.productService.getManagerProducts(this.productParams).subscribe(response => {
       this.products = response.result;
       this.pagination = response.pagination;
     })
@@ -41,7 +41,7 @@ export class AdminProductComponent implements OnInit {
   pageChanged(event: any) {
     if (this.productParams.pageNumber !== event.page) {
       this.productParams.pageNumber = event.page;
-      this.productService.setProductParams(this.productParams);
+      this.productService.setManagerProductParams(this.productParams);
       this.loadProducts();
     }
   }
@@ -51,13 +51,13 @@ export class AdminProductComponent implements OnInit {
     this.loadProducts();
   }
 
-  filter(params: ProductParams) {
+  filter(params: ManagerProductParams) {
     this.productParams = params;
     this.loadProducts();
   }
 
   resetFilter() {
-    this.productParams = this.productService.resetProductParams();
+    this.productParams = this.productService.resetManagerProductParams();
     this.loadProducts();
   }
 

@@ -13,100 +13,119 @@ export class HomeBestSellerComponent implements OnInit {
     productName: 'Product 1',
     slug: '',
     id: 0,
-    categoryId: 0,
     description: "",
-    sold: 0,
-    brandId: 0,
-    productPhotos: null
-  },{
+    categoryId: 0,
+    brandId: 1,
+    productPhotos: null,
+    categoryName: "XYZ",
+    brandName: "XYZ",
+    likedByUser: false
+  }, {
     url: 'https://res.cloudinary.com/dsqfbwwmq/image/upload/v1643121899/o17gkl0actlmbwehcsnv.jpg',
     price: 450,
     productName: 'Product 2',
     slug: '',
     id: 0,
-    categoryId: 0,
     description: "",
-    sold: 0,
-    brandId: 0,
-    productPhotos: null
-  },{
+    categoryId: 0,
+    brandId: 1,
+    productPhotos: null,
+    categoryName: "XYZ",
+    brandName: "XYZ",
+    likedByUser: false
+  }, {
     url: 'https://res.cloudinary.com/dsqfbwwmq/image/upload/v1643121899/o17gkl0actlmbwehcsnv.jpg',
     price: 450,
     productName: 'Product 3',
     slug: '',
     id: 0,
-    categoryId: 0,
     description: "",
-    sold: 0,
-    brandId: 0,
-    productPhotos: null
-  },{
+    categoryId: 0,
+    brandId: 1,
+    productPhotos: null,
+    categoryName: "XYZ",
+    brandName: "XYZ",
+    likedByUser: false
+  }, {
     url: 'https://res.cloudinary.com/dsqfbwwmq/image/upload/v1643121899/o17gkl0actlmbwehcsnv.jpg',
     price: 450,
     productName: 'Product 4',
     slug: '',
     id: 0,
-    categoryId: 0,
     description: "",
-    sold: 0,
-    brandId: 0,
-    productPhotos: null
-  },{
+    categoryId: 0,
+    brandId: 1,
+    productPhotos: null,
+    categoryName: "XYZ",
+    brandName: "XYZ",
+    likedByUser: false
+  }, {
     url: 'https://res.cloudinary.com/dsqfbwwmq/image/upload/v1643121899/o17gkl0actlmbwehcsnv.jpg',
     price: 450,
     productName: 'Product 5',
     slug: '',
     id: 0,
-    categoryId: 0,
     description: "",
-    sold: 0,
-    brandId: 0,
-    productPhotos: null
-  },{
+    categoryId: 0,
+    brandId: 1,
+    productPhotos: null,
+    categoryName: "XYZ",
+    brandName: "XYZ",
+    likedByUser: false
+  }, {
     url: 'https://res.cloudinary.com/dsqfbwwmq/image/upload/v1643121899/o17gkl0actlmbwehcsnv.jpg',
     price: 450,
     productName: 'Product 6',
     slug: '',
     id: 0,
-    categoryId: 0,
     description: "",
-    sold: 0,
-    brandId: 0,
-    productPhotos: null
-  },{
+    categoryId: 0,
+    brandId: 1,
+    productPhotos: null,
+    categoryName: "XYZ",
+    brandName: "XYZ",
+    likedByUser: false
+  }, {
     url: 'https://res.cloudinary.com/dsqfbwwmq/image/upload/v1643121899/o17gkl0actlmbwehcsnv.jpg',
     price: 450,
     productName: 'Product 7',
     slug: '',
     id: 0,
-    categoryId: 0,
     description: "",
-    sold: 0,
-    brandId: 0,
-    productPhotos: null
-  },{
+    categoryId: 0,
+    brandId: 1,
+    productPhotos: null,
+    categoryName: "XYZ",
+    brandName: "XYZ",
+    likedByUser: false
+  }, {
     url: 'https://res.cloudinary.com/dsqfbwwmq/image/upload/v1643121899/o17gkl0actlmbwehcsnv.jpg',
     price: 450,
     productName: 'Product 8',
     slug: '',
     id: 0,
-    categoryId: 0,
     description: "",
-    sold: 0,
-    brandId: 0,
-    productPhotos: null
-  },{
+    categoryId: 0,
+    brandId: 1,
+    productPhotos: null,
+    categoryName: "XYZ",
+    brandName: "XYZ",
+    likedByUser: false
+  }, {
     url: 'https://res.cloudinary.com/dsqfbwwmq/image/upload/v1643121899/o17gkl0actlmbwehcsnv.jpg',
     price: 450,
     productName: 'Product 9',
     slug: '',
     id: 0,
-    categoryId: 0,
     description: "",
-    sold: 0,
-    brandId: 0,
-    productPhotos: null
+    categoryId: 0,
+    brandId: 1,
+    productPhotos: null,
+    categoryName: "XYZ",
+    brandName: "XYZ",
+    likedByUser: false
   }];
+
 
   itemsPerSlide: number;
 

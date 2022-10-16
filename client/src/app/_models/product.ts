@@ -1,23 +1,69 @@
+
 export interface ProductPhoto {
-    isMain: boolean;
-    isHidden: boolean;
     id: number;
     url: string;
     publicId: string;
 }
 
 export interface Product {
-    id: number;
+    categoryId: number;
+    categoryName: string;
+    subCategoryName?: string;
+    subCategoryId?: number;
+    brandId: number;
+    brandName: string;
+    likedByUser: boolean;
+    productPhotos: ProductPhoto[];
     productName: string;
     slug: string;
-    categoryId: number;
-    brandId: number;
     price: number;
-    sold: number;
     url: string;
+    id: number;
     description: string;
-    productPhotos: ProductPhoto[];
 }
+
+export interface ManagerProductPhoto {
+    status: string;
+    id: number;
+    isMain: boolean;
+    url: string;
+    publicId: string;
+}
+
+export interface SelectedProductPhoto {
+    status: string;
+    id: number;
+    isMain: boolean;
+    url: string;
+    publicId: string;
+    checked: boolean;
+}
+
+export interface ManagerProduct {
+    categoryId: number;
+    categoryName: string;
+    brandId: number;
+    brandName: string;
+    productPhotos: ManagerProductPhoto[];
+    dateCreated: Date;
+    createdByUserId: number;
+    lastUpdated: Date;
+    lastUpdatedByUserId: number;
+    dateDeleted: Date;
+    deletedByUserId: number;
+    isDeleted: boolean;
+    isHidden: boolean;
+    dateHidden: Date;
+    hiddenByUserId: number;
+    status: number;
+    productName: string;
+    slug: string;
+    price: number;
+    url: string;
+    id: number;
+    description: string;
+}
+
 
 export interface Category {
     categoryName: string;
@@ -40,14 +86,17 @@ export interface Brand {
 export interface AddProduct {
     productName: string;
     categoryId: number;
-    productPrice: number;
-    gender: string;
+    subCategoryId?: any;
+    brandId: number;
+    price: number;
+    description: string;
 }
 
-export interface EditProduct {
-    id: number;
+export interface UpdateProduct {
     productName: string;
     categoryId: number;
-    productPrice: number;
-    gender: string;
+    subCategoryId?: any;
+    brandId: number;
+    price: number;
+    description: string;
 }

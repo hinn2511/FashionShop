@@ -24,14 +24,10 @@ import { HomeBestSellerComponent } from './customer/home-best-seller/home-best-s
 import { HomeColletionComponent } from './customer/home-colletion/home-colletion.component';
 import { FooterComponent } from './customer/footer/footer.component';
 import { HomeNewsletterComponent } from './customer/home-newsletter/home-newsletter.component';
-import { ProductManagementComponent } from './administrator/product/product-management/product-management.component';
 import { TextInputComponent } from './_forms/text-input/text-input.component';
 import { DateInputComponent } from './_forms/date-input/date-input.component';
 import { NumberInputComponent } from './_forms/number-input/number-input.component';
-import { ReactiveFormsModule,FormsModule } from '@angular/forms';
-import { ProductPhotoManagementComponent } from './administrator/product/product-photo-management/product-photo-management.component';
-import { AddProductComponent } from './administrator/product/add-product/add-product.component';
-import { EditProductComponent } from './administrator/product/edit-product/edit-product.component';
+import { ReactiveFormsModule,FormsModule } from '@angular/forms'
 import { CartComponent } from './customer/cart/cart.component';
 import { ProductRelatedComponent } from './customer/product-related/product-related.component';
 import { SearchBarComponent } from './customer/search-bar/search-bar.component';
@@ -49,6 +45,11 @@ import { AdminProductAddComponent } from './administrator/admin-product-add/admi
 import { SafeurlPipe } from './_pipes/safeurl.pipe';
 import { AdminProductDetailComponent } from './administrator/admin-product-detail/admin-product-detail.component';
 import { AdminProductPhotoComponent } from './administrator/admin-product-photo/admin-product-photo.component';
+import { TextAreaInputComponent } from './_forms/text-area-input/text-area-input.component';
+import { HideProductImageModalComponent } from './_modals/hide-product-image-modal/hide-product-image-modal.component';
+import { DeleteProductImageModalComponent } from './_modals/delete-product-image-modal/delete-product-image-modal.component';
+import { MainProductImageModalComponent } from './_modals/main-product-image-modal/main-product-image-modal.component';
+import { ProductImageModalComponent } from './_modals/product-image-modal/product-image-modal.component';
 
 
 @NgModule({
@@ -72,13 +73,9 @@ import { AdminProductPhotoComponent } from './administrator/admin-product-photo/
     HomeColletionComponent,
     FooterComponent,
     HomeNewsletterComponent,
-    ProductManagementComponent,
     TextInputComponent,
     DateInputComponent,
     NumberInputComponent,
-    ProductPhotoManagementComponent,
-    AddProductComponent,
-    EditProductComponent,
     CartComponent,
     ProductRelatedComponent,
     SearchBarComponent,
@@ -92,6 +89,11 @@ import { AdminProductPhotoComponent } from './administrator/admin-product-photo/
     SafeurlPipe,
     AdminProductDetailComponent,
     AdminProductPhotoComponent,
+    TextAreaInputComponent,
+    HideProductImageModalComponent,
+    DeleteProductImageModalComponent,
+    MainProductImageModalComponent,
+    ProductImageModalComponent,
   ],
   imports: [
     BrowserModule,

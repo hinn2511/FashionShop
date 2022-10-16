@@ -107,15 +107,12 @@
           <main class="col-md-9 ms-sm-auto col-lg-10">
 
             <div class="w-100 py-1 d-flex justify-content-end">
-                  <a class="nav-link" routerLink="">
-                    <span data-feather="file-text"></span>
-                    <!-- Hi, {{user.username}} -->
-                    Hi, Test
-                  </a>
-                  <a class="nav-link" (click)="logout()">
-                    <span data-feather="file-text"></span>
-                    Log out
-                  </a>
+                <button class="btn btn-transparent">
+                  Hi, {{user.username}}
+                </button>
+                <button class="btn btn-transparent" (click)="logout()">
+                  Log out
+                </button>
             </div>
             <router-outlet></router-outlet>
 

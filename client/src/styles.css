@@ -28,6 +28,15 @@ body {
     .pr-sm-0 {
       padding-right: 0;
     }
+
+    .over-flow-scroll {
+      -ms-overflow-style: none;  /* IE and Edge */
+      scrollbar-width: none; 
+    }
+
+    .over-flow-scroll::-webkit-scrollbar {
+      display: none;
+    }
 }
 
 .pagination > li {
@@ -187,3 +196,12 @@ div.carousel.slide > ol {
   height: 100%;
   object-fit: cover;
 }
+
+.over-flow-scroll {
+  overflow: scroll;
+}
+
+.modal-dialog {
+  max-width: 60vw !important;
+}
+

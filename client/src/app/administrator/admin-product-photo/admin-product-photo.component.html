@@ -11,27 +11,46 @@
             <h3 class="text-uppercase">{{product.productName}}</h3>
         </div>
     </div>
-    
+
     <div class="d-flex w-100 py-2 mb-5">
         <div class="mr-auto w-100 py-2">
-            <h5>Photo gallery</h5>
+            <div class="d-flex justify-content-between">
+                <h5>Photo gallery</h5>
+                <div>
+                    <button class="btn btn-primary mr-2" (click)="openPhotosModal(product, 'main')">
+                        Set main
+                    </button>
+                    <button class="btn btn-secondary mr-2" (click)="openPhotosModal(product, 'hide')">
+                        Hide
+                    </button>
+                    <button class="btn btn-secondary mr-2" (click)="openPhotosModal(product, 'unhide')">
+                        Unhide
+                    </button>
+                    <button class="btn btn-danger" (click)="openPhotosModal(product, 'delete')">
+                        Delete
+                    </button>
+                </div>
+            </div>
             <hr>
             <div class="row">
-                <div class="col-4 col-lg-2" *ngFor="let item of productPhotos">
-                    <div class="rect-img-container position-relative" >
-                        <img class="rect-img" [class.rect-img-faded]="item.isHidden" src="{{item.url}}" alt="">
+                <div class="col-4 col-lg-2 mb-4" *ngFor="let item of productPhotos">
+                    <div class="rect-img-container position-relative">
+                        <img class="rect-img" [class.rect-img-faded]="item.status == 1" src="{{item.url}}" alt="">
                     </div>
                     <div class="rect-img-badge position-absolute">
-                        <span *ngIf="item.isMain" class="badge badge-danger">Main photo</span>
-                        <span *ngIf="!item.isMain && !item.isHidden " class="badge badge-info">Normal photo</span>
-                        <span *ngIf="item.isHidden" class="badge badge-secondary">Hidden</span>
+                        <span *ngIf="item.isMain" class="badge badge-primary">Main</span>
+                        <span *ngIf="item.status == 0 && !item.isMain" class="badge badge-info">Show</span>
+                        <span *ngIf="item.status == 1" class="badge badge-secondary">Hidden</span>
+                        <span *ngIf="item.status == 2" class="badge badge-danger">Deleted</span>
                     </div>
                 </div>
             </div>
         </div>
+
+
     </div>
 
-    
+
 
 
 

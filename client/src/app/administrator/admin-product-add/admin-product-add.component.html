@@ -12,10 +12,6 @@
                 <app-number-input [formControl]='newProductForm.controls["price"]' [label]='"Price"'>
                 </app-number-input>
 
-
-                <label for="description">Description</label>
-                <app-text-input [formControl]='newProductForm.controls["description"]' [label]='"Description"'>
-                </app-text-input>
             </div>
 
             <div class="col-12 col-lg-6">
@@ -44,6 +40,12 @@
                     </select>
 
                 </div>
+            </div>
+
+            <div class="col-12">
+                <label for="description">Description</label>
+                <app-text-area-input [rows]="10" [formControl]='newProductForm.controls["description"]' [label]='"Description"'>
+                </app-text-area-input>
             </div>
 
 

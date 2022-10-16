@@ -8,6 +8,7 @@ import { CarouselModule } from 'ngx-bootstrap/carousel';
 import { viLocale } from 'ngx-bootstrap/locale';
 import { defineLocale } from 'ngx-bootstrap/chronos';
 import { FileUploadModule } from 'ng2-file-upload';
+import { ModalModule } from 'ngx-bootstrap/modal';
 defineLocale('vi', viLocale);
 
 @NgModule({
@@ -19,6 +20,7 @@ defineLocale('vi', viLocale);
     PaginationModule.forRoot(),
     ProgressbarModule.forRoot(),
     CarouselModule.forRoot(),
+    ModalModule.forRoot(),
     FileUploadModule
   ], 
   exports: [
@@ -27,6 +29,7 @@ defineLocale('vi', viLocale);
     BsDatepickerModule,
     ProgressbarModule,
     CarouselModule,
+    ModalModule,
     FileUploadModule
   ]
 })

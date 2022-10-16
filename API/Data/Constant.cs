@@ -23,6 +23,6 @@ namespace API.Data
         public static readonly string UploadFolderPath = Path.Combine(Environment.CurrentDirectory, "UploadedFiles");
         public static readonly int DefaultBufferSize = 4096;
         public static readonly int DefaultImageHeight = 1000;
-        public static readonly int DefaultImageWidth = 1000;
+        public static readonly int DefaultImageWidth = 1500;
     }
 }

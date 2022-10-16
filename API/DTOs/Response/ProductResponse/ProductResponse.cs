@@ -70,11 +70,13 @@ namespace API.DTOs.Response
         public bool IsHidden { get; set; }
         public DateTime DateHidden { get; set; }
         public int HiddenByUserId { get; set; }
+        public Status Status { get; set; }
     }
 
     public class AdminProductPhotoResponse : BasePhotoResponse
     {
-        public bool IsHidden { get; set; }
+        public Status Status { get; set; }
+        public bool IsMain { get; set; }
     }
 
     #endregion

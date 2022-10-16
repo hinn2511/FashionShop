@@ -18,6 +18,14 @@ export class AuthenticationService {
     ) {
         this.userSubject = new BehaviorSubject<User>(null);
         this.user = this.userSubject.asObservable();
+        ///
+        
+        ///
+    }
+
+    public setUser() {
+        const user: User = JSON.parse(localStorage.getItem('user'));
+        this.userSubject.next(user);
     }
 
     public get userValue(): User {
@@ -31,6 +39,9 @@ export class AuthenticationService {
                 const roles = this.getDecodedToken(user.jwtToken).role;
                 Array.isArray(roles) ? user.roles = roles : user.roles.push(roles);
                 this.userSubject.next(user);
+                ///
+                localStorage.setItem('user', JSON.stringify(user));
+                ///
                 this.startRefreshTokenTimer();
                 return user;
             }));
@@ -41,11 +52,14 @@ export class AuthenticationService {
         
         let bussinessRole: string[] = [  "Admin", "Manager" ];
         let logoutRoute = "/login"
-        if (this.userValue?.roles.some(r => bussinessRole)) {
+        if (this.userValue?.roles.some(role => bussinessRole.includes(role))) {
             logoutRoute = "/administrator/login";
         }
 
         this.stopRefreshTokenTimer();
+        ///
+        localStorage.removeItem('user');
+        ///
         this.userSubject.next(undefined);
         this.user = new Observable<User>();
         this.router.navigate([logoutRoute]);
@@ -55,6 +69,9 @@ export class AuthenticationService {
         return this.http.post<any>(`${environment.apiUrl}account/refresh-token`, {}, { withCredentials: true })
             .pipe(map((user) => {
                 this.userSubject.next(user);
+                ///
+                localStorage.setItem('user', JSON.stringify(user));
+                ///
                 this.startRefreshTokenTimer();
                 return user;
             }));
