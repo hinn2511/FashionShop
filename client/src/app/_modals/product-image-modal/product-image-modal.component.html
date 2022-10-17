@@ -1,30 +1,31 @@
 <div class="modal-header">
-    <h4 class="modal-title pull-left">{{action}}</h4>
-    <button type="button" class="close pull-right" aria-label="Close" (click)="bsModalRef.hide()">
-      <span aria-hidden="true">&times;</span>
-    </button>
+  <h4 class="modal-title pull-left">{{action}}</h4>
+  <button type="button" class="close pull-right" aria-label="Close" (click)="bsModalRef.hide()">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+<div class="modal-body">
+  <div class="checkbox w-100" (click)="selectAll()" *ngIf="multiple">
+    <label><input type="checkbox" [checked]="selectAllPhoto">&nbsp;&nbsp;&nbsp;Select all</label>
   </div>
-  <div class="modal-body">
-    <div class="checkbox w-100" (click)="selectAll()" *ngIf="multiple">
-      <label><input type="checkbox" [checked]="selectAllPhoto">&nbsp;&nbsp;&nbsp;Select all</label>
-    </div>
-    <!-- [disabled]="productPhoto.isHidden && productPhoto.isDeleted" -->
-    <form #rolesForm="ngForm" id="rolesForm">
-      <div class="row">
-        <div *ngFor="let productPhoto of productPhotos" [class.form-check-selected]="productPhoto.checked" (click)="select(productPhoto)" class="form-check" class="col-3">
-          <div class="p-2 my-2">
-            <div class="rect-img-container position-relative" (click)="productPhoto.checked = !productPhoto.checked">
-              <img class="rect-img" src="{{productPhoto.url}}" alt="">
-            </div>
-            <input type="checkbox" class="form-check-input position-absolute" [checked]="productPhoto.checked"
-              value="productPhoto.id">
+  <!-- [disabled]="productPhoto.isHidden && productPhoto.isDeleted" -->
+  <form #rolesForm="ngForm" id="rolesForm">
+    <div class="row">
+      <div *ngFor="let productPhoto of productPhotos; let i = index" [class.form-check-selected]="productPhoto.checked"
+         class="form-check" class="col-3">
+        <div class="p-2 my-2 cs-pointer" (click)="select(i)">
+          <div class="rect-img-container position-relative">
+            <img class="rect-img" src="{{productPhoto.url}}" alt="">
           </div>
-          
+          <input type="checkbox" class="form-check-input position-absolute" [checked]="productPhoto.checked"
+            value="productPhoto.id">
         </div>
+
       </div>
-    </form>
-  </div>
-  <div class="modal-footer">
-    <button type="button" class="btn btn-default" (click)="bsModalRef.hide()">Cancel</button>
-    <button type="button" class="btn btn-success" (click)="update()">Submit</button>
-  </div>
+    </div>
+  </form>
+</div>
+<div class="modal-footer">
+  <button type="button" class="btn btn-default" (click)="bsModalRef.hide()">Cancel</button>
+  <button type="button" class="btn btn-success" (click)="update()">Submit</button>
+</div>

@@ -20,7 +20,6 @@ export class ProductImageModalComponent implements OnInit {
   constructor(public bsModalRef: BsModalRef) { }
 
   ngOnInit(): void {
-    console.log(this.multiple);
   }
 
   update() {
@@ -29,17 +28,15 @@ export class ProductImageModalComponent implements OnInit {
     this.selectAllPhoto = false;
   }
 
-  select(productPhoto: SelectedProductPhoto) {
-    if (productPhoto.checked) {
-      productPhoto.checked = false;
-      return;
-    }
+  select(index: number) {
     if (!this.multiple) {
       this.productPhotos.forEach(x => {
         x.checked = false;
       })
+      
     }
-    this.productPhotos[this.productPhotos.indexOf(productPhoto)].checked = true;
+    this.productPhotos[index].checked = !this.productPhotos[index].checked;
+
   }
 
   selectAll() {

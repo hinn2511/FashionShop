@@ -50,6 +50,7 @@ import { HideProductImageModalComponent } from './_modals/hide-product-image-mod
 import { DeleteProductImageModalComponent } from './_modals/delete-product-image-modal/delete-product-image-modal.component';
 import { MainProductImageModalComponent } from './_modals/main-product-image-modal/main-product-image-modal.component';
 import { ProductImageModalComponent } from './_modals/product-image-modal/product-image-modal.component';
+import { CarouselComponent } from './_common/carousel/carousel.component';
 
 
 @NgModule({
@@ -94,6 +95,7 @@ import { ProductImageModalComponent } from './_modals/product-image-modal/produc
     DeleteProductImageModalComponent,
     MainProductImageModalComponent,
     ProductImageModalComponent,
+    CarouselComponent,
   ],
   imports: [
     BrowserModule,

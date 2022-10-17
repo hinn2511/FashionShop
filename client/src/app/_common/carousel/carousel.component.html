@@ -1,0 +1,16 @@
+<!-- carousel -->
+<div class="w-100 px-0 mx-0">
+    <div class="carousel">
+        <ng-container *ngFor="let slide of slides; let i = index">
+            <img *ngIf="i === currentSlide" [src]="slide" class="slide" [@slideAnimation]="animationType" />
+        </ng-container>
+
+        <!-- controls -->
+        <button class="control prev" (click)="onPreviousClick()">
+            <span class="arrow left"></span>
+        </button>
+        <button class="control next" (click)="onNextClick()">
+            <span class="arrow right"></span>
+        </button>
+    </div>
+</div>

@@ -1,7 +1,5 @@
 <div class="container-fluid px-0">
 
-    <app-breadcrumb [breadCrumbList]="breadCrumb"></app-breadcrumb>
-
     <div class="w-100 row mx-0 px-0 py-1 text-center border-right cover"
             [style.background-image]="'url(../../assets/cover.webp)'">
         <div class="col-md-6 p-lg-5 mx-auto my-auto">
@@ -11,7 +9,7 @@
 
     <div class="row mx-auto w-100">
         <div class="col-12 col-md-3 pt-4">
-            <h4 class="">Filter</h4>
+            <h4 class="mt-5">Filter</h4>
             <hr>
 
             <label class="label">Categories</label>
@@ -75,6 +73,7 @@
 
         </div>
         <div class="col-12 col-md-9 ">
+            <app-breadcrumb [breadCrumbList]="breadCrumb"></app-breadcrumb>
             <div class="d-flex justify-content-end pr-4">
                 <div class="btn-group py-3 filter-dropdown" dropdown>
                     <button dropdownToggle type="button" class="btn dropdown-toggle"
