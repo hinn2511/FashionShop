@@ -1,0 +1,54 @@
+<!-- <div class="modal-header">
+    <h4 class="modal-title pull-left">{{action}}</h4>
+    <button type="button" class="close pull-right" aria-label="Close" (click)="bsModalRef.hide()">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <div class="rect-img-container">
+        <img class="rect-img" src="{{url}}" alt="">
+      </div>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-default" (click)="bsModalRef.hide()">Done</button>
+  </div> -->
+
+<div class="w-100 container-fluid" *ngIf="viewerItems">
+  <div class="carousel">
+    <ng-container *ngFor="let item of viewerItems">
+      <!-- <div *ngIf="isCurrent(item.url)">
+              <img *ngIf="item.fileType == 0; else video" [src]="item.url" class="slide" [@slideAnimation]="animationType"/>
+              <ng-template #video>
+                <video [src]="item.url" class="slide" autoplay  [@slideAnimation]="animationType"></video>
+              </ng-template>
+            </div> -->
+      <div class="rect-img-container" *ngIf="isCurrent(item.url)">
+        <img *ngIf="item.fileType == 0; else video" [src]="item.url" class="rect-img"
+          [@slideAnimation]="animationType" />
+        <ng-template #video>
+          <video [src]="item.url" class="rect-img" autoplay  [@slideAnimation]="animationType"></video>
+        </ng-template>
+      </div>
+    </ng-container>
+
+    <!-- controls -->
+    <button class="control prev" (click)="onPreviousClick()">
+      <span class="arrow left"></span>
+    </button>
+    <button class="control next" (click)="onNextClick()">
+      <span class="arrow right"></span>
+    </button>
+  </div>
+
+  <div class="img-review-container mt-2 d-flex d-inline-block w-100">
+    <div class="rect-img-container img-review cs-pointer" (click)="onThumbnailClick(item)"
+      [style]="getPreviewItemWidth()" [class.selected]="isCurrent(item.url)" [class.not-selected]="!isCurrent(item.url)"
+      *ngFor="let item of previewItems">
+      <!-- <img class="rect-img" src="{{ item.url }}" alt="" /> -->
+      <img *ngIf="item.fileType == 0; else video" [src]="item.url" class="rect-img" [@slideAnimation]="animationType" />
+      <ng-template #video>
+        <video [src]="item.url" class="rect-img p-3"  [@slideAnimation]="animationType"></video>
+      </ng-template>
+    </div>
+  </div>
+</div>

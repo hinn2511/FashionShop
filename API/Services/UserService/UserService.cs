@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using API.Data;
 using API.DTOs;
+using API.DTOs.Request.AuthenticationRequest;
 using API.DTOs.Response;
 using API.Entities.User;
 using API.Entities.UserModel;
@@ -17,7 +18,7 @@ namespace API.Services.UserService
 {
     public interface IUserService
     {
-        Task<AuthenticateResponse> Authenticate(LoginDto model, string ipAddress);
+        Task<AuthenticateResponse> Authenticate(AuthenticationRequest model, string ipAddress);
         Task<AuthenticateResponse> RefreshToken(string token, string ipAddress);
         Task RevokeToken(string token, string ipAddress);
         Task<AppUser> GetById(int id);
@@ -46,7 +47,7 @@ namespace API.Services.UserService
             
         }
 
-        public async Task<AuthenticateResponse> Authenticate(LoginDto model, string ipAddress)
+        public async Task<AuthenticateResponse> Authenticate(AuthenticationRequest model, string ipAddress)
         {
             var user = await _userManager.Users
                     .SingleOrDefaultAsync(u => u.UserName == model.Username.ToLower());

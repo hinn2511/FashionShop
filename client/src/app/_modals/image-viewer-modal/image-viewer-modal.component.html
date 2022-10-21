@@ -1,0 +1,57 @@
+<!-- <div class="modal-header">
+    <h4 class="modal-title pull-left">{{action}}</h4>
+    <button type="button" class="close pull-right" aria-label="Close" (click)="bsModalRef.hide()">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <div class="rect-img-container">
+        <img class="rect-img" src="{{url}}" alt="">
+      </div>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-default" (click)="bsModalRef.hide()">Done</button>
+  </div> -->
+
+<div class="modal-header">
+  <h6 class="modal-title pull-left">{{ action }}</h6>
+  <button
+    type="button"
+    class="close pull-right"
+    aria-label="Close"
+    (click)="bsModalRef.hide()"
+  >
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+<div class="modal-body">
+  <!-- Image view -->
+  <div class="rect-img-container position-relative">
+    <img *ngIf="currentItem.fileType == 0; else video" [src]="currentItem.url" class="rect-img" />
+            <ng-template #video>
+              <video [src]="currentItem.url" class="rect-img p-3" controls></video>
+            </ng-template>
+    <button class="control prev" (click)="onPreviousClick()">
+      <span class="arrow left"></span>
+  </button>
+  <button class="control next" (click)="onNextClick()">
+      <span class="arrow right"></span>
+  </button>
+  </div>
+
+  <div class="img-review-container d-flex d-inline-block w-100">
+    <div
+      class="rect-img-container img-review cs-pointer"
+      (click)="selectPhoto(item)"
+      [style]="getPreviewItemWidth()"
+      [class.selected]="isSelected(item)"
+      [class.not-selected]="!isSelected(item)"
+      *ngFor="let item of previewItems"
+    >
+    <img *ngIf="item.fileType == 0; else video" [src]="item.url" class="rect-img" />
+    <ng-template #video>
+      <video [src]="item.url" class="rect-img p-3"></video>
+    </ng-template>
+    </div>
+  </div>
+</div>

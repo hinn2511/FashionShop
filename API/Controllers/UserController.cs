@@ -2,7 +2,11 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using API.DTOs;
-using API.DTOs.Request.Cart;
+using API.DTOs.Params;
+using API.DTOs.Request.AccountRequest;
+using API.DTOs.Request.CartRequest;
+using API.DTOs.Response.AccountResponse;
+using API.DTOs.Response.CartResponse;
 using API.Entities;
 using API.Entities.User;
 using API.Entities.UserModel;
@@ -34,18 +38,18 @@ namespace API.Controllers
 
         #region user information
         [HttpGet]
-        public async Task<ActionResult<CustomerDto>> GetUser()
+        public async Task<ActionResult> GetUser()
         {
-            var user = await _userManager.FindByIdAsync(User.GetUserId().ToString());
-            return _mapper.Map<CustomerDto>(user);
+            var user = await _userManager.FindByIdAsync(GetUserId().ToString());
+            return Ok(_mapper.Map<AccountResponse>(user));
         }
 
         [HttpPut]
-        public async Task<ActionResult> UpdateUser(CustomerUpdateDto CustomerUpdateDto)
+        public async Task<ActionResult> UpdateUser(UpdateAccountRequest updateAccountRequest)
         {
-             var user = await _userManager.FindByIdAsync(User.GetUserId().ToString());
+            var user = await _userManager.FindByIdAsync(GetUserId().ToString());
 
-            _mapper.Map(CustomerUpdateDto, user);
+            _mapper.Map(updateAccountRequest, user);
 
             await _userManager.UpdateAsync(user);
 
@@ -61,7 +65,7 @@ namespace API.Controllers
         [HttpGet("favorite")]
         public async Task<ActionResult> GetUserFavorite(CustomerProductParams customerProductParams)
         {
-            var productsLiked = await _unitOfWork.UserLikeRepository.GetUserFavoriteProductsAsync(User.GetUserId(), customerProductParams);
+            var productsLiked = await _unitOfWork.UserLikeRepository.GetUserFavoriteProductsAsync(GetUserId(), customerProductParams);
             return Ok(productsLiked);
         }
 
@@ -71,15 +75,17 @@ namespace API.Controllers
             if (await _unitOfWork.ProductRepository.GetById(productId) == null)
                 return BadRequest("Product not found");
 
-            if (await _unitOfWork.UserLikeRepository.GetAllBy(x => x.UserId == User.GetUserId()) != null)
+            if (await _unitOfWork.UserLikeRepository.GetAllBy(x => x.UserId == GetUserId()) != null)
                 return BadRequest("The product has been liked by you.");
 
-            _unitOfWork.UserLikeRepository.Insert(new UserLike() {
+            var newFavorite = new UserLike()
+            {
                 ProductId = productId,
-                UserId = User.GetUserId(),
-                DateCreated = DateTime.UtcNow,
-                CreatedByUserId = User.GetUserId()
-            });
+                UserId = GetUserId(),
+            };
+            
+            newFavorite.AddCreateInformation(GetUserId());
+            _unitOfWork.UserLikeRepository.Insert(newFavorite);
 
             if (await _unitOfWork.Complete())
                 return Ok();
@@ -93,7 +99,7 @@ namespace API.Controllers
                 return BadRequest("Product not found");
 
             var userLike = await _unitOfWork.UserLikeRepository
-                        .GetFirstBy(x => x.UserId == User.GetUserId() && x.ProductId == productId);
+                        .GetFirstBy(x => x.UserId == GetUserId() && x.ProductId == productId);
             if (userLike == null)
                 return BadRequest("The product has not been liked by you.");
 
@@ -105,51 +111,65 @@ namespace API.Controllers
         }
 
         #endregion
-    
+
         #region user cart 
         [HttpGet("cart")]
         public async Task<ActionResult> GetUserCart()
         {
-            return Ok(await _unitOfWork.CartRepository.GetAllBy(x => x.UserId == User.GetUserId()));
+            var userCartItems = await _unitOfWork.CartRepository.GetUserCartItems(GetUserId());
+            double totalPrice = 0;
+            int totalItem = 0;
+            foreach (var cartItem in userCartItems)
+            {
+                var additionalPrice = cartItem.Option.AdditionalPrice;
+                var productPrice = cartItem.Option.Product.Price;
+                var totalItemPrice = (productPrice + additionalPrice) * cartItem.Quantity;
+                totalItem += cartItem.Quantity;
+                totalPrice += totalItemPrice;
+            }
+            var result = new CartResponse()
+            {
+                CartItems = _mapper.Map<List<CartItemResponse>>(userCartItems),
+                TotalPrice = totalPrice,
+                TotalItem = totalItem
+            };
+            return Ok(result);
         }
 
         [HttpPost("cart")]
-        public async Task<ActionResult> AddToCart(CartRequest cartRequest)
+        public async Task<ActionResult> AddToCart(CreateCartRequest createCartRequest)
         {
-            if (await _unitOfWork.ProductRepository.GetById(cartRequest.OptionId) == null)
+            if (await _unitOfWork.ProductOptionRepository.GetById(createCartRequest.OptionId) == null)
                 return BadRequest("Product option not found");
 
-            if (cartRequest.Quantity < 1)
+            if (createCartRequest.Quantity < 1)
                 return BadRequest("Quantity not valid.");
 
             if (await _unitOfWork.CartRepository
-                    .GetFirstBy(x => x.UserId == User.GetUserId() 
-                        && x.OptionId == cartRequest.OptionId) != null)
-
+                    .GetFirstBy(x => x.UserId == GetUserId()
+                        && x.OptionId == createCartRequest.OptionId) != null)
                 return BadRequest("Can item already exist.");
 
+            var newCartItem = _mapper.Map<Cart>(createCartRequest);
+            newCartItem.UserId = GetUserId();
+            newCartItem.AddCreateInformation(GetUserId());
 
-            _unitOfWork.CartRepository.Insert(new Cart() {
-                OptionId = cartRequest.OptionId,
-                UserId = User.GetUserId(),
-                Quantity = cartRequest.Quantity,
-                DateCreated = DateTime.UtcNow,
-                CreatedByUserId = User.GetUserId()
-            });
+            _unitOfWork.CartRepository.Insert(newCartItem);
 
             if (await _unitOfWork.Complete())
                 return Ok();
             return BadRequest("Can not add new item to cart!");
         }
 
-        [HttpPut("cart")]
-        public async Task<ActionResult> UpdateCartItem(UpdateCartRequest updateCartRequest)
+        [HttpPut("cart/{cartItemId}")]
+        public async Task<ActionResult> UpdateCartItem(int cartItemId, UpdateCartRequest updateCartRequest)
         {
             var cartItem = await _unitOfWork.CartRepository
-                    .GetFirstBy(x => x.UserId == User.GetUserId() 
-                        && x.OptionId == updateCartRequest.OptionId);
+                    .GetFirstBy(x => x.UserId == GetUserId()
+                        && x.Id == cartItemId);
+
             if (cartItem == null)
-                return BadRequest("Can item not exist.");
+                return BadRequest("Cart item not exist.");
 
             if (updateCartRequest.Quantity < 1)
                 return BadRequest("Quantity not valid.");
@@ -157,30 +177,27 @@ namespace API.Controllers
             if (await _unitOfWork.ProductOptionRepository.GetById(updateCartRequest.OptionId) == null)
                 return BadRequest("Product option not found");
 
-            cartItem.LastUpdated = DateTime.UtcNow;
-            cartItem.LastUpdatedByUserId = User.GetUserId();
-
-            cartItem.OptionId = updateCartRequest.OptionId;
-            cartItem.Quantity = updateCartRequest.Quantity;
+            _mapper.Map(updateCartRequest, cartItem);
+            cartItem.UserId = GetUserId();
+            cartItem.AddUpdateInformation(GetUserId());
 
             _unitOfWork.CartRepository.Update(cartItem);
 
             if (await _unitOfWork.Complete())
                 return Ok();
-            return BadRequest("Can not add new item to cart!");
+            return BadRequest("Can not update cart item!");
         }
 
-        [HttpDelete("cart/{optionId}")]
-        public async Task<ActionResult> RemoveFromCart(int optionId)
+        [HttpDelete("cart/{cartItemId}")]
+        public async Task<ActionResult> RemoveFromCart(int cartItemId)
         {
             var cartItem = await _unitOfWork.CartRepository
-                    .GetFirstBy(x => x.UserId == User.GetUserId() 
-                        && x.OptionId == optionId);
+                    .GetFirstBy(x => x.UserId == GetUserId()
+                        && x.Id == cartItemId);
             if (cartItem == null)
                 return BadRequest("Can item not exist.");
 
-
-            _unitOfWork.CartRepository.Delete(cartItem.Id);
+            _unitOfWork.CartRepository.Delete(cartItemId);
 
             if (await _unitOfWork.Complete())
                 return Ok();

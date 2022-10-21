@@ -40,6 +40,9 @@ namespace API.Data.Migrations
                     b.Property<int>("DeletedByUserId")
                         .HasColumnType("INTEGER");
 
+                    b.Property<string>("ExternalId")
+                        .HasColumnType("TEXT");
+
                     b.Property<int>("HiddenByUserId")
                         .HasColumnType("INTEGER");
 
@@ -135,14 +138,14 @@ namespace API.Data.Migrations
                     b.Property<int>("HiddenByUserId")
                         .HasColumnType("INTEGER");
 
+                    b.Property<string>("HistoryDescription")
+                        .HasColumnType("TEXT");
+
                     b.Property<DateTime>("LastUpdated")
                         .HasColumnType("TEXT");
 
                     b.Property<int>("LastUpdatedByUserId")
                         .HasColumnType("INTEGER");
-
-                    b.Property<string>("Note")
-                        .HasColumnType("TEXT");
 
                     b.Property<int>("OrderId")
                         .HasColumnType("INTEGER");
@@ -182,6 +185,9 @@ namespace API.Data.Migrations
                         .HasColumnType("INTEGER");
 
                     b.Property<int>("FileId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("FileType")
                         .HasColumnType("INTEGER");
 
                     b.Property<int>("HiddenByUserId")
@@ -829,6 +835,9 @@ namespace API.Data.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
+                    b.Property<string>("ButtonText")
+                        .HasColumnType("TEXT");
+
                     b.Property<int>("CreatedByUserId")
                         .HasColumnType("INTEGER");
 
@@ -843,6 +852,12 @@ namespace API.Data.Migrations
 
                     b.Property<int>("DeletedByUserId")
                         .HasColumnType("INTEGER");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Header")
+                        .HasColumnType("TEXT");
 
                     b.Property<int>("HiddenByUserId")
                         .HasColumnType("INTEGER");
@@ -859,14 +874,11 @@ namespace API.Data.Migrations
                     b.Property<int>("LastUpdatedByUserId")
                         .HasColumnType("INTEGER");
 
+                    b.Property<string>("Link")
+                        .HasColumnType("TEXT");
+
                     b.Property<int>("Status")
                         .HasColumnType("INTEGER");
-
-                    b.Property<string>("Text")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("TextLink")
-                        .HasColumnType("TEXT");
 
                     b.Property<int>("TextPaddingBottom")
                         .HasColumnType("INTEGER");
@@ -899,9 +911,6 @@ namespace API.Data.Migrations
                     b.Property<int>("CategoryId")
                         .HasColumnType("INTEGER");
 
-                    b.Property<string>("CategoryUrl")
-                        .HasColumnType("TEXT");
-
                     b.Property<int>("CreatedByUserId")
                         .HasColumnType("INTEGER");
 
@@ -931,6 +940,9 @@ namespace API.Data.Migrations
 
                     b.Property<int>("LastUpdatedByUserId")
                         .HasColumnType("INTEGER");
+
+                    b.Property<string>("Link")
+                        .HasColumnType("TEXT");
 
                     b.Property<int>("Status")
                         .HasColumnType("INTEGER");
@@ -976,6 +988,9 @@ namespace API.Data.Migrations
 
                     b.Property<int>("LastUpdatedByUserId")
                         .HasColumnType("INTEGER");
+
+                    b.Property<string>("Link")
+                        .HasColumnType("TEXT");
 
                     b.Property<int>("ProductId")
                         .HasColumnType("INTEGER");

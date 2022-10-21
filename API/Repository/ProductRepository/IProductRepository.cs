@@ -1,8 +1,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using API.DTOs;
-using API.DTOs.Customer;
-using API.DTOs.Product;
+using API.DTOs.Params;
 using API.Entities.Other;
 using API.Entities.ProductModel;
 using API.Helpers;

@@ -1,9 +1,17 @@
 .rect-img-badge {
     bottom: 0;
     right: 0;
-    padding-right: 10%;
 }
 
 .rect-img-faded {
     filter: brightness(50%);
+}
+
+.product-heading > .rect-img-container {
+    width: max(10vw, 100px);
+}
+
+.product-title {
+    margin-top: 20%;
+    vertical-align: middle;
 }

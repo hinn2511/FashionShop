@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using API.DTOs;
+using API.DTOs.Params;
 using API.Entities;
 using API.Entities.ProductModel;
 using API.Entities.User;
@@ -29,6 +30,7 @@ namespace API.Interfaces
     #region user cart
     public interface ICartRepository : IGenericRepository<Cart>
     {
+        Task<IEnumerable<Cart>> GetUserCartItems(int userId);
     }
 
     #endregion

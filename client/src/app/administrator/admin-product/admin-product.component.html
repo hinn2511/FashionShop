@@ -1,73 +1,316 @@
 <div class="container-fluid px-3">
-    <h3>Product Manager</h3>
+  <!-- Section title -->
+  <h4>Products</h4>
 
-    <div class="d-flex flex-wrap w-100 py-2 mb-3">
-        <div class="mr-auto w-sm-100 p-2">
-            <div class="input-group mb-3">
-                <input type="text" class="form-control" placeholder="Product..."
-                    aria-describedby="button-addon2">
-                <div class="input-group-append">
-                    <button class="btn btn-primary" type="button" id="button-addon2">Search</button>
-                </div>
+  <!-- Section content -->
+  <div class="d-flex flex-wrap w-100 py-2 mb-3">
+    <!-- Search bar -->
+    <div class="mr-auto w-sm-100 py-2">
+      <div class="input-group mb-3">
+        <input
+          [(ngModel)]="productParams.query"
+          type="text"
+          (ngModelChange)="loadProducts()"
+          class="form-control"
+          placeholder="Product..."
+          aria-describedby="button-addon2"
+          (keydown.enter)="loadProducts()"
+        />
+        <div class="input-group-append">
+          <button
+            class="btn btn-primary"
+            type="button"
+            id="button-addon2"
+            (click)="loadProducts()"
+          >
+            <span><i class="fa fa-search"></i></span>&nbsp; Search
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Status filter button -->
+    <div class="p-2 position-relative">
+      <button
+        class="btn btn-light status-button"
+        (click)="statusFilterToggle()"
+      >
+        Status&nbsp;<span><i class="fa fa-caret-down"></i></span
+        ><span class="caret"></span>
+      </button>
+
+      <div
+        class="position-absolute mt-2 status-dropdown"
+        *ngIf="showStatusFilter"
+      >
+        <ul class="list-group">
+          <li class="list-group-item">
+            <div class="custom-control custom-checkbox">
+              <input
+                type="checkbox"
+                class="custom-control-input cs-pointer"
+                id="customCheck1"
+                (click)="selectAllProductStatus()"
+                [checked]="isAllStatusIncluded()"
+              />
+              <label class="custom-control-label" for="customCheck1"
+                >Select all</label
+              >
             </div>
-        </div>
-
-        <div class="p-2">
-            <button class="btn btn-success" routerLink="/administrator/product-manager/add">
-                Create
-            </button>
-        </div>
-
-        <div class="p-2">
-            <button class="btn btn-warning">
-                Edit
-            </button>
-        </div>
-
-        <div class="p-2">
-            <button class="btn btn-danger">
-                Delete
-            </button>
-        </div>
+          </li>
+          <li class="list-group-item">
+            <div class="custom-control custom-checkbox">
+              <input
+                type="checkbox"
+                class="custom-control-input cs-pointer"
+                id="customCheck2"
+                (click)="selectStatus(0)"
+                [checked]="isStatusIncluded(0)"
+              />
+              <label class="custom-control-label" for="customCheck2"
+                >Active</label
+              >
+            </div>
+          </li>
+          <li class="list-group-item">
+            <div class="custom-control custom-checkbox">
+              <input
+                type="checkbox"
+                class="custom-control-input cs-pointer"
+                id="customCheck3"
+                (click)="selectStatus(1)"
+                [checked]="isStatusIncluded(1)"
+              />
+              <label class="custom-control-label" for="customCheck3"
+                >Hidden</label
+              >
+            </div>
+          </li>
+          <li class="list-group-item">
+            <div class="custom-control custom-checkbox">
+              <input
+                type="checkbox"
+                class="custom-control-input cs-pointer"
+                id="customCheck4"
+                (click)="selectStatus(2)"
+                [checked]="isStatusIncluded(2)"
+              />
+              <label class="custom-control-label text-dark" for="customCheck4"
+                >Deleted</label
+              >
+            </div>
+          </li>
+        </ul>
+      </div>
     </div>
 
-    <div class="table-responsive w-100">
-        <table class="table table-striped">
-            <thead class="bg-light">
-                <tr>
-                    <th scope="col">
-                        <input type="checkbox">
-                    </th>
-                    <th scope="col">Id</th>
-                    <th scope="col">Product name</th>
-                    <th scope="col">Price (USD)</th>
-                    <th scope="col">Sold</th>
-                    <th scope="col">Status</th>
-                </tr>
-            </thead>
-            <tbody>
-
-                <tr class="product-item" *ngFor="let product of products" >
-                    <td>
-                        <input type="checkbox" [value]="product.Id">
-                    </td>
-                    <td (click)="viewDetail(product.id)">{{product.id}}</td>
-                    <td (click)="viewDetail(product.id)">{{product.productName}}</td>
-                    <td (click)="viewDetail(product.id)">{{product.price}}</td>
-                    <td (click)="viewDetail(product.id)">{{product.sold}}</td>
-                    <td (click)="viewDetail(product.id)">NaN</td>
-                </tr>
-
-
-            </tbody>
-        </table>
-
-        <div class="w-100 d-flex justify-content-end mt-5" *ngIf="pagination">
-            <pagination [boundaryLinks]="true" [totalItems]="pagination.totalItems"
-                [itemsPerPage]="pagination.itemsPerPage" [(ngModel)]="pagination.currentPage"
-                (pageChanged)="pageChanged($event)" previousText="Previous" nextText="Next" firstText="First"
-                lastText="Last">
-            </pagination>
-        </div>
+    <!-- Create button -->
+    <div class="p-2">
+      <button
+        class="btn btn-success"
+        routerLink="/administrator/product-manager/add"
+      >
+        <span><i class="fa fa-plus"></i></span>&nbsp; Create
+      </button>
     </div>
+
+    <!-- Import button -->
+    <div class="p-2">
+      <button class="btn btn-info" (click)="fileInput.click()">
+        <span><i class="fa fa-cloud-upload"></i></span>&nbsp; Import
+      </button>
+    </div>
+
+    <span
+      style="
+        visibility: hidden;
+        position: absolute;
+        overflow: hidden;
+        width: 0px;
+        height: 0px;
+        border: none;
+        margin: 0;
+        padding: 0;
+      "
+    >
+      <input
+        type="file"
+        #fileInput
+        ng2FileSelect
+        [uploader]="uploader"
+        (change)="onFileSelected()"
+      />
+    </span>
+
+    <!-- Edit button -->
+    <div class="p-2">
+      <button
+        class="btn btn-warning"
+        [class.disabled]="!isSingleSelected()"
+        (click)="editProduct()"
+      >
+        <span><i class="fa fa-pencil"></i></span>&nbsp; Edit
+      </button>
+    </div>
+
+    <!-- Hide/Unhide button -->
+    <div class="p-2">
+      <button
+        class="btn btn-dark"
+        (click)="hideProducts()"
+        [class.disabled]="!isMultipleSelected()"
+      >
+        <span><i class="fa fa-eye-slash"></i></span>&nbsp;Hide&nbsp;/&nbsp;
+        <span><i class="fa fa-eye"></i></span>&nbsp;Unhide
+      </button>
+    </div>
+
+    <!-- Delete button -->
+    <div class="p-2">
+      <button
+        class="btn btn-danger"
+        (click)="deleteProducts()"
+        [class.disabled]="!isMultipleSelected()"
+      >
+        <span><i class="fa fa-trash"></i></span>&nbsp; Delete
+      </button>
+    </div>
+  </div>
+
+  <!-- Product table -->
+  <div class="table-responsive w-100" *ngIf="products">
+    <table class="table table-striped border">
+      <thead class="bg-light">
+        <tr>
+          <th scope="col">
+            <input
+              type="checkbox"
+              [checked]="selectAll"
+              (click)="selectAllProducts()"
+            />
+          </th>
+          <th scope="col cs-pointer" (click)="orderBy('id')">
+            Id&nbsp;
+            <span
+              ><i
+                *ngIf="productParams.field == 'Id'"
+                [@rotatedState]="state"
+                class="fa fa-arrow-up"
+              ></i
+            ></span>
+          </th>
+          <th scope="col cs-pointer" (click)="orderBy('name')">
+            Product name&nbsp;
+            <span
+              ><i
+                *ngIf="productParams.field == 'Name'"
+                [@rotatedState]="state"
+                class="fa fa-arrow-up"
+              ></i
+            ></span>
+          </th>
+          <th scope="col cs-pointer" (click)="orderBy('price')">
+            Price&nbsp;
+            <span
+              ><i
+                *ngIf="productParams.field == 'Price'"
+                [@rotatedState]="state"
+                class="fa fa-arrow-up"
+              ></i
+            ></span>
+          </th>
+          <th scope="col cs-pointer" (click)="orderBy('sold')">
+            Sold&nbsp;
+            <span
+              ><i
+                *ngIf="productParams.field == 'Sold'"
+                [@rotatedState]="state"
+                class="fa fa-arrow-up"
+              ></i
+            ></span>
+          </th>
+          <th scope="col cs-pointer" class="text-center" (click)="orderBy('status')">
+            Status&nbsp;
+            <span
+              ><i
+                *ngIf="productParams.field == 'Status'"
+                [@rotatedState]="state"
+                class="fa fa-arrow-up"
+              ></i
+            ></span>
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr
+          class="product-item"
+          *ngFor="let product of products"
+          (click)="selectProduct(product.id)"
+        >
+          <td>
+            <input
+              type="checkbox"
+              [value]="product.Id"
+              [checked]="isProductSelected(product.id)"
+            />
+          </td>
+          <td (click)="viewDetail(product.id)">{{ product.id }}</td>
+          <td (click)="viewDetail(product.id)">{{ product.productName }}</td>
+          <td (click)="viewDetail(product.id)">{{ product.price }}</td>
+          <td (click)="viewDetail(product.id)">{{ product.sold }}</td>
+          <td class="text-center" (click)="viewDetail(product.id)">
+            <div class="btn px-3 py-1" [style]="getStateStyle(product)">
+              <h6 class="text-white m-0">{{ getProductState(product) }}</h6>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="w-100">Total: {{ products.length }} product(s)</div>
+  </div>
+
+  <!-- Pagination -->
+  <div
+    class="w-100 d-flex d-inline-block justify-content-between mt-5"
+    *ngIf="pagination"
+  >
+    <div class="d-flex d-inline">
+      <div class="input-group pagination-navigation">
+        <label class="form-control" for="">Page size</label>
+        <input
+          [(ngModel)]="productParams.pageSize"
+          type="number"
+          (ngModelChange)="loadProducts()"
+          class="form-control border"
+          aria-describedby="button-addon2"
+          (keydown.enter)="loadProducts()"
+        />
+      </div>
+      <div class="input-group pagination-navigation ml-3">
+        <label class="form-control" for="">Go to page</label>
+        <input
+          [(ngModel)]="productParams.pageNumber"
+          type="number"
+          class="form-control border"
+          aria-describedby="button-addon2"
+          (keydown.enter)="loadProducts()"
+        />
+      </div>
+    </div>
+
+    <div class="ml-auto">
+      <pagination
+        [boundaryLinks]="true"
+        [totalItems]="pagination.totalItems"
+        [itemsPerPage]="pagination.itemsPerPage"
+        [(ngModel)]="pagination.currentPage"
+        (pageChanged)="pageChanged($event)"
+        previousText="Previous"
+        nextText="Next"
+        firstText="First"
+        lastText="Last"
+      >
+      </pagination>
+    </div>
+  </div>
 </div>

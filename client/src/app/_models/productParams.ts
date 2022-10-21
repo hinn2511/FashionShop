@@ -15,9 +15,13 @@ export class ManagerProductParams {
     brand = "";
     pageNumber = 1;
     pageSize = 12;
-    orderBy = 1;
-    field = "DateCreated";
+    orderBy = 0;
+    field = "Id";
     query = "";
-    productSatus = [0, 1];
+    productStatus = [0, 1];
+}
 
+export interface ParamStatus {
+    status: number;
+    selected: boolean;
 }

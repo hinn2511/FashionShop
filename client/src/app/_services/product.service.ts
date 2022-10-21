@@ -15,18 +15,6 @@ export class ProductService {
   baseUrl = environment.apiUrl;
   products: Product[] = [];
 
-  public getSelectedProductId(): number {
-    return +(localStorage.getItem("selectedProductId"));
-  }
-
-  public setSelectedProductId(value: number) {
-    localStorage.setItem("selectedProductId", value.toString())
-  }
-
-  public removeSelectedProductId() {
-    localStorage.removeItem("selectedProductId")
-  }
-
   productCache = new Map();
   productParams: ProductParams;
   managerProductParams: ManagerProductParams;
@@ -47,6 +35,18 @@ export class ProductService {
   resetProductParams() {
     this.productParams = new ProductParams();
     return this.productParams;
+  }
+
+  public getSelectedProductId(): number {
+    return +(localStorage.getItem("selectedProductId"));
+  }
+
+  public setSelectedProductId(value: number) {
+    localStorage.setItem("selectedProductId", value.toString())
+  }
+
+  public removeSelectedProductId() {
+    localStorage.removeItem("selectedProductId")
   }
 
   getProducts(productParams: ProductParams) {
@@ -110,10 +110,11 @@ export class ProductService {
     params = params.append('orderBy', productParams.orderBy);
     params = params.append('field', productParams.field);
     params = params.append('query', productParams.query);
-    productParams.productSatus.forEach(element => {
-      params.append('productStatus', element);
+    productParams.productStatus.forEach(element => {
+      params = params.append('productStatus', element);
     });
-    return getPaginatedResult<ManagerProduct[]>(this.baseUrl + 'product', params, this.http);
+
+    return getPaginatedResult<ManagerProduct[]>(this.baseUrl + 'product/all', params, this.http);
   }
 
   getManagerProduct(id: number) {
@@ -128,12 +129,25 @@ export class ProductService {
     return this.http.put<UpdateProduct>(this.baseUrl + 'product/edit/' + id, product);
   }
 
-  deleteProduct(id: number) {
-    return this.http.delete(this.baseUrl + 'product/delete/' + id);
+  hideProducts(ids: IdArray) {
+    return this.http.put(this.baseUrl + 'product/hide-or-unhide', ids);
   }
 
+  deleteProduct(ids: number[]) {
+    const options = {
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json',
+      }),
+      body: {
+        ids
+      },
+    };
+    return this.http.delete(this.baseUrl + 'product/soft-delete', options);
+  }
+  
+
   getCategories() {
-    return this.http.get<Category[]>(this.baseUrl + 'category');
+    return this.http.get<Category[]>(this.baseUrl + 'category/all');
   }
 
   getSubCategories(categoryId: number) {
@@ -152,12 +166,7 @@ export class ProductService {
     return this.http.put(this.baseUrl + 'product/unhide-product-photo', ids);
   }
 
-  deleteProductImage(deleteIds: IdArray) {
-    // let a = "?";
-    // ids.ids.forEach(element => {
-    //   a += "ids=" + element.toString()
-    // });
-    let ids = deleteIds.ids;
+  deleteProductImage(ids: number[]) {
     const options = {
       headers: new HttpHeaders({
         'Content-Type': 'application/json',
@@ -166,7 +175,7 @@ export class ProductService {
         ids
       },
     };
-    return this.http.delete(this.baseUrl + 'product/delete-product-photo', options);   //);
+    return this.http.delete(this.baseUrl + 'product/delete-product-photo', options);
   }
 
   setMainProductImage(productId: number, photoId: number) {

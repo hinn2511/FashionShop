@@ -2,18 +2,19 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using API.DTOs.Customer;
-using API.DTOs.Product;
 using API.DTOs.Request.ConfigurationRequest;
+using API.DTOs.Response.ConfigurationResponse;
 using API.Entities.ProductModel;
 using API.Entities.WebPageModel;
 using API.Extensions;
 using API.Interfaces;
 using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers
 {
+    [Authorize(Policy = "ManagerOnly")]
     public class ConfigurationController : BaseApiController
     {
         private readonly IMapper _mapper;
@@ -33,22 +34,18 @@ namespace API.Controllers
                 homePage.IsActive = true;
             else
                 homePage.IsActive = false;
-            homePage.DateCreated = DateTime.UtcNow;
-            homePage.CreatedByUserId = User.GetUserId();
+            homePage.AddCreateInformation(GetUserId());
 
             foreach (var carousel in homePage.Carousels) {
-                carousel.DateCreated = DateTime.UtcNow;
-                carousel.CreatedByUserId = User.GetUserId();
+                carousel.AddCreateInformation(GetUserId());
             }
 
             foreach (var category in homePage.FeatureCategories) {
-                category.DateCreated = DateTime.UtcNow;
-                category.CreatedByUserId = User.GetUserId();
+                category.AddCreateInformation(GetUserId());
             }
 
             foreach (var product in homePage.FeatureProducts) {
-                product.DateCreated = DateTime.UtcNow;
-                product.CreatedByUserId = User.GetUserId();
+                product.AddCreateInformation(GetUserId());
             }
 
             _unitOfWork.HomePageRepository.Insert(homePage);
@@ -60,10 +57,14 @@ namespace API.Controllers
             
         }
 
+        [AllowAnonymous]
         [HttpGet("current-home-page")]
         public async Task<ActionResult> GetCurrentHomePage()
         {
-            return Ok(await _unitOfWork.HomePageRepository.GetFirstBy(x => x.IsActive));
+            var currentActiveHomePage = await _unitOfWork.HomePageRepository.GetFirstBy(x => x.IsActive);
+            var result = await _unitOfWork.HomePageRepository.GetHomePageByIdAsync(currentActiveHomePage.Id);
+            return Ok(_mapper.Map<CustomerHomePageResponse>(currentActiveHomePage));
+            // return Ok(currentActiveHomePage);
         }
 
         [HttpPut("activating-home-page/{id}")]

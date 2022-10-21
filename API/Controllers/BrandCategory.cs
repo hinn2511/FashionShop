@@ -2,8 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using API.DTOs.Customer;
-using API.DTOs.Product;
 using API.Entities.ProductModel;
 using API.Extensions;
 using API.Interfaces;
@@ -35,7 +33,7 @@ namespace API.Controllers
     //     {
     //         var brand = _mapper.Map<Brand>(brandRequest);
 
-    //         brand.CreatedByUserId = User.GetUserId();
+    //         brand.CreatedByUserId = GetUserId();
     //         brand.DateCreated = DateTime.UtcNow;
 
     //         _unitOfWork.BrandRepository.Insert(brand);
@@ -105,7 +103,7 @@ namespace API.Controllers
 
     //         var subBrand = _mapper.Map<SubBrand>(subBrandRequest);
 
-    //         subBrand.CreatedByUserId = User.GetUserId();
+    //         subBrand.CreatedByUserId = GetUserId();
     //         subBrand.DateCreated = DateTime.UtcNow;
 
     //         _unitOfWork.SubBrandRepository.Insert(subBrand);

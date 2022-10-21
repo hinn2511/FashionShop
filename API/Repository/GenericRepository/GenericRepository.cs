@@ -37,7 +37,7 @@ namespace API.Repository.GenericRepository
             table.Add(obj);
         }
 
-        public void BulkInsert(IEnumerable<T> objs)
+        public void Insert(IEnumerable<T> objs)
         {
             table.AddRange(objs);
         }
@@ -48,7 +48,7 @@ namespace API.Repository.GenericRepository
             _context.Entry(obj).State = EntityState.Modified;
         }
 
-        public void BulkUpdate(IEnumerable<T> objs)
+        public void Update(IEnumerable<T> objs)
         {
             table.AttachRange(objs);
             foreach (var obj in objs)
@@ -56,24 +56,73 @@ namespace API.Repository.GenericRepository
         }
 
 
-        public void Delete(int id)
+        public void Delete(object id)
         {
             T existing = table.Find(id);
             table.Remove(existing);
         }
 
-        public void BulkDelete(IEnumerable<int> ids)
+        public void Delete(Expression<Func<T, bool>> expression)
         {
-            foreach (var id in ids)
-            {
-                T existing = table.Find(id);
-                table.RemoveRange(existing);
-            }
+            // foreach(var id in ids)
+            // {
+            //     T existing = table.Find(id);
+            //     table.Remove(existing);
+            // }
+            var deleted = table.Where(expression);
+            table.RemoveRange(deleted);
         }
 
         public async Task<T> GetFirstBy(Expression<Func<T, bool>> expression)
         {
             return await table.FirstOrDefaultAsync(expression);
+        }
+
+        public async Task<IEnumerable<T>> GetAllAndIncludeAsync(Expression<Func<T, bool>> filter, string includeProperties, bool isNoTracking)
+        {
+            IQueryable<T> query = table;
+
+            if (filter != null)
+            {
+                query = query.Where(filter);
+            }
+
+            foreach (var includeProperty in includeProperties.Split
+                (new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
+            {
+                query = query.Include(includeProperty);
+            }
+
+            if (isNoTracking)
+            {
+                query = query.AsNoTracking();
+            }
+
+            return await query.ToListAsync();
+        }
+
+        public async Task<T> GetFirstByAndIncludeAsync(Expression<Func<T, bool>> filter, string includeProperties, bool isNoTracking)
+        {
+            IQueryable<T> query = table;
+
+            if (filter != null)
+            {
+                query = query.Where(filter);
+            }
+
+            foreach (var includeProperty in includeProperties.Split
+                (new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
+            {
+                query = query.Include(includeProperty);
+            }
+
+            if (isNoTracking)
+            {
+                query = query.AsNoTracking();
+            }
+
+
+            return await query.FirstOrDefaultAsync();
         }
     }
 }

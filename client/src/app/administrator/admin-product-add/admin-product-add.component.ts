@@ -49,7 +49,10 @@ export class AdminProductAddComponent implements OnInit {
         this.router.navigateByUrl('/administrator/product-manager/add');
       else
         this.router.navigateByUrl('/administrator/product-manager');
+
+      //remove in production
       this.productService.removeCache();
+      //
     }
     ,error =>{
       this.validationErrors = error;

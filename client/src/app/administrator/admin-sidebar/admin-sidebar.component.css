@@ -1,0 +1,31 @@
+.sidebar {
+    height: 100vh;
+    width: 15vw;
+}
+
+a {
+    color: black;
+}
+
+
+.nav-item-active {
+    background-color: rgb(51, 51, 51);
+    border-radius: 999px;
+}
+
+.nav-item-active > a{
+    color: white;
+    text-align: right;
+    transition: all 1s ease-in-out;
+}
+
+:host {
+    position: fixed;
+    left: auto;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    z-index: 100;
+    max-width: 15vw;
+}

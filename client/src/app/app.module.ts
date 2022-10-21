@@ -46,11 +46,10 @@ import { SafeurlPipe } from './_pipes/safeurl.pipe';
 import { AdminProductDetailComponent } from './administrator/admin-product-detail/admin-product-detail.component';
 import { AdminProductPhotoComponent } from './administrator/admin-product-photo/admin-product-photo.component';
 import { TextAreaInputComponent } from './_forms/text-area-input/text-area-input.component';
-import { HideProductImageModalComponent } from './_modals/hide-product-image-modal/hide-product-image-modal.component';
-import { DeleteProductImageModalComponent } from './_modals/delete-product-image-modal/delete-product-image-modal.component';
-import { MainProductImageModalComponent } from './_modals/main-product-image-modal/main-product-image-modal.component';
 import { ProductImageModalComponent } from './_modals/product-image-modal/product-image-modal.component';
 import { CarouselComponent } from './_common/carousel/carousel.component';
+import { ImageViewerModalComponent } from './_modals/image-viewer-modal/image-viewer-modal.component';
+import { ProductImagesComponent } from './customer/product-images/product-images.component';
 
 
 @NgModule({
@@ -91,11 +90,10 @@ import { CarouselComponent } from './_common/carousel/carousel.component';
     AdminProductDetailComponent,
     AdminProductPhotoComponent,
     TextAreaInputComponent,
-    HideProductImageModalComponent,
-    DeleteProductImageModalComponent,
-    MainProductImageModalComponent,
     ProductImageModalComponent,
     CarouselComponent,
+    ImageViewerModalComponent,
+    ProductImagesComponent,
   ],
   imports: [
     BrowserModule,

@@ -11,6 +11,6 @@ namespace API.Entities.WebPageModel
         public Category Category { get; set; }
         public int CategoryId { get; set; }
         public string ImageUrl { get; set; }
-        public string CategoryUrl { get; set; }
+        public string Link { get; set; }
     }
 }

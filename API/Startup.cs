@@ -40,9 +40,9 @@ namespace API
 
             // app.UseMiddleware<PreflightRequestMiddleware>();
 
-             app.UseMiddleware<ExceptionMiddleware>();
+            //app.UseMiddleware<ExceptionMiddleware>();
 
-            //app.UseMiddleware<ErrorHandlerMiddleware>();
+            app.UseMiddleware<ErrorHandlerMiddleware>();
             
             app.UseMiddleware<JwtMiddleware>();
 

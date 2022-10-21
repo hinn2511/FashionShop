@@ -3,6 +3,7 @@ export interface ProductPhoto {
     id: number;
     url: string;
     publicId: string;
+    fileType: number;
 }
 
 export interface Product {
@@ -23,7 +24,7 @@ export interface Product {
 }
 
 export interface ManagerProductPhoto {
-    status: string;
+    status: number;
     id: number;
     isMain: boolean;
     url: string;
@@ -31,7 +32,7 @@ export interface ManagerProductPhoto {
 }
 
 export interface SelectedProductPhoto {
-    status: string;
+    status: number;
     id: number;
     isMain: boolean;
     url: string;
@@ -99,4 +100,9 @@ export interface UpdateProduct {
     brandId: number;
     price: number;
     description: string;
+}
+
+export interface PhotoViewerItem {
+    url: string;
+    fileType: number;
 }

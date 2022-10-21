@@ -6,7 +6,7 @@ input {
 .form-check-selected > div {
     padding-top: 1.5rem;
     padding-bottom: 1.5rem;
-    border: 2px solid black;
-    background-color: rgb(164, 164, 164);
+    border: 2px solid rgba(13, 40, 189, 0.836);
+    background-color: #2e99f17c;
 }
 

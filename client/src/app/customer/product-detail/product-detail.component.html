@@ -1,15 +1,16 @@
 <div class="container-fluid w-100 px-0" *ngIf="product">
     <div class="row mx-0 border-bottom">
-        <div class="col-12 col-md-7 p-0 border-top">
-            <div class="bg-light pl-lg-5">
+        <div class="col-12 col-md-7 col-lg-8 p-0">
+            <div class="bg-light pl-lg-5 product-image">
                 <app-breadcrumb [breadCrumbList]="breadCrumb"></app-breadcrumb>
-                <app-image-gallery [mainPhotoUrl]="product.url" [photos]="product.productPhotos"></app-image-gallery>
+                <!-- <app-image-gallery [mainPhotoUrl]="product.url" [photos]="product.productPhotos"></app-image-gallery> -->
+                <app-product-images class="h-100" [viewerItems]="product.productPhotos" [maxPreviewItem]="8"></app-product-images>
             </div>
 
         </div>
 
-        <div class="col-12 col-md-5 border-top">
-            <div class="pl-md-4 mt-3 pr-lg-5">
+        <div class="col-12 col-md-5 col-lg-4">
+            <div class="pl-md-4 mt-3">
                 <div class="d-inline-block d-flex justify-content-between">
                     <h6 class="text-muted">
                         {{product.brandName}}&nbsp;&#8901;&nbsp;{{product.categoryName}}

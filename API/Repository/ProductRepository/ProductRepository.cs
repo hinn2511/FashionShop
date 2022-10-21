@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using API.DTOs;
-using API.DTOs.Customer;
+using API.DTOs.Params;
 using API.Entities;
 using API.Entities.Other;
 using API.Entities.ProductModel;
@@ -98,7 +98,9 @@ namespace API.Data
             {
                 query = productParams.Field switch
                 {
-                    "DateCreated" => query.OrderBy(p => p.DateCreated),
+                    "Date" => query.OrderBy(p => p.DateCreated),
+                    "Status" => query.OrderBy(p => p.Status),
+                    "Sold" => query.OrderBy(p => p.Sold),
                     "Price" => query.OrderBy(p => p.Price),
                     "Name" => query.OrderBy(p => p.ProductName),
                     _ => query.OrderBy(p => p.Id)
@@ -108,7 +110,9 @@ namespace API.Data
             {
                 query = productParams.Field switch
                 {
-                    "DateCreated" => query.OrderByDescending(p => p.DateCreated),
+                    "Date" => query.OrderByDescending(p => p.DateCreated),
+                    "Status" => query.OrderByDescending(p => p.Status),
+                    "Sold" => query.OrderByDescending(p => p.Sold),
                     "Price" => query.OrderByDescending(p => p.Price),
                     "Name" => query.OrderByDescending(p => p.ProductName),
                     _ => query.OrderByDescending(p => p.Id)

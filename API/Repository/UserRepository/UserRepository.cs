@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using API.DTOs;
+using API.DTOs.Params;
 using API.Entities;
 using API.Entities.ProductModel;
 using API.Entities.User;
@@ -92,11 +93,26 @@ namespace API.Data
     #endregion
 
 
-    #region user like
+   #region cart
     public class CartRepository : GenericRepository<Cart>, ICartRepository
     {
+        private readonly DataContext _context;
+
         public CartRepository(DataContext context, DbSet<Cart> set) : base(context, set)
         {
+            _context = context;
+        }
+
+        public async Task<IEnumerable<Cart>> GetUserCartItems(int userId)
+        {
+            return await _context.Carts
+                        .Where(x => x.UserId == userId)
+                        .Include(x => x.Option).ThenInclude(o => o.Product)
+                        .Include(x => x.Option).ThenInclude(o => o.Color)
+                        .Include(x => x.Option).ThenInclude(o => o.Size)
+                        .OrderByDescending(x => x.DateCreated)
+                        .AsNoTracking()
+                        .ToListAsync();
         }
     }
 

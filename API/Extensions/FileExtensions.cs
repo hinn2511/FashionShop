@@ -13,13 +13,20 @@ namespace API.Extensions
 {
     public static class FileExtensions
     {
-        public static bool ValidateFile(IFormFile file, Dictionary<string, string> contentTypeDictionary)
+        public static bool ValidateFile(IFormFile file, Dictionary<string, string> contentTypeDictionary, long maxLength)
         {
             if (file == null || file.Length <= 0)
                 return false;
 
             if (!contentTypeDictionary.Any(ct => ct.Value == file.ContentType))
                 return false;
+
+            if (maxLength > 0) 
+            {
+                if (file.Length / 1024 > maxLength)
+                    return false;
+            }
+             
             return true;
         }
 

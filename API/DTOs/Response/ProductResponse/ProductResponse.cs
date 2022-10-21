@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using API.Entities;
 using API.Entities.ProductModel;
 
-namespace API.DTOs.Response
+namespace API.DTOs.Response.ProductResponse
 {
     #region base product response
     public class ProductResponse : BaseResponse
@@ -48,6 +48,7 @@ namespace API.DTOs.Response
 
     public class AdminProductsResponse : ProductResponse
     {
+        public int Sold { get; set; }
         public Status Status { get; set; }
     }
     
@@ -75,8 +76,9 @@ namespace API.DTOs.Response
 
     public class AdminProductPhotoResponse : BasePhotoResponse
     {
-        public Status Status { get; set; }
         public bool IsMain { get; set; }
+        public bool IsHidden { get; set; }
+        public Status Status { get; set; }
     }
 
     #endregion

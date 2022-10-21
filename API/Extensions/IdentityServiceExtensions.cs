@@ -23,6 +23,7 @@ namespace API.Extensions
             {
                 opt.Password.RequireNonAlphanumeric = false;
             })
+                .AddDefaultTokenProviders()
                 .AddRoles<AppRole>()
                 .AddRoleManager<RoleManager<AppRole>>()
                 .AddSignInManager<SignInManager<AppUser>>()

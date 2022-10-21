@@ -7,6 +7,7 @@ using API.DTOs;
 using API.DTOs.Request.AuthenticationRequest;
 using API.Entities;
 using API.Entities.User;
+using API.Extensions;
 using API.Interfaces;
 using API.Services.UserService;
 using AutoMapper;
@@ -18,7 +19,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace API.Controllers
 {
-    
+    [Authorize]
     public class AccountController : BaseApiController
     {
         private readonly ITokenService _tokenService;
@@ -35,17 +36,18 @@ namespace API.Controllers
             _tokenService = tokenService;
         }
 
+        [AllowAnonymous]
         [HttpPost("register")]
-        public async Task<ActionResult<UserDto>> Register(RegisterDto registerDto)
+        public async Task<ActionResult> Register(RegisterRequest registerRequest)
         {
-            if (await UserExist(registerDto.Username))
+            if (await UserExist(registerRequest.Username))
                 return BadRequest("Username already taken");
 
-            var user = _mapper.Map<AppUser>(registerDto);
+            var user = _mapper.Map<AppUser>(registerRequest);
 
-            user.UserName = registerDto.Username.ToLower();
+            user.UserName = registerRequest.Username.ToLower();
 
-            var result = await _userManager.CreateAsync(user, registerDto.Password);
+            var result = await _userManager.CreateAsync(user, registerRequest.Password);
 
             if (!result.Succeeded) 
                 return BadRequest(result.Errors);
@@ -58,26 +60,27 @@ namespace API.Controllers
             return Ok();
         }
 
-        
+        [AllowAnonymous]
         [HttpPost("authenticate")]
-        public async Task<ActionResult> Authenticate(LoginDto model)
+        public async Task<ActionResult> Authenticate(AuthenticationRequest authenticationRequest)
         {
-            var response = await _userService.Authenticate(model, ipAddress());
+            var response = await _userService.Authenticate(authenticationRequest, ipAddress());
             setTokenCookie(response.RefreshToken);
             return Ok(response);
         }
 
-        [Authorize]
+        [AllowAnonymous]
         [HttpPost("refresh-token")]
         public async Task<ActionResult> RefreshToken()
         {
             var refreshToken = Request.Cookies["refreshToken"];
+            if(string.IsNullOrEmpty(refreshToken))
+                return Unauthorized(); 
             var response = await _userService.RefreshToken(refreshToken, ipAddress());
             setTokenCookie(response.RefreshToken);
             return Ok(response);
         }
 
-        [Authorize]
         [HttpPost("revoke-token")]
         public async Task<ActionResult> RevokeToken(RevokeTokenRequest model)
         {
@@ -89,26 +92,20 @@ namespace API.Controllers
             await _userService.RevokeToken(token, ipAddress());
             return Ok(new { message = "Token revoked" });
         }
-
-        [Authorize]
-        [HttpGet("{id}/refresh-tokens")]
-        public async Task<IActionResult> GetRefreshTokens(int id)
-        {
-            var user = await _userManager.FindByIdAsync(id.ToString());
-            return Ok(user.RefreshTokens);
-        }
-
+       
         [HttpPut("change-password")]
-        public async Task<ActionResult<UserDto>> ChangePassword(ResetPasswordDto resetPasswordDto)
+        public async Task<ActionResult> ChangePassword(ResetPasswordRequest resetPasswordRequest)
         {
             var user = await _userManager.Users
-                    .SingleOrDefaultAsync(u => u.UserName == resetPasswordDto.Username.ToLower());
+                    .SingleOrDefaultAsync(u => u.Id == GetUserId());
 
-            var  checkPasswordResult = await _signInManager.CheckPasswordSignInAsync(user, resetPasswordDto.OldPassword, false);
+            var  checkPasswordResult = await _signInManager.CheckPasswordSignInAsync(user, resetPasswordRequest.OldPassword, false);
             if (!checkPasswordResult.Succeeded)
                 return BadRequest("Password not valid!");
 
-            var resetPasswordResult = await _userManager.ResetPasswordAsync(user, resetPasswordDto.Token, resetPasswordDto.NewPassword);
+            var token = await _userManager.GeneratePasswordResetTokenAsync(user);
+
+            var resetPasswordResult = await _userManager.ResetPasswordAsync(user, token, resetPasswordRequest.NewPassword);
 
             if (!resetPasswordResult.Succeeded) 
                 return BadRequest("Can not change password!");
@@ -127,10 +124,17 @@ namespace API.Controllers
 
         private void setTokenCookie(string token)
         {
+            // var cookieOptions = new CookieOptions
+            // {
+            //     HttpOnly = true,
+            //     Expires = DateTime.UtcNow.AddDays(7),
+            //     Secure = true
+            // };
             var cookieOptions = new CookieOptions
             {
-                HttpOnly = true,
-                Expires = DateTime.UtcNow.AddDays(7)
+                HttpOnly = false,
+                Expires = DateTime.UtcNow.AddDays(7),
+                Secure = false
             };
             Response.Cookies.Append("refreshToken", token, cookieOptions);
         }

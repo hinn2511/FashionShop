@@ -25,12 +25,31 @@ export class AuthenticationService {
 
     public setUser() {
         const user: User = JSON.parse(localStorage.getItem('user'));
+        const roles = this.getDecodedToken(user.jwtToken).role;
+        Array.isArray(roles) ? user.roles = roles : user.roles = [roles];    
+        localStorage.setItem('user', JSON.stringify(user));    
         this.userSubject.next(user);
     }
 
     public get userValue(): User {
-        return this.userSubject.value;
+        return this.userSubject.getValue();
     }
+
+    // public setRoles(roles: string[])
+    // {
+    //     localStorage.setItem('roles', roles.join(",").toString());
+    // }
+
+    // public getRoles()
+    // {
+    //     //if()
+    //     return localStorage.getItem('roles').split(",");
+    // }
+
+    // public clearRoles()
+    // {
+    //     localStorage.removeItem('roles');
+    // }
 
     login(username: string, password: string) {
         return this.http.post<any>(`${environment.apiUrl}account/authenticate`, { username, password }, { withCredentials: true })
@@ -55,10 +74,19 @@ export class AuthenticationService {
         if (this.userValue?.roles.some(role => bussinessRole.includes(role))) {
             logoutRoute = "/administrator/login";
         }
+        console.log(this.userValue);
+        // for (let element of  this.userValue.roles) {
+        //     if(bussinessRole.includes(element))
+        //     {
+        //         logoutRoute = "/administrator/login";
+        //         break;
+        //     }
+        //  }
 
         this.stopRefreshTokenTimer();
         ///
-        localStorage.removeItem('user');
+        if(localStorage.getItem('user') != null || localStorage.getItem('user') != undefined)
+            localStorage.removeItem('user');
         ///
         this.userSubject.next(undefined);
         this.user = new Observable<User>();

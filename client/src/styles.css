@@ -201,9 +201,22 @@ div.carousel.slide > ol {
   overflow: scroll;
 }
 
-.modal-dialog {
-  max-width: 60vw !important;
+/* .modal-dialog
+{
+  width: 100% !important;
 }
+
+::ng-deep .modal-image-selector
+{ 
+  max-width: 60vw !important;
+  width: 60vw !important;
+}
+
+::ng-deep .modal-image-viewer
+{ 
+  max-width: 1200px!important;
+  width: 1200px !important; 
+} */
 
 .cs-pointer {
   cursor: pointer;

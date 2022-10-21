@@ -1,5 +1,5 @@
 import { transition, trigger, useAnimation } from '@angular/animations';
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { interval, timer } from 'rxjs';
 import { AnimationType, fadeIn, fadeOut, flipIn, flipOut, jackIn, jackOut, scaleIn, scaleOut } from '../animation/carousel.animations';
 
@@ -43,14 +43,14 @@ import { AnimationType, fadeIn, fadeOut, flipIn, flipOut, jackIn, jackOut, scale
     ])
   ]
 })
-export class CarouselComponent implements OnInit {
+export class CarouselComponent implements OnInit, OnDestroy {
   @Input() slides: string[];
   @Input() animationType = AnimationType.Fade;
-  @Input() nextSlideInterval = 7000;
+  @Input() nextSlideInterval = 10000;
   currentSlide = 0;
+  interval;
 
   constructor() {
-    setInterval(() => this.onNextClick(), this.nextSlideInterval)
   }
 
   onPreviousClick() {
@@ -67,6 +67,9 @@ export class CarouselComponent implements OnInit {
 
   ngOnInit() {
     this.preloadImages(); // for the demo
+    this.interval = setInterval(() => {
+      this.onNextClick()
+    },  this.nextSlideInterval);
   }
 
   preloadImages() {
@@ -75,4 +78,7 @@ export class CarouselComponent implements OnInit {
     }
   }
 
+  ngOnDestroy(): void {
+    clearInterval(this.interval);
+  }
 }

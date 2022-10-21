@@ -11,12 +11,21 @@ namespace API.Repository.GenericRepository
         Task<T> GetById(object id);
         Task<IEnumerable<T>> GetAllBy(Expression<Func<T, bool>> expression);
         Task<T> GetFirstBy(Expression<Func<T, bool>> expression);
+
+        Task<IEnumerable<T>> GetAllAndIncludeAsync(
+            Expression<Func<T, bool>> filter,
+            string includeProperties, bool isNoTracking);
+
+        Task<T> GetFirstByAndIncludeAsync(
+            Expression<Func<T, bool>> filter,
+            string includeProperties, bool isNoTracking);
+
         void Insert(T obj);
         void Update(T obj);
-        void Delete(int id);
+        void Delete(object id);
 
-        void BulkInsert(IEnumerable<T> objs);
-        void BulkUpdate(IEnumerable<T> objs);
-        void BulkDelete(IEnumerable<int> ids);
+        void Insert(IEnumerable<T> objs);
+        void Update(IEnumerable<T> objs);
+        void Delete(Expression<Func<T, bool>> expression);
     }
 }

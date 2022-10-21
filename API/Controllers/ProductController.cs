@@ -9,11 +9,11 @@ using System.Linq;
 using System.Threading.Tasks;
 using API.Data;
 using API.DTOs;
-using API.DTOs.Customer;
-using API.DTOs.Product;
+using API.DTOs.Params;
 using API.DTOs.Request.ProductRequest;
 using API.DTOs.Response;
 using API.DTOs.Response.OptionResponse;
+using API.DTOs.Response.ProductResponse;
 using API.Entities;
 using API.Entities.Other;
 using API.Entities.OtherModel;
@@ -26,6 +26,7 @@ using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.VisualBasic.FileIO;
 using static API.Extensions.StringExtensions;
 
 namespace API.Controllers
@@ -55,16 +56,16 @@ namespace API.Controllers
 
             var productsLiked = new List<UserLike>();
 
-            if (User.GetUserId() != 0)
+            if (GetUserId() != 0)
             {
-                var userLikes = await _unitOfWork.UserLikeRepository.GetAllBy(x => x.UserId == User.GetUserId());
+                var userLikes = await _unitOfWork.UserLikeRepository.GetAllBy(x => x.UserId == GetUserId());
                 productsLiked = userLikes.ToList();
             }
 
             var result = _mapper.Map<List<CustomerProductsResponse>>(products.ToList());
 
 
-            if (User.GetUserId() != 0)
+            if (GetUserId() != 0)
             {
                 foreach (var item in result)
                 {
@@ -82,45 +83,22 @@ namespace API.Controllers
         public async Task<ActionResult> GetProductAsCustomer(int id)
         {
             var product = await _unitOfWork.ProductRepository.GetProductDetailWithPhotoAsync(id);
-            FilterProductPhoto(product);
+            if (product.Status != Status.Active)
+                return BadRequest("Product not found");
+
+            product.ProductPhotos = FilterHiddenProductPhoto(product);
+            
             var result = _mapper.Map<CustomerProductDetailResponse>(product);
-            if (User.GetUserId() != 0)
+
+            if (GetUserId() != 0)
             {
-                var userLikes = await _unitOfWork.UserLikeRepository.GetAllBy(x => x.UserId == User.GetUserId());
+                var userLikes = await _unitOfWork.UserLikeRepository.GetAllBy(x => x.UserId == GetUserId());
                 if (userLikes.Any(x => x.ProductId == product.Id))
                     result.LikedByUser = true;
             }
             return Ok(result);
         }
 
-
-
-        [AllowAnonymous]
-        [HttpGet("{id}/options")]
-        public async Task<ActionResult> GetProductOptionsAsCustomer(int id)
-        {
-            var options = await _unitOfWork.ProductOptionRepository.GetProductOptionsAsync(id);
-
-            var optionResponse = new List<OptionResponse>();
-
-            foreach (var color in options.Select(x => x.Color).Distinct())
-            {
-                var sizes = options.Where(x => x.ColorId == color.Id).Select(x => x.Size);
-                var optionResult = new OptionResponse
-                {
-                    Color = _mapper.Map<OptionColorResponse>(color),
-                    Sizes = _mapper.Map<List<OptionSizeResponse>>(sizes)
-                };
-                foreach (var size in optionResult.Sizes)
-                {
-                    var opt = options.FirstOrDefault(x => x.ColorId == optionResult.Color.Id && x.SizeId == size.Id);
-                    size.AdditionalPrice = opt.AdditionalPrice;
-                    size.OptionId = opt.Id;
-                }
-                optionResponse.Add(optionResult);
-            }
-            return Ok(optionResponse);
-        }
         #endregion
 
         #region manager
@@ -141,6 +119,108 @@ namespace API.Controllers
             return Ok(_mapper.Map<AdminProductDetailResponse>(product));
         }
 
+        [HttpPost("import")]
+        public async Task<ActionResult> ImportProduct(IFormFile file)
+        {
+
+            if (!FileExtensions.ValidateFile(file, Constant.ImportContentType, 0))
+                return BadRequest("File not valid");
+
+            var filePath = await FileExtensions.SaveFile(file);
+
+            var importProducts = new List<Product>();
+
+            using (TextFieldParser csvParser = new TextFieldParser(filePath))
+            {
+                csvParser.CommentTokens = new string[] { "#" };
+                csvParser.SetDelimiters(new string[] { "," });
+                csvParser.HasFieldsEnclosedInQuotes = true;
+
+                csvParser.ReadLine();
+                while (!csvParser.EndOfData)
+                {
+                    string[] cols = csvParser.ReadFields();
+
+                    int subCategoryId = 0, categoryId = 0, brandId = 0;
+                    double price = 0;
+                    string name;
+
+                    if (!string.IsNullOrEmpty(cols[0]))
+                    {
+                        name = cols[0];
+                    }
+                    else
+                        continue;
+
+                    if (!string.IsNullOrEmpty(cols[1]))
+                    {
+
+                        bool success = int.TryParse(cols[1], out categoryId);
+                        if (!success)
+                            continue;
+                        if (_unitOfWork.CategoryRepository.GetFirstBy(x => x.Id == categoryId) == null)
+                            continue;
+                    }
+                    else
+                        continue;
+
+                    if (!string.IsNullOrEmpty(cols[2]))
+                    {
+
+                        bool success = int.TryParse(cols[2], out subCategoryId);
+                        if (!success)
+                            continue;
+                        if (_unitOfWork.SubCategoryRepository.GetFirstBy(x => x.Id == subCategoryId) == null)
+                            continue;
+                    }
+
+                    if (!string.IsNullOrEmpty(cols[3]))
+                    {
+
+                        bool success = int.TryParse(cols[3], out brandId);
+                        if (!success)
+                            continue;
+                        if (_unitOfWork.BrandRepository.GetFirstBy(x => x.Id == brandId) == null)
+                            continue;
+                    }
+                    else
+                        continue;
+
+                    if (!string.IsNullOrEmpty(cols[4]))
+                    {
+
+                        bool success = double.TryParse(cols[4], out price);
+                        if (!success)
+                            continue;
+                        if (price < 0)
+                            continue;
+                    }
+
+                    var product = new Product()
+                    {
+                        ProductName = cols[0],
+                        CategoryId = categoryId,
+                        SubCategoryId = string.IsNullOrEmpty(cols[2]) ? null : subCategoryId,
+                        BrandId = brandId,
+                        Price = price,
+                    };
+                    product.AddCreateInformation(GetUserId());
+                    importProducts.Add(product);
+
+
+                }
+
+            }
+            _unitOfWork.ProductRepository.Insert(importProducts);
+
+            if (await _unitOfWork.Complete())
+            {
+                return Ok();
+            }
+
+            return BadRequest("An error occurred while importing products.");
+        }
+
 
         [HttpPost("create")]
         public async Task<ActionResult> AddProduct(CreateProductRequest createProductRequest)
@@ -150,7 +230,7 @@ namespace API.Controllers
 
             product.Slug = product.ProductName.GenerateSlug();
             product.Sold = 0;
-            product.AddCreateInformation(User.GetUserId());
+            product.AddCreateInformation(GetUserId());
 
             _unitOfWork.ProductRepository.Insert(product);
 
@@ -163,7 +243,7 @@ namespace API.Controllers
 
 
         [HttpPut("edit/{id}")]
-        public async Task<ActionResult<CustomerProductDto>> UpdateProduct(int id, UpdateProductRequest updateProductRequest)
+        public async Task<ActionResult> UpdateProduct(int id, UpdateProductRequest updateProductRequest)
         {
             var product = await _unitOfWork.ProductRepository.GetById(id);
 
@@ -174,7 +254,7 @@ namespace API.Controllers
 
             product.Id = id;
             product.Slug = updateProductRequest.ProductName.GenerateSlug();
-            product.AddUpdateInformation(User.GetUserId());
+            product.AddUpdateInformation(GetUserId());
 
             _unitOfWork.ProductRepository.Update(product);
 
@@ -195,10 +275,14 @@ namespace API.Controllers
 
             foreach (var product in products)
             {
-                product.AddDeleteInformation(User.GetUserId());
+                if(product.Status == Status.Deleted)
+                {
+                    continue;
+                }
+                product.AddDeleteInformation(GetUserId());
             }
 
-            _unitOfWork.ProductRepository.BulkUpdate(products);
+            _unitOfWork.ProductRepository.Update(products);
 
             if (await _unitOfWork.Complete())
             {
@@ -215,7 +299,7 @@ namespace API.Controllers
             if (products == null)
                 return BadRequest("Product not found");
 
-            _unitOfWork.ProductRepository.BulkDelete(products.Select(x => x.Id));
+            _unitOfWork.ProductRepository.Delete(products);
 
             if (await _unitOfWork.Complete())
             {
@@ -224,7 +308,7 @@ namespace API.Controllers
             return BadRequest("An error occurred while deleting products.");
         }
 
-        [HttpPut("hide")]
+        [HttpPut("hide-or-unhide")]
         public async Task<ActionResult> HidingProduct(HideProductsRequest hideProductsRequest)
         {
             var products = await _unitOfWork.ProductRepository.GetAllBy(x => hideProductsRequest.Ids.Contains(x.Id));
@@ -234,10 +318,25 @@ namespace API.Controllers
 
             foreach (var product in products)
             {
-                product.AddHiddenInformation(User.GetUserId());
+                if(product.Status == Status.Active)
+                {
+                    product.AddHiddenInformation(GetUserId());
+                    continue;
+                }
+                    
+                if(product.Status == Status.Hidden)
+                {
+                    product.Status = Status.Active;
+                    continue;
+                }
+
+                if(product.Status == Status.Deleted)
+                {
+                    continue;
+                }
             }
 
-            _unitOfWork.ProductRepository.BulkUpdate(products);
+            _unitOfWork.ProductRepository.Update(products);
 
             if (await _unitOfWork.Complete())
             {
@@ -245,29 +344,6 @@ namespace API.Controllers
             }
             return BadRequest("An error occurred while hiding products.");
         }
-
-        [HttpPut("unhide")]
-        public async Task<ActionResult> UndoHidingProduct(HideProductsRequest hideProductsRequest)
-        {
-            var products = await _unitOfWork.ProductRepository.GetAllBy(x => hideProductsRequest.Ids.Contains(x.Id));
-
-            if (products == null)
-                return BadRequest("Product not found");
-
-            foreach (var product in products)
-            {
-                product.Status = Status.Active;
-            }
-
-            _unitOfWork.ProductRepository.BulkUpdate(products);
-
-            if (await _unitOfWork.Complete())
-            {
-                return Ok();
-            }
-            return BadRequest("An error occurred while undo hiding products.");
-        }
-
 
         [HttpPost("add-product-photo/{productId}")]
         public async Task<ActionResult> AddProductPhoto(IFormFile file, int productId)
@@ -277,7 +353,8 @@ namespace API.Controllers
             if (product == null)
                 return BadRequest("Product not found");
 
-            FileExtensions.ValidateFile(file, Constant.ImageContentType);
+            if (!FileExtensions.ValidateFile(file, Constant.ImageContentType, 10000))
+                return BadRequest("File not valid");
 
             var filePath = await FileExtensions.SaveFile(file);
 
@@ -289,15 +366,12 @@ namespace API.Controllers
 
             var uploadedFile = new UploadedFile()
             {
-                DateCreated = DateTime.UtcNow,
                 ContentType = file.ContentType,
                 Name = resizedFileName,
                 Extension = resizedFileExtension,
-                Path = resizedFilePath,
-                CreatedByUserId = 0
+                Path = resizedFilePath
             };
-
-            uploadedFile.AddCreateInformation(User.GetUserId());
+            uploadedFile.AddCreateInformation(GetUserId());
 
             bool IsMain = false;
 
@@ -310,10 +384,61 @@ namespace API.Controllers
                 PublicId = "",
                 IsMain = IsMain,
                 Product = product,
-                File = uploadedFile
+                File = uploadedFile,
+                FileType = Constant.FileType.Image
+            };
+            photo.AddCreateInformation(GetUserId());
+
+            _unitOfWork.ProductPhotoRepository.Insert(photo);
+
+            if (await _unitOfWork.Complete())
+            {
+                return Ok(_mapper.Map<AdminProductPhotoResponse>(photo));
+            }
+
+            return BadRequest("An error occurred while adding the image.");
+        }
+
+        [HttpPost("add-product-video/{productId}")]
+        public async Task<ActionResult> AddProductVideo(IFormFile file, int productId)
+        {
+            var product = await _unitOfWork.ProductRepository.GetById(productId);
+
+            if (product == null)
+                return BadRequest("Product not found");
+
+            if (!FileExtensions.ValidateFile(file, Constant.VideoContentType, 20000))
+                return BadRequest("File not valid");
+
+            var filePath = await FileExtensions.SaveFile(file);
+            var fileName = filePath.Split("\\").Last();
+            var fileExtension = filePath.Split(".").Last();
+
+            var uploadedFile = new UploadedFile()
+            {
+                ContentType = file.ContentType,
+                Name = fileName,
+                Extension = fileExtension,
+                Path = filePath,
+            };
+            uploadedFile.AddCreateInformation(GetUserId());
+
+            bool IsMain = false;
+
+            if (await _unitOfWork.ProductPhotoRepository.GetFirstBy(x => x.ProductId == productId && x.IsMain) == null)
+                IsMain = true;
+
+            var photo = new ProductPhoto
+            {
+                Url = Constant.DownloadFileUrl + fileName,
+                PublicId = "",
+                IsMain = IsMain,
+                Product = product,
+                File = uploadedFile,
+                FileType = Constant.FileType.Video
             };
 
-            photo.AddCreateInformation(User.GetUserId());
+            photo.AddCreateInformation(GetUserId());
 
             _unitOfWork.ProductPhotoRepository.Insert(photo);
 
@@ -333,24 +458,31 @@ namespace API.Controllers
             if (product == null)
                 return BadRequest("Product not found");
 
-            var newMain = await _unitOfWork.ProductPhotoRepository.GetFirstBy(x => x.Id == productPhotoId);
+            var productPhoto = await _unitOfWork.ProductPhotoRepository.GetFirstBy(x => x.Id == productPhotoId);
 
-            if (newMain == null)
+
+            if (productPhoto == null)
                 return BadRequest("Product photo not found");
 
-            if (newMain.IsMain)
+            if (productPhoto.IsMain)
                 return BadRequest("This image is already main image.");
 
-            var currentMain = await _unitOfWork.ProductPhotoRepository.GetFirstBy(x => x.ProductId == productId && x.IsMain);
+            productPhoto.IsMain = true;
+
+            productPhoto.AddUpdateInformation(GetUserId());
+
+            _unitOfWork.ProductPhotoRepository.Update(productPhoto);
+
+            var currentMain = await _unitOfWork.ProductPhotoRepository.GetFirstBy(x => x.IsMain && x.ProductId == productId);
 
             if (currentMain != null)
+            {
                 currentMain.IsMain = false;
 
-            newMain.IsMain = true;
+                currentMain.AddUpdateInformation(GetUserId());
 
-            _unitOfWork.ProductPhotoRepository.Update(currentMain);
-
-            _unitOfWork.ProductPhotoRepository.Update(newMain);
+                _unitOfWork.ProductPhotoRepository.Update(currentMain);
+            }
 
             if (await _unitOfWork.Complete())
                 return Ok();
@@ -369,14 +501,12 @@ namespace API.Controllers
             if (productPhotos.Any(x => x.IsMain))
                 return BadRequest("Can not delete main photo.");
 
-            var fileIds = productPhotos.Select(x => x.FileId);
+            var filesDelete = await _unitOfWork.FileRepository.GetAllBy(x => productPhotos.Select(x => x.FileId).Contains(x.Id));
 
-            var filesDelete = await _unitOfWork.FileRepository.GetAllBy(x => fileIds.Contains(x .Id));
-
-            foreach(var fileDelete in filesDelete)
+            foreach (var fileDelete in filesDelete)
                 FileExtensions.DeleteFile(fileDelete.Path);
 
-            _unitOfWork.ProductPhotoRepository.BulkDelete(productPhotos.Select(x => x.Id));
+            _unitOfWork.ProductPhotoRepository.Delete(x => productPhotos.Select(x => x.Id).Contains(x.Id));
 
             if (await _unitOfWork.Complete())
                 return Ok();
@@ -388,7 +518,7 @@ namespace API.Controllers
         [HttpPut("hide-product-photo")]
         public async Task<ActionResult> HideProductPhoto(HideProductPhotosRequest hideProductPhotosRequest)
         {
-             var productPhotos = await _unitOfWork.ProductPhotoRepository.GetAllBy(x => hideProductPhotosRequest.Ids.Contains(x.Id));
+            var productPhotos = await _unitOfWork.ProductPhotoRepository.GetAllBy(x => hideProductPhotosRequest.Ids.Contains(x.Id));
 
             if (productPhotos == null)
                 return BadRequest("Product photo not found");
@@ -398,10 +528,10 @@ namespace API.Controllers
 
             foreach (var productPhoto in productPhotos)
             {
-                productPhoto.AddHiddenInformation(User.GetUserId());
+                productPhoto.AddHiddenInformation(GetUserId());
             }
 
-            _unitOfWork.ProductPhotoRepository.BulkUpdate(productPhotos);
+            _unitOfWork.ProductPhotoRepository.Update(productPhotos);
 
             if (await _unitOfWork.Complete())
                 return Ok();
@@ -413,7 +543,7 @@ namespace API.Controllers
         [HttpPut("unhide-product-photo")]
         public async Task<ActionResult> UnHideProductPhoto(HideProductPhotosRequest hideProductPhotosRequest)
         {
-             var productPhotos = await _unitOfWork.ProductPhotoRepository.GetAllBy(x => hideProductPhotosRequest.Ids.Contains(x.Id));
+            var productPhotos = await _unitOfWork.ProductPhotoRepository.GetAllBy(x => hideProductPhotosRequest.Ids.Contains(x.Id));
 
             if (productPhotos == null)
                 return BadRequest("Product photo not found");
@@ -423,7 +553,7 @@ namespace API.Controllers
                 productPhoto.Status = Status.Active;
             }
 
-            _unitOfWork.ProductPhotoRepository.BulkUpdate(productPhotos);
+            _unitOfWork.ProductPhotoRepository.Update(productPhotos);
 
             if (await _unitOfWork.Complete())
                 return Ok();
@@ -434,78 +564,15 @@ namespace API.Controllers
 
         #endregion
 
-        #region product option API
-        [HttpPost("option")]
-        public async Task<ActionResult> AddProductOption(Option option)
-        {
-            //option.CreatedByUserId = User.GetUserId();
-            option.DateCreated = DateTime.UtcNow;
-
-            _unitOfWork.ProductOptionRepository.Insert(option);
-            _unitOfWork.StockRepository.Insert(new Stock()
-            {
-                Option = option,
-                Quantity = 0
-            });
-
-            if (await _unitOfWork.Complete())
-                return Ok();
-
-            return BadRequest("An error occurred while adding the product option.");
-        }
-
-        #endregion
-
-        #region product color API
-        [HttpPost("add-color")]
-        public async Task<ActionResult<CustomerProductDto>> AddProductColor(Entities.ProductModel.Color color)
-        {
-            _unitOfWork.ColorRepository.Insert(color);
-
-            if (await _unitOfWork.Complete())
-                return Ok();
-
-            return BadRequest("An error occurred while adding the product color.");
-        }
-
-        #endregion
-
-        #region product size API
-        [HttpPost("add-size")]
-        public async Task<ActionResult<CustomerProductDto>> AddProductSize(Entities.ProductModel.Size size)
-        {
-            _unitOfWork.SizeRepository.Insert(size);
-
-            if (await _unitOfWork.Complete())
-                return Ok();
-
-            return BadRequest("An error occurred while adding the product size.");
-        }
-
-        #endregion
-
-        #region product brand API
-        [HttpPost("add-brand")]
-        public async Task<ActionResult<CustomerProductDto>> AddProductSize(Brand brand)
-        {
-            _unitOfWork.BrandRepository.Insert(brand);
-
-            if (await _unitOfWork.Complete())
-                return Ok();
-
-            return BadRequest("An error occurred while adding the product brand.");
-        }
-
-        #endregion
-
         #region  private method
 
-        private static void FilterProductPhoto(Product product)
+        private static List<ProductPhoto> FilterHiddenProductPhoto(Product product)
         {
-            product.ProductPhotos = product.ProductPhotos.Where(x => x.Status == Status.Active).ToList();
+            return product.ProductPhotos.Where(x => x.Status == Status.Active).ToList();
         }
 
         #endregion
+
 
         #region comment
         // [HttpPost("add-product-photo/{productId}")]
