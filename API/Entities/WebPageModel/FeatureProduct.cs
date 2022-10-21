@@ -10,6 +10,7 @@ namespace API.Entities.WebPageModel
         public int HomePageId { get; set; }
         public Product Product { get; set; }
         public int ProductId { get; set; }
+        public string Link { get; set; }
         
     }
 }

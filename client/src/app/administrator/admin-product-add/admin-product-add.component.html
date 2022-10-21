@@ -1,0 +1,74 @@
+<div class="container-fluid px-3">
+    <h3>Add new product</h3>
+    <form [formGroup]='newProductForm' (ngSubmit)="newProductForm.valid && addNewProduct($event)" autocomplete="off">
+
+        <div class="row">
+            <div class="col-12 col-lg-6">
+                <label for="productName">Product name</label>
+                <app-text-input [formControl]='newProductForm.controls["productName"]' [label]='"Product name"'>
+                </app-text-input>
+
+                <label for="price">Price</label>
+                <app-number-input [formControl]='newProductForm.controls["price"]' [label]='"Price"'>
+                </app-number-input>
+
+            </div>
+
+            <div class="col-12 col-lg-6">
+                <label for="category">Category</label>
+                <div class="form-group">
+                    <select class="form-control" [formControl]='newProductForm.controls["categoryId"]' >
+                        <option *ngFor="let item of categories" (click)="loadSubCategories(item.id)" [value]="item.id">
+                            {{item.categoryName}}</option>
+                    </select>
+                </div>
+                
+
+                <label for="subCategory">Sub category</label>
+                <div class="form-group">
+
+                    <select class="form-control"
+                        [formControl]='newProductForm.controls["subCategoryId"]'>
+                        <option *ngFor="let item of subCategories" [value]="item.id">{{item.categoryName}}</option>
+                    </select>
+                </div>
+
+                <label for="brand">Brand</label>
+                <div class="form-group">
+                    <select class="form-control" [formControl]='newProductForm.controls["brandId"]' >
+                        <option *ngFor="let item of brands" [value]="item.id">{{item.name}}</option >
+                    </select>
+
+                </div>
+            </div>
+
+            <div class="col-12">
+                <label for="description">Description</label>
+                <app-text-area-input [rows]="10" [formControl]='newProductForm.controls["description"]' [label]='"Description"'>
+                </app-text-area-input>
+            </div>
+
+
+        </div>
+
+
+
+
+        <div class="row" *ngIf="validationErrors.length > 0">
+            <ul class="text-danger">
+                <li *ngFor="let error of validationErrors">
+                    {{error}}
+                </li>
+            </ul>
+        </div>
+
+        <div class="form-group text-center text-lg-right">
+            <button routerLink="/administrator/product-manager" class="btn btn-danger btn-lg mr-2" name="save"
+                type="button">Back</button>
+            <button [disabled]='!newProductForm.valid' class="btn btn-success btn-lg mr-2" name="save"
+                type="submit">Save</button>
+            <button [disabled]='!newProductForm.valid' class="btn btn-primary btn-lg" name="saveAndContinue"
+                type="submit">Save and continue</button>
+        </div>
+    </form>
+</div>

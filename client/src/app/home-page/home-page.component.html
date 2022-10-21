@@ -1,0 +1,16 @@
+
+
+<div *ngIf="!hasRoute('administrator/login')">
+    <div *appHasRole='["Anonymous", "Customer"]'>
+        <div class="w-100">
+            <app-carousel [slides]="slides"></app-carousel>
+            <app-home-categories></app-home-categories>
+            <app-home-best-seller></app-home-best-seller>
+            <app-home-colletion></app-home-colletion>
+        </div>
+    </div>
+</div>
+
+<div class="w-100" *appHasRole='["Admin", "Manager"]'>
+    
+</div>

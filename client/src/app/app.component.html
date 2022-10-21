@@ -1,5 +1,41 @@
-<app-navigation-bar></app-navigation-bar>
-<div class="container-fluid w-100 px-0 mb-5" >
-    <router-outlet></router-outlet>
+<div *ngIf="hasRoute('administrator/login')">
+  <app-admin-login></app-admin-login>
 </div>
-<app-footer></app-footer>
+
+<div *ngIf="!hasRoute('administrator/login')">
+  <div *appHasRole="['Anonymous', 'Customer']">
+    <!-- <div> -->
+    <app-navigation-bar></app-navigation-bar>
+    <div class="container-fluid w-100 px-0 mb-5">
+      <router-outlet></router-outlet>
+    </div>
+    <app-footer></app-footer>
+  </div>
+
+  <div *appHasRole="['Admin', 'Manager']">
+    <!-- <div> -->
+    <div class="w-100">
+      <div class="container-fluid">
+        <app-admin-sidebar
+          (mouseenter)="toggleMenu()"
+          (mouseleave)="toggleMenu()"
+          [@slideInOut]="menuState"
+        ></app-admin-sidebar>
+
+        <main class="ms-sm-auto pl-0 p position-relative">
+          <div class="w-100 py-1 d-flex justify-content-end">
+            <button class="btn btn-transparent">Hi, {{ user.username }}</button>
+            <button class="btn btn-transparent" (click)="logout()">
+              Log out
+            </button>
+          </div>
+          
+          <div class="ml-5">
+            <router-outlet></router-outlet>
+          </div>
+        </main>
+        <!-- </div> -->
+      </div>
+    </div>
+  </div>
+</div>

@@ -19,11 +19,12 @@ namespace API.Data
             _context = context;
         }
 
-        public IUserRepository UserRepository => new UserRepository(_context, _mapper);
+        public IUserLikeRepository UserLikeRepository => new UserLikeRepository(_context, _context.UserLikes);
+        public ICartRepository CartRepository => new CartRepository(_context, _context.Carts);
         public IProductRepository ProductRepository => new ProductRepository(_context,  _context.Products);
         public ICategoryRepository CategoryRepository => new CategoryRepository(_context, _context.Categories);
         public ISubCategoryRepository SubCategoryRepository => new SubCategoryRepository(_context, _context.SubCategories);
-        public IPhotoRepository PhotoRepository => new PhotoRepository(_context, _context.Photos);
+        public IProductPhotoRepository ProductPhotoRepository => new ProductPhotoRepository(_context, _context.ProductPhotos);
         public IOrderRepository OrderRepository => new OrderRepository(_context, _context.Orders);
         public IOrderDetailRepository OrderDetailRepository => new OrderDetailRepository(_context, _context.OrderDetails);
         public IOrderHistoryRepository OrderHistoryRepository => new OrderHistoryRepository(_context, _context.OrderHistories);

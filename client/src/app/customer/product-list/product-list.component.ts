@@ -1,10 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { BreadCrumb } from 'src/app/_models/breadcrum';
-import { Category } from 'src/app/_models/category';
 import { Pagination } from 'src/app/_models/pagination';
-import { Product } from 'src/app/_models/product';
+import { Category, Product } from 'src/app/_models/product';
 import { ProductParams } from 'src/app/_models/productParams';
-import { CategoryService } from 'src/app/_services/category.service';
 import { ProductService } from 'src/app/_services/product.service';
 
 @Component({
@@ -29,12 +27,12 @@ export class ProductListComponent implements OnInit {
     },
   ];
 
-  constructor(private productService: ProductService, private categoryService: CategoryService) {
+  constructor(private productService: ProductService) {
     this.productParams = this.productService.getProductParams();
   }
 
   ngOnInit(): void {
-    this.productParams.orderBy = 'Best seller';
+    this.productParams.field = 'Sold';
     this.loadProducts();
     this.loadCategories('all');
   }
@@ -49,7 +47,7 @@ export class ProductListComponent implements OnInit {
   }
 
   loadCategories(gender: string) {
-    this.categoryService.getCategories(gender).subscribe(response => {
+    this.productService.getCategories().subscribe(response => {
       this.categories = response;
     })
   }
@@ -62,7 +60,7 @@ export class ProductListComponent implements OnInit {
     }
   }
 
-  sort(type: string) {
+  sort(type: number) {
     this.productParams.orderBy = type;
     this.loadProducts();
   }

@@ -83,7 +83,7 @@ export class ProductDetailComponent implements OnInit {
         route: '/'
       },
       {
-        name: this.product.gender,
+        name: this.product.categoryName,
         route: ''
       },
       {
@@ -91,6 +91,14 @@ export class ProductDetailComponent implements OnInit {
         route: ''
       },
     ];
+    if (this.product.subCategoryName != undefined)
+    {
+      let subCategoryBreadcrum: BreadCrumb = {
+        name: this.product.subCategoryName,
+        route: ''
+      }
+      this.breadCrumb.splice(2, 0, subCategoryBreadcrum);
+    }
   }
 
   chooseColor(color: Color) {

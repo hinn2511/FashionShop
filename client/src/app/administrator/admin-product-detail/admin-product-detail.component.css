@@ -1,0 +1,8 @@
+.product-heading > .rect-img-container {
+    width: max(10vw, 100px);
+}
+
+.product-title {
+    margin-top: 20%;
+    vertical-align: middle;
+}

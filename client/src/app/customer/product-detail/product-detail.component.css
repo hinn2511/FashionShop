@@ -64,5 +64,9 @@
 }
 
 .quantity > input {
-    width: 70%;
+    width: 5vw;
+}
+
+.product-image 
+{
 }

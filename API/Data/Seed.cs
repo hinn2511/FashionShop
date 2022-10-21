@@ -150,6 +150,22 @@ namespace API.Entities
             await context.SaveChangesAsync();
         }
 
+        public static async Task SeedSizes(DataContext context)
+        {
+            if (await context.Sizes.AnyAsync()) return;
+
+            var sizeData = await System.IO.File.ReadAllTextAsync("Data/SeedData/SizeSeedData.json");
+
+            var sizes = JsonSerializer.Deserialize<List<Size>>(sizeData);
+
+            foreach ( var size in sizes)
+            {
+                await context.Sizes.AddAsync(size);
+            }
+
+            await context.SaveChangesAsync();
+        }
+
 
     //     public static async Task SeedSubCategories(DataContext context)
     //     {

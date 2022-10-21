@@ -1,1 +1,20 @@
-<p>number-input works!</p>
+<div class="form-group">
+    <input 
+        [class.is-invalid]='ngControl.touched && ngControl.invalid'
+        type={{type}}
+        class="form-control" 
+        [formControl]="ngControl.control"
+        placeholder={{label}}>
+        <div *ngIf="ngControl.control.errors?.required"
+            class="invalid-feedback">
+            Please enter {{ label }}
+        </div>
+        <div *ngIf="ngControl.control.errors?.max"
+            class="invalid-feedback">
+            {{label}} not valid
+        </div>
+        <div *ngIf="ngControl.control.errors?.min"
+            class="invalid-feedback">
+            Password not match
+        </div>
+</div>

@@ -1,22 +1,23 @@
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Text.Json.Serialization;
 using API.Entities.Other;
+using API.Entities.OtherModel;
 using API.Entities.ProductModel;
+using static API.Data.Constant;
 
 namespace API.Entities.Other
 {
-    public class ProductPhoto
+    public class ProductPhoto : Photo
     {
-        public int Id { get; set; }
-        
-        [JsonIgnore]
-        public Photo Photo { get; set; }
-        public int PhotoId { get; set; }
         public bool IsMain { get; set; }
-        
+
         [JsonIgnore]
         public Product Product { get; set; }
         public int ProductId { get; set; }
-
+        public int FileId { get; set; }
+        public UploadedFile File { get; set; }
+        public FileType FileType { get; set; }
     }
+
+    
 }

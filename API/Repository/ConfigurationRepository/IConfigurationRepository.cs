@@ -5,8 +5,9 @@ using API.Repository.GenericRepository;
 
 namespace API.Repository.ConfigurationRepository
 {
-    public interface IHomePageRepository : IGenericRepository<HomePage>
+     public interface IHomePageRepository : IGenericRepository<HomePage>
     {
+        Task<HomePage> GetHomePageByIdAsync(int homePageId);
     }
 
     public interface ICarouselRepository : IGenericRepository<Carousel>

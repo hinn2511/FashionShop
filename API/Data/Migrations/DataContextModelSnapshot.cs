@@ -34,7 +34,16 @@ namespace API.Data.Migrations
                     b.Property<DateTime>("DateDeleted")
                         .HasColumnType("TEXT");
 
+                    b.Property<DateTime>("DateHidden")
+                        .HasColumnType("TEXT");
+
                     b.Property<int>("DeletedByUserId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("ExternalId")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("HiddenByUserId")
                         .HasColumnType("INTEGER");
 
                     b.Property<DateTime>("LastUpdated")
@@ -44,6 +53,9 @@ namespace API.Data.Migrations
                         .HasColumnType("INTEGER");
 
                     b.Property<int>("PaymentMethod")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("Status")
                         .HasColumnType("INTEGER");
 
                     b.HasKey("Id");
@@ -66,7 +78,13 @@ namespace API.Data.Migrations
                     b.Property<DateTime>("DateDeleted")
                         .HasColumnType("TEXT");
 
+                    b.Property<DateTime>("DateHidden")
+                        .HasColumnType("TEXT");
+
                     b.Property<int>("DeletedByUserId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("HiddenByUserId")
                         .HasColumnType("INTEGER");
 
                     b.Property<DateTime>("LastUpdated")
@@ -82,6 +100,9 @@ namespace API.Data.Migrations
                         .HasColumnType("INTEGER");
 
                     b.Property<int>("Quantity")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("Status")
                         .HasColumnType("INTEGER");
 
                     b.HasKey("Id");
@@ -108,8 +129,17 @@ namespace API.Data.Migrations
                     b.Property<DateTime>("DateDeleted")
                         .HasColumnType("TEXT");
 
+                    b.Property<DateTime>("DateHidden")
+                        .HasColumnType("TEXT");
+
                     b.Property<int>("DeletedByUserId")
                         .HasColumnType("INTEGER");
+
+                    b.Property<int>("HiddenByUserId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("HistoryDescription")
+                        .HasColumnType("TEXT");
 
                     b.Property<DateTime>("LastUpdated")
                         .HasColumnType("TEXT");
@@ -117,10 +147,10 @@ namespace API.Data.Migrations
                     b.Property<int>("LastUpdatedByUserId")
                         .HasColumnType("INTEGER");
 
-                    b.Property<string>("Note")
-                        .HasColumnType("TEXT");
-
                     b.Property<int>("OrderId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("OrderStatus")
                         .HasColumnType("INTEGER");
 
                     b.Property<int>("Status")
@@ -133,41 +163,60 @@ namespace API.Data.Migrations
                     b.ToTable("OrderHistories");
                 });
 
-            modelBuilder.Entity("API.Entities.Other.Photo", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
-
-                    b.Property<string>("PublicId")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("Url")
-                        .HasColumnType("TEXT");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Photos");
-                });
-
             modelBuilder.Entity("API.Entities.Other.ProductPhoto", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
+                    b.Property<int>("CreatedByUserId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<DateTime>("DateCreated")
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime>("DateDeleted")
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime>("DateHidden")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("DeletedByUserId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("FileId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("FileType")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("HiddenByUserId")
+                        .HasColumnType("INTEGER");
+
                     b.Property<bool>("IsMain")
                         .HasColumnType("INTEGER");
 
-                    b.Property<int>("PhotoId")
+                    b.Property<DateTime>("LastUpdated")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("LastUpdatedByUserId")
                         .HasColumnType("INTEGER");
 
                     b.Property<int>("ProductId")
                         .HasColumnType("INTEGER");
 
+                    b.Property<string>("PublicId")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Url")
+                        .HasColumnType("TEXT");
+
                     b.HasKey("Id");
 
-                    b.HasIndex("PhotoId");
+                    b.HasIndex("FileId");
 
                     b.HasIndex("ProductId");
 
@@ -192,11 +241,17 @@ namespace API.Data.Migrations
                     b.Property<DateTime>("DateDeleted")
                         .HasColumnType("TEXT");
 
+                    b.Property<DateTime>("DateHidden")
+                        .HasColumnType("TEXT");
+
                     b.Property<int>("DeletedByUserId")
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("Extension")
                         .HasColumnType("TEXT");
+
+                    b.Property<int>("HiddenByUserId")
+                        .HasColumnType("INTEGER");
 
                     b.Property<DateTime>("LastUpdated")
                         .HasColumnType("TEXT");
@@ -209,6 +264,9 @@ namespace API.Data.Migrations
 
                     b.Property<string>("Path")
                         .HasColumnType("TEXT");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("INTEGER");
 
                     b.HasKey("Id");
 
@@ -230,7 +288,13 @@ namespace API.Data.Migrations
                     b.Property<DateTime>("DateDeleted")
                         .HasColumnType("TEXT");
 
+                    b.Property<DateTime>("DateHidden")
+                        .HasColumnType("TEXT");
+
                     b.Property<int>("DeletedByUserId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("HiddenByUserId")
                         .HasColumnType("INTEGER");
 
                     b.Property<DateTime>("LastUpdated")
@@ -241,6 +305,9 @@ namespace API.Data.Migrations
 
                     b.Property<string>("Name")
                         .HasColumnType("TEXT");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("INTEGER");
 
                     b.HasKey("Id");
 
@@ -265,16 +332,25 @@ namespace API.Data.Migrations
                     b.Property<DateTime>("DateDeleted")
                         .HasColumnType("TEXT");
 
+                    b.Property<DateTime>("DateHidden")
+                        .HasColumnType("TEXT");
+
                     b.Property<int>("DeletedByUserId")
                         .HasColumnType("INTEGER");
 
                     b.Property<int>("Gender")
                         .HasColumnType("INTEGER");
 
+                    b.Property<int>("HiddenByUserId")
+                        .HasColumnType("INTEGER");
+
                     b.Property<DateTime>("LastUpdated")
                         .HasColumnType("TEXT");
 
                     b.Property<int>("LastUpdatedByUserId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("Status")
                         .HasColumnType("INTEGER");
 
                     b.HasKey("Id");
@@ -320,7 +396,13 @@ namespace API.Data.Migrations
                     b.Property<DateTime>("DateDeleted")
                         .HasColumnType("TEXT");
 
+                    b.Property<DateTime>("DateHidden")
+                        .HasColumnType("TEXT");
+
                     b.Property<int>("DeletedByUserId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("HiddenByUserId")
                         .HasColumnType("INTEGER");
 
                     b.Property<DateTime>("LastUpdated")
@@ -333,6 +415,9 @@ namespace API.Data.Migrations
                         .HasColumnType("INTEGER");
 
                     b.Property<int>("SizeId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("Status")
                         .HasColumnType("INTEGER");
 
                     b.HasKey("Id");
@@ -367,11 +452,17 @@ namespace API.Data.Migrations
                     b.Property<DateTime>("DateDeleted")
                         .HasColumnType("TEXT");
 
+                    b.Property<DateTime>("DateHidden")
+                        .HasColumnType("TEXT");
+
                     b.Property<int>("DeletedByUserId")
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("Description")
                         .HasColumnType("TEXT");
+
+                    b.Property<int>("HiddenByUserId")
+                        .HasColumnType("INTEGER");
 
                     b.Property<DateTime>("LastUpdated")
                         .HasColumnType("TEXT");
@@ -389,6 +480,9 @@ namespace API.Data.Migrations
                         .HasColumnType("TEXT");
 
                     b.Property<int>("Sold")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("Status")
                         .HasColumnType("INTEGER");
 
                     b.Property<int?>("SubCategoryId")
@@ -434,7 +528,13 @@ namespace API.Data.Migrations
                     b.Property<DateTime>("DateDeleted")
                         .HasColumnType("TEXT");
 
+                    b.Property<DateTime>("DateHidden")
+                        .HasColumnType("TEXT");
+
                     b.Property<int>("DeletedByUserId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("HiddenByUserId")
                         .HasColumnType("INTEGER");
 
                     b.Property<DateTime>("LastUpdated")
@@ -447,6 +547,9 @@ namespace API.Data.Migrations
                         .HasColumnType("INTEGER");
 
                     b.Property<int>("Quantity")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("Status")
                         .HasColumnType("INTEGER");
 
                     b.HasKey("Id");
@@ -477,13 +580,22 @@ namespace API.Data.Migrations
                     b.Property<DateTime>("DateDeleted")
                         .HasColumnType("TEXT");
 
+                    b.Property<DateTime>("DateHidden")
+                        .HasColumnType("TEXT");
+
                     b.Property<int>("DeletedByUserId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("HiddenByUserId")
                         .HasColumnType("INTEGER");
 
                     b.Property<DateTime>("LastUpdated")
                         .HasColumnType("TEXT");
 
                     b.Property<int>("LastUpdatedByUserId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("Status")
                         .HasColumnType("INTEGER");
 
                     b.HasKey("Id");
@@ -633,7 +745,13 @@ namespace API.Data.Migrations
                     b.Property<DateTime>("DateDeleted")
                         .HasColumnType("TEXT");
 
+                    b.Property<DateTime>("DateHidden")
+                        .HasColumnType("TEXT");
+
                     b.Property<int>("DeletedByUserId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("HiddenByUserId")
                         .HasColumnType("INTEGER");
 
                     b.Property<DateTime>("LastUpdated")
@@ -646,6 +764,9 @@ namespace API.Data.Migrations
                         .HasColumnType("INTEGER");
 
                     b.Property<int>("Quantity")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("Status")
                         .HasColumnType("INTEGER");
 
                     b.Property<int>("UserId")
@@ -675,7 +796,13 @@ namespace API.Data.Migrations
                     b.Property<DateTime>("DateDeleted")
                         .HasColumnType("TEXT");
 
+                    b.Property<DateTime>("DateHidden")
+                        .HasColumnType("TEXT");
+
                     b.Property<int>("DeletedByUserId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("HiddenByUserId")
                         .HasColumnType("INTEGER");
 
                     b.Property<DateTime>("LastUpdated")
@@ -685,6 +812,9 @@ namespace API.Data.Migrations
                         .HasColumnType("INTEGER");
 
                     b.Property<int>("ProductId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("Status")
                         .HasColumnType("INTEGER");
 
                     b.Property<int>("UserId")
@@ -705,6 +835,9 @@ namespace API.Data.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
+                    b.Property<string>("ButtonText")
+                        .HasColumnType("TEXT");
+
                     b.Property<int>("CreatedByUserId")
                         .HasColumnType("INTEGER");
 
@@ -714,7 +847,19 @@ namespace API.Data.Migrations
                     b.Property<DateTime>("DateDeleted")
                         .HasColumnType("TEXT");
 
+                    b.Property<DateTime>("DateHidden")
+                        .HasColumnType("TEXT");
+
                     b.Property<int>("DeletedByUserId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Header")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("HiddenByUserId")
                         .HasColumnType("INTEGER");
 
                     b.Property<int>("HomePageId")
@@ -729,11 +874,11 @@ namespace API.Data.Migrations
                     b.Property<int>("LastUpdatedByUserId")
                         .HasColumnType("INTEGER");
 
-                    b.Property<string>("Text")
+                    b.Property<string>("Link")
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("TextLink")
-                        .HasColumnType("TEXT");
+                    b.Property<int>("Status")
+                        .HasColumnType("INTEGER");
 
                     b.Property<int>("TextPaddingBottom")
                         .HasColumnType("INTEGER");
@@ -766,9 +911,6 @@ namespace API.Data.Migrations
                     b.Property<int>("CategoryId")
                         .HasColumnType("INTEGER");
 
-                    b.Property<string>("CategoryUrl")
-                        .HasColumnType("TEXT");
-
                     b.Property<int>("CreatedByUserId")
                         .HasColumnType("INTEGER");
 
@@ -778,7 +920,13 @@ namespace API.Data.Migrations
                     b.Property<DateTime>("DateDeleted")
                         .HasColumnType("TEXT");
 
+                    b.Property<DateTime>("DateHidden")
+                        .HasColumnType("TEXT");
+
                     b.Property<int>("DeletedByUserId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("HiddenByUserId")
                         .HasColumnType("INTEGER");
 
                     b.Property<int>("HomePageId")
@@ -791,6 +939,12 @@ namespace API.Data.Migrations
                         .HasColumnType("TEXT");
 
                     b.Property<int>("LastUpdatedByUserId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Link")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("Status")
                         .HasColumnType("INTEGER");
 
                     b.HasKey("Id");
@@ -817,7 +971,13 @@ namespace API.Data.Migrations
                     b.Property<DateTime>("DateDeleted")
                         .HasColumnType("TEXT");
 
+                    b.Property<DateTime>("DateHidden")
+                        .HasColumnType("TEXT");
+
                     b.Property<int>("DeletedByUserId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("HiddenByUserId")
                         .HasColumnType("INTEGER");
 
                     b.Property<int>("HomePageId")
@@ -829,7 +989,13 @@ namespace API.Data.Migrations
                     b.Property<int>("LastUpdatedByUserId")
                         .HasColumnType("INTEGER");
 
+                    b.Property<string>("Link")
+                        .HasColumnType("TEXT");
+
                     b.Property<int>("ProductId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("Status")
                         .HasColumnType("INTEGER");
 
                     b.HasKey("Id");
@@ -856,7 +1022,13 @@ namespace API.Data.Migrations
                     b.Property<DateTime>("DateDeleted")
                         .HasColumnType("TEXT");
 
+                    b.Property<DateTime>("DateHidden")
+                        .HasColumnType("TEXT");
+
                     b.Property<int>("DeletedByUserId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("HiddenByUserId")
                         .HasColumnType("INTEGER");
 
                     b.Property<bool>("IsActive")
@@ -875,6 +1047,9 @@ namespace API.Data.Migrations
                         .HasColumnType("INTEGER");
 
                     b.Property<bool>("ShowFeatureProducts")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("Status")
                         .HasColumnType("INTEGER");
 
                     b.HasKey("Id");
@@ -998,9 +1173,9 @@ namespace API.Data.Migrations
 
             modelBuilder.Entity("API.Entities.Other.ProductPhoto", b =>
                 {
-                    b.HasOne("API.Entities.Other.Photo", "Photo")
+                    b.HasOne("API.Entities.OtherModel.UploadedFile", "File")
                         .WithMany()
-                        .HasForeignKey("PhotoId")
+                        .HasForeignKey("FileId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -1010,7 +1185,7 @@ namespace API.Data.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Photo");
+                    b.Navigation("File");
 
                     b.Navigation("Product");
                 });
@@ -1087,6 +1262,54 @@ namespace API.Data.Migrations
                         .IsRequired();
 
                     b.Navigation("Category");
+                });
+
+            modelBuilder.Entity("API.Entities.User.AppUser", b =>
+                {
+                    b.OwnsMany("API.Entities.UserModel.RefreshToken", "RefreshTokens", b1 =>
+                        {
+                            b1.Property<int>("Id")
+                                .ValueGeneratedOnAdd()
+                                .HasColumnType("INTEGER");
+
+                            b1.Property<int>("AppUserId")
+                                .HasColumnType("INTEGER");
+
+                            b1.Property<DateTime>("Created")
+                                .HasColumnType("TEXT");
+
+                            b1.Property<string>("CreatedByIp")
+                                .HasColumnType("TEXT");
+
+                            b1.Property<DateTime>("Expires")
+                                .HasColumnType("TEXT");
+
+                            b1.Property<string>("ReasonRevoked")
+                                .HasColumnType("TEXT");
+
+                            b1.Property<string>("ReplacedByToken")
+                                .HasColumnType("TEXT");
+
+                            b1.Property<DateTime?>("Revoked")
+                                .HasColumnType("TEXT");
+
+                            b1.Property<string>("RevokedByIp")
+                                .HasColumnType("TEXT");
+
+                            b1.Property<string>("Token")
+                                .HasColumnType("TEXT");
+
+                            b1.HasKey("Id");
+
+                            b1.HasIndex("AppUserId");
+
+                            b1.ToTable("RefreshToken");
+
+                            b1.WithOwner()
+                                .HasForeignKey("AppUserId");
+                        });
+
+                    b.Navigation("RefreshTokens");
                 });
 
             modelBuilder.Entity("API.Entities.User.AppUserRole", b =>

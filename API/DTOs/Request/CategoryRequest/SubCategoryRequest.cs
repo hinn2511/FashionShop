@@ -1,8 +1,11 @@
+using API.Entities.ProductModel;
+
 namespace API.DTOs.Request.CategoryRequest
 {
-    public class SubCategoryRequest : CategoryRequest
+    public class SubCategoryRequest
     {
-        public int ParentCategoryId { get; set; }
+        public string CategoryName { get; set; }
+        public Gender Gender { get; set; }
     }
 
     public class UpdateSubCategoryRequest : SubCategoryRequest

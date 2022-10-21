@@ -1,47 +1,52 @@
 [
   {
-    "ProductName": "Gucci T-shirt",
-    "Slug": "gucci-t-shirt",
+    "ProductName": "Product test 1",
+    "Slug": "product-test-1",
     "CategoryId": 3,
     "Price": 450,
     "DateCreated": "2022-01-22T05:43:53.9444655Z",
     "Sold": 0, 
-    "BrandId": 1
+    "BrandId": 1,
+    "Status": 0
   },
   {
-    "ProductName": "Gucci Dress",
-    "Slug": "gucci-dress",
+    "ProductName": "Product test 2",
+    "Slug": "product-test-2",
     "CategoryId": 1,
     "Price": 140,
     "DateCreated": "2022-01-22T05:43:53.9444655Z",
     "Sold": 0, 
-    "BrandId": 1
+    "BrandId": 1,
+    "Status": 0
   },
   {
-    "ProductName": "Chanel Bag",
-    "Slug": "chanel-bag",
+    "ProductName": "Product test 3",
+    "Slug": "product-test-3",
     "CategoryId": 2,
     "Price": 240,
     "DateCreated": "2022-01-22T05:43:53.9444655Z",
     "Sold": 0, 
-    "BrandId": 1
+    "BrandId": 1,
+    "Status": 0
   },
   {
-    "ProductName": "Chanel Coat",
-    "Slug": "chanel-coat",
+    "ProductName": "Product test 4",
+    "Slug": "product-test-4",
     "CategoryId": 3,
     "Price": 340,
     "DateCreated": "2022-01-22T05:43:53.9444655Z",
     "Sold": 0, 
-    "BrandId": 1
+    "BrandId": 1,
+    "Status": 0
   },
   {
-    "ProductName": "Zara Bag",
-    "Slug": "zara-bag",
+    "ProductName": "Product test 5",
+    "Slug": "product-test-5",
     "CategoryId": 2,
     "Price": 740,
     "DateCreated": "2022-01-22T05:43:53.9444655Z",
     "Sold": 0, 
-    "BrandId": 1
+    "BrandId": 1,
+    "Status": 0
   }
 ]

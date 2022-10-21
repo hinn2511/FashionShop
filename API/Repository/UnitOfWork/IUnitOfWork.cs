@@ -8,9 +8,10 @@ namespace API.Interfaces
 {
     public interface IUnitOfWork
     {
-        IUserRepository UserRepository { get; }
+        IUserLikeRepository UserLikeRepository { get; }
+        ICartRepository CartRepository { get; }
         IProductRepository ProductRepository { get; }
-        IPhotoRepository PhotoRepository { get; }
+        IProductPhotoRepository ProductPhotoRepository { get; }
         ICategoryRepository CategoryRepository { get; }
         ISubCategoryRepository SubCategoryRepository { get; }
         IOrderRepository OrderRepository { get; }

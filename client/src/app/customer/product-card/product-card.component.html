@@ -1,6 +1,10 @@
-<div class="card card-img-wrapper border-0 mb-3" [ngClass]="shadow" (mouseover)="hover($event)" (mouseout)="hover($event)">
-    <img class="bd-placeholder-img card-img-top p-4" src="{{product.url}}"
-         (click)="viewDetail()" >
+<div class="card card-img-wrapper border-0 mb-3" [ngClass]="shadow" (mouseover)="hover($event)"
+    (mouseout)="hover($event)">
+    <div class="rect-img-container">
+        <img class="rect-img p-4" src="{{product.url}}" (click)="viewDetail()" alt="Image" id="preview">
+    </div>
+    <!-- <img class="bd-placeholder-img card-img-top p-4" src="{{product.url}}"
+         (click)="viewDetail()" > -->
     <ul class="list icons animate text-center mt-3 mr-3">
         <li class="list-item">
             <button class="btn btn-light rounded-circle like-btn shadow">
@@ -9,10 +13,9 @@
         </li>
     </ul>
     <div class="card-body mt-3">
-        <h5 class="card-text text-uppercase"
-            (click)="viewDetail()">
-                {{product.productName}}
+        <h5 class="card-text text-uppercase" (click)="viewDetail()">
+            {{product.productName}}
         </h5>
-        <h6>{{product.productPrice | currency}}</h6>
+        <h6>{{product.price | currency}}</h6>
     </div>
 </div>

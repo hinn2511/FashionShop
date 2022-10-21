@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using API.Entities.UserModel;
 using Microsoft.AspNetCore.Identity;
 
 namespace API.Entities.User
@@ -13,6 +14,7 @@ namespace API.Entities.User
         public DateTime Created { get; set; } = DateTime.UtcNow;
         public DateTime LastActive { get; set; } = DateTime.UtcNow;
         public ICollection<AppUserRole> UserRoles { get; set; }
+        public List<RefreshToken> RefreshTokens { get; set; }
 
     }
 }

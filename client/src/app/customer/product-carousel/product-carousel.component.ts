@@ -10,20 +10,124 @@ import { Product } from 'src/app/_models/product';
 export class ProductCarouselComponent implements OnInit {
   @Input() singleSlide: boolean;
 
-  product: Product = {
+  products: Product[] = [{
     url: 'https://res.cloudinary.com/dsqfbwwmq/image/upload/v1643121899/o17gkl0actlmbwehcsnv.jpg',
-    productPrice: 450,
-    productName: 'Product',
-    gender: '',
+    price: 450,
+    productName: 'Product 1',
     slug: '',
     id: 0,
-    category: '',
-    sold: 0,
-    stocks: null,
-    productPhotos: null
-  }
-
-  products: Product[] = [];
+    description: "",
+    categoryId: 0,
+    brandId: 1,
+    productPhotos: null,
+    categoryName: "XYZ",
+    brandName: "XYZ",
+    likedByUser: false
+  }, {
+    url: 'https://res.cloudinary.com/dsqfbwwmq/image/upload/v1643121899/o17gkl0actlmbwehcsnv.jpg',
+    price: 450,
+    productName: 'Product 2',
+    slug: '',
+    id: 0,
+    description: "",
+    categoryId: 0,
+    brandId: 1,
+    productPhotos: null,
+    categoryName: "XYZ",
+    brandName: "XYZ",
+    likedByUser: false
+  }, {
+    url: 'https://res.cloudinary.com/dsqfbwwmq/image/upload/v1643121899/o17gkl0actlmbwehcsnv.jpg',
+    price: 450,
+    productName: 'Product 3',
+    slug: '',
+    id: 0,
+    description: "",
+    categoryId: 0,
+    brandId: 1,
+    productPhotos: null,
+    categoryName: "XYZ",
+    brandName: "XYZ",
+    likedByUser: false
+  }, {
+    url: 'https://res.cloudinary.com/dsqfbwwmq/image/upload/v1643121899/o17gkl0actlmbwehcsnv.jpg',
+    price: 450,
+    productName: 'Product 4',
+    slug: '',
+    id: 0,
+    description: "",
+    categoryId: 0,
+    brandId: 1,
+    productPhotos: null,
+    categoryName: "XYZ",
+    brandName: "XYZ",
+    likedByUser: false
+  }, {
+    url: 'https://res.cloudinary.com/dsqfbwwmq/image/upload/v1643121899/o17gkl0actlmbwehcsnv.jpg',
+    price: 450,
+    productName: 'Product 5',
+    slug: '',
+    id: 0,
+    description: "",
+    categoryId: 0,
+    brandId: 1,
+    productPhotos: null,
+    categoryName: "XYZ",
+    brandName: "XYZ",
+    likedByUser: false
+  }, {
+    url: 'https://res.cloudinary.com/dsqfbwwmq/image/upload/v1643121899/o17gkl0actlmbwehcsnv.jpg',
+    price: 450,
+    productName: 'Product 6',
+    slug: '',
+    id: 0,
+    description: "",
+    categoryId: 0,
+    brandId: 1,
+    productPhotos: null,
+    categoryName: "XYZ",
+    brandName: "XYZ",
+    likedByUser: false
+  }, {
+    url: 'https://res.cloudinary.com/dsqfbwwmq/image/upload/v1643121899/o17gkl0actlmbwehcsnv.jpg',
+    price: 450,
+    productName: 'Product 7',
+    slug: '',
+    id: 0,
+    description: "",
+    categoryId: 0,
+    brandId: 1,
+    productPhotos: null,
+    categoryName: "XYZ",
+    brandName: "XYZ",
+    likedByUser: false
+  }, {
+    url: 'https://res.cloudinary.com/dsqfbwwmq/image/upload/v1643121899/o17gkl0actlmbwehcsnv.jpg',
+    price: 450,
+    productName: 'Product 8',
+    slug: '',
+    id: 0,
+    description: "",
+    categoryId: 0,
+    brandId: 1,
+    productPhotos: null,
+    categoryName: "XYZ",
+    brandName: "XYZ",
+    likedByUser: false
+  }, {
+    url: 'https://res.cloudinary.com/dsqfbwwmq/image/upload/v1643121899/o17gkl0actlmbwehcsnv.jpg',
+    price: 450,
+    productName: 'Product 9',
+    slug: '',
+    id: 0,
+    description: "",
+    categoryId: 0,
+    brandId: 1,
+    productPhotos: null,
+    categoryName: "XYZ",
+    brandName: "XYZ",
+    likedByUser: false
+  }];
 
   itemsPerSlide: number;
 
@@ -41,11 +145,7 @@ export class ProductCarouselComponent implements OnInit {
 
   ngOnInit(): void {
     this.showItemQuantity();
-    for (let i = 0; i < 9; i++) {
-      let p = this.product;
-      p.productName = i.toString();
-      this.products.push(p);
-    }
+
     
   }
 

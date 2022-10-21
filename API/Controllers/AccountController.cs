@@ -1,110 +1,153 @@
+using System;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 using API.Data;
 using API.DTOs;
+using API.DTOs.Request.AuthenticationRequest;
 using API.Entities;
 using API.Entities.User;
+using API.Extensions;
 using API.Interfaces;
+using API.Services.UserService;
 using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace API.Controllers
 {
+    [Authorize]
     public class AccountController : BaseApiController
     {
         private readonly ITokenService _tokenService;
         private readonly IMapper _mapper;
+        private readonly IUserService _userService;
         private readonly UserManager<AppUser> _userManager;
         private readonly SignInManager<AppUser> _signInManager;
-        public AccountController(UserManager<AppUser> userManager, SignInManager<AppUser> signInManager, ITokenService tokenService, IMapper mapper)
+        public AccountController(UserManager<AppUser> userManager, SignInManager<AppUser> signInManager, ITokenService tokenService, IMapper mapper, IUserService userService)
         {
             _signInManager = signInManager;
             _userManager = userManager;
             _mapper = mapper;
+            _userService = userService;
             _tokenService = tokenService;
         }
 
+        [AllowAnonymous]
         [HttpPost("register")]
-        public async Task<ActionResult<UserDto>> Register(RegisterDto registerDto)
+        public async Task<ActionResult> Register(RegisterRequest registerRequest)
         {
-            if (await UserExist(registerDto.Username))
+            if (await UserExist(registerRequest.Username))
                 return BadRequest("Username already taken");
 
-            var user = _mapper.Map<AppUser>(registerDto);
+            var user = _mapper.Map<AppUser>(registerRequest);
 
-            user.UserName = registerDto.Username.ToLower();
+            user.UserName = registerRequest.Username.ToLower();
 
-            var result = await _userManager.CreateAsync(user, registerDto.Password);
+            var result = await _userManager.CreateAsync(user, registerRequest.Password);
 
-            if (!result.Succeeded) return BadRequest(result.Errors);
+            if (!result.Succeeded) 
+                return BadRequest(result.Errors);
 
             var roleResult = await _userManager.AddToRoleAsync(user, "Customer");
 
-            if(!roleResult.Succeeded) return BadRequest(result.Errors);
+            if(!roleResult.Succeeded) 
+                return BadRequest(result.Errors);
 
-            return new UserDto
-            {
-                Username = user.UserName,
-                Token = await _tokenService.CreateToken(user),
-                Name = user.FirstName
-            };
+            return Ok();
         }
 
-        [HttpPost("login")]
-        public async Task<ActionResult<UserDto>> Login(LoginDto loginDto)
+        [AllowAnonymous]
+        [HttpPost("authenticate")]
+        public async Task<ActionResult> Authenticate(AuthenticationRequest authenticationRequest)
         {
-            var user = await _userManager.Users
-                    .SingleOrDefaultAsync(u => u.UserName == loginDto.Username.ToLower());
-
-            if (user == null)
-                return Unauthorized("Invalid username");
-                
-            var result = await _signInManager.CheckPasswordSignInAsync(user, loginDto.Password, false);
-
-            if (!result.Succeeded) return Unauthorized();
-
-            return new UserDto
-            {
-                Username = user.UserName,
-                Token = await _tokenService.CreateToken(user),
-                Name = user.FirstName
-            };
-
+            var response = await _userService.Authenticate(authenticationRequest, ipAddress());
+            setTokenCookie(response.RefreshToken);
+            return Ok(response);
         }
 
+        [AllowAnonymous]
+        [HttpPost("refresh-token")]
+        public async Task<ActionResult> RefreshToken()
+        {
+            var refreshToken = Request.Cookies["refreshToken"];
+            if(string.IsNullOrEmpty(refreshToken))
+                return Unauthorized(); 
+            var response = await _userService.RefreshToken(refreshToken, ipAddress());
+            setTokenCookie(response.RefreshToken);
+            return Ok(response);
+        }
+
+        [HttpPost("revoke-token")]
+        public async Task<ActionResult> RevokeToken(RevokeTokenRequest model)
+        {
+            var token = model.Token != "" ? model.Token : Request.Cookies["refreshToken"];
+
+            if (string.IsNullOrEmpty(token))
+                return BadRequest(new { message = "Token is required" });
+
+            await _userService.RevokeToken(token, ipAddress());
+            return Ok(new { message = "Token revoked" });
+        }
+       
         [HttpPut("change-password")]
-        public async Task<ActionResult<UserDto>> ChangePassword(ResetPasswordDto resetPasswordDto)
+        public async Task<ActionResult> ChangePassword(ResetPasswordRequest resetPasswordRequest)
         {
             var user = await _userManager.Users
-                    .SingleOrDefaultAsync(u => u.UserName == resetPasswordDto.Username.ToLower());
+                    .SingleOrDefaultAsync(u => u.Id == GetUserId());
 
-            var loginResult = await _signInManager.CheckPasswordSignInAsync(user, resetPasswordDto.OldPassword, false);
-            if (!loginResult.Succeeded)
+            var  checkPasswordResult = await _signInManager.CheckPasswordSignInAsync(user, resetPasswordRequest.OldPassword, false);
+            if (!checkPasswordResult.Succeeded)
                 return BadRequest("Password not valid!");
 
-            var resetPasswordResult = await _userManager.ResetPasswordAsync(user, resetPasswordDto.Token, resetPasswordDto.NewPassword);
+            var token = await _userManager.GeneratePasswordResetTokenAsync(user);
+
+            var resetPasswordResult = await _userManager.ResetPasswordAsync(user, token, resetPasswordRequest.NewPassword);
 
             if (!resetPasswordResult.Succeeded) 
                 return BadRequest("Can not change password!");
 
-            return new UserDto
-            {
-                Username = user.UserName,
-                Token = await _tokenService.CreateToken(user),
-                Name = user.FirstName
-            };
+            return Ok();
 
         }
 
+
+        #region private method
 
         private async Task<bool> UserExist(string username)
         {
             return await _userManager.Users.AnyAsync(u => u.UserName == username.ToLower());
         }
 
+        private void setTokenCookie(string token)
+        {
+            // var cookieOptions = new CookieOptions
+            // {
+            //     HttpOnly = true,
+            //     Expires = DateTime.UtcNow.AddDays(7),
+            //     Secure = true
+            // };
+            var cookieOptions = new CookieOptions
+            {
+                HttpOnly = false,
+                Expires = DateTime.UtcNow.AddDays(7),
+                Secure = false
+            };
+            Response.Cookies.Append("refreshToken", token, cookieOptions);
+        }
+
+        private string ipAddress()
+        {
+            if (Request.Headers.ContainsKey("X-Forwarded-For"))
+                return Request.Headers["X-Forwarded-For"];
+            else
+                return HttpContext.Connection.RemoteIpAddress.MapToIPv4().ToString();
+        }
+
+        #endregion
 
     }
 }

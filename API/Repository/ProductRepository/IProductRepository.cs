@@ -1,8 +1,8 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using API.DTOs;
-using API.DTOs.Customer;
-using API.DTOs.Product;
+using API.DTOs.Params;
+using API.Entities.Other;
 using API.Entities.ProductModel;
 using API.Helpers;
 using API.Repository.GenericRepository;
@@ -15,14 +15,23 @@ namespace API.Interfaces
 
     }
 
+    public interface IProductPhotoRepository : IGenericRepository<ProductPhoto>
+    {
+    }
+
     public interface IProductRepository : IGenericRepository<Product>
     {
-        Task<PagedList<Product>> GetProductsAsCustomerAsync(ProductParams productParams);
+        Task<PagedList<Product>> GetProductsAsync(CustomerProductParams productParams);
+
+        Task<PagedList<Product>> GetProductsAsync(AdministratorProductParams productParams);
+
+        Task<Product> GetProductDetailWithPhotoAsync(int productId);
+
     }
 
     public interface IProductOptionRepository : IGenericRepository<Option>
     {
-
+        Task<IEnumerable<Option>> GetProductOptionsAsync(int productId);
     }
 
     public interface ISizeRepository : IGenericRepository<Size>

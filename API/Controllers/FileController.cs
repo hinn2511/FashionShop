@@ -1,4 +1,5 @@
-﻿using API.Entities.OtherModel;
+﻿using API.Data;
+using API.Entities.OtherModel;
 using API.Extensions;
 using API.Interfaces;
 using AutoMapper;
@@ -14,6 +15,7 @@ using System.Threading.Tasks;
 
 namespace API.Controllers
 {
+    [Authorize(Policy = "ManagerOnly")]
     [ApiController]
     [Route("file")]
     public class FileController : BaseApiController
@@ -21,77 +23,75 @@ namespace API.Controllers
         private readonly IMapper _mapper;
         private readonly IUnitOfWork _unitOfWork;
 
-        private static readonly Dictionary<string, string> ContentType = new()
-        {
-            {"jpg", "image/jpeg" },
-            {"jpeg", "image/jpeg" },
-            {"png", "image/png" },
-            {"mp4", "video/mp4" },
-        };
-
-        private static readonly string UploadFolderPath = Path.Combine(Environment.CurrentDirectory, "UploadedFiles");
-        private static readonly int DefaultBufferSize = 4096;
-
         public FileController(IMapper mapper, IUnitOfWork unitOfWork)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
         }
 
-        [Authorize]
         [HttpPost]
         public async Task<ActionResult> UploadFile(IFormFile file)
         {
-            ValidateFile(file);
+            FileExtensions.ValidateFile(file, Constant.UploadContentType, 20000);
 
-            string name = Guid.NewGuid().ToString().Replace("-", string.Empty)
-                                        + "." + file.FileName.Split(".").Last();
-            var filePath = Path.Combine(UploadFolderPath, name);
+            var filePath = await FileExtensions.SaveFile(file);
 
-            if (!Directory.Exists(UploadFolderPath))
-            {
-                Directory.CreateDirectory(UploadFolderPath);
-            }
+            var fileName = filePath.Split("\\").Last();
 
-            using (var fileStream = new FileStream(filePath, FileMode.Create, FileAccess.Write, FileShare.None, DefaultBufferSize))
-            {
-                await file.CopyToAsync(fileStream);
-            }
+            var fileExtension = filePath.Split(".").Last();
 
             var uploadedFile = new UploadedFile()
-                {
-                    DateCreated = DateTime.UtcNow,
-                    ContentType = file.ContentType,
-                    Name = name,
-                    Extension =  file.FileName.Split(".").Last(),
-                    Path = filePath,
-                    CreatedByUserId = User.GetUserId()
-                };
+            {
+                ContentType = file.ContentType,
+                Name = fileName,
+                Extension = fileExtension,
+                Path = filePath,
+            };
+
+            uploadedFile.AddCreateInformation(GetUserId());
 
             _unitOfWork.FileRepository.Insert(uploadedFile);
 
             if(await _unitOfWork.Complete())
-                return Ok(uploadedFile.Id);
+                return Ok($"{Constant.DownloadFileUrl}{uploadedFile.Name}");
         
             return BadRequest("Can not upload file");
         }
 
-
-        [HttpGet("{id}")]
-        public async Task<ActionResult> DownloadFile(int id)
+        [AllowAnonymous]
+        [HttpGet("{name}")]
+        public async Task<ActionResult> DownloadFile(string name)
         {
-            var file = await GetUploadedFileInformation(id);
+            var file = await GetUploadedFileInformation(name);
 
             byte[] content;
-            using (var fileStream = new FileStream(file.Path, FileMode.Open, FileAccess.Read, FileShare.None, DefaultBufferSize))
+            ////  download only and not viewable in browser
+            //  using (var fileStream = new FileStream(file.Path, FileMode.Open, FileAccess.Read, FileShare.None, Constant.DefaultBufferSize))
+            //     {
+            //         content = new byte[fileStream.Length];
+            //         await fileStream.ReadAsync(content.AsMemory(0, (int)fileStream.Length));
+            //     }
+            //     return File(content, file.ContentType, file.Name);
+
+            //// download from bytes and viewable in browser
+            using (var fileStream = new FileStream(file.Path, FileMode.Open, FileAccess.Read, FileShare.None, Constant.DefaultBufferSize))
             {
                 content = new byte[fileStream.Length];
                 await fileStream.ReadAsync(content.AsMemory(0, (int)fileStream.Length));
             }
 
-            return File(content, file.ContentType, file.Name);
+            ////  for video file
+            if (file.Extension == ".mp4")
+                return File(content, file.ContentType, file.Name);
+            
+            return new FileContentResult(content, file.ContentType);
+
+            //// download from stream and viewable in browser
+            // var fileStream = new FileStream(file.Path, FileMode.Open, FileAccess.Read);
+            // return new FileStreamResult(fileStream, file.ContentType);
 
         }
+
 
         public async Task<UploadedFile> GetUploadedFileInformation(int id)
         {
@@ -100,14 +100,15 @@ namespace API.Controllers
                 throw new KeyNotFoundException("File not found");
             return uploadedFile;
         }
-        
-        private static void ValidateFile(IFormFile file)
-        {
-            if (file == null || file.Length <= 0)
-                throw new ValidationException("File is empty");
 
-            if (!ContentType.Any(ct => ct.Value == file.ContentType))
-                throw new ValidationException("Wrong file type");
+        public async Task<UploadedFile> GetUploadedFileInformation(string name)
+        {
+            var uploadedFile = await _unitOfWork.FileRepository.GetFirstBy(x => x.Name == name);
+            if (uploadedFile == null)
+                throw new KeyNotFoundException("File not found");
+            return uploadedFile;
         }
+        
     }
 }
+

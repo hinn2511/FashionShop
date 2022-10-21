@@ -10,8 +10,21 @@ namespace API.Repository.ConfigurationRepository
 {
     public class HomePageRepository : GenericRepository<HomePage>, IHomePageRepository
     {
+        private readonly DataContext _context;
+
         public HomePageRepository(DataContext context, DbSet<HomePage> set) : base(context, set)
         {
+            _context = context;
+        }
+
+        public async Task<HomePage> GetHomePageByIdAsync(int homePageId)
+        {
+            return await  _context.HomePages
+                                .Where(x => x.Id == homePageId)
+                                .Include(x => x.Carousels)
+                                .Include(x => x.FeatureCategories).ThenInclude(x => x.Category)
+                                .Include(x => x.FeatureProducts).ThenInclude(x => x.Product)
+                                .FirstOrDefaultAsync();
         }
     }
 

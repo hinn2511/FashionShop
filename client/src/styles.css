@@ -28,6 +28,15 @@ body {
     .pr-sm-0 {
       padding-right: 0;
     }
+
+    .over-flow-scroll {
+      -ms-overflow-style: none;  /* IE and Edge */
+      scrollbar-width: none; 
+    }
+
+    .over-flow-scroll::-webkit-scrollbar {
+      display: none;
+    }
 }
 
 .pagination > li {
@@ -171,3 +180,44 @@ div.carousel.slide > ol {
   height: 2vw;
 }
 
+.rect-img-container {
+  position: relative;
+}
+
+.rect-img-container::after {
+  content: "";
+  display: block;
+  padding-bottom: 100%;
+}
+
+.rect-img {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.over-flow-scroll {
+  overflow: scroll;
+}
+
+/* .modal-dialog
+{
+  width: 100% !important;
+}
+
+::ng-deep .modal-image-selector
+{ 
+  max-width: 60vw !important;
+  width: 60vw !important;
+}
+
+::ng-deep .modal-image-viewer
+{ 
+  max-width: 1200px!important;
+  width: 1200px !important; 
+} */
+
+.cs-pointer {
+  cursor: pointer;
+}
