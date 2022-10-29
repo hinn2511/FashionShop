@@ -28,3 +28,15 @@ input[type="checkbox"] {
     width: max(10vw, fit-content);
     min-width: 10vw;
 }
+
+
+td
+{
+  vertical-align: middle;
+}
+
+.rect-img-container
+{
+  max-height: 5vh;
+  overflow: hidden;
+}
