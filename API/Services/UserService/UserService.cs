@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using API.Data;
@@ -16,9 +17,15 @@ using Microsoft.Extensions.Options;
 
 namespace API.Services.UserService
 {
+    public enum AuthenticateType 
+    {
+        Client,
+        Business
+    }
+
     public interface IUserService
     {
-        Task<AuthenticateResponse> Authenticate(AuthenticationRequest model, string ipAddress);
+        Task<AuthenticateResponse> Authenticate(AuthenticationRequest model, AuthenticateType type, string ipAddress);
         Task<AuthenticateResponse> RefreshToken(string token, string ipAddress);
         Task RevokeToken(string token, string ipAddress);
         Task<AppUser> GetById(int id);
@@ -47,13 +54,23 @@ namespace API.Services.UserService
             
         }
 
-        public async Task<AuthenticateResponse> Authenticate(AuthenticationRequest model, string ipAddress)
+        public async Task<AuthenticateResponse> Authenticate(AuthenticationRequest model, AuthenticateType type, string ipAddress)
         {
             var user = await _userManager.Users
                     .SingleOrDefaultAsync(u => u.UserName == model.Username.ToLower());
 
             if (user == null)
                 throw new AppException("Invalid username or password");
+
+            var roles = await _userManager.GetRolesAsync(user);
+
+            if(type == AuthenticateType.Client && roles.FirstOrDefault(x => x == "Customer") == null)
+                throw new AppException("Invalid access.");
+            
+            if(type == AuthenticateType.Business && roles.Any(x => x == "Customer"))
+                throw new AppException("Invalid access.");
+
+            
                 
             var result = await _signInManager.CheckPasswordSignInAsync(user, model.Password, false);
 

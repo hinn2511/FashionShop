@@ -19,15 +19,15 @@ export class AuthenticationService {
         this.userSubject = new BehaviorSubject<User>(null);
         this.user = this.userSubject.asObservable();
         ///
-        
+
         ///
     }
 
     public setUser() {
         const user: User = JSON.parse(localStorage.getItem('user'));
         const roles = this.getDecodedToken(user.jwtToken).role;
-        Array.isArray(roles) ? user.roles = roles : user.roles = [roles];    
-        localStorage.setItem('user', JSON.stringify(user));    
+        Array.isArray(roles) ? user.roles = roles : user.roles = [roles];
+        localStorage.setItem('user', JSON.stringify(user));
         this.userSubject.next(user);
     }
 
@@ -51,8 +51,13 @@ export class AuthenticationService {
     //     localStorage.removeItem('roles');
     // }
 
-    login(username: string, password: string) {
-        return this.http.post<any>(`${environment.apiUrl}account/authenticate`, { username, password }, { withCredentials: true })
+    login(username: string, password: string, type: string) {
+        var url = '';
+        if (type == 'client')
+          url = 'account/authenticate';
+        else
+          url = 'account/business-authenticate';
+        return this.http.post<any>(`${environment.apiUrl}` + url, { username, password }, { withCredentials: true })
             .pipe(map(user => {
                 user.roles = [];
                 const roles = this.getDecodedToken(user.jwtToken).role;
@@ -67,27 +72,16 @@ export class AuthenticationService {
     }
 
     logout() {
+        localStorage.removeItem('user');
         this.http.post<any>(`${environment.apiUrl}account/revoke-token`, {}, { withCredentials: true }).subscribe();
-        
+
         let bussinessRole: string[] = [  "Admin", "Manager" ];
         let logoutRoute = "/login"
         if (this.userValue?.roles.some(role => bussinessRole.includes(role))) {
             logoutRoute = "/administrator/login";
         }
-        console.log(this.userValue);
-        // for (let element of  this.userValue.roles) {
-        //     if(bussinessRole.includes(element))
-        //     {
-        //         logoutRoute = "/administrator/login";
-        //         break;
-        //     }
-        //  }
 
         this.stopRefreshTokenTimer();
-        ///
-        if(localStorage.getItem('user') != null || localStorage.getItem('user') != undefined)
-            localStorage.removeItem('user');
-        ///
         this.userSubject.next(undefined);
         this.user = new Observable<User>();
         this.router.navigate([logoutRoute]);
