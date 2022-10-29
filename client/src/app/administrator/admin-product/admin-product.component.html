@@ -199,6 +199,9 @@
               ></i
             ></span>
           </th>
+          <th scope="col cs-pointer" class="text-center">
+            Product
+          </th>
           <th scope="col cs-pointer" (click)="orderBy('name')">
             Product name&nbsp;
             <span
@@ -255,6 +258,11 @@
             />
           </td>
           <td (click)="viewDetail(product.id)">{{ product.id }}</td>
+          <td (click)="viewDetail(product.id)">
+            <div class="rect-img-container">
+              <img class="rect-img" src="{{ product.url }}" alt="" />
+            </div>
+          </td>
           <td (click)="viewDetail(product.id)">{{ product.productName }}</td>
           <td (click)="viewDetail(product.id)">{{ product.price }}</td>
           <td (click)="viewDetail(product.id)">{{ product.sold }}</td>
@@ -266,7 +274,7 @@
         </tr>
       </tbody>
     </table>
-    <div class="w-100">Total: {{ products.length }} product(s)</div>
+    <div *ngIf="pagination" class="w-100">Total: {{ pagination.totalItems }} product(s)</div>
   </div>
 
   <!-- Pagination -->

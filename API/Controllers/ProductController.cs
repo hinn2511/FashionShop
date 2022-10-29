@@ -358,7 +358,9 @@ namespace API.Controllers
 
             var filePath = await FileExtensions.SaveFile(file);
 
-            var resizedFilePath = FileExtensions.ResizeImage(Constant.DefaultImageWidth, Constant.DefaultImageHeight, filePath, true, false);
+            var keepSourceImage = file.ContentType == "image/png";
+
+            var resizedFilePath = FileExtensions.ResizeImage(Constant.DefaultImageWidth, Constant.DefaultImageHeight, filePath, true, keepSourceImage);
 
             var resizedFileName = resizedFilePath.Split("\\").Last();
 
