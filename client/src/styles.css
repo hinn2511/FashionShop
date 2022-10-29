@@ -1,9 +1,12 @@
-@import url('https://fonts.googleapis.com/css2?family=Outfit&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap');
 
+
+
 body {
-    font-family: 'Outfit', sans-serif;
+  font-family: 'Outfit', sans-serif;
 }
+
 
 @media (min-width: 768px) {
 
@@ -16,9 +19,9 @@ body {
     }
 
     .pagination {
-      flex-wrap: wrap !important; 
+      flex-wrap: wrap !important;
       justify-content: center !important;
-    } 
+    }
 
     .mx-sm-0 {
       margin-left: 0;
@@ -31,7 +34,7 @@ body {
 
     .over-flow-scroll {
       -ms-overflow-style: none;  /* IE and Edge */
-      scrollbar-width: none; 
+      scrollbar-width: none;
     }
 
     .over-flow-scroll::-webkit-scrollbar {
@@ -89,7 +92,7 @@ input[type="url"]:focus,
 input[type="search"]:focus,
 input[type="tel"]:focus,
 input[type="color"]:focus,
-.uneditable-input:focus {   
+.uneditable-input:focus {
     border-color: transparent;
     -webkit-box-shadow: 0 8px 6px -8px transparent;
     -moz-box-shadow: 0 8px 6px -8px transparent;
@@ -169,12 +172,12 @@ div.carousel.slide > ol {
   background-size: 100%, 100%;
 }
 
-.carousel-control-prev-icon { 
+.carousel-control-prev-icon {
   background-image: url('../.././client/src/assets/iconmonstr-arrow-left-thin.svg');
   width: 2vw;
   height: 2vw;
 }
-.carousel-control-next-icon { 
+.carousel-control-next-icon {
   background-image: url('../.././client/src/assets/iconmonstr-arrow-right-thin.svg');
   width: 2vw;
   height: 2vw;
@@ -207,15 +210,15 @@ div.carousel.slide > ol {
 }
 
 ::ng-deep .modal-image-selector
-{ 
+{
   max-width: 60vw !important;
   width: 60vw !important;
 }
 
 ::ng-deep .modal-image-viewer
-{ 
+{
   max-width: 1200px!important;
-  width: 1200px !important; 
+  width: 1200px !important;
 } */
 
 .cs-pointer {

@@ -1,15 +1,20 @@
-<div *ngIf="hasRoute('administrator/login')">
+<ng-container *ngIf="hasRoute('administrator/login')">
   <app-admin-login></app-admin-login>
-</div>
+</ng-container>
 
-<div *ngIf="!hasRoute('administrator/login')">
+<ng-container *ngIf="!hasRoute('administrator/login')">
   <div *appHasRole="['Anonymous', 'Customer']">
-    <!-- <div> -->
-    <app-navigation-bar></app-navigation-bar>
-    <div class="container-fluid w-100 px-0 mb-5">
-      <router-outlet></router-outlet>
-    </div>
-    <app-footer></app-footer>
+      <ng-container *ngIf="!hasRoute('/login')">
+        <app-navigation-bar></app-navigation-bar>
+      </ng-container>
+
+      <div class="container-fluid w-100 px-0">
+        <router-outlet></router-outlet>
+      </div>
+
+      <ng-container *ngIf="!hasRoute('/login')">
+        <app-footer></app-footer>
+      </ng-container>
   </div>
 
   <div *appHasRole="['Admin', 'Manager']">
@@ -29,7 +34,7 @@
               Log out
             </button>
           </div>
-          
+
           <div class="ml-5">
             <router-outlet></router-outlet>
           </div>
@@ -38,4 +43,4 @@
       </div>
     </div>
   </div>
-</div>
+</ng-container>

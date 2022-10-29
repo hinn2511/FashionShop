@@ -62,9 +62,18 @@ namespace API.Controllers
 
         [AllowAnonymous]
         [HttpPost("authenticate")]
-        public async Task<ActionResult> Authenticate(AuthenticationRequest authenticationRequest)
+        public async Task<ActionResult> ClientAuthenticate(AuthenticationRequest authenticationRequest)
         {
-            var response = await _userService.Authenticate(authenticationRequest, ipAddress());
+            var response = await _userService.Authenticate(authenticationRequest, AuthenticateType.Client, ipAddress());
+            setTokenCookie(response.RefreshToken);
+            return Ok(response);
+        }
+
+        [AllowAnonymous]
+        [HttpPost("business-authenticate")]
+        public async Task<ActionResult> AdminAuthenticate(AuthenticationRequest authenticationRequest)
+        {
+            var response = await _userService.Authenticate(authenticationRequest, AuthenticateType.Business, ipAddress());
             setTokenCookie(response.RefreshToken);
             return Ok(response);
         }
@@ -84,12 +93,13 @@ namespace API.Controllers
         [HttpPost("revoke-token")]
         public async Task<ActionResult> RevokeToken(RevokeTokenRequest model)
         {
-            var token = model.Token != "" ? model.Token : Request.Cookies["refreshToken"];
+            var token = !string.IsNullOrEmpty(model.Token) ? model.Token : Request.Cookies["refreshToken"];
 
             if (string.IsNullOrEmpty(token))
                 return BadRequest(new { message = "Token is required" });
 
             await _userService.RevokeToken(token, ipAddress());
+
             return Ok(new { message = "Token revoked" });
         }
        
@@ -132,9 +142,9 @@ namespace API.Controllers
             // };
             var cookieOptions = new CookieOptions
             {
-                HttpOnly = false,
+                HttpOnly = true,
                 Expires = DateTime.UtcNow.AddDays(7),
-                Secure = false
+                Secure = true
             };
             Response.Cookies.Append("refreshToken", token, cookieOptions);
         }

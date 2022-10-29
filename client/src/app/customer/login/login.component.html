@@ -1,32 +1,116 @@
-<div class="col-md-6 offset-md-3 mt-5">
-    <!-- <div class="alert alert-info">
-        Username: test<br />
-        Password: test
-    </div> -->
-    <div class="card">
-        <h4 class="card-header">Login</h4>
-        <div class="card-body">
-            <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
-                <div class="form-group">
-                    <label for="username">Username</label>
-                    <input type="text" formControlName="username" class="form-control" [ngClass]="{ 'is-invalid': submitted && f.username.errors }" />
-                    <div *ngIf="submitted && f.username.errors" class="invalid-feedback">
-                        <div *ngIf="f.username.errors.required">Username is required</div>
+<div class="container-fluid py-5 position-relative">
+  <div class="col-12 col-md-10 col-lg-6 card-container py-4 py-lg-0">
+    <div class="card p-2 border-0 shadow text-center">
+      <div class="card-body">
+        <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+          <h3 class="card-header pt-4 text-uppercase">Login</h3>
+          <div class="form-group mb-4 px-4">
+            <span class="text-muted"> Don't have an account? </span>
+            <a class="text-dark" href="">Sign in now</a>
+          </div>
+          <div>
+
+          </div>
+          <div class="form-group my-4 px-4">
+            <label for="username">Username</label>
+            <input
+              type="text"
+              formControlName="username"
+              class="form-control"
+              [ngClass]="{ 'is-invalid': submitted && f.username.errors }"
+            />
+            <div
+              *ngIf="submitted && f.username.errors"
+              class="invalid-feedback"
+            >
+              <div *ngIf="f.username.errors.required">Username is required</div>
+            </div>
+          </div>
+          <div class="form-group my-4 px-4">
+            <label for="password">Password</label>
+            <input
+              type="password"
+              formControlName="password"
+              class="form-control"
+              [ngClass]="{ 'is-invalid': submitted && f.password.errors }"
+            />
+            <div
+              *ngIf="submitted && f.password.errors"
+              class="invalid-feedback"
+            >
+              <div *ngIf="f.password.errors.required">Password is required</div>
+            </div>
+          </div>
+          <div class="my-4 px-4">
+            <a class="text-dark cs-pointer"
+              >Forget password?</a>
+            <button [disabled]="loading" class="btn btn-dark py-2 mt-2 w-100">
+              <span
+                *ngIf="loading"
+                class="spinner-border spinner-border-sm mr-1"
+              ></span>
+              <h5  *ngIf="!loading" class="p-0 m-0">Login</h5>
+            </button>
+            <div *ngIf="error" class="alert alert-danger mt-3 mb-0">
+              {{ error }}
+            </div>
+          </div>
+          <div class="mt-5 mb-4 px-4">
+            <div
+              class="w-100 d-inline-block d-flex d-justify-between other-method-login"
+            >
+              <div class="flex-fill">
+                <hr />
+              </div>
+              <label class="flex-fill" for="other-signin-method"
+                >Or login with</label
+              >
+              <div class="flex-fill">
+                <hr />
+              </div>
+            </div>
+            <div class="mt-2 px-2">
+                <div class="row p-lg-0">
+                    <div class="col-12 col-lg-4 px-lg-1 mb-2 mb-lg-0 ">
+                        <button
+                        class="btn btn-light w-100 align-center justify-content-center"
+                      >
+                        <img class="nav-icon" src="../../../assets/google.svg" alt="" />
+                        <span class="ml-1">Google</span>
+                      </button>
+                    </div>
+                    <div class="col-12 col-lg-4 px-lg-1 mb-2 mb-lg-0 ">
+                        <button
+                        class="btn btn-light w-100 align-center justify-content-center"
+                      >
+                        <img
+                          class="nav-icon"
+                          src="../../../assets/facebook.svg"
+                          alt=""
+                        />
+                        <span class="ml-1">Facebook</span>
+                      </button>
+                    </div>
+                    <div class="col-12 col-lg-4 px-lg-1 mb-2 mb-lg-0 ">
+                        <button
+                        class="btn btn-light w-100 align-center justify-content-center"
+                      >
+                        <img class="nav-icon" src="../../../assets/apple.svg" alt="" />
+                        <span class="ml-1">Apple ID</span>
+                      </button>
                     </div>
                 </div>
-                <div class="form-group">
-                    <label for="password">Password</label>
-                    <input type="password" formControlName="password" class="form-control" [ngClass]="{ 'is-invalid': submitted && f.password.errors }" />
-                    <div *ngIf="submitted && f.password.errors" class="invalid-feedback">
-                        <div *ngIf="f.password.errors.required">Password is required</div>
-                    </div>
-                </div>
-                <button [disabled]="loading" class="btn btn-primary">
-                    <span *ngIf="loading" class="spinner-border spinner-border-sm mr-1"></span>
-                    Login
-                </button>
-                <div *ngIf="error" class="alert alert-danger mt-3 mb-0">{{error}}</div>
-            </form>
-        </div>
+
+
+
+            </div>
+          </div>
+
+        </form>
+      </div>
     </div>
+  </div>
+  <div class="position-absolute ml-4 mt-2 logo">
+    <h1 class="navbar-brand text-dark text-uppercase cs-pointer" routerLink="/">demo</h1>
+  </div>
 </div>
