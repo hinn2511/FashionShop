@@ -48,14 +48,14 @@ export class AppComponent implements OnInit {
     menuState: string = 'in';
 
     constructor(private authenticationService: AuthenticationService, private router: Router) {
-      if(localStorage.getItem("user") !== null || localStorage.getItem("user") !== undefined)
+      if(localStorage.getItem("user") != null && localStorage.getItem("user") != undefined)
       {
           this.authenticationService.setUser();
           this.authenticationService.user.subscribe(x => this.user = x);
       }
     }
     ngOnInit(): void {
-       
+
         this.showSidebar = true;
     }
 
