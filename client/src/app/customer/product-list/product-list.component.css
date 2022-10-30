@@ -34,3 +34,7 @@
     background-color: rgb(223, 223, 223) !important;
 }
 
+.product-list, .skeleton
+{
+  transition: all 1s ease-in-out;
+}
