@@ -2,11 +2,11 @@
 @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap');
 
 
-
 body {
   font-family: 'Outfit', sans-serif;
+  margin: 0;
+  padding: 0;
 }
-
 
 @media (min-width: 768px) {
 
@@ -223,4 +223,35 @@ div.carousel.slide > ol {
 
 .cs-pointer {
   cursor: pointer;
+}
+
+.skeleton-text{
+  height: 20px;
+}
+
+
+.skeleton-long-text{
+  width: 80%;
+}
+
+.skeleton-short-text{
+  width: 30%;
+}
+
+.skeleton-loading-container:empty {
+  animation: pulsing 2s infinite ease-in-out;
+  background: #E0E0E0;
+  background-repeat: no-repeat;
+}
+
+@keyframes pulsing {
+  0% {
+    filter: brightness(70%);
+  }
+  50% {
+    filter: brightness(90%);
+  }
+  100% {
+    filter: brightness(70%);
+  }
 }
