@@ -34,7 +34,15 @@ namespace API.Controllers
         {
             var categories = await _unitOfWork.CategoryRepository.GetCategoriesWithSubCategoriesAsync();
             FilterCategories(categories);
-            return Ok(_mapper.Map<IEnumerable<CustomerCategoryResponse>>(categories));
+
+            var result = categories.GroupBy(x => x.Gender).Select(x => new CategoryByGenderResponse
+            {
+                Gender = x.Key,
+                GenderTitle = ((Gender) x.Key).ToString(),
+                Categories = _mapper.Map<List<CategoryGender>>(x.OrderBy(x => x.CategoryName))
+            });
+
+            return Ok(result);
 
         }
 

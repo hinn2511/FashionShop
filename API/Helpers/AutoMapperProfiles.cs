@@ -58,7 +58,11 @@ namespace API.Helpers
 
             CreateMap<SubCategory, AdminSubCategoryResponse>();
 
+            CreateMap<SubCategory, SubCategoryGender>();
+
             CreateMap<Category, AdminCategoryDetailResponse>();
+
+            CreateMap<Category, CategoryGender>();
 
             CreateMap<CreateCategoryRequest, Category>();
 

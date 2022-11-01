@@ -1,6 +1,26 @@
 [
     {
-        "CategoryName": "Men shoe",
+        "CategoryName": "Shoe",
+        "Gender": 0
+    },
+    {
+        "CategoryName": "Shirt",
+        "Gender": 0
+    },
+    {
+        "CategoryName": "Hat",
+        "Gender": 0
+    },
+    {
+        "CategoryName": "Sunglass",
+        "Gender": 0
+    },
+    {
+        "CategoryName": "Pant",
+        "Gender": 0
+    },
+    {
+        "CategoryName": "Shoe",
         "Gender": 1
     },
     {
@@ -8,15 +28,55 @@
         "Gender": 1
     },
     {
-        "CategoryName": "Dress",
-        "Gender": 2
+        "CategoryName": "Hat",
+        "Gender": 1
     },
     {
-        "CategoryName": "T-shirt",
+        "CategoryName": "Sunglass",
+        "Gender": 1
+    },
+    {
+        "CategoryName": "Pant",
+        "Gender": 1
+    },
+    {
+        "CategoryName": "Shoe",
         "Gender": 2
     },
     {
         "CategoryName": "Shirt",
-        "Gender": 4
+        "Gender": 2
+    },
+    {
+        "CategoryName": "Hat",
+        "Gender": 2
+    },
+    {
+        "CategoryName": "Sunglass",
+        "Gender": 2
+    },
+    {
+        "CategoryName": "Pant",
+        "Gender": 2
+    },
+    {
+        "CategoryName": "Shoe",
+        "Gender": 3
+    },
+    {
+        "CategoryName": "Shirt",
+        "Gender": 3
+    },
+    {
+        "CategoryName": "Hat",
+        "Gender": 3
+    },
+    {
+        "CategoryName": "Sunglass",
+        "Gender": 3
+    },
+    {
+        "CategoryName": "Pant",
+        "Gender": 3
     }
 ]
