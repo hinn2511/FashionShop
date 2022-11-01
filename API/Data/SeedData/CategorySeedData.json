@@ -1,14 +1,50 @@
 [
     {
         "CategoryName": "Shoe",
+        "SubCategories": [
+            {
+                "CategoryName": "Sneaker"
+            },
+            {
+                "CategoryName": "Sandal"
+            },
+            {
+                "CategoryName": "Leather"
+            },
+            {
+                "CategoryName": "Pump"
+            }
+        ],
         "Gender": 0
     },
     {
         "CategoryName": "Shirt",
+        "SubCategories": [
+            {
+                "CategoryName": "T-shirt"
+            },
+            {
+                "CategoryName": "Polo"
+            },
+            {
+                "CategoryName": "Long sleeve"
+            },
+            {
+                "CategoryName": "Short sleeve"
+            }
+        ],
         "Gender": 0
     },
     {
         "CategoryName": "Hat",
+        "SubCategories": [
+            {
+                "CategoryName": "Bucket hat"
+            },
+            {
+                "CategoryName": "Beanie hat"
+            }
+        ],        
         "Gender": 0
     },
     {
@@ -21,14 +57,51 @@
     },
     {
         "CategoryName": "Shoe",
+        "SubCategories": [
+            {
+                "CategoryName": "Sneaker"
+            },
+            {
+                "CategoryName": "Sandal"
+            },
+            {
+                "CategoryName": "Leather"
+            },
+            {
+                "CategoryName": "Pump"
+            }
+        ],
+        
         "Gender": 1
     },
     {
         "CategoryName": "Shirt",
+        "SubCategories": [
+            {
+                "CategoryName": "T-shirt"
+            },
+            {
+                "CategoryName": "Polo"
+            },
+            {
+                "CategoryName": "Long sleeve"
+            },
+            {
+                "CategoryName": "Short sleeve"
+            }
+        ],
         "Gender": 1
     },
     {
         "CategoryName": "Hat",
+        "SubCategories": [
+            {
+                "CategoryName": "Bucket hat"
+            },
+            {
+                "CategoryName": "Beanie hat"
+            }
+        ],
         "Gender": 1
     },
     {
@@ -41,14 +114,51 @@
     },
     {
         "CategoryName": "Shoe",
+        "SubCategories": [
+            {
+                "CategoryName": "Sneaker"
+            },
+            {
+                "CategoryName": "Sandal"
+            },
+            {
+                "CategoryName": "Leather"
+            },
+            {
+                "CategoryName": "Pump"
+            }
+        ],
+        
         "Gender": 2
     },
     {
         "CategoryName": "Shirt",
+        "SubCategories": [
+            {
+                "CategoryName": "T-shirt"
+            },
+            {
+                "CategoryName": "Polo"
+            },
+            {
+                "CategoryName": "Long sleeve"
+            },
+            {
+                "CategoryName": "Short sleeve"
+            }
+        ],
         "Gender": 2
     },
     {
         "CategoryName": "Hat",
+        "SubCategories": [
+            {
+                "CategoryName": "Bucket hat"
+            },
+            {
+                "CategoryName": "Beanie hat"
+            }
+        ],
         "Gender": 2
     },
     {
@@ -61,14 +171,51 @@
     },
     {
         "CategoryName": "Shoe",
+        "SubCategories": [
+            {
+                "CategoryName": "Sneaker"
+            },
+            {
+                "CategoryName": "Sandal"
+            },
+            {
+                "CategoryName": "Leather"
+            },
+            {
+                "CategoryName": "Pump"
+            }
+        ],
+        
         "Gender": 3
     },
     {
         "CategoryName": "Shirt",
+        "SubCategories": [
+            {
+                "CategoryName": "T-shirt"
+            },
+            {
+                "CategoryName": "Polo"
+            },
+            {
+                "CategoryName": "Long sleeve"
+            },
+            {
+                "CategoryName": "Short sleeve"
+            }
+        ],
         "Gender": 3
     },
     {
         "CategoryName": "Hat",
+        "SubCategories": [
+            {
+                "CategoryName": "Bucket hat"
+            },
+            {
+                "CategoryName": "Beanie hat"
+            }
+        ],
         "Gender": 3
     },
     {

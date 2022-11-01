@@ -139,7 +139,7 @@
   <ng-container *ngIf="selectedCategoryGroup && !collapseCategory">
     <div
       (mouseleave)="setCollapseCategory(true)"
-      class="bg-white position-absolute category-window rounded shadow-sm sticky-top"
+      class="bg-white position-absolute rounded shadow-sm sticky-top category-window"
     >
       <div class="p-3">
         <div class="row category-list-container">
@@ -147,21 +147,25 @@
             class="col-2"
             *ngFor="let category of selectedCategoryGroup.categories"
           >
-            <h4
-              routerLink="/products"
-              [queryParams]="{ category: category.categoryName }"
-            >
-              {{ category.categoryName }}
-            </h4>
+            <div class="p-3 cs-pointer category-name">
+              <h4
+                class="m-0 p-0"
+                routerLink="/products"
+                [queryParams]="{ category: category.categoryName }"
+              >
+                {{ category.categoryName }}
+              </h4>
+
+            </div>
             <hr />
             <ul class="list-group my-1">
               <li
-                class="list-group-item border-0"
+                class="list-group-item border-0 cs-pointer sub-category-name"
                 *ngFor="let subCategory of category.subCategories"
                 routerLink="/products"
                 [queryParams]="{ subCategory: subCategory.categoryName }"
               >
-                <a class="text-dark cs-pointer">{{ subCategory.categoryName }}</a>
+                <a class="text-dark">{{ subCategory.categoryName }}</a>
               </li>
             </ul>
           </div>

@@ -92,3 +92,8 @@
 {
   padding: 0 25vh;
 }
+
+.category-name:hover, .sub-category-name:hover
+{
+  background: #f8f9fa;
+}
