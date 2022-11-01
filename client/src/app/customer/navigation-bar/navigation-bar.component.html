@@ -1,110 +1,176 @@
-<nav class="navbar sticky-top navbar-expand-lg navbar-light bg-white shadow" aria-label="Fifth navbar example">
-    <div class="container-fluid mx-md-3">
+<nav
+  class="navbar sticky-top navbar-expand-lg navbar-light bg-white shadow-sm"
+  aria-label="Fifth navbar example"
+>
+  <div class="container-fluid mx-md-3">
+    <button
+      class="navbar-toggler p-1"
+      type="button"
+      data-bs-toggle="collapse"
+      data-bs-target="#navbarsExample05"
+      aria-controls="navbarsExample05"
+      aria-expanded="false"
+      aria-label="Toggle navigation"
+      (click)="navigationBarToggle()"
+    >
+      <span class="navbar-toggler-icon"></span>
+    </button>
 
-        <button class="navbar-toggler p-1" type="button" data-bs-toggle="collapse" data-bs-target="#navbarsExample05"
-            aria-controls="navbarsExample05" aria-expanded="false" aria-label="Toggle navigation"
-            (click)="navigationBarToggle()">
-            <span class="navbar-toggler-icon"></span>
-        </button>
+    <div class="brand mr-md-4">
+      <a class="navbar-brand text-uppercase" href="#">demo</a>
+    </div>
 
-        <div class="brand mr-md-4">
-            <a class="navbar-brand text-uppercase" href="#">demo</a>
+    <button class="btn nav-btn d-lg-none" (click)="searchBarToggle()">
+      <img class="nav-icon-mobile" src="../../../assets/search.svg" alt="" />
+    </button>
+
+    <div
+      class="navbar-collapse pt-lg-1"
+      [class.collapse]="collapseNavbar"
+      id="navbarsExample05"
+    >
+      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+        <li class="nav-item ml-lg-3">
+          <a class="nav-link text-uppercase" aria-current="page" routerLink="/"
+            >Home</a
+          >
+        </li>
+
+        <li class="nav-item" *ngFor="let item of categoryGroups; let i = index">
+          <a
+            class="nav-link text-uppercase"
+            [class]="{ 'bg-light': isCategoryGroupSelected(item.gender) }"
+            (mouseenter)="setCollapseCategory(false)"
+            (mouseenter)="selectCategoryGroup(i)"
+            >{{ item.genderTitle }}</a
+          >
+        </li>
+
+        <li class="nav-item">
+          <a
+            class="nav-link text-uppercase text-danger"
+            aria-current="page"
+            href="#"
+            >Sale off</a
+          >
+        </li>
+      </ul>
+
+      <hr class="d-lg-none" />
+
+      <ul class="navbar-nav me-auto mb-2 mb-lg-0 d-lg-none">
+        <li class="nav-item ml-lg-3">
+          <a class="nav-link text-uppercase" aria-current="page" href="#"
+            >my cart</a
+          >
+        </li>
+
+        <li class="nav-item" *ngIf="isUserExist()">
+          <a
+            class="nav-link text-uppercase"
+            routerLink="products"
+            aria-current="page"
+            href="#"
+            >my favorites</a
+          >
+        </li>
+
+        <li class="nav-item">
+          <a
+            class="nav-link text-uppercase"
+            routerLink="products"
+            aria-current="page"
+            href="#"
+            >Account</a
+          >
+        </li>
+      </ul>
+
+      <div class="d-none d-lg-block">
+        <div class="d-flex flex-fill justify-content-lg-end">
+          <button class="btn nav-btn" (click)="searchBarToggle()">
+            <img class="nav-icon" src="../../../assets/search.svg" alt="" />
+          </button>
+
+          <button class="btn nav-btn" routerLink="/my-cart">
+            <img class="nav-icon" src="../../../assets/cart.svg" alt="" />
+          </button>
+          <button class="btn nav-btn" *ngIf="isUserExist()">
+            <img class="nav-icon" src="../../../assets/heart.svg" alt="" />
+          </button>
+          <div class="dropdown" dropdown *ngIf="isUserExist()">
+            <button class="btn nav-btn dropdown-toggle" dropdownToggle>
+              <img class="nav-icon" src="../../../assets/user.svg" alt="" />
+            </button>
+            <div class="dropdown-menu dropdown-menu-end mt-3" *dropdownMenu>
+              <a routerLink="/member/edit" class="dropdown-item"
+                >Edit profile</a
+              >
+              <a routerLink="/member/edit" class="dropdown-item">My orders</a>
+              <a routerLink="/member/edit" class="dropdown-item"
+                >Payment information</a
+              >
+              <a (click)="logout()" class="dropdown-item">Log out</a>
+            </div>
+          </div>
+
+          <a
+            class="nav-link-right text-uppercase"
+            *ngIf="!isUserExist()"
+            aria-current="page"
+            routerLink="/login"
+            >Login</a
+          >
+
+          <a
+            class="nav-link-right text-uppercase"
+            *ngIf="!isUserExist()"
+            aria-current="page"
+            routerLink="/register"
+            >Register</a
+          >
         </div>
-
-        <button class="btn nav-btn d-lg-none" (click)="searchBarToggle()">
-            <img class="nav-icon-mobile" src="../../../assets/search.svg" alt="">
-        </button>
-
-        <div class="navbar-collapse pt-lg-1" [class.collapse]="collapseNavbar" id="navbarsExample05">
-            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-
-                <li class="nav-item ml-lg-3">
-                    <a class="nav-link text-uppercase" aria-current="page" href="#">Home</a>
-                </li>
-
-                <li class="nav-item">
-                    <a class="nav-link text-uppercase" routerLink="products" aria-current="page" href="#">product</a>
-                </li>
-
-                <li class="nav-item">
-                    <a class="nav-link text-uppercase" routerLink="products" aria-current="page" href="#">women</a>
-                </li>
-
-                <li class="nav-item">
-                    <a class="nav-link text-uppercase" routerLink="products" aria-current="page" href="#">men</a>
-                </li>
-
-                <li class="nav-item">
-                    <a class="nav-link text-uppercase" routerLink="products" aria-current="page" href="#">kids</a>
-                </li>
-
-                <li class="nav-item">
-                    <a class="nav-link text-uppercase text-danger" aria-current="page" href="#">Sale off</a>
-                </li>
-
-                <li class="nav-item">
-                    <a class="nav-link text-uppercase text-success" routerLink="/administrator/product">Admin</a>
-                </li>
-            </ul>
-
-            <hr class="d-lg-none">
-
-            <ul class="navbar-nav me-auto mb-2 mb-lg-0 d-lg-none">
-
-                
-
-                <li class="nav-item ml-lg-3">
-                    <a class="nav-link text-uppercase" aria-current="page" href="#">my cart</a>
-                </li>
-
-                <li class="nav-item" *ngIf="isUserExist()">
-                    <a class="nav-link text-uppercase" routerLink="products" aria-current="page" href="#">my
-                        favorites</a>
-                </li>
-
-                <li class="nav-item">
-                    <a class="nav-link text-uppercase" routerLink="products" aria-current="page" href="#">Account</a>
-                </li>
-
-
-            </ul>
-
-            <div class="d-none d-lg-block">
-                <div class="d-flex flex-fill justify-content-lg-end">
-
-                    
-                    <button class="btn nav-btn" (click)="searchBarToggle()">
-                        <img class="nav-icon" src="../../../assets/search.svg" alt="">
-                    </button>
-                    
-                    <button class="btn nav-btn" routerLink="/my-cart">
-                        <img class="nav-icon" src="../../../assets/cart.svg" alt="">
-                    </button>
-                    <button class="btn nav-btn"  *ngIf="isUserExist()">
-                        <img class="nav-icon" src="../../../assets/heart.svg" alt="">
-                    </button>
-                    <div class="dropdown" dropdown *ngIf="isUserExist()">
-                        <button class="btn nav-btn dropdown-toggle" dropdownToggle>
-                            <img class="nav-icon" src="../../../assets/user.svg" alt="">
-                        </button>
-                        <div class="dropdown-menu dropdown-menu-end mt-3" *dropdownMenu>
-                            <a routerLink='/member/edit' class="dropdown-item">Edit profile</a>
-                            <a routerLink='/member/edit' class="dropdown-item">My orders</a>
-                            <a routerLink='/member/edit' class="dropdown-item">Payment information</a>
-                            <a (click)="logout()" class="dropdown-item">Log out</a>
-                        </div>
-                    </div>
-                    
-                    <a class="nav-link-right text-uppercase" *ngIf="!isUserExist()" aria-current="page" routerLink="/login">Login</a>
-
-                    <a class="nav-link-right text-uppercase" *ngIf="!isUserExist()" aria-current="page" routerLink="/register">Register</a>
-                </div>
+      </div>
+    </div>
+  </div>
+  <div class="search-bar" *ngIf="!collapseSearchbar">
+    <app-search-bar></app-search-bar>
+  </div>
+  <ng-container *ngIf="selectedCategoryGroup && !collapseCategory">
+    <div
+      (mouseleave)="setCollapseCategory(true)"
+      class="bg-white position-absolute rounded shadow-sm sticky-top category-window"
+    >
+      <div class="p-3">
+        <div class="row category-list-container">
+          <div
+            class="col-2"
+            *ngFor="let category of selectedCategoryGroup.categories"
+          >
+            <div class="p-3 cs-pointer category-name">
+              <h4
+                class="m-0 p-0"
+                routerLink="/products"
+                [queryParams]="{ category: category.categoryName }"
+              >
+                {{ category.categoryName }}
+              </h4>
 
             </div>
-
+            <hr />
+            <ul class="list-group my-1">
+              <li
+                class="list-group-item border-0 cs-pointer sub-category-name"
+                *ngFor="let subCategory of category.subCategories"
+                routerLink="/products"
+                [queryParams]="{ subCategory: subCategory.categoryName }"
+              >
+                <a class="text-dark">{{ subCategory.categoryName }}</a>
+              </li>
+            </ul>
+          </div>
         </div>
+      </div>
     </div>
-    <div class="search-bar" *ngIf="!collapseSearchbar">
-        <app-search-bar></app-search-bar>
-    </div>
+  </ng-container>
 </nav>
