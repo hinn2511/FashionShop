@@ -32,22 +32,36 @@ namespace API.Data
 
             query = query.Where(x => x.Status != Status.Hidden && x.Status != Status.Deleted);
             
-            if(productParams.Gender != null)
+            query = query.Include(x => x.Category).Include(x => x.SubCategory);
+
+            if (productParams.Gender != null)
                 query = query.Where(p => p.Category.Gender == productParams.Gender);
 
-            if(productParams.Category != null)
-                query = query.Where(p => p.Category.CategoryName == productParams.Category);
+            if (productParams.MinPrice > 0)
+                query = query.Where(p => p.Price >= productParams.MinPrice);
 
-            if(!string.IsNullOrEmpty(productParams.Query))
-            {   
+            if (productParams.MaxPrice > 0)
+                query = query.Where(p => p.Price <= productParams.MaxPrice);
+
+            if (!string.IsNullOrEmpty(productParams.Category))
+                query = query.Where(p => p.Category.Slug == productParams.Category || p.SubCategory.Slug == productParams.Category);
+
+            if (productParams.SizeId != 0)
+            {
+                var productsWithSize = _context.Options.Where(o => o.SizeId == productParams.SizeId);
+                query = query.Where(x => productsWithSize.Select(o => o.ProductId).Contains(x.Id));
+            }
+
+            if (!string.IsNullOrEmpty(productParams.Query))
+            {
                 var words = productParams.Query.RemoveSpecialCharacters().ToUpper().Split(" ").Distinct();
-                foreach(var word in words)
+                foreach (var word in words)
                 {
                     query = query.Where(x => x.ProductName.ToUpper().Contains(word));
                 }
             }
 
-            if (productParams.OrderBy == OrderBy.Ascending) 
+            if (productParams.OrderBy == OrderBy.Ascending)
             {
                 query = productParams.Field switch
                 {
@@ -68,7 +82,8 @@ namespace API.Data
                 };
             }
 
-            query = query.Include(x => x.ProductPhotos.Where(x => x.Status == Status.Active));            
+            
+            query = query.Include(x => x.ProductPhotos.Where(x => x.Status == Status.Active));
 
             return await PagedList<Product>.CreateAsync(query, productParams.PageNumber, productParams.PageSize);
         }
@@ -78,23 +93,23 @@ namespace API.Data
             var query = _context.Products.AsQueryable();
 
             query = query.Where(x => productParams.ProductStatus.Contains(x.Status));
-            
-            if(productParams.Gender != null)
+
+            if (productParams.Gender != null)
                 query = query.Where(p => p.Category.Gender == productParams.Gender);
 
-            if(productParams.Category != null)
+            if (productParams.Category != null)
                 query = query.Where(p => p.Category.CategoryName == productParams.Category);
 
-            if(!string.IsNullOrEmpty(productParams.Query))
-            {   
+            if (!string.IsNullOrEmpty(productParams.Query))
+            {
                 var words = productParams.Query.RemoveSpecialCharacters().ToUpper().Split(" ").Distinct();
-                foreach(var word in words)
+                foreach (var word in words)
                 {
                     query = query.Where(x => x.ProductName.ToUpper().Contains(word));
                 }
-            }            
+            }
 
-            if (productParams.OrderBy == OrderBy.Ascending) 
+            if (productParams.OrderBy == OrderBy.Ascending)
             {
                 query = productParams.Field switch
                 {
@@ -119,14 +134,14 @@ namespace API.Data
                 };
             }
 
-            query = query.Include(x => x.ProductPhotos);            
+            query = query.Include(x => x.ProductPhotos);
 
             return await PagedList<Product>.CreateAsync(query, productParams.PageNumber, productParams.PageSize);
         }
 
         public async Task<Product> GetProductDetailWithPhotoAsync(int productId)
         {
-            
+
             var product = await _context.Products
                         .Include(x => x.Category)
                         .Include(x => x.Brand)
@@ -170,7 +185,7 @@ namespace API.Data
         {
         }
     }
-    
+
     public class StockRepository : GenericRepository<Stock>, IStockRepository
     {
         public StockRepository(DataContext context, DbSet<Stock> set) : base(context, set)

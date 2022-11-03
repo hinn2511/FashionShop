@@ -94,7 +94,13 @@ namespace API.Helpers
 
             CreateMap<Product, CustomerProductsResponse>()
                 .ForMember(dest => dest.Url, opt => opt.MapFrom(
-                          src => src.ProductPhotos.FirstOrDefault(pp => pp.IsMain).Url));
+                          src => src.ProductPhotos.FirstOrDefault(pp => pp.IsMain).Url))
+                .ForMember(dest => dest.Gender, opt => opt.MapFrom(
+                          src => (Gender) src.Category.Gender))
+                .ForMember(dest => dest.Category, opt => opt.MapFrom(
+                          src => src.Category.CategoryName))
+                .ForMember(dest => dest.SubCategory, opt => opt.MapFrom(
+                          src => src.SubCategory.CategoryName));
 
             CreateMap<Product, CustomerProductDetailResponse>()
                 .ForMember(dest => dest.Url, opt => opt.MapFrom(
@@ -108,7 +114,9 @@ namespace API.Helpers
                 .ForMember(dest => dest.SubCategoryId, opt => opt.MapFrom(
                           src => src.SubCategory.Id))
                 .ForMember(dest => dest.SubCategoryName, opt => opt.MapFrom(
-                          src => src.SubCategory.CategoryName));
+                          src => src.SubCategory.CategoryName))
+                .ForMember(dest => dest.Gender, opt => opt.MapFrom(
+                          src => (Gender) src.Category.Gender));
 
             CreateMap<ProductPhoto, CustomerProductPhotoResponse>();
 

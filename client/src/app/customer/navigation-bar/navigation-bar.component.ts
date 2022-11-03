@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 import { Catalogue, CategoryCatalogue, SubCategoryCatalogue } from 'src/app/_models/category';
 import { AuthenticationService } from 'src/app/_services/authentication.service';
 import { CategoryService } from 'src/app/_services/category.service';
@@ -20,7 +21,7 @@ export class NavigationBarComponent implements OnInit {
   selectedSubCategory: SubCategoryCatalogue;
   categoryWindowMargin: string;
 
-  constructor(private authenticationService: AuthenticationService, private categoryService: CategoryService) { }
+  constructor(private authenticationService: AuthenticationService, private categoryService: CategoryService, private router: Router) { }
 
   ngOnInit(): void {
     this.loadCategoryGroup();
@@ -76,6 +77,15 @@ export class NavigationBarComponent implements OnInit {
   selectCategory(index: number)
   {
     this.selectedCategory = this.selectedCategoryGroup.categories[index];
+  }
+
+  viewCategory(categoryName: string, categorySlug: string, gender: number)
+  {
+    this.categoryService.setCurrentCategory(categoryName, gender);
+    this.router.navigate(
+      ['/products'],
+      { queryParams: { category: categorySlug, 'gender': gender } }
+    );
   }
 
 }
