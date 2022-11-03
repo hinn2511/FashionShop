@@ -16,8 +16,8 @@
       <span class="navbar-toggler-icon"></span>
     </button>
 
-    <div class="brand mr-md-4">
-      <a class="navbar-brand text-uppercase" href="#">demo</a>
+    <div class="brand">
+      <h2 class="m-0 p-0 text-uppercase" href="#">demo</h2>
     </div>
 
     <button class="btn nav-btn d-lg-none" (click)="searchBarToggle()">
@@ -150,9 +150,10 @@
             <div class="p-3 cs-pointer category-name">
               <h4
                 class="m-0 p-0"
-                routerLink="/products"
-                [queryParams]="{ category: category.categoryName }"
-              >
+                (click)="viewCategory(category.categoryName, category.slug, selectedCategoryGroup.gender)"
+                >
+                <!-- routerLink="/products"
+                [queryParams]="{ category: category.slug, gender: selectedCategoryGroup.gender }" -->
                 {{ category.categoryName }}
               </h4>
 
@@ -162,9 +163,10 @@
               <li
                 class="list-group-item border-0 cs-pointer sub-category-name"
                 *ngFor="let subCategory of category.subCategories"
-                routerLink="/products"
-                [queryParams]="{ subCategory: subCategory.categoryName }"
-              >
+                (click)="viewCategory(subCategory.categoryName, subCategory.slug, selectedCategoryGroup.gender)"
+                >
+                <!-- routerLink="/products"
+                [queryParams]="{ category: subCategory.slug, gender: selectedCategoryGroup.gender }" -->
                 <a class="text-dark">{{ subCategory.categoryName }}</a>
               </li>
             </ul>

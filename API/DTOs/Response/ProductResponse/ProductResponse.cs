@@ -15,6 +15,7 @@ namespace API.DTOs.Response.ProductResponse
         public double Price { get; set; }
         public string Description { get; set; }
         public string Url { get; set; }
+        public Gender Gender { get; set; }
     }
 
     #endregion
@@ -23,6 +24,8 @@ namespace API.DTOs.Response.ProductResponse
     public class CustomerProductsResponse : ProductResponse
     {
         public bool LikedByUser { get; set; }
+        public string Category { get; set; }
+        public string SubCategory { get; set; }
     }
 
     public class CustomerProductDetailResponse : ProductResponse

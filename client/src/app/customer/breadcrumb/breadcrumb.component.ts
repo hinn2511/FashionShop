@@ -8,12 +8,10 @@ import { BreadCrumb } from 'src/app/_models/breadcrum';
 })
 export class BreadcrumbComponent implements OnInit {
   @Input() breadCrumbList: BreadCrumb[];
-  lastBreadCrumb: BreadCrumb;
 
   constructor() { }
 
   ngOnInit(): void {
-    this.lastBreadCrumb = this.breadCrumbList.pop();
   }
 
 }

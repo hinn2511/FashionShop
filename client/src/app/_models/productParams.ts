@@ -1,13 +1,30 @@
 export class ProductParams {
     category = "";
-    gender = "";
+    sizeId = 0;
+    gender = 0;
     brand = "";
     pageNumber = 1;
     pageSize = 12;
     orderBy = 1;
-    field = "DateCreated";
-    query = "";
+    field = "Sold";
+    query = "";    
+    minPrice = 0;
+    maxPrice = 0;
 }
+
+export interface CustomerFilterOrder {
+    id: number;
+    field: string;
+    orderBy: number;
+    name: string;
+}
+
+export interface CustomerPriceRange {
+    id: number;
+    minPrice: number;
+    maxPrice: number;
+  }
+  
 
 export class ManagerProductParams {
     category = "";
@@ -25,3 +42,4 @@ export interface ParamStatus {
     status: number;
     selected: boolean;
 }
+

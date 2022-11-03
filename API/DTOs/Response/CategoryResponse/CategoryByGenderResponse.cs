@@ -17,6 +17,7 @@ namespace API.DTOs.Response.CategoryResponse
     {
         public int Id { get; set; }
         public string CategoryName { get; set; }
+        public string Slug { get; set; }
         public List<SubCategoryGender> SubCategories { get; set; }
     }
 
@@ -24,5 +25,6 @@ namespace API.DTOs.Response.CategoryResponse
     {
         public int Id { get; set; }
         public string CategoryName { get; set; }
+        public string Slug { get; set; }
     }
 }

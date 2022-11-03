@@ -92,7 +92,7 @@ namespace API.Controllers
             var category = new Category();
             _mapper.Map(createCategoryRequest, category);
 
-            //category.Slug = category.CategoryName.GenerateSlug();
+            category.Slug = category.CategoryName.GenerateSlug();
             category.AddCreateInformation(GetUserId());
 
             _unitOfWork.CategoryRepository.Insert(category);
@@ -115,7 +115,7 @@ namespace API.Controllers
             _mapper.Map(updateCategoryRequest, category);
 
             category.Id = id;
-            //category.Slug = updateCategoryRequest.CategoryName.GenerateSlug();
+            category.Slug = updateCategoryRequest.CategoryName.GenerateSlug();
             category.AddUpdateInformation(GetUserId());
 
             _unitOfWork.CategoryRepository.Update(category);
@@ -252,7 +252,7 @@ namespace API.Controllers
             
             _mapper.Map(createCategoryRequest, subCategory);
 
-            //category.Slug = category.CategoryName.GenerateSlug();
+            subCategory.Slug = subCategory.CategoryName.GenerateSlug();
             subCategory.AddCreateInformation(GetUserId());
             subCategory.CategoryId = categoryId;
 

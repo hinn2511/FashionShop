@@ -5,6 +5,10 @@
   vertical-align: middle;
 }
 
+.active-filter-list
+{
+  vertical-align: middle;
+}
   @media (min-width: 768px) {
     .cover {
       min-height: 50vh;
@@ -37,4 +41,14 @@
 .product-list, .skeleton
 {
   transition: all 1s ease-in-out;
+}
+/* 
+li:empty
+{
+  display: none;
+} */
+
+li:hover, li.selected
+{
+  background: #f8f9fa;
 }
