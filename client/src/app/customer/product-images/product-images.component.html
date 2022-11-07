@@ -23,10 +23,19 @@
               </ng-template>
             </div> -->
       <div class="rect-img-container" *ngIf="isCurrent(item.url)">
-        <img *ngIf="item.fileType == 0; else video" [src]="item.url" class="rect-img"
-          [@slideAnimation]="animationType" />
+        <img
+          *ngIf="item.fileType == 0; else video"
+          [src]="item.url"
+          class="rect-img"
+          [@slideAnimation]="animationType"
+        />
         <ng-template #video>
-          <video [src]="item.url" class="rect-img" autoplay  [@slideAnimation]="animationType"></video>
+          <video
+            [src]="item.url"
+            class="rect-img"
+            autoplay
+            [@slideAnimation]="animationType"
+          ></video>
         </ng-template>
       </div>
     </ng-container>
@@ -40,14 +49,40 @@
     </button>
   </div>
 
-  <div class="img-review-container mt-2 d-flex d-inline-block w-100">
-    <div class="rect-img-container img-review cs-pointer" (click)="onThumbnailClick(item)"
-      [style]="getPreviewItemWidth()" [class.selected]="isCurrent(item.url)" [class.not-selected]="!isCurrent(item.url)"
-      *ngFor="let item of previewItems">
+  <div
+    class="w-100 justify-content-center img-indicator-container d-flex d-inline-block"
+  >
+    <div
+      (click)="indicatorClick(i)"
+      class="cs-pointer rounded mx-1"
+      [class]="{ 'img-indicator-active': isCurrent(item.url),
+                'img-indicator': !isCurrent(item.url) }"
+      *ngFor="let item of viewerItems; let i = index"
+    ></div>
+  </div>
+
+  <div class="img-review-container py-2 d-flex d-inline-block w-100">
+    <div
+      class="rect-img-container img-review cs-pointer"
+      (click)="onThumbnailClick(item)"
+      [style]="getPreviewItemWidth()"
+      [class.selected]="isCurrent(item.url)"
+      [class.not-selected]="!isCurrent(item.url)"
+      *ngFor="let item of previewItems"
+    >
       <!-- <img class="rect-img" src="{{ item.url }}" alt="" /> -->
-      <img *ngIf="item.fileType == 0; else video" [src]="item.url" class="rect-img" [@slideAnimation]="animationType" />
+      <img
+        *ngIf="item.fileType == 0; else video"
+        [src]="item.url"
+        class="rect-img"
+        [@slideAnimation]="animationType"
+      />
       <ng-template #video>
-        <video [src]="item.url" class="rect-img p-3"  [@slideAnimation]="animationType"></video>
+        <video
+          [src]="item.url"
+          class="rect-img p-3"
+          [@slideAnimation]="animationType"
+        ></video>
       </ng-template>
     </div>
   </div>

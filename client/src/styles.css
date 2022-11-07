@@ -190,6 +190,7 @@ div.carousel.slide > ol {
 .rect-img-container::after {
   content: "";
   display: block;
+  overflow: hidden;
   padding-bottom: 100%;
 }
 

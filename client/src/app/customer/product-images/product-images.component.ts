@@ -106,6 +106,21 @@ export class ProductImagesComponent implements OnInit {
     this.toggle();
   }
 
+  indicatorClick(index: number)
+  {
+    this.currentIndex = index;
+    this.setItem(this.currentIndex);
+    this.leftOffset = this.maxPreviewItem * Math.floor(this.currentIndex / this.maxPreviewItem);
+    this.rightOffset = this.leftOffset + this.maxPreviewItem;
+    if(this.leftOffset <= 0)
+    {
+      this.leftOffset = 0;
+      this.rightOffset = this.leftOffset + this.maxPreviewItem;
+    }
+    this.preparePreview();
+    this.toggle();
+  }
+
   toggle() {
     this.animationState = this.animationState === 'out' ? 'in' : 'out';
   }
