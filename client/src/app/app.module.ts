@@ -50,6 +50,9 @@ import { ProductImageModalComponent } from './_modals/product-image-modal/produc
 import { CarouselComponent } from './_common/carousel/carousel.component';
 import { ImageViewerModalComponent } from './_modals/image-viewer-modal/image-viewer-modal.component';
 import { ProductImagesComponent } from './customer/product-images/product-images.component';
+import { AdminCarouselComponent } from './administrator/admin-carousel/admin-carousel.component';
+import { CarouselPreviewComponent } from './_common/carousel-preview/carousel-preview.component';
+import { AdminCarouselAddComponent } from './administrator/admin-carousel-add/admin-carousel-add.component';
 
 
 @NgModule({
@@ -94,13 +97,16 @@ import { ProductImagesComponent } from './customer/product-images/product-images
     CarouselComponent,
     ImageViewerModalComponent,
     ProductImagesComponent,
+    CarouselPreviewComponent,
+    AdminCarouselAddComponent,
+    AdminCarouselComponent,
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
     HttpClientModule,
-    ReactiveFormsModule,
     FormsModule,
+    ReactiveFormsModule,
     BrowserAnimationsModule,
     SharedModule
   ],

@@ -360,7 +360,7 @@ namespace API.Controllers
 
             var keepSourceImage = file.ContentType == "image/png";
 
-            var resizedFilePath = FileExtensions.ResizeImage(Constant.DefaultImageWidth, Constant.DefaultImageHeight, filePath, true, keepSourceImage);
+            var resizedFilePath = FileExtensions.ResizeImage(Constant.DefaultImageWidth, Constant.DefaultImageHeight, filePath, true, true, keepSourceImage);
 
             var resizedFileName = resizedFilePath.Split("\\").Last();
 

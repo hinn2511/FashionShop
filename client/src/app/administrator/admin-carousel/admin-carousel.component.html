@@ -1,0 +1,295 @@
+<div class="container-fluid px-3">
+    <!-- Section title -->
+    <h4>Carousels</h4>
+
+    <!-- Section content -->
+    <div class="d-flex flex-wrap w-100 py-2 mb-3">
+      <!-- Search bar -->
+      <div class="mr-auto w-sm-100 py-2">
+        <div class="input-group mb-3">
+          <input
+            [(ngModel)]="carouselParams.query"
+            type="text"
+            (ngModelChange)="loadCarousels()"
+            class="form-control"
+            placeholder="Carousel..."
+            aria-describedby="button-addon2"
+            (keydown.enter)="loadCarousels()"
+          />
+          <div class="input-group-append">
+            <button
+              class="btn btn-primary"
+              type="button"
+              id="button-addon2"
+              (click)="loadCarousels()"
+            >
+              <span><i class="fa fa-search"></i></span>&nbsp; Search
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Status filter button -->
+      <div class="p-2 position-relative">
+        <button
+          class="btn btn-light status-button"
+          (click)="statusFilterToggle()"
+        >
+          Status&nbsp;<span><i class="fa fa-caret-down"></i></span
+          ><span class="caret"></span>
+        </button>
+
+        <div
+          class="position-absolute mt-2 status-dropdown"
+          *ngIf="showStatusFilter"
+        >
+          <ul class="list-group">
+            <li class="list-group-item">
+              <div class="custom-control custom-checkbox">
+                <input
+                  type="checkbox"
+                  class="custom-control-input cs-pointer"
+                  id="customCheck1"
+                  (click)="selectAllCarouselStatus()"
+                  [checked]="isAllStatusIncluded()"
+                />
+                <label class="custom-control-label" for="customCheck1"
+                  >Select all</label
+                >
+              </div>
+            </li>
+            <li class="list-group-item">
+              <div class="custom-control custom-checkbox">
+                <input
+                  type="checkbox"
+                  class="custom-control-input cs-pointer"
+                  id="customCheck2"
+                  (click)="selectStatus(0)"
+                  [checked]="isStatusIncluded(0)"
+                />
+                <label class="custom-control-label" for="customCheck2"
+                  >Active</label
+                >
+              </div>
+            </li>
+            <li class="list-group-item">
+              <div class="custom-control custom-checkbox">
+                <input
+                  type="checkbox"
+                  class="custom-control-input cs-pointer"
+                  id="customCheck3"
+                  (click)="selectStatus(1)"
+                  [checked]="isStatusIncluded(1)"
+                />
+                <label class="custom-control-label" for="customCheck3"
+                  >Hidden</label
+                >
+              </div>
+            </li>
+            <li class="list-group-item">
+              <div class="custom-control custom-checkbox">
+                <input
+                  type="checkbox"
+                  class="custom-control-input cs-pointer"
+                  id="customCheck4"
+                  (click)="selectStatus(2)"
+                  [checked]="isStatusIncluded(2)"
+                />
+                <label class="custom-control-label text-dark" for="customCheck4"
+                  >Deleted</label
+                >
+              </div>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Create button -->
+      <div class="p-2">
+        <button
+          class="btn btn-success"
+          routerLink="/administrator/carousel-manager/add"
+        >
+          <span><i class="fa fa-plus"></i></span>&nbsp; Create
+        </button>
+      </div>
+
+      <!-- Edit button -->
+      <div class="p-2">
+        <button
+          class="btn btn-warning"
+          [class.disabled]="!isSingleSelected()"
+          (click)="editCarousel()"
+        >
+          <span><i class="fa fa-pencil"></i></span>&nbsp; Edit
+        </button>
+      </div>
+
+      <!-- Hide/Unhide button -->
+      <div class="p-2">
+        <button
+          class="btn btn-dark"
+          (click)="hideCarousels()"
+          [class.disabled]="!isMultipleSelected()"
+        >
+          <span><i class="fa fa-eye-slash"></i></span>&nbsp;Hide&nbsp;/&nbsp;
+          <span><i class="fa fa-eye"></i></span>&nbsp;Unhide
+        </button>
+      </div>
+
+      <!-- Delete button -->
+      <div class="p-2">
+        <button
+          class="btn btn-danger"
+          (click)="deleteCarousels()"
+          [class.disabled]="!isMultipleSelected()"
+        >
+          <span><i class="fa fa-trash"></i></span>&nbsp; Delete
+        </button>
+      </div>
+    </div>
+
+    <!-- Carousel table -->
+    <div class="table-responsive w-100" *ngIf="carousels && pagination">
+      <table class="table table-striped border">
+        <thead class="bg-light">
+          <tr>
+            <th scope="col">
+              <input
+                type="checkbox"
+                (click)="selectAllCarousels()"
+              />
+            </th>
+            <th scope="col cs-pointer" (click)="orderBy('id')">
+              Id&nbsp;
+              <span
+                ><i
+                  *ngIf="carouselParams.field == 'Id'"
+                  [@rotatedState]="state"
+                  class="fa fa-arrow-up"
+                ></i
+              ></span>
+            </th>
+            <th scope="col cs-pointer" class="text-center">
+              Carousel
+            </th>
+            <th scope="col cs-pointer" (click)="orderBy('title')">
+              Title&nbsp;
+              <span
+                ><i
+                  *ngIf="carouselParams.field == 'Title'"
+                  [@rotatedState]="state"
+                  class="fa fa-arrow-up"
+                ></i
+              ></span>
+            </th>
+            <th scope="col cs-pointer" (click)="orderBy('link')">
+              Link&nbsp;
+              <span
+                ><i
+                  *ngIf="carouselParams.field == 'Link'"
+                  [@rotatedState]="state"
+                  class="fa fa-arrow-up"
+                ></i
+              ></span>
+            </th>
+            <th scope="col cs-pointer" class="text-center" (click)="orderBy('status')">
+              Status&nbsp;
+              <span
+                ><i
+                  *ngIf="carouselParams.field == 'Status'"
+                  [@rotatedState]="state"
+                  class="fa fa-arrow-up"
+                ></i
+              ></span>
+            </th>
+            <th class="text-center" scope="col cs-pointer" class="text-center">
+              Preview
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr
+            class="table-item"
+            *ngFor="let carousel of carousels"
+            (click)="selectCarousel(carousel.id)"
+          >
+            <td>
+              <input
+                type="checkbox"
+                [value]="carousel.Id"
+                [checked]="isCarouselSelected(carousel.id)"
+              />
+            </td>
+            <td >{{ carousel.id }}</td>
+            <td >
+              <div class="rect-img-container">
+                <img class="rect-img" src="{{ carousel.imageUrl }}" alt="" />
+              </div>
+            </td>
+            <td >{{ carousel.title }}</td>
+            <td >
+              <a class="text-dark">{{ carousel.link }}</a>
+
+            </td>
+            <td class="text-center" >
+              <div class="btn px-3 py-1" [style]="getStateStyle(carousel)">
+                <h6 class="text-white m-0">{{ getCarouselState(carousel) }}</h6>
+              </div>
+            </td>
+
+            <td  class="text-center cs-pointer" (click)="showPreview(carousel)">
+              <a class="text-dark">View</a>
+            </td>
+
+          </tr>
+        </tbody>
+      </table>
+      <div *ngIf="pagination" class="w-100">Total: {{ pagination.totalItems }} carousel(s)</div>
+    </div>
+
+    <!-- Pagination -->
+    <div
+      class="w-100 d-flex d-inline-block justify-content-between mt-5"
+      *ngIf="pagination"
+    >
+      <div class="d-flex d-inline">
+        <div class="input-group pagination-navigation">
+          <label class="form-control" for="">Page size</label>
+          <input
+            [(ngModel)]="carouselParams.pageSize"
+            type="number"
+            (ngModelChange)="loadCarousels()"
+            class="form-control border"
+            aria-describedby="button-addon2"
+            (keydown.enter)="loadCarousels()"
+          />
+        </div>
+        <div class="input-group pagination-navigation ml-3">
+          <label class="form-control" for="">Go to page</label>
+          <input
+            [(ngModel)]="carouselParams.pageNumber"
+            type="number"
+            class="form-control border"
+            aria-describedby="button-addon2"
+            (keydown.enter)="loadCarousels()"
+          />
+        </div>
+      </div>
+
+      <div class="ml-auto">
+        <pagination
+          [boundaryLinks]="true"
+          [totalItems]="pagination.totalItems"
+          [itemsPerPage]="pagination.itemsPerPage"
+          [(ngModel)]="pagination.currentPage"
+          (pageChanged)="pageChanged($event)"
+          previousText="Previous"
+          nextText="Next"
+          firstText="First"
+          lastText="Last"
+        >
+        </pagination>
+      </div>
+    </div>
+  </div>

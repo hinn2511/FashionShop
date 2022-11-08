@@ -1,5 +1,6 @@
+import { CustomerCarousel } from './../../_models/carousel';
 import { transition, trigger, useAnimation } from '@angular/animations';
-import { Component, Input, OnDestroy, OnInit } from '@angular/core';
+import { Component, Input, OnChanges, OnDestroy, OnInit, SimpleChanges } from '@angular/core';
 import { interval, timer } from 'rxjs';
 import { AnimationType, fadeIn, fadeOut, flipIn, flipOut, jackIn, jackOut, scaleIn, scaleOut } from '../animation/carousel.animations';
 
@@ -43,42 +44,129 @@ import { AnimationType, fadeIn, fadeOut, flipIn, flipOut, jackIn, jackOut, scale
     ])
   ]
 })
-export class CarouselComponent implements OnInit, OnDestroy {
-  @Input() slides: string[];
+export class CarouselComponent implements OnChanges, OnInit, OnDestroy {
+  @Input() carousels: CustomerCarousel[] = [];
   @Input() animationType = AnimationType.Fade;
   @Input() nextSlideInterval = 10000;
-  currentSlide = 0;
+  currentSlideIndex = 0;
+  currentSlide: CustomerCarousel;
+
   interval;
+  carouselTextStyle: string;
 
   constructor() {
   }
 
-  onPreviousClick() {
-    const previous = this.currentSlide - 1;
-    this.currentSlide = previous < 0 ? this.slides.length - 1 : previous;
-    console.log("previous clicked, new current slide is: ", this.currentSlide);
-  }
-
-  onNextClick() {
-    const next = this.currentSlide + 1;
-    this.currentSlide = next === this.slides.length ? 0 : next;
-    console.log("next clicked, new current slide is: ", this.currentSlide);
+  ngOnChanges(changes: SimpleChanges): void {
+    if(this.carousels.length > 0)
+      this.viewSlide(0);
   }
 
   ngOnInit() {
-    this.preloadImages(); // for the demo
+    this.preloadImages();
     this.interval = setInterval(() => {
       this.onNextClick()
     },  this.nextSlideInterval);
   }
 
+  ngOnDestroy(): void {
+    clearInterval(this.interval);
+  }
+
+  onPreviousClick() {
+    this.currentSlideIndex = this.currentSlideIndex - 1;
+
+    if(this.currentSlideIndex < 0)
+      this.currentSlideIndex = this.carousels.length - 1;
+
+    this.currentSlide = this.carousels[ this.currentSlideIndex];
+    this.setCarouselStyle();
+    this.restartInterval();
+  }
+
+  onNextClick() {
+    this.currentSlideIndex = this.currentSlideIndex + 1;
+
+    if(this.currentSlideIndex === this.carousels.length)
+      this.currentSlideIndex = 0;
+
+    this.currentSlide = this.carousels[this.currentSlideIndex];
+    this.setCarouselStyle();
+    this.restartInterval();
+  }
+
+  viewSlide(index: number)
+  {
+    this.currentSlideIndex = index;
+    this.currentSlide = this.carousels[this.currentSlideIndex];
+    this.setCarouselStyle();
+    this.restartInterval();
+  }
+
+
+
   preloadImages() {
-    for (const slide of this.slides) {
-      new Image().src = slide;
+    for (const slide of this.carousels) {
+      new Image().src = slide.imageUrl;
     }
   }
 
-  ngOnDestroy(): void {
+  restartInterval() {
     clearInterval(this.interval);
+    this.interval = setInterval(() => {
+      this.onNextClick();
+    }, this.nextSlideInterval);
+  }
+
+
+
+  setCarouselStyle() {
+    switch (this.currentSlide.textPosition) {
+      case 0:
+        this.carouselTextStyle = 'top: 2vw; left: 2vw;';
+        break;
+      case 1:
+        this.carouselTextStyle = 'top: 2vw; left: 50%; text-align: center;';
+        break;
+      case 2:
+        this.carouselTextStyle = 'top: 2vw; right: 2vw;';
+        break;
+      case 3:
+        this.carouselTextStyle = 'top: 50%; left: 2vw;';
+        break;
+      case 4:
+        this.carouselTextStyle = 'top: 50%; left: 50%; transform: translate(-50%, -50%); text-align: center;';
+        break;
+      case 5:
+        this.carouselTextStyle = 'top: 50%; right: 2vw;';
+        break;
+      case 6:
+        this.carouselTextStyle = 'bottom: 2vw; left: 2vw;';
+        break;
+      case 7:
+        this.carouselTextStyle = 'bottom : 2vw; left: 50%; text-align: center;';
+        break;
+      default:
+        this.carouselTextStyle = 'bottom: 2vw; right: 2vw;';
+        break;
+    }
+    this.addPadding();
+  }
+
+  addPadding() {
+    this.carouselTextStyle +=
+      'padding: ' +
+      this.currentSlide.textPaddingTop +
+      'px' +
+      ' ' +
+      this.currentSlide.textPaddingRight +
+      'px' +
+      ' ' +
+      this.currentSlide.textPaddingBottom +
+      'px' +
+      ' ' +
+      this.currentSlide.textPaddingLeft +
+      'px' +
+      ';';
   }
 }

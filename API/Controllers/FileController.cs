@@ -58,6 +58,39 @@ namespace API.Controllers
             return BadRequest("Can not upload file");
         }
 
+        [HttpPost("image")]
+        public async Task<ActionResult> UploadImageFile(IFormFile file, [FromQuery] int height, [FromQuery] int width)
+        {
+            if (!FileExtensions.ValidateFile(file, Constant.ImageContentType, 10000))
+                return BadRequest("File not valid");
+
+            var filePath = await FileExtensions.SaveFile(file);
+
+            var keepSourceImage = file.ContentType == "image/png";
+
+            var resizedFilePath = FileExtensions.ResizeImage(width, height, filePath, false, false , keepSourceImage);
+
+            var resizedFileName = resizedFilePath.Split("\\").Last();
+
+            var resizedFileExtension = resizedFileName.Split(".").Last();
+
+            var uploadedFile = new UploadedFile()
+            {
+                ContentType = file.ContentType,
+                Name = resizedFileName,
+                Extension = resizedFileExtension,
+                Path = resizedFilePath
+            };
+            uploadedFile.AddCreateInformation(GetUserId());
+
+            _unitOfWork.FileRepository.Insert(uploadedFile);
+
+            if(await _unitOfWork.Complete())
+                return Ok($"{Constant.DownloadFileUrl}{uploadedFile.Name}");
+        
+            return BadRequest("Can not upload file");
+        }
+
         [AllowAnonymous]
         [HttpGet("{name}")]
         public async Task<ActionResult> DownloadFile(string name)

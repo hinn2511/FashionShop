@@ -21,6 +21,8 @@ using API.Entities.User;
 using API.Entities.WebPageModel;
 using API.Extensions;
 using AutoMapper;
+using API.DTOs.Request.ContentRequest;
+using API.DTOs.Response.ContentResponse;
 
 namespace API.Helpers
 {
@@ -80,7 +82,11 @@ namespace API.Helpers
 
             CreateMap<HomePageRequest, HomePage>();
 
-            CreateMap<CarouselRequest, Carousel>();
+            CreateMap<Carousel, AdminCarouselResponse>();
+
+            CreateMap<Carousel, AdminCarouselDetailResponse>();
+
+            CreateMap<AddCarouselRequest, Carousel>();
 
             CreateMap<FeatureCategoryRequest, FeatureCategory>();
 
@@ -205,11 +211,8 @@ namespace API.Helpers
                           src => src.Option.Size.SizeName))
                 .ForMember(dest => dest.Total, opt => opt.MapFrom(
                           src => (src.Option.AdditionalPrice + src.Option.Product.Price) * src.Quantity));
-
-            CreateMap<HomePage, CustomerHomePageResponse>()
-                .ForMember(dest => dest.FeatureCategories, opt => opt.Condition(x => x.ShowFeatureCategories))
-                .ForMember(dest => dest.Carousels, opt => opt.Condition(x => x.ShowCarousels))
-                .ForMember(dest => dest.FeatureProducts, opt => opt.Condition(x => x.ShowFeatureProducts));
+                          
+            CreateMap<Carousel, AdminCarouselResponse>();
 
             CreateMap<Carousel, CustomerCarouselResponse>();
 
