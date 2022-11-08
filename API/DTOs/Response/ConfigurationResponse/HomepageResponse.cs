@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using API.DTOs.Response.ContentResponse;
 using API.Entities.WebPageModel;
 
 namespace API.DTOs.Response.ConfigurationResponse
@@ -53,7 +54,5 @@ namespace API.DTOs.Response.ConfigurationResponse
     {
     }
 
-    public class CustomerCarouselResponse : CarouselResponse
-    {
-    }
+   
 }

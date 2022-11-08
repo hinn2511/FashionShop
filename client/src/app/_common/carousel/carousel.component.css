@@ -8,7 +8,6 @@
 }
 
 .carousel {
-  position: relative;
   height: 100%;
   width: 100%;
   overflow: hidden;
@@ -71,4 +70,20 @@
 }
 .arrow.right {
     transform: rotate(225deg);
+}
+
+
+.carousel-text
+{
+  transition: all 1000ms ease-in-out;
+}
+
+.indicator
+{
+  background-color: rgb(224, 229, 233);
+}
+
+.indicator-active
+{
+  background-color: rgb(132, 135, 138);
 }

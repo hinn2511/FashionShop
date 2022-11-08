@@ -1,16 +1,65 @@
 <!-- carousel -->
-<div class="w-100 px-0 mx-0">
-    <div class="carousel">
-        <ng-container *ngFor="let slide of slides; let i = index">
-            <img *ngIf="i === currentSlide" [src]="slide" class="slide" [@slideAnimation]="animationType" />
-        </ng-container>
+<div class="w-100 px-0 mx-0" *ngIf="carousels">
 
-        <!-- controls -->
-        <button class="control prev" (click)="onPreviousClick()">
-            <span class="arrow left"></span>
-        </button>
-        <button class="control next" (click)="onNextClick()">
-            <span class="arrow right"></span>
-        </button>
+  <div class="carousel position-relative">
+    <ng-container *ngFor="let slide of carousels; let i = index">
+      <img
+        *ngIf="i === currentSlideIndex"
+        [src]="slide.imageUrl"
+        class="slide"
+        [@slideAnimation]="animationType"
+      />
+    </ng-container>
+    <button class="control prev">
+      <span class="arrow left"></span>
+    </button>
+    <button class="control next">
+      <span class="arrow right"></span>
+    </button>
+    <div
+      class="position-absolute"
+      *ngIf="currentSlide"
+      [style]="carouselTextStyle"
+    >
+      <h1
+        class=""
+
+      >
+        {{ currentSlide.title }}
+      </h1>
+      <p
+        class=""
+      >
+        {{ currentSlide.description }}
+      </p>
+      <a
+        class="text-dark"
+
+        routerLink="{{ currentSlide.link }}"
+        >{{ currentSlide.navigationText }}</a
+      >
     </div>
+
+    <button class="control prev" (click)="onPreviousClick()">
+      <span class="arrow left"></span>
+    </button>
+    <button class="control next" (click)="onNextClick()">
+      <span class="arrow right"></span>
+    </button>
+  </div>
+  <div
+    class="w-100 mt-2 px-2 d-flex d-inline-block justify-content-end"
+    style="height: 12px"
+  >
+    <div
+        (click)="viewSlide(i)"
+        class="cs-pointer"
+      [class]="{
+        'indicator': i != currentSlideIndex,
+        'indicator-active': i == currentSlideIndex
+      }"
+      style="border-radius: 999px; height: 10px; width: 10px; margin: 1px 3px"
+      *ngFor="let slide of carousels; let i = index"
+    ></div>
+  </div>
 </div>

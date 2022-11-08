@@ -21,18 +21,18 @@ namespace API.Extensions
             if (!contentTypeDictionary.Any(ct => ct.Value == file.ContentType))
                 return false;
 
-            if (maxLength > 0) 
+            if (maxLength > 0)
             {
                 if (file.Length / 1024 > maxLength)
                     return false;
             }
-             
+
             return true;
         }
 
-        public static string ResizeImage(int newWidth, int newHeight, string stPhotoPath, bool saveAsTransparent, bool keepSourceImage)
+        public static string ResizeImage(int newWidth, int newHeight, string photoPath, bool saveAsTransparent, bool keepRatio, bool keepSourceImage)
         {
-            Image imgPhoto = Image.FromFile(stPhotoPath);
+            Image imgPhoto = Image.FromFile(photoPath);
 
             int sourceWidth = imgPhoto.Width;
             int sourceHeight = imgPhoto.Height;
@@ -63,11 +63,11 @@ namespace API.Extensions
             int destHeight = (int)(sourceHeight * nPercent);
 
             Bitmap bmPhoto;
-            if (saveAsTransparent) 
+            if (saveAsTransparent)
                 bmPhoto = new Bitmap(newWidth, newHeight, PixelFormat.Format32bppArgb);
             else
                 bmPhoto = new Bitmap(newWidth, newHeight, PixelFormat.Format24bppRgb);
-            
+
 
             bmPhoto.SetResolution(
                             imgPhoto.HorizontalResolution,
@@ -79,30 +79,40 @@ namespace API.Extensions
             grPhoto.InterpolationMode = System.Drawing.Drawing2D.
                                             InterpolationMode.HighQualityBicubic;
 
-            grPhoto.DrawImage(imgPhoto,
-                new Rectangle(--destX, destY, ++destWidth, destHeight),
-                new Rectangle(sourceX, sourceY, sourceWidth, sourceHeight),
-                GraphicsUnit.Pixel);
+            if (keepRatio)
+            {
+                grPhoto.DrawImage(imgPhoto,
+                    new Rectangle(--destX, destY, ++destWidth, destHeight),
+                    new Rectangle(sourceX, sourceY, sourceWidth, sourceHeight),
+                    GraphicsUnit.Pixel);
+            }
+
+            else
+            {
+                grPhoto.DrawImage(imgPhoto,
+                    new Rectangle(0, 0, ++newWidth, (newWidth * sourceHeight) / sourceWidth),
+                    new Rectangle(sourceX, sourceY, sourceWidth, sourceHeight),
+                    GraphicsUnit.Pixel);
+            }
 
             grPhoto.Dispose();
             imgPhoto.Dispose();
 
             if (saveAsTransparent)
             {
-                var newPath = stPhotoPath.Replace(stPhotoPath.Split(".").Last(), "png");
+                var newPath = photoPath.Replace(photoPath.Split(".").Last(), "png");
                 bmPhoto.Save(newPath, ImageFormat.Png);
-                if(!keepSourceImage)
-                    DeleteFile(stPhotoPath);
+                if (!keepSourceImage)
+                    DeleteFile(photoPath);
                 return newPath;
             }
-            else 
-                bmPhoto.Save(stPhotoPath, ImageFormat.Jpeg);
+            else
+                bmPhoto.Save(photoPath, ImageFormat.Jpeg);
 
-            return stPhotoPath;
+            return photoPath;
 
-            
+
         }
-       
         public static void DeleteFile(string filePath)
         {
             if (System.IO.File.Exists(filePath))
