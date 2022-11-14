@@ -1,4 +1,5 @@
 ﻿using API.Data;
+using API.DTOs.Response.FileResponse;
 using API.Entities.OtherModel;
 using API.Extensions;
 using API.Interfaces;
@@ -59,8 +60,8 @@ namespace API.Controllers
         }
 
         [HttpPost("image")]
-        public async Task<ActionResult> UploadImageFile(IFormFile file, [FromQuery] int height, [FromQuery] int width)
-        {
+        public async Task<ActionResult> UploadImageFile(IFormFile file, [FromQuery] int height, [FromQuery] int width, [FromQuery] bool keepRatio)
+        {            
             if (!FileExtensions.ValidateFile(file, Constant.ImageContentType, 10000))
                 return BadRequest("File not valid");
 
@@ -68,7 +69,7 @@ namespace API.Controllers
 
             var keepSourceImage = file.ContentType == "image/png";
 
-            var resizedFilePath = FileExtensions.ResizeImage(width, height, filePath, false, false , keepSourceImage);
+            var resizedFilePath = FileExtensions.ResizeImage(width, height, filePath, false, keepRatio, keepSourceImage);
 
             var resizedFileName = resizedFilePath.Split("\\").Last();
 
@@ -86,7 +87,7 @@ namespace API.Controllers
             _unitOfWork.FileRepository.Insert(uploadedFile);
 
             if(await _unitOfWork.Complete())
-                return Ok($"{Constant.DownloadFileUrl}{uploadedFile.Name}");
+                return Ok(new FileUploadedResponse($"{Constant.DownloadFileUrl}{uploadedFile.Name}"));
         
             return BadRequest("Can not upload file");
         }

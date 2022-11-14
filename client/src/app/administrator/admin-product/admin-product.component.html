@@ -136,10 +136,10 @@
       <input
         type="file"
         #fileInput
-        ng2FileSelect
-        [uploader]="uploader"
-        (change)="onFileSelected()"
-      />
+        (change)="onFileSelected($event)"
+        />
+        <!-- ng2FileSelect
+        [uploader]="uploader" -->
     </span>
 
     <!-- Edit button -->
