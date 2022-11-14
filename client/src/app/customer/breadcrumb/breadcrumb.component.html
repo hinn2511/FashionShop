@@ -1,4 +1,4 @@
-<nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
+<nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb" *ngIf="breadCrumbList">
     <ol class="breadcrumb bg-transparent">
         <li *ngFor="let item of breadCrumbList; let i = index" 
             class="breadcrumb-item">

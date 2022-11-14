@@ -1,87 +1,22 @@
-
-/* .navbar-brand {
-  font-family: 'Bebas Neue', cursive;
-  vertical-align: middle;
-  font-size: 30px;
-} */
-
-/* .navbar-brand:hover {
-  color: rgb(179, 142, 42);
-} */
-
-.navbar-toggler {
-  border: none;
-  padding-left: 0;
-}
-
-.nav-icon {
-  height: 20px;
-  width: 20px;
-}
-
-/* .nav-icon-mobile {
-  height: 22px;
-  width: 22px;
-} */
-
-.nav-btn {
-  height: 30px;
-  width: 40px;
-  margin-right: 10px;
-  padding: 0 5px !important;
-  padding: 0 !important;
-}
-
-.nav-link-right {
-  color: black;
-  padding: .5rem 0 .5rem 1rem;
-}
-
-.pl-100 {
-  max-width: 100%;
-  width: 100%;
-}
-
-
-@media (min-width: 1268px) {
-  .navbar-collapse {
-    display: inline;
-    justify-content: space-between;
-  }
-
-  .navbar {
-    height: 9vh;
-  }
-}
-
-@media (min-width: 768px) {
-  .navbar-collapse {
-    justify-content: space-between;
-  }
-}
-
-
-@media (max-width: 768px) {
-
-
-}
-
 .navbar {
   display: flex;
-  flex-direction: column;
 }
 
 .search-bar {
-  width: 100%;
-  margin-top: auto;
+  top: 0;
+  left: 0;
+  margin-top: 8vh;
+  min-width: 100%;
+  z-index: 1021;
 }
 
-
+/* Category section */
 .category-window {
   top: 0;
   left: 0;
-  margin-top: 9vh;
+  margin-top: 8vh;
   min-width: 100%;
+  z-index: 1021;
 }
 
 .category-list-container
@@ -94,9 +29,67 @@
   background: #f8f9fa;
 }
 
-.nav
-{
-  display: flex;
-  align-items: center;
-  justify-content: center;
+/* Icon sizing */
+.nav-btn > img {
+  min-height: 17px;
+  max-height: 17px;
+  object-position: center;
 }
+
+.nav-icon-mobile {
+  height: 22px;
+  width: 22px;
+}
+
+/* Button */
+.nav-btn {
+  margin-right: 1rem;
+  display: grid;
+  vertical-align: middle;
+  min-width: 35px;
+  min-height: 35px;
+  max-width: 35px;
+  max-height: 35px;
+}
+
+.navbar-toggler {
+  border: none;
+  padding-left: 0;
+}
+
+
+/* Navigation link */
+.nav-link-right {
+  color: black;
+  padding: .5rem 0 .5rem 1rem;
+}
+
+/* For desktop */
+@media (min-width: 1268px) {
+  .navbar-collapse {
+    display: inline;
+    justify-content: space-between;
+  }
+
+  .navbar {
+    height: 9vh;
+  }
+}
+
+/* For tablet and desktop */
+@media (min-width: 768px) {
+  .navbar-collapse {
+    justify-content: space-between;
+  }
+}
+
+/* For mobile */
+@media (max-width: 768px) {
+
+
+}
+
+
+
+
+

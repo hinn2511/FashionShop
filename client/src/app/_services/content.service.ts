@@ -5,23 +5,55 @@ import {
 } from 'src/app/_models/carousel';
 import { Injectable } from '@angular/core';
 import { environment } from 'src/environments/environment';
-import { HttpClient, HttpErrorResponse, HttpEventType, HttpHeaders } from '@angular/common/http';
+import {
+  HttpClient,
+  HttpErrorResponse,
+  HttpEventType,
+  HttpHeaders,
+} from '@angular/common/http';
 import { getPaginatedResult, getPaginationHeaders } from './paginationHelper';
 import { IdArray } from '../_models/adminRequest';
 import { map, switchMap } from 'rxjs/operators';
 import { FileUploader } from 'ng2-file-upload';
+import { FileUploadedResponse } from 'src/app/_models/file';
 
 @Injectable({
   providedIn: 'root',
 })
-export class ContentService {  
+export class ContentService {
   baseUrl = environment.apiUrl;
+  fileUrl = environment.fileUrl;
   carousels: ManagerCarousel[] = [];
   managerCarouselParams: ManagerCarouselParams;
 
-  constructor(private http: HttpClient, private authenticationService: AuthenticationService) {
+  constructor(
+    private http: HttpClient,
+    private authenticationService: AuthenticationService
+  ) {
     this.managerCarouselParams = new ManagerCarouselParams();
   }
+
+  // uploadImage(file: File, accessToken: string) {
+  //   let height = 600;
+  //   let width = 1200;
+  //   let uploadForm = new FormData();
+  //   uploadForm.append('file', file, file.name);
+  //   const options = {
+  //     headers: new HttpHeaders({
+  //       authority: 'localhost:5001',
+  //       method: 'POST',
+  //       scheme: 'https',
+  //       Accept: '*/*',
+  //       'Accept-Language': 'vi,en-US;q=0.9,en;q=0.8',
+  //       Authorization: 'Bearer ' + accessToken,
+  //     }),
+  //   };
+  //   return this.http.post<FileUploadedResponse>(
+  //     this.fileUrl + '/image?width=1200&height=600',
+  //     uploadForm,
+  //     options
+  //   );
+  // }
 
   getManagerCarouselParams() {
     return this.managerCarouselParams;
@@ -61,7 +93,8 @@ export class ContentService {
     );
   }
 
-  addCarousel(carousel: ManagerCarousel) {
+  addCarousel(imageUrl: string, carousel: ManagerCarousel) {
+    carousel.imageUrl = imageUrl;
     return this.http.post<ManagerCarousel>(
       this.baseUrl + 'configuration/create-carousel',
       carousel

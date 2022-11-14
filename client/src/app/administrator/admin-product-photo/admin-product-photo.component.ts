@@ -271,35 +271,4 @@ export class AdminProductPhotoComponent implements OnInit {
     }
   }
 
-  // private calculatePreviewThumbnail(index: number) {
-  //   this.leftOffset = 0;
-  //   this.rightOffset = 0;
-  //   index++;
-
-  //   if (this.productPhotos.length < this.maxPreviewItem) {
-  //     this.leftOffset = 0;
-  //     this.rightOffset = this.maxPreviewItem;
-  //     return;
-  //   }
-
-  //   if (index <= this.maxPreviewItem) {
-  //     this.leftOffset = 0;
-  //     this.rightOffset = this.maxPreviewItem;
-  //     return;
-  //   }
-
-  //   if (index > this.productPhotos.length - this.maxPreviewItem) {
-  //     this.leftOffset = this.productPhotos.length - this.maxPreviewItem;
-  //     this.rightOffset = this.productPhotos.length;
-  //     return;
-  //   }
-
-  //   if (this.maxPreviewItem % 2 == 0) {
-  //     this.leftOffset = index - this.maxPreviewItem / 2;
-  //     this.rightOffset = this.leftOffset + this.maxPreviewItem + 1;
-  //   } else {
-  //     this.leftOffset = index - this.maxPreviewItem / 2;
-  //     this.rightOffset = this.leftOffset + this.maxPreviewItem;
-  //   }
-  // }
 }

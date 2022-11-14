@@ -1,16 +1,10 @@
 <nav
   class="navbar sticky-top navbar-expand-lg navbar-light bg-white shadow-sm"
-  aria-label="Fifth navbar example"
 >
   <div class="container-fluid mx-md-3">
     <button
       class="navbar-toggler p-1"
       type="button"
-      data-bs-toggle="collapse"
-      data-bs-target="#navbarsExample05"
-      aria-controls="navbarsExample05"
-      aria-expanded="false"
-      aria-label="Toggle navigation"
       (click)="navigationBarToggle()"
     >
       <span class="navbar-toggler-icon"></span>
@@ -25,9 +19,8 @@
     </button>
 
     <div
-      class="navbar-collapse pt-lg-1"
+      class="navbar-collapse bg-white pt-lg-1"
       [class.collapse]="collapseNavbar"
-      id="navbarsExample05"
     >
       <ul class="navbar-nav me-auto mb-2 mb-lg-0">
         <li class="nav-item ml-lg-3">
@@ -36,7 +29,7 @@
           >
         </li>
 
-        <li class="nav-item" *ngFor="let item of categoryGroups; let i = index">
+        <li class="nav-item cs-pointer" *ngFor="let item of categoryGroups; let i = index">
           <a
             class="nav-link text-uppercase"
             [class]="{ 'bg-light': isCategoryGroupSelected(item.gender) }"
@@ -49,8 +42,6 @@
         <li class="nav-item">
           <a
             class="nav-link text-uppercase text-danger"
-            aria-current="page"
-            href="#"
             >Sale off</a
           >
         </li>
@@ -58,9 +49,9 @@
 
       <hr class="d-lg-none" />
 
-      <ul class="navbar-nav me-auto mb-2 mb-lg-0 d-lg-none">
+      <ul class="navbar-nav  me-auto mb-2 mb-lg-0 d-lg-none">
         <li class="nav-item ml-lg-3">
-          <a class="nav-link text-uppercase" aria-current="page" href="#"
+          <a class="nav-link text-uppercase"
             >my cart</a
           >
         </li>
@@ -69,8 +60,6 @@
           <a
             class="nav-link text-uppercase"
             routerLink="products"
-            aria-current="page"
-            href="#"
             >my favorites</a
           >
         </li>
@@ -79,8 +68,6 @@
           <a
             class="nav-link text-uppercase"
             routerLink="products"
-            aria-current="page"
-            href="#"
             >Account</a
           >
         </li>
@@ -88,19 +75,19 @@
 
       <div class="d-none d-lg-block">
         <div class="d-flex flex-fill justify-content-lg-end">
-          <button class="btn nav-btn" (click)="searchBarToggle()">
-            <img class="nav-icon" src="../../../assets/search.svg" alt="" />
+          <button class="btn nav-btn p-2" (click)="searchBarToggle()">
+            <img class="nav-icon" src="../../../assets/search.svg"/>
           </button>
 
-          <button class="btn nav-btn" routerLink="/my-cart">
-            <img class="nav-icon" src="../../../assets/cart.svg" alt="" />
+          <button class="btn nav-btn p-2" routerLink="/my-cart">
+            <img class="nav-icon" src="../../../assets/cart.svg"/>
           </button>
-          <button class="btn nav-btn" *ngIf="isUserExist()">
-            <img class="nav-icon" src="../../../assets/heart.svg" alt="" />
+          <button class="btn nav-btn p-2" *ngIf="isUserExist()">
+            <img class="nav-icon" src="../../../assets/heart.svg" />
           </button>
           <div class="dropdown" dropdown *ngIf="isUserExist()">
-            <button class="btn nav-btn dropdown-toggle" dropdownToggle>
-              <img class="nav-icon" src="../../../assets/user.svg" alt="" />
+            <button class="btn nav-btn p-2" dropdownToggle (click)="collapseAll()">
+              <img class="nav-icon" src="../../../assets/user.svg"/>
             </button>
             <div class="dropdown-menu dropdown-menu-end mt-3" *dropdownMenu>
               <a routerLink="/member/edit" class="dropdown-item"
@@ -115,17 +102,15 @@
           </div>
 
           <a
-            class="nav-link-right text-uppercase"
+            class="text-dark p-2 text-uppercase"
             *ngIf="!isUserExist()"
-            aria-current="page"
             routerLink="/login"
             >Login</a
           >
 
           <a
-            class="nav-link-right text-uppercase"
+            class="text-dark p-2 text-uppercase"
             *ngIf="!isUserExist()"
-            aria-current="page"
             routerLink="/register"
             >Register</a
           >
@@ -133,9 +118,14 @@
       </div>
     </div>
   </div>
-  <div class="search-bar" *ngIf="!collapseSearchbar">
-    <app-search-bar></app-search-bar>
-  </div>
+
+  <ng-container *ngIf="!collapseSearchbar">
+    <div class="bg-white search-bar position-absolute rounded shadow-sm sticky-top" >
+      <app-search-bar></app-search-bar>
+    </div>
+  </ng-container>
+  
+
   <ng-container *ngIf="selectedCategoryGroup && !collapseCategory">
     <div
       (mouseleave)="setCollapseCategory(true)"
@@ -147,13 +137,10 @@
             class="col-2"
             *ngFor="let category of selectedCategoryGroup.categories"
           >
-            <div class="p-3 cs-pointer category-name">
+            <div class="p-3 cs-pointer category-name" 
+            (click)="viewCategory(category.categoryName, category.slug, selectedCategoryGroup.gender)">
               <h4
-                class="m-0 p-0"
-                (click)="viewCategory(category.categoryName, category.slug, selectedCategoryGroup.gender)"
-                >
-                <!-- routerLink="/products"
-                [queryParams]="{ category: category.slug, gender: selectedCategoryGroup.gender }" -->
+                class="m-0 p-0"              >
                 {{ category.categoryName }}
               </h4>
 
@@ -165,8 +152,6 @@
                 *ngFor="let subCategory of category.subCategories"
                 (click)="viewCategory(subCategory.categoryName, subCategory.slug, selectedCategoryGroup.gender)"
                 >
-                <!-- routerLink="/products"
-                [queryParams]="{ category: subCategory.slug, gender: selectedCategoryGroup.gender }" -->
                 <a class="text-dark">{{ subCategory.categoryName }}</a>
               </li>
             </ul>

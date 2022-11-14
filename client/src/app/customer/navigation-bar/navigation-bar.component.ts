@@ -12,7 +12,6 @@ import { CategoryService } from 'src/app/_services/category.service';
 export class NavigationBarComponent implements OnInit {
   collapseNavbar: boolean = true;
   collapseSearchbar: boolean = true;
-
   collapseCategory: boolean = true;
   categoryGroups: Catalogue[]= [];
   selectedCategoryGroup: Catalogue;
@@ -20,22 +19,37 @@ export class NavigationBarComponent implements OnInit {
   selectedCategory: CategoryCatalogue;
   selectedSubCategory: SubCategoryCatalogue;
   categoryWindowMargin: string;
-
+  
   constructor(private authenticationService: AuthenticationService, private categoryService: CategoryService, private router: Router) { }
-
+  
   ngOnInit(): void {
     this.loadCategoryGroup();
   }
-
+  
   navigationBarToggle() {
-    this.collapseNavbar = !this.collapseNavbar;
-    console.log(this.collapseNavbar);
+    let state = this.collapseNavbar;
+    this.collapseAll();
+    this.collapseNavbar = !state;
+  }
+  searchBarToggle() {    
+    let state = this.collapseSearchbar;
+    this.collapseAll();
+    this.collapseSearchbar = !state;
+    
+  }
+  
+  categoryWindowToggle() {
+    let state = this.collapseCategory;
+    this.collapseAll();
+    this.collapseCategory = !state;
   }
 
-  searchBarToggle() {
-    this.collapseSearchbar = !this.collapseSearchbar;
+  collapseAll()
+  {
+    this.collapseCategory = true;
+    this.collapseNavbar = true;
+    this.collapseSearchbar = true;
   }
-
 
   logout() {
     this.authenticationService.logout();
@@ -53,12 +67,11 @@ export class NavigationBarComponent implements OnInit {
       });
   }
 
-  categoryWindowToggle() {
-    this.collapseCategory = !this.collapseCategory;
-  }
 
   setCollapseCategory(value: boolean)
   {
+    if(value)
+      this.collapseAll();
     this.collapseCategory = value;
   }
 

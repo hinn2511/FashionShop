@@ -1,4 +1,5 @@
-import { AuthenticationService } from 'src/app/_services/authentication.service';
+import { AuthenticationService } from './../../_services/authentication.service';
+import { FileService } from './../../_services/file.service';
 import { IdArray } from './../../_models/adminRequest';
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
@@ -38,13 +39,14 @@ export class AdminProductComponent implements OnInit {
 
   selectedIds: number[] = [];
   query: string;
-  uploader: FileUploader;
+  // uploader: FileUploader;
   baseUrl = environment.apiUrl;
 
   constructor(
     private productService: ProductService,
     private router: Router,
-    private authenticationService: AuthenticationService
+    private authenticationService: AuthenticationService,
+    private fileService: FileService
   ) {
     this.productParams = this.productService.getManagerProductParams();
   }
@@ -56,7 +58,7 @@ export class AdminProductComponent implements OnInit {
     this.selectAllProduct = false;
     this.showStatusFilter = false;
     this.loadProducts();
-    this.initializeUploader();
+    // this.initializeUploader();
   }
 
   rotate() {
@@ -249,28 +251,32 @@ export class AdminProductComponent implements OnInit {
     return this.selectedIds.length >= 1;
   }
 
-  initializeUploader() {
-    this.uploader = new FileUploader({
-      url: this.baseUrl + 'product/import',
-      authToken: 'Bearer ' + this.authenticationService.userValue.jwtToken,
-      isHTML5: true,
-      allowedMimeType: ['text/csv'],
-      removeAfterUpload: true,
-      autoUpload: true,
-      maxFileSize: 10 * 1024 * 1024,
-    });
-    this.uploader.onAfterAddingFile = (file) => {
-      file.withCredentials = true;
-    };
-    this.uploader.onSuccessItem = (item, response, status, headers) => {
-      if (response) {
-        this.loadProducts();
-      }
-    };
-  }
+  // initializeUploader() {
+  //   this.uploader = new FileUploader({
+  //     url: this.baseUrl + 'product/import',
+  //     authToken: 'Bearer ' + this.authenticationService.userValue.jwtToken,
+  //     isHTML5: true,
+  //     allowedMimeType: ['text/csv'],
+  //     removeAfterUpload: true,
+  //     autoUpload: true,
+  //     maxFileSize: 10 * 1024 * 1024,
+  //   });
+  //   this.uploader.onAfterAddingFile = (file) => {
+  //     file.withCredentials = true;
+  //   };
+  //   this.uploader.onSuccessItem = (item, response, status, headers) => {
+  //     if (response) {
+  //       this.loadProducts();
+  //     }
+  //   };
+  // }
 
-  onFileSelected() {
-    this.uploader.uploadAll();
-    console.log(this.uploader);
+  onFileSelected(event: any) {
+    if (event.target.files && event.target.files[0]) {
+      let file = event.target.files[0];
+      this.fileService.uploadFile(file, this.baseUrl + 'product/import', this.authenticationService.userValue.jwtToken).subscribe(result => {
+        this.loadProducts();
+      });
+    }
   }
 }
