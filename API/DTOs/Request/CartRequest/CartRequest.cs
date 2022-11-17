@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+
 namespace API.DTOs.Request.CartRequest
 {
     public class CartRequest
@@ -13,6 +15,12 @@ namespace API.DTOs.Request.CartRequest
 
     public class UpdateCartRequest : CartRequest
     {
+        public int CartId { get; set; }
+    }
+
+    public class UpdateCartAfterLoginRequest
+    {
+        public List<CartRequest> NewCartItems { get; set; }
     }
 
     

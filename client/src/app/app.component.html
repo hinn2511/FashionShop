@@ -3,18 +3,21 @@
 </ng-container>
 
 <ng-container *ngIf="!hasRoute('administrator/login')">
-  <div *appHasRole="['Anonymous', 'Customer']">
-      <ng-container *ngIf="!hasRoute('/login')">
-        <app-navigation-bar></app-navigation-bar>
-      </ng-container>
+  <div *appHasRole="['Anonymous', 'Customer']" class="position-relative">
+    <ng-container *ngIf="!hasRoute('/login')">
+      <app-navigation-bar
+        (focus)="focusModeToggle($event)"
+      ></app-navigation-bar>
+    </ng-container>
 
-      <div class="container-fluid w-100 px-0">
-        <router-outlet></router-outlet>
-      </div>
+    <div class="container-fluid w-100 px-0">
+      <router-outlet></router-outlet>
+    </div>
 
-      <ng-container *ngIf="!hasRoute('/login')">
-        <app-footer></app-footer>
-      </ng-container>
+    <ng-container *ngIf="!hasRoute('/login')">
+      <app-footer></app-footer>
+    </ng-container>
+    <div *ngIf="focus" class="position-absolute focus-mode"></div>
   </div>
 
   <div *appHasRole="['Admin', 'Manager']">
@@ -29,7 +32,12 @@
 
         <main class="ms-sm-auto pl-0 p position-relative">
           <nav class="w-100 py-1 d-flex justify-content-end">
-            <button class="btn btn-transparent">Hi, {{ user.username }}</button>
+            <button
+              class="btn btn-transparent"
+              *ngIf="authenticationService.currentUser$ | async as user"
+            >
+              Hi, {{ user.username }}
+            </button>
             <button class="btn btn-transparent" (click)="logout()">
               Log out
             </button>

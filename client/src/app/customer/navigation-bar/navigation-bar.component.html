@@ -1,6 +1,4 @@
-<nav
-  class="navbar sticky-top navbar-expand-lg navbar-light bg-white shadow-sm"
->
+<nav class="navbar sticky-top navbar-expand-lg navbar-light bg-white shadow-sm">
   <div class="container-fluid mx-md-3">
     <button
       class="navbar-toggler p-1"
@@ -23,13 +21,18 @@
       [class.collapse]="collapseNavbar"
     >
       <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-        <li class="nav-item ml-lg-3">
+        <li class="nav-item ml-lg-3" 
+        (mouseleave)="setCollapseCategory(true)"
+        (mouseenter)="selectCategoryGroup(-1)">
           <a class="nav-link text-uppercase" aria-current="page" routerLink="/"
             >Home</a
           >
         </li>
 
-        <li class="nav-item cs-pointer" *ngFor="let item of categoryGroups; let i = index">
+        <li
+          class="nav-item cs-pointer"
+          *ngFor="let item of categoryGroups; let i = index"
+        >
           <a
             class="nav-link text-uppercase"
             [class]="{ 'bg-light': isCategoryGroupSelected(item.gender) }"
@@ -39,55 +42,50 @@
           >
         </li>
 
-        <li class="nav-item">
-          <a
-            class="nav-link text-uppercase text-danger"
-            >Sale off</a
-          >
+        <li class="nav-item" 
+        (mouseleave)="setCollapseCategory(true)"
+        (mouseenter)="selectCategoryGroup(-1)">
+          <a class="nav-link text-uppercase text-danger">Sale off</a>
         </li>
       </ul>
 
       <hr class="d-lg-none" />
 
-      <ul class="navbar-nav  me-auto mb-2 mb-lg-0 d-lg-none">
+      <ul class="navbar-nav me-auto mb-2 mb-lg-0 d-lg-none">
         <li class="nav-item ml-lg-3">
-          <a class="nav-link text-uppercase"
-            >my cart</a
-          >
+          <a class="nav-link text-uppercase">my cart</a>
         </li>
 
         <li class="nav-item" *ngIf="isUserExist()">
-          <a
-            class="nav-link text-uppercase"
-            routerLink="products"
+          <a class="nav-link text-uppercase" routerLink="products"
             >my favorites</a
           >
         </li>
 
         <li class="nav-item">
-          <a
-            class="nav-link text-uppercase"
-            routerLink="products"
-            >Account</a
-          >
+          <a class="nav-link text-uppercase" routerLink="products">Account</a>
         </li>
       </ul>
 
       <div class="d-none d-lg-block">
         <div class="d-flex flex-fill justify-content-lg-end">
           <button class="btn nav-btn p-2" (click)="searchBarToggle()">
-            <img class="nav-icon" src="../../../assets/search.svg"/>
+            <img class="nav-icon" src="../../../assets/search.svg" />
           </button>
 
-          <button class="btn nav-btn p-2" routerLink="/my-cart">
-            <img class="nav-icon" src="../../../assets/cart.svg"/>
+          <button class="btn nav-btn p-2" (click)="cartWindowToggle()">
+            <img class="nav-icon" src="../../../assets/cart.svg" />
           </button>
           <button class="btn nav-btn p-2" *ngIf="isUserExist()">
             <img class="nav-icon" src="../../../assets/heart.svg" />
           </button>
           <div class="dropdown" dropdown *ngIf="isUserExist()">
-            <button class="btn nav-btn p-2" dropdownToggle (click)="collapseAll()">
-              <img class="nav-icon" src="../../../assets/user.svg"/>
+            <button
+              class="btn nav-btn p-2"
+              dropdownToggle
+              (click)="collapseAll()"
+            >
+              <img class="nav-icon" src="../../../assets/user.svg" />
             </button>
             <div class="dropdown-menu dropdown-menu-end mt-3" *dropdownMenu>
               <a routerLink="/member/edit" class="dropdown-item"
@@ -120,11 +118,117 @@
   </div>
 
   <ng-container *ngIf="!collapseSearchbar">
-    <div class="bg-white search-bar position-absolute rounded shadow-sm sticky-top" >
+    <div
+      class="bg-white search-bar position-absolute rounded shadow-sm sticky-top"
+    >
       <app-search-bar></app-search-bar>
     </div>
   </ng-container>
-  
+
+  <div *ngIf="!collapseCartWindow">
+    <div
+      class="bg-white position-absolute cart-window rounded shadow-sm sticky-top"
+    >
+      <div class="p-3">
+        <h5 class="mb-3">My cart</h5>
+        <div *ngIf="cartService.currentCarts$ | async as cartItemList">
+          <ul class="list-group list-group-flush bg-light mt-2 cart-item-list">
+            <li
+              class="list-group-item bg-light cart-item"
+              *ngFor="let cartItem of cartItemList.cartItems"
+            >
+              <div class="row">
+                <div class="col-2 mx-0 px-0">
+                  <div class="rect-image-container w-100">
+                    <img
+                      src="{{ cartItem.imageUrl }}"
+                      alt=""
+                      class="rect-img cart-item-image"
+                    />
+                  </div>
+                </div>
+                <div class="col-4">
+                  <p class="p-0 m-0 text-capitalize">
+                    {{ cartItem.productName }}
+                  </p>
+                  <p class="p-0 m-0">Color:&nbsp;{{ cartItem.colorName }}</p>
+                  <p class="p-0 m-0">Size:&nbsp;{{ cartItem.sizeName }}</p>
+                </div>
+                <div class="col-2">
+                  <div class="center">
+                    <p class="p-0 m-0">
+                      {{
+                        (cartItem.price + cartItem.additionalPrice) *
+                          cartItem.quantity | currency
+                      }}
+                    </p>
+                  </div>
+                </div>
+                <div class="col-3">
+                  <div class="input-group center">
+                    <button
+                      #decreaseButton
+                      class="btn btn-light border-top-right-0 border-bottom-right-0"
+                      (click)="decreaseQuantity(cartItem)"
+                      type="button"
+                      id="button-addon1"
+                    >
+                      -
+                    </button>
+                    <input
+                      type="number"
+                      min="0"
+                      [value]="cartItem.quantity"
+                      class="form-control text-center bg-light border-0"
+                    />
+                    <button
+                      #increaseButton
+                      class="btn btn-light border-top-left-0 border-bottom-left-0"
+                      (click)="increaseQuantity(cartItem)"
+                      type="button"
+                      id="button-addon2"
+                    >
+                      +
+                    </button>
+                  </div>
+                </div>
+                <div class="col-1">
+                  <div class="center">
+                    <button
+                      class="btn btn-danger"
+                      (click)="deleteCartItem(cartItem)"
+                    >
+                      <span><i class="fa fa-trash">&nbsp;</i></span>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </li>
+          </ul>
+          <div
+            class="mt-3"
+            *ngIf="(cartService.currentCarts$ | async).cartItems.length != 0"
+          >
+            <div class="d-flex justify-content-end va-middle">
+              <p class="mx-2 my-auto text-right">
+                Total: {{ cartItemList.totalPrice | currency }}
+              </p>
+              <button class="btn btn-light" (click)="viewCart()">View all</button>
+            </div>
+          </div>
+
+          <div
+            *ngIf="(cartService.currentCarts$ | async).cartItems.length == 0"
+          >
+            <div class="p-5 text-center">
+              <h5 class="text-muted w-100">You don't have any in here yet</h5>
+              <a class="text-dark w-100">Find more things you like</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 
   <ng-container *ngIf="selectedCategoryGroup && !collapseCategory">
     <div
@@ -137,21 +241,33 @@
             class="col-2"
             *ngFor="let category of selectedCategoryGroup.categories"
           >
-            <div class="p-3 cs-pointer category-name" 
-            (click)="viewCategory(category.categoryName, category.slug, selectedCategoryGroup.gender)">
-              <h4
-                class="m-0 p-0"              >
+            <div
+              class="p-3 cs-pointer category-name"
+              (click)="
+                viewCategory(
+                  category.categoryName,
+                  category.slug,
+                  selectedCategoryGroup.gender
+                )
+              "
+            >
+              <h4 class="m-0 p-0">
                 {{ category.categoryName }}
               </h4>
-
             </div>
             <hr />
             <ul class="list-group my-1">
               <li
                 class="list-group-item border-0 cs-pointer sub-category-name"
                 *ngFor="let subCategory of category.subCategories"
-                (click)="viewCategory(subCategory.categoryName, subCategory.slug, selectedCategoryGroup.gender)"
-                >
+                (click)="
+                  viewCategory(
+                    subCategory.categoryName,
+                    subCategory.slug,
+                    selectedCategoryGroup.gender
+                  )
+                "
+              >
                 <a class="text-dark">{{ subCategory.categoryName }}</a>
               </li>
             </ul>

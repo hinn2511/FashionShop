@@ -35,7 +35,7 @@ namespace API.Entities.OrderModel
         Returned,
         RefundedAndNoReturn,
         CancelRequested,
-        Cancelled,
+        Cancelled
     }
 
     public enum PaymentMethod

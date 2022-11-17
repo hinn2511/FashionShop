@@ -1,7 +1,8 @@
+import { CartService } from 'src/app/_services/cart.service';
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { first } from 'rxjs/operators';
+import { concatMap, first, mergeMap, switchMap } from 'rxjs/operators';
 import { AuthenticationService } from 'src/app/_services/authentication.service';
 
 @Component({
@@ -20,6 +21,7 @@ export class LoginComponent implements OnInit {
     constructor(
         private formBuilder: FormBuilder,
         private route: ActivatedRoute,
+        private cartService: CartService,
         private router: Router,
         private authenticationService: AuthenticationService
     ) {
@@ -53,17 +55,34 @@ export class LoginComponent implements OnInit {
         }
 
         this.loading = true;
+        // this.authenticationService.login(this.f.username.value, this.f.password.value, 'client')
+        //     .pipe(first())
+        //     .subscribe({
+        //         next: () => {
+        //             this.cartService.getAuthenticatedUserCartItems().subscribe(( ) => {});
+        //             this.router.navigate([this.returnUrl]);
+        //         },
+        //         error: error => {
+        //             this.error = error;
+        //             this.loading = false;
+        //         }
+        //     });
         this.authenticationService.login(this.f.username.value, this.f.password.value, 'client')
-            .pipe(first())
+            .pipe (
+                    concatMap (
+                    _ => this.cartService.getAuthenticatedUserCartItems()
+                )
+            )
             .subscribe({
-                next: () => {
-                    this.router.navigate([this.returnUrl]);
-                },
-                error: error => {
-                    this.error = error;
-                    this.loading = false;
-                }
-            });
+                        next: () => {
+                            this.router.navigate([this.returnUrl]);
+                        },
+                        error: error => {
+                            this.error = error;
+                            this.loading = false;
+                        }
+                    });
+        
     }
 
 }

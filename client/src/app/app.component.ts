@@ -1,8 +1,11 @@
+import { CartService } from 'src/app/_services/cart.service';
 import { animate, animateChild, AUTO_STYLE, group, query, state, style, transition, trigger } from '@angular/animations';
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { User } from './_models/user';
 import { AuthenticationService } from './_services/authentication.service';
+import { take } from 'rxjs/operators';
+import { CartItem } from './_models/cart';
 
 @Component({
   selector: 'app-root',
@@ -43,19 +46,26 @@ export class AppComponent implements OnInit {
     user: User;
     showSidebar: boolean;
 
+    focus: boolean = false;
+
     state: string = 'default';
 
     menuState: string = 'in';
+    cartItems: CartItem[] = [];
 
-    constructor(private authenticationService: AuthenticationService, private router: Router) {
-      this.authenticationService.user.subscribe(x => this.user = x);
-
+    constructor(public authenticationService: AuthenticationService, private cartService: CartService, private router: Router) {
     }
     ngOnInit(): void {
         this.showSidebar = true;
+        
         if(localStorage.getItem("user") != null && localStorage.getItem("user") != undefined)
         {
           this.authenticationService.setUser();
+          this.cartService.getAuthenticatedUserCartItems().subscribe(_ => {})         
+        }
+        else
+        {
+          this.cartService.getLocalCartItems();
         }
     }
 
@@ -74,6 +84,10 @@ export class AppComponent implements OnInit {
 
     toggleMenu() {
         this.menuState = this.menuState === 'out' ? 'in' : 'out';
+    }
+
+    focusModeToggle(value: boolean) {
+      this.focus = value;
     }
 
     rotate() {
