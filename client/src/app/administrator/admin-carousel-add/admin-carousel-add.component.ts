@@ -113,7 +113,7 @@ export class AdminCarouselAddComponent implements OnInit {
         concatMap((uploadResult) =>
           this.contentService.addCarousel(
             uploadResult.url,
-            this.newCarouselForm.value
+            this.previewCarousel
           )
         )
       )

@@ -212,6 +212,7 @@ namespace API.Controllers
 
             }
             _unitOfWork.ProductRepository.Insert(importProducts);
+            FileExtensions.DeleteFile(filePath);
 
             if (await _unitOfWork.Complete())
             {

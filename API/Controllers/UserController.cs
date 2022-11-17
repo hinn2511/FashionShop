@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using API.DTOs;
 using API.DTOs.Params;
@@ -116,6 +117,12 @@ namespace API.Controllers
         [HttpGet("cart")]
         public async Task<ActionResult> GetUserCart()
         {
+            CartResponse result = await GetUserCartDetail();
+            return Ok(result);
+        }
+
+        private async Task<CartResponse> GetUserCartDetail()
+        {
             var userCartItems = await _unitOfWork.CartRepository.GetUserCartItems(GetUserId());
             double totalPrice = 0;
             int totalItem = 0;
@@ -133,40 +140,51 @@ namespace API.Controllers
                 TotalPrice = totalPrice,
                 TotalItem = totalItem
             };
-            return Ok(result);
+            return result;
         }
 
         [HttpPost("cart")]
         public async Task<ActionResult> AddToCart(CreateCartRequest createCartRequest)
         {
-            if (await _unitOfWork.ProductOptionRepository.GetById(createCartRequest.OptionId) == null)
+            var productOption = await _unitOfWork.ProductOptionRepository.GetById(createCartRequest.OptionId);
+            if (productOption == null || productOption.Status != Status.Active) 
                 return BadRequest("Product option not found");
 
             if (createCartRequest.Quantity < 1)
                 return BadRequest("Quantity not valid.");
-
-            if (await _unitOfWork.CartRepository
+            var cartItem = await _unitOfWork.CartRepository
                     .GetFirstBy(x => x.UserId == GetUserId()
-                        && x.OptionId == createCartRequest.OptionId) != null)
-                return BadRequest("Can item already exist.");
+                        && x.OptionId == createCartRequest.OptionId);
 
-            var newCartItem = _mapper.Map<Cart>(createCartRequest);
-            newCartItem.UserId = GetUserId();
-            newCartItem.AddCreateInformation(GetUserId());
+            if (cartItem != null)
+            {
+                cartItem.Quantity += createCartRequest.Quantity;
+                _unitOfWork.CartRepository.Update(cartItem);
+            }
+            else
+            {
+                var newCartItem = _mapper.Map<Cart>(createCartRequest);
+                newCartItem.UserId = GetUserId();
+                newCartItem.AddCreateInformation(GetUserId());
 
-            _unitOfWork.CartRepository.Insert(newCartItem);
+                _unitOfWork.CartRepository.Insert(newCartItem);
+
+            }
 
             if (await _unitOfWork.Complete())
-                return Ok();
+            {
+                var cartUpdated = await GetUserCartDetail();
+                return Ok(cartUpdated);
+            }
             return BadRequest("Can not add new item to cart!");
         }
 
-        [HttpPut("cart/{cartItemId}")]
-        public async Task<ActionResult> UpdateCartItem(int cartItemId, UpdateCartRequest updateCartRequest)
+        [HttpPut("cart")]
+        public async Task<ActionResult> UpdateCartItem(UpdateCartRequest updateCartRequest)
         {
             var cartItem = await _unitOfWork.CartRepository
                     .GetFirstBy(x => x.UserId == GetUserId()
-                        && x.Id == cartItemId);
+                        && x.Id == updateCartRequest.CartId);
 
             if (cartItem == null)
                 return BadRequest("Cart item not exist.");
@@ -174,17 +192,65 @@ namespace API.Controllers
             if (updateCartRequest.Quantity < 1)
                 return BadRequest("Quantity not valid.");
 
-            if (await _unitOfWork.ProductOptionRepository.GetById(updateCartRequest.OptionId) == null)
-                return BadRequest("Product option not found");
-
-            _mapper.Map(updateCartRequest, cartItem);
-            cartItem.UserId = GetUserId();
+            cartItem.Quantity = updateCartRequest.Quantity;
+            
             cartItem.AddUpdateInformation(GetUserId());
 
             _unitOfWork.CartRepository.Update(cartItem);
 
             if (await _unitOfWork.Complete())
-                return Ok();
+            {
+                var cartUpdated = await GetUserCartDetail();
+                return Ok(cartUpdated);
+            }
+            return BadRequest("Can not update cart item!");
+        }
+
+        [HttpPut("cart-after-login")]
+        public async Task<ActionResult> UpdateCartItemAfterLogin(UpdateCartAfterLoginRequest updateCartAfterLoginRequest)
+        {
+            var cartItems = await _unitOfWork.CartRepository
+                    .GetAllBy(x => x.UserId == GetUserId());
+
+            foreach(var item in updateCartAfterLoginRequest.NewCartItems)
+            {
+                var cartItemExist = cartItems.FirstOrDefault(x => x.OptionId == item.OptionId);
+                if(cartItemExist != null)
+                {
+                    cartItemExist.Quantity = item.Quantity;
+                    _unitOfWork.CartRepository.Update(cartItemExist);                    
+                }
+                else
+                {
+                    var newCartItem = new Cart
+                    {
+                        UserId = GetUserId(),
+                        OptionId = item.OptionId,
+                        Quantity = item.Quantity
+                    };
+                    newCartItem.AddCreateInformation(GetUserId());
+                    _unitOfWork.CartRepository.Insert(newCartItem);
+                }
+            }
+            
+
+            // if (cartItem == null)
+            //     return BadRequest("Cart item not exist.");
+
+            // if (updateCartRequest.Quantity < 1)
+            //     return BadRequest("Quantity not valid.");
+
+            // cartItem.Quantity = updateCartRequest.Quantity;
+            
+            // cartItem.AddUpdateInformation(GetUserId());
+
+            // _unitOfWork.CartRepository.Update(cartItem);
+
+            if (await _unitOfWork.Complete())
+            {
+                var cartUpdated = await GetUserCartDetail();
+                return Ok(cartUpdated);
+            }
             return BadRequest("Can not update cart item!");
         }
 
@@ -195,12 +261,15 @@ namespace API.Controllers
                     .GetFirstBy(x => x.UserId == GetUserId()
                         && x.Id == cartItemId);
             if (cartItem == null)
-                return BadRequest("Can item not exist.");
+                return BadRequest("Cart item not exist.");
 
             _unitOfWork.CartRepository.Delete(cartItemId);
 
             if (await _unitOfWork.Complete())
-                return Ok();
+            {
+                var cartUpdated = await GetUserCartDetail();
+                return Ok(cartUpdated);
+            }
             return BadRequest("Can not unlike this product!");
         }
 

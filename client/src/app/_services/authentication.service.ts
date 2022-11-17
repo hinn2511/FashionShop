@@ -9,7 +9,7 @@ import { environment } from 'src/environments/environment';
 @Injectable({ providedIn: 'root' })
 export class AuthenticationService {
     private userSubject: BehaviorSubject<User>;
-    public user: Observable<User>;
+    public currentUser$: Observable<User>;
     baseUrl = environment.apiUrl;
 
     constructor(
@@ -17,7 +17,7 @@ export class AuthenticationService {
         private http: HttpClient,
     ) {
         this.userSubject = new BehaviorSubject<User>(null);
-        this.user = this.userSubject.asObservable();
+        this.currentUser$ = this.userSubject.asObservable();
         ///
 
         ///
@@ -75,15 +75,15 @@ export class AuthenticationService {
         localStorage.removeItem('user');
         this.http.post<any>(`${environment.apiUrl}account/revoke-token`, {}, { withCredentials: true }).subscribe();
 
-        let bussinessRole: string[] = [  "Admin", "Manager" ];
+        let businessRole: string[] = [  "Admin", "Manager" ];
         let logoutRoute = "/login"
-        if (this.userValue?.roles.some(role => bussinessRole.includes(role))) {
+        if (this.userValue?.roles.some(role => businessRole.includes(role))) {
             logoutRoute = "/administrator/login";
         }
 
         this.stopRefreshTokenTimer();
         this.userSubject.next(undefined);
-        this.user = new Observable<User>();
+        this.currentUser$ = new Observable<User>();
         this.router.navigate([logoutRoute]);
     }
 

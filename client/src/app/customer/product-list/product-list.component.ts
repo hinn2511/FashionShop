@@ -31,6 +31,7 @@ export class ProductListComponent implements OnInit {
 
   skeletonItems: number[];
   skeletonLoading: boolean = false;
+  loadingCount: number = 0;
   pagination: Pagination;
   productParams: ProductParams;
   breadCrumb: BreadCrumb[];
@@ -167,15 +168,20 @@ export class ProductListComponent implements OnInit {
   }
 
   loadProducts() {
-    this.skeletonLoading = true;
+    if (this.loadingCount == 0)
+      this.skeletonLoading = true;
     this.productService.setProductParams(this.productParams);
 
     this.productService
       .getProducts(this.productParams)
       .subscribe((response) => {
-        setTimeout(() => {
-          this.skeletonLoading = false;
-        }, 1000);
+        if (this.loadingCount == 0)
+        {
+          this.loadingCount++;
+          setTimeout(() => {
+            this.skeletonLoading = false;
+          }, 500);
+        }
         this.products = response.result;
         this.pagination = response.pagination;
       });
