@@ -1,3 +1,4 @@
+import { AdminProductOptionAddComponent } from './administrator/admin-product-option-add/admin-product-option-add.component';
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { CartComponent } from './customer/cart/cart.component';
@@ -13,6 +14,7 @@ import { AdminProductDetailComponent } from './administrator/admin-product-detai
 import { AdminProductPhotoComponent } from './administrator/admin-product-photo/admin-product-photo.component';
 import { AdminCarouselAddComponent } from './administrator/admin-carousel-add/admin-carousel-add.component';
 import { AdminCarouselComponent } from './administrator/admin-carousel/admin-carousel.component';
+import { AdminProductOptionComponent } from './administrator/admin-product-option/admin-product-option.component';
 
 const routes: Routes = [
   {path: '', component: HomePageComponent},
@@ -27,6 +29,8 @@ const routes: Routes = [
   {path: 'administrator/product-manager/photos/:id', component: AdminProductPhotoComponent, canActivate: [AuthGuard] },
   {path: 'administrator/carousel-manager', component: AdminCarouselComponent, canActivate: [AuthGuard] },
   {path: 'administrator/carousel-manager/add', component: AdminCarouselAddComponent, canActivate: [AuthGuard] },
+  {path: 'administrator/option-manager', component: AdminProductOptionComponent, canActivate: [AuthGuard] },
+  {path: 'administrator/option-manager/add', component: AdminProductOptionAddComponent, canActivate: [AuthGuard] },
   //{path: 'administrator/product-manager', component: AdminProductComponent},
 
 

@@ -31,7 +31,9 @@ namespace API.Interfaces
 
     public interface IProductOptionRepository : IGenericRepository<Option>
     {
-        Task<IEnumerable<Option>> GetProductOptionsAsync(int productId);
+        // Task<Option> GetProductOptionAsync(int productId);
+        Task<IEnumerable<Option>> GetProductOptionsAsCustomerAsync(int productId);
+        Task<PagedList<Option>> GetProductOptionsAsAdminAsync(AdminProductOptionParams productOptionParams);
     }
 
     public interface ISizeRepository : IGenericRepository<Size>

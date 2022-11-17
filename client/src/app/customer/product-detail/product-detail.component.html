@@ -1,123 +1,181 @@
 <div class="container-fluid w-100 px-0" *ngIf="product">
-    <div class="row mx-0 border-bottom">
-        <div class="col-12 col-md-7 col-lg-8 p-0">
-            <div class="bg-light pl-lg-5 product-image">
-                <app-breadcrumb [breadCrumbList]="breadCrumb"></app-breadcrumb>
-                <!-- <app-image-gallery [mainPhotoUrl]="product.url" [photos]="product.productPhotos"></app-image-gallery> -->
-                <app-product-images class="h-100" [viewerItems]="product.productPhotos" [maxPreviewItem]="8"></app-product-images>
-            </div>
+  <div class="row mx-0 border-bottom">
+    <div class="col-12 col-md-7 col-lg-8 p-0">
+      <div class="bg-light pl-lg-5 product-image">
+        <app-breadcrumb [breadCrumbList]="breadCrumb"></app-breadcrumb>
+        <!-- <app-image-gallery [mainPhotoUrl]="product.url" [photos]="product.productPhotos"></app-image-gallery> -->
+        <app-product-images
+          class="h-100"
+          [viewerItems]="product.productPhotos"
+          [maxPreviewItem]="8"
+        ></app-product-images>
+      </div>
+    </div>
 
+    <div class="col-12 col-md-5 col-lg-4">
+      <div class="pl-md-4 mt-3">
+        <div class="d-inline-block d-flex justify-content-between">
+          <h6 class="text-muted">
+            {{ product.brandName }}&nbsp;&#8901;&nbsp;{{ product.categoryName }}
+          </h6>
         </div>
+        <h1 class="text-uppercase">
+          {{ product.productName }}
+        </h1>
+        <h4>
+          {{ product.productPrice | currency }}
+        </h4>
 
-        <div class="col-12 col-md-5 col-lg-4">
-            <div class="pl-md-4 mt-3">
-                <div class="d-inline-block d-flex justify-content-between">
-                    <h6 class="text-muted">
-                        {{product.brandName}}&nbsp;&#8901;&nbsp;{{product.categoryName}}
-                    </h6>
-                </div>
-                <h1 class="text-uppercase">
-                    {{product.productName}}
-                </h1>
-                <h4>
-                    {{product.productPrice | currency}}
-                </h4>
+        <p class="mt-4 pr-md-5 text-muted">
+          Nam tellus elit, rutrum at nisi et, suscipit accumsan augue. Donec id
+          ligula mauris.
+        </p>
 
+        <div class="mt-4 pr-md-5" *ngIf="selectedColor && options">
+          <label for="size">Color: {{ selectedColor.colorName }}</label>
 
+          <div class="form-group d-flex flex-wrap">
+            <button class="btn p-2 m-1"
+            type="button"
+            *ngFor="let item of options"
+            (click)="chooseColor(item.color)"
+              [class]="{
+                'btn-outline-dark':
+                item.color.colorName == selectedColor.colorName,
+                'btn-light':
+                item.color.colorName != selectedColor.colorName
+              }">
+              <div class="d-flex d-inline-block va-middle color-container">
+                <div
+                class="mr-3"
+                [style]="getColorStyle(item.color)"
+                
+              
+              ></div>
+              <p class="m-0 p-0">
+                {{item.color.colorName}}
+              </p>
+              </div>
+            
+            </button>
+          </div>
 
-                <p class="mt-4 pr-md-5 text-muted">
-                    Nam tellus elit, rutrum at nisi et, suscipit accumsan augue. Donec id ligula mauris.
+          <!-- <div class="d-flex flex-wrap ">
+            <button
+              class="btn m-1 p-2 "
+              *ngFor="let item of options"
+              [class]="{
+                'btn-light': item.color.colorName != selectedColor.colorName,
+                'btn-outline-dark':
+                  item.color.colorName == selectedColor.colorName
+              }"
+              (click)="chooseColor(item.color)"
+            >
+            <!-- <div class="d-flex d-inline text-center va-middle">
+                <div
+                  class="color-container text-center va-middle"
+                  [ngStyle]="{ 'background-color': item.color.colorCode }"
+                >
+            </div> -->
+            <!-- <span class="d-flex d-inline-block">
+                <i class="fa fa-circle" [ngStyle]="{ 'color': item.color.colorCode }"></i>
+                &nbsp;&nbsp;
+                <p class="m-0 p-0">
+                    {{ item.color.colorName }}
                 </p>
+            </span>
 
-                <div class="mt-4 pr-md-5">
-                    <label for="size">Color: {{selectedColor.colorName}}</label>
-
-                    <ul class="list-inline my-3">
-                        <li class="list-inline-item" *ngFor="let item of colors">
-                            <div class="round-button round-button-not-selected p-3 mx-2" 
-                                *ngIf="item.colorName != selectedColor.colorName ; else selected" 
-                                (click)="chooseColor(item)">
-                                    <div class="round-button-circle"  
-                                        [ngStyle]="{'background-color': '#' + item.colorCode}">
-                                    </div>
+            </div> 
+            </button> 
+          </div> -->
+          <!-- <ul class="list-inline my-3" >
+                        <li class="list-inline-item" *ngFor="let item of options">
+                            <div class="round-button" (click)="chooseColor(item.color)" 
+                            [class]="{'round-button-not-selected': item.color.colorName != selectedColor.colorName,
+                            'round-button-selected': item.color.colorName == selectedColor.colorName}"
+                            [ngStyle]="{'background-color': item.color.colorCode}">
                             </div>
-                            
-                            <ng-template #selected>
-                                <div class="round-button round-button-selected p-3 mx-2" 
-                                (click)="chooseColor(item)">
-                                    <div class="round-button-circle"  
-                                        [ngStyle]="{'background-color': '#' + item.colorCode}">
-                                    </div>
-                                </div>
-                            </ng-template>
-
+                            <label>{{item.color.colorName}}</label>
                         </li>
-                    </ul>
-                </div>
+                    </ul> -->
+        </div>
 
-
-                <div class="row mt-4 pr-md-5">
-                    <div class="col-12 col-lg-6">
-                        <label for="size">Size</label>
-                        <div class="input-group mb-3">
-                            <select (change)="onSizeChange($event.target.value)"
-                                class="form-select w-100 bg-light border-0 p-2">
-                                <option *ngFor="let size of sizes" [ngValue]="size">{{size.sizeName}}</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="col-12 col-lg-6">
-                        <label for="size">Quantity</label>
-                        <div class="input-group quantity mb-3">
-                            <button class="btn btn-light border-top-right-0 border-bottom-right-0" type="button"
-                                id="button-addon1">-</button>
-                            <input type="number" [(ngModel)]="quantity" min="0" [value]="quantity" class="form-control bg-light border-0">
-                            <button class="btn btn-light border-top-left-0 border-bottom-left-0" type="button"
-                                id="button-addon2">+</button>
-                        </div>
-                    </div>
-                </div>
-
-
-                <div class="mt-5 pr-md-5">
-                    <button class="btn btn-dark w-100">
-                        <h6 class="text-uppercase m-0 py-2">add to cart</h6>
-                    </button>
-                    <div class="text-center text-md-right mt-3">
-                        <button class="btn btn-transparent text-muted">
-                            <i class="fa fa-heart-o"></i>&nbsp;&nbsp;Add to wishlisht
-                        </button>
-                    </div>
-                </div>
-
+        <div class="row mt-4 pr-md-5">
+          <div class="col-12 col-lg-6">
+            <label for="size">Size</label>
+            <div class="input-group mb-3">
+              <select
+                (change)="onSizeChange($event.target.value)"
+                class="form-select w-100 bg-light border-0 p-2"
+              >
+                <option *ngFor="let size of sizes" [ngValue]="optionId">
+                  {{ size.sizeName }}
+                </option>
+              </select>
             </div>
+          </div>
+          <div class="col-12 col-lg-6">
+            <label for="size">Quantity</label>
+            <div class="input-group quantity mb-3">
+              <button
+                class="btn btn-light border-top-right-0 border-bottom-right-0"
+                type="button"
+                (click)="decreaseQuantity()"
+                id="button-addon1"
+              >
+                -
+              </button>
+              <input
+                type="number"
+                [(ngModel)]="quantity"
+                [min]="0"
+                [max]="99"
+                [value]="quantity"
+                class="form-control bg-light border-0"
+              />
+              <button
+                class="btn btn-light border-top-left-0 border-bottom-left-0"
+                type="button"
+                (click)="increaseQuantity()"
+                id="button-addon2"
+              >
+                +
+              </button>
+            </div>
+          </div>
         </div>
 
-
-    </div>
-
-
-    <div class="p-3 px-md-5">
-        <div class="px-lg-5">
-            <div [innerHTML]="product.description | safeurl"></div>
-
+        <div class="mt-5 pr-md-5">
+          <button class="btn btn-dark w-100">
+            <h6 class="text-uppercase m-0 py-2">add to cart</h6>
+          </button>
+          <div class="text-center text-md-right mt-3">
+            <button class="btn btn-transparent text-muted">
+              <i class="fa fa-heart-o"></i>&nbsp;&nbsp;Add to wishlisht
+            </button>
+          </div>
         </div>
+      </div>
     </div>
+  </div>
 
-    <div class="p-3 px-md-5">
-        <div class="px-lg-5">
-            <h2 class="text-uppercase mt-md-4">rating & reviews</h2>
-            <app-product-rating></app-product-rating>
-        </div>
+  <div class="p-3 px-md-5">
+    <div class="px-lg-5">
+      <div [innerHTML]="product.description | safeUrl"></div>
     </div>
+  </div>
 
-
-    <div class="p-1 mt-3 mt-md-5 px-md-5">
-        <div class="px-lg-5">
-            <h2 class="text-uppercase">you may also like</h2>
-            <app-product-related></app-product-related>
-        </div>
+  <div class="p-3 px-md-5">
+    <div class="px-lg-5">
+      <h2 class="text-uppercase mt-md-4">rating & reviews</h2>
+      <app-product-rating></app-product-rating>
     </div>
+  </div>
 
-
+  <div class="p-1 mt-3 mt-md-5 px-md-5">
+    <div class="px-lg-5">
+      <h2 class="text-uppercase">you may also like</h2>
+      <app-product-related></app-product-related>
+    </div>
+  </div>
 </div>

@@ -22,37 +22,21 @@
     color: black;
 }
 
-
-.round-button {
-    width: 30px;
-    height: 30px;
-    position: relative;
-    border-radius: 100%;
-    
+.color-container
+{
+align-items: center;
+  justify-content: center;
+}
+.color-container > div
+{
+    width: 15px;
+    height: 15px;
+    border-radius: 999px;
 }
 
-.round-button:hover {
-    background-color: rgb(167, 167, 167);
-}
-
-.round-button-circle {
-    width: 26px;
-    height: 26px;
-    margin: 0;
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    overflow: hidden;
-    border-radius: 100%;
-}
-
-.round-button-not-selected {
-    background-color: rgb(240, 240, 240);
-}
-
-.round-button-selected {
-    background-color: rgb(114, 114, 114);
+.container-fluid 
+{
+    padding: auto 100vw;
 }
 
 .quantity {

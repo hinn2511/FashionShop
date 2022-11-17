@@ -1,0 +1,112 @@
+<div class="container-fluid">
+  <h3>Add new option</h3>
+  <form
+    [formGroup]="newOptionForm"
+    (ngSubmit)="newOptionForm.valid && addNewOption($event)"
+    autocomplete="off"
+  >
+    <div class="row">
+      <div class="col-12 col-md-6">
+        <label for="productId">Product</label>
+        <div class="form-group">
+          <select
+            class="form-control"
+            [formControl]="newOptionForm.controls['productId']"
+          >
+            <option *ngFor="let item of products" [value]="item.id">
+              {{ item.productName }}
+            </option>
+          </select>
+        </div>
+
+        <label for="additionalPrice">Additional price</label>
+        <app-number-input
+          [formControl]="newOptionForm.controls['additionalPrice']"
+          [label]="'Additional price'"
+        >
+        </app-number-input>
+
+        
+        <label for="sizeId">Size</label>
+        <div class="form-group">
+          <select
+            class="form-control"
+            [formControl]="newOptionForm.controls['sizeId']"
+          >
+            <option *ngFor="let item of sizes" [value]="item.id">
+              {{ item.sizeName }}
+            </option>
+          </select>
+        </div>
+
+        <label for="colorId">Color</label>
+        <div class="form-group d-flex flex-wrap" *ngIf="colors">
+          <button class="btn p-2 m-1"
+          type="button"
+          *ngFor="let color of colors"
+          (click)="selectColor(color.id)"
+            [class]="{
+              'btn-outline-dark':
+                isColorSelected(color),
+              'btn-light':
+                !isColorSelected(color)
+            }">
+            <div class="d-flex d-inline-block va-middle color-container">
+              <div
+              class="mr-3"
+              [style]="getColorStyle(color)"
+              
+            
+            ></div>
+            <p class="m-0 p-0">
+              {{color.colorName}}
+            </p>
+            </div>
+          
+          </button>
+        </div>
+
+      </div>
+
+      <div class="col-12 col-md-6 col-lg-4 col-xl-3">
+        
+
+      </div>
+    </div>
+
+    <div class="row" *ngIf="validationErrors.length > 0">
+      <ul class="text-danger">
+        <li *ngFor="let error of validationErrors">
+          {{ error }}
+        </li>
+      </ul>
+    </div>
+
+    <div class="form-group text-center text-lg-right">
+      <button
+        routerLink="/administrator/option-manager"
+        class="btn btn-danger mr-2"
+        name="save"
+        type="button"
+      >
+        Back
+      </button>
+      <button
+        [disabled]="!newOptionForm.valid"
+        class="btn btn-success mr-2"
+        name="save"
+        type="submit"
+      >
+        Save
+      </button>
+      <button
+        [disabled]="!newOptionForm.valid"
+        class="btn btn-primary"
+        name="saveAndContinue"
+        type="submit"
+      >
+        Save and continue
+      </button>
+    </div>
+  </form>
+</div>

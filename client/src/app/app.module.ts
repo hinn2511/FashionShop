@@ -21,7 +21,7 @@ import { ProductRecentViewComponent } from './customer/product-recent-view/produ
 import { HomeCarouselComponent } from './customer/home-carousel/home-carousel.component';
 import { HomeCategoriesComponent } from './customer/home-categories/home-categories.component';
 import { HomeBestSellerComponent } from './customer/home-best-seller/home-best-seller.component';
-import { HomeColletionComponent } from './customer/home-colletion/home-colletion.component';
+import { HomeCollectionComponent } from './customer/home-collection/home-collection.component';
 import { FooterComponent } from './customer/footer/footer.component';
 import { HomeNewsletterComponent } from './customer/home-newsletter/home-newsletter.component';
 import { TextInputComponent } from './_forms/text-input/text-input.component';
@@ -42,7 +42,7 @@ import { AdminSidebarComponent } from './administrator/admin-sidebar/admin-sideb
 import { AdminLoginComponent } from './administrator/admin-login/admin-login.component';
 import { AdminProductComponent } from './administrator/admin-product/admin-product.component';
 import { AdminProductAddComponent } from './administrator/admin-product-add/admin-product-add.component';
-import { SafeurlPipe } from './_pipes/safeurl.pipe';
+import { SafeUrlPipe } from './_pipes/safeUrl.pipe';
 import { AdminProductDetailComponent } from './administrator/admin-product-detail/admin-product-detail.component';
 import { AdminProductPhotoComponent } from './administrator/admin-product-photo/admin-product-photo.component';
 import { TextAreaInputComponent } from './_forms/text-area-input/text-area-input.component';
@@ -53,7 +53,8 @@ import { ProductImagesComponent } from './customer/product-images/product-images
 import { AdminCarouselComponent } from './administrator/admin-carousel/admin-carousel.component';
 import { CarouselPreviewComponent } from './_common/carousel-preview/carousel-preview.component';
 import { AdminCarouselAddComponent } from './administrator/admin-carousel-add/admin-carousel-add.component';
-
+import { AdminProductOptionAddComponent } from './administrator/admin-product-option-add/admin-product-option-add.component';
+import { AdminProductOptionComponent } from './administrator/admin-product-option/admin-product-option.component';
 
 @NgModule({
   declarations: [
@@ -73,7 +74,7 @@ import { AdminCarouselAddComponent } from './administrator/admin-carousel-add/ad
     HomeCarouselComponent,
     HomeCategoriesComponent,
     HomeBestSellerComponent,
-    HomeColletionComponent,
+    HomeCollectionComponent,
     FooterComponent,
     HomeNewsletterComponent,
     TextInputComponent,
@@ -89,7 +90,7 @@ import { AdminCarouselAddComponent } from './administrator/admin-carousel-add/ad
     AdminLoginComponent,
     AdminProductComponent,
     AdminProductAddComponent,
-    SafeurlPipe,
+    SafeUrlPipe,
     AdminProductDetailComponent,
     AdminProductPhotoComponent,
     TextAreaInputComponent,
@@ -100,6 +101,8 @@ import { AdminCarouselAddComponent } from './administrator/admin-carousel-add/ad
     CarouselPreviewComponent,
     AdminCarouselAddComponent,
     AdminCarouselComponent,
+    AdminProductOptionComponent,
+    AdminProductOptionAddComponent
   ],
   imports: [
     BrowserModule,

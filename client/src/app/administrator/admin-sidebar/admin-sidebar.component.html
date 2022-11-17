@@ -33,6 +33,15 @@
           Products
         </a>
       </li>
+      <li
+        class="nav-item"
+        [class.nav-item-active]="hasRoute('/administrator/option-manager')"
+      >
+        <a class="nav-link" routerLink="administrator/option-manager">
+          <span data-feather="shopping-cart"></span>
+          Product options
+        </a>
+      </li>
       <li class="nav-item">
         <a class="nav-link" routerLink="administrator/stock-manager">
           <span data-feather="shopping-cart"></span>

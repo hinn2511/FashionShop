@@ -1,13 +1,10 @@
-.product-item:hover {
-    background-color: rgb(226, 226, 226);
+.product-heading > .rect-img-container {
+    width: max(10vw, 100px);
 }
 
-.product-item {
-    z-index: 1;
-}
-
-input[type="checkbox"] {
-    z-index: 100;
+.product-title {
+    margin-top: 20%;
+    vertical-align: middle;
 }
 
 .pagination-navigation > label {
@@ -27,11 +24,4 @@ input[type="checkbox"] {
 .status-dropdown, .status-button {
     width: max(10vw, fit-content);
     min-width: 10vw;
-}
-
-
-.rect-img-container
-{
-  max-height: 5vh;
-  overflow: hidden;
 }

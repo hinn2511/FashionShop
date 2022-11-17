@@ -23,6 +23,11 @@ using API.Extensions;
 using AutoMapper;
 using API.DTOs.Request.ContentRequest;
 using API.DTOs.Response.ContentResponse;
+using API.DTOs.ProductOptionRequest;
+using API.DTOs.Response.ColorResponse;
+using API.DTOs.Request.ColorRequest;
+using API.DTOs.Response.SizeResponse;
+using API.DTOs.Request.SizeRequest;
 
 namespace API.Helpers
 {
@@ -92,6 +97,28 @@ namespace API.Helpers
 
             CreateMap<FeatureProductRequest, FeatureProduct>();
 
+            CreateMap<CreateProductOptionRequest, Option>();
+
+            CreateMap<Option, AdminOptionDetailResponse>();
+
+            CreateMap<Product, AdminOptionProductResponse>();
+
+            CreateMap<Color, AdminColorResponse>();
+
+            CreateMap<Color, AdminColorDetailResponse>();
+
+            CreateMap<CreateColorRequest, Color>();
+
+            CreateMap<UpdateColorRequest, Color>();
+
+            CreateMap<Size, AdminSizeResponse>();
+
+            CreateMap<Size, AdminSizeDetailResponse>();
+
+            CreateMap<CreateSizeRequest, Size>();
+
+            CreateMap<UpdateSizeRequest, Size>();
+
             #endregion
 
             #region customer dto
@@ -102,7 +129,7 @@ namespace API.Helpers
                 .ForMember(dest => dest.Url, opt => opt.MapFrom(
                           src => src.ProductPhotos.FirstOrDefault(pp => pp.IsMain).Url))
                 .ForMember(dest => dest.Gender, opt => opt.MapFrom(
-                          src => (Gender) src.Category.Gender))
+                          src => (Gender)src.Category.Gender))
                 .ForMember(dest => dest.Category, opt => opt.MapFrom(
                           src => src.Category.CategoryName))
                 .ForMember(dest => dest.SubCategory, opt => opt.MapFrom(
@@ -122,7 +149,7 @@ namespace API.Helpers
                 .ForMember(dest => dest.SubCategoryName, opt => opt.MapFrom(
                           src => src.SubCategory.CategoryName))
                 .ForMember(dest => dest.Gender, opt => opt.MapFrom(
-                          src => (Gender) src.Category.Gender));
+                          src => (Gender)src.Category.Gender));
 
             CreateMap<ProductPhoto, CustomerProductPhotoResponse>();
 
@@ -211,7 +238,7 @@ namespace API.Helpers
                           src => src.Option.Size.SizeName))
                 .ForMember(dest => dest.Total, opt => opt.MapFrom(
                           src => (src.Option.AdditionalPrice + src.Option.Product.Price) * src.Quantity));
-                          
+
             CreateMap<Carousel, AdminCarouselResponse>();
 
             CreateMap<Carousel, CustomerCarouselResponse>();
@@ -226,6 +253,10 @@ namespace API.Helpers
                 .ForMember(dest => dest.CategoryName, opt => opt.MapFrom(
                           src => src.Category.CategoryName));
 
+            CreateMap<Color, CustomerOptionColorResponse>();
+
+            CreateMap<Size, CustomerOptionSizeResponse>();
+            
             #endregion
 
             #region comment
@@ -247,7 +278,7 @@ namespace API.Helpers
 
             // CreateMap<OrderItemRequest, OrderDetail>();
 
-            
+
 
             #endregion
         }

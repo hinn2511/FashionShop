@@ -5,9 +5,8 @@ using System.Threading.Tasks;
 
 namespace API.Entities.ProductModel
 {
-    public class Size
+    public class Size : BaseEntity
     {
-        public int Id { get; set; }
         public string SizeName { get; set; }
     }
 }

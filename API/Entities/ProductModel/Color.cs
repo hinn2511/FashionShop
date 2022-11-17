@@ -5,9 +5,8 @@ using System.Threading.Tasks;
 
 namespace API.Entities.ProductModel
 {
-    public class Color
+    public class Color : BaseEntity
     {
-        public int Id { get; set; }
         public string ColorName { get; set; }
         public string ColorCode { get; set; }
     }
