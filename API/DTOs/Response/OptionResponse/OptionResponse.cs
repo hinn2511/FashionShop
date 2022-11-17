@@ -34,7 +34,13 @@ namespace API.DTOs.Response.OptionResponse
         public int Id { get; set; }   
         public AdminOptionColorResponse Color { get; set; }      
         public AdminOptionSizeResponse Size { get; set; }
+        public AdminOptionProductResponse Product { get; set; }
+        public double AdditionalPrice { get; set; }
         public Status Status { get; set; }
+    }
+
+     public class AdminOptionDetailResponse : AdminOptionResponse
+    {
         public DateTime DateCreated { get; set; }
         public int CreatedByUserId { get; set; }
         public DateTime LastUpdated { get; set; }
@@ -43,7 +49,6 @@ namespace API.DTOs.Response.OptionResponse
         public int DeletedByUserId { get; set; }
         public DateTime DateHidden { get; set; }
         public int HiddenByUserId { get; set; }
-        public double AdditionalPrice { get; set; }
     }
 
     public class AdminOptionSizeResponse
@@ -57,6 +62,12 @@ namespace API.DTOs.Response.OptionResponse
         public int Id { get; set; }
         public string ColorName { get; set; }
         public string ColorCode { get; set; }
+    }
+
+    public class AdminOptionProductResponse
+    {
+        public int Id { get; set; }
+        public string ProductName { get; set; }
     }
 
     #endregion

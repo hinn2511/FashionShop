@@ -9,14 +9,17 @@ a {
 
 
 .nav-item-active {
-    background-color: rgb(51, 51, 51);
+    background-color: rgb(26, 26, 26);
     border-radius: 999px;
+    transition: all 0.5s ease-in;
 }
 
 .nav-item-active > a{
     color: white;
     text-align: right;
-    transition: all 1s ease-in-out;
+    -webkit-animation: slideIn 1s forwards;
+  -moz-animation: slideIn 1s forwards;
+  animation: slideIn 1s forwards;
 }
 
 :host {
@@ -29,3 +32,28 @@ a {
     z-index: 100;
     max-width: 15vw;
 }
+
+@-webkit-keyframes slideIn {
+    0% {
+      transform: translateX(-100px);
+    }
+    100% {
+      transform: translateX(0);
+    }
+  }
+  @-moz-keyframes slideIn {
+    0% {
+      transform: translateX(-100px);
+    }
+    100% {
+      transform: translateX(0);
+    }
+  }
+  @keyframes slideIn {
+    0% {
+      transform: translateX(-100px);
+    }
+    100% {
+      transform: translateX(0);
+    }
+  }

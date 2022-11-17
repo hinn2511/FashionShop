@@ -1,0 +1,368 @@
+<div class="container-fluid px-3">
+  <!-- Section title -->
+  <h4>Options</h4>
+
+  <!-- Section content -->
+  <div class="d-flex flex-wrap w-100 py-2 mb-3">
+    <!-- Search bar -->
+    <div class="mr-auto w-sm-100 py-2">
+      <div class="input-group mb-3">
+        <button
+          class="btn btn-light btn-search-filter"
+          type="button"
+          id="button-addon2"
+        >
+          Product ID
+          <span><i class="fa fa-caret-down"></i></span>
+        </button>
+        <input
+          [(ngModel)]="optionParams.query"
+          type="text"
+          (ngModelChange)="loadOptions()"
+          class="form-control"
+          placeholder="Option..."
+          aria-describedby="button-addon2"
+          (keydown.enter)="loadOptions()"
+        />
+
+        <div class="input-group-append">
+          <button
+            class="btn btn-primary"
+            type="button"
+            id="button-addon2"
+            (click)="loadOptions()"
+          >
+            <span><i class="fa fa-search"></i></span>&nbsp; Search
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Status filter button -->
+    <div class="p-2 position-relative">
+      <button
+        class="btn btn-light status-button"
+        (click)="statusFilterToggle()"
+      >
+        Status&nbsp;&nbsp;<span class="badge text-light bg-primary">{{
+          optionParams.productOptionStatus.length
+        }}</span
+        >&nbsp;&nbsp;<span><i class="fa fa-caret-down"></i></span>
+      </button>
+
+      <div
+        class="position-absolute mt-2 status-dropdown"
+        *ngIf="showStatusFilter"
+      >
+        <ul class="list-group">
+          <li class="list-group-item">
+            <div class="custom-control custom-checkbox">
+              <input
+                type="checkbox"
+                class="custom-control-input cs-pointer"
+                id="customCheck1"
+                (click)="selectAllOptionStatus()"
+                [checked]="isAllStatusIncluded()"
+              />
+              <label class="custom-control-label" for="customCheck1"
+                >Select all</label
+              >
+            </div>
+          </li>
+          <li class="list-group-item">
+            <div class="custom-control custom-checkbox">
+              <input
+                type="checkbox"
+                class="custom-control-input cs-pointer"
+                id="customCheck2"
+                (click)="selectStatus(0)"
+                [checked]="isStatusIncluded(0)"
+              />
+              <label class="custom-control-label" for="customCheck2"
+                >Active</label
+              >
+            </div>
+          </li>
+          <li class="list-group-item">
+            <div class="custom-control custom-checkbox">
+              <input
+                type="checkbox"
+                class="custom-control-input cs-pointer"
+                id="customCheck3"
+                (click)="selectStatus(1)"
+                [checked]="isStatusIncluded(1)"
+              />
+              <label class="custom-control-label" for="customCheck3"
+                >Hidden</label
+              >
+            </div>
+          </li>
+          <li class="list-group-item">
+            <div class="custom-control custom-checkbox">
+              <input
+                type="checkbox"
+                class="custom-control-input cs-pointer"
+                id="customCheck4"
+                (click)="selectStatus(2)"
+                [checked]="isStatusIncluded(2)"
+              />
+              <label class="custom-control-label text-dark" for="customCheck4"
+                >Deleted</label
+              >
+            </div>
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Create button -->
+    <div class="p-2">
+      <button
+        class="btn btn-success"
+        routerLink="/administrator/option-manager/add"
+      >
+        <span><i class="fa fa-plus"></i></span>&nbsp; Create
+      </button>
+    </div>
+
+    <!-- Edit button -->
+    <div class="p-2">
+      <button
+        class="btn btn-warning"
+        [class.disabled]="!isSingleSelected()"
+        (click)="editOption()"
+      >
+        <span><i class="fa fa-pencil"></i></span>&nbsp; Edit
+      </button>
+    </div>
+
+    <!-- Hide/Unhide button -->
+    <div class="p-2">
+      <button
+        class="btn btn-dark"
+        (click)="hideOptions()"
+        [class.disabled]="!isMultipleSelected()"
+      >
+        <span><i class="fa fa-eye-slash"></i></span>&nbsp;Hide&nbsp;/&nbsp;
+        <span><i class="fa fa-eye"></i></span>&nbsp;Unhide
+      </button>
+    </div>
+
+    <!-- Delete button -->
+    <div class="p-2">
+      <button
+        class="btn btn-danger"
+        (click)="deleteOptions()"
+        [class.disabled]="!isMultipleSelected()"
+      >
+        <span><i class="fa fa-trash"></i></span>&nbsp; Delete
+      </button>
+    </div>
+  </div>
+
+  <!-- Option table -->
+  <div class="table-responsive w-100" *ngIf="options">
+    <table class="table table-striped border">
+      <thead class="bg-light">
+        <tr>
+          <th scope="col">
+            <input
+              type="checkbox"
+              [checked]="selectAll"
+              (click)="selectAllOptions()"
+            />
+          </th>
+          <!-- Id column -->
+          <th
+            scope="col"
+            class="cs-pointer text-center"
+            (click)="orderBy('id')"
+          >
+            Option ID&nbsp;
+            <span
+              ><i
+                *ngIf="optionParams.field == 'Id'"
+                [@rotatedState]="state"
+                class="fa fa-arrow-up"
+              ></i
+            ></span>
+          </th>
+          <!-- Product id column -->
+          <th
+            scope="col"
+            class="cs-pointer text-center"
+            (click)="orderBy('productId')"
+          >
+            Product ID&nbsp;
+            <span
+              ><i
+                *ngIf="optionParams.field == 'ProductId'"
+                [@rotatedState]="state"
+                class="fa fa-arrow-up"
+              ></i
+            ></span>
+          </th>
+          <!-- Product name column -->
+          <th scope="col" class="cs-pointer" (click)="orderBy('productName')">
+            Product name&nbsp;
+            <span
+              ><i
+                *ngIf="optionParams.field == 'ProductName'"
+                [@rotatedState]="state"
+                class="fa fa-arrow-up"
+              ></i
+            ></span>
+          </th>
+          <!-- Color column -->
+          <th class="text-center" scope="col">Color</th>
+          <!-- Color name column -->
+          <th scope="col" class="cs-pointer" (click)="orderBy('colorName')">
+            Color name&nbsp;
+            <span
+              ><i
+                *ngIf="optionParams.field == 'ColorName'"
+                [@rotatedState]="state"
+                class="fa fa-arrow-up"
+              ></i
+            ></span>
+          </th>
+          <!-- Color code column -->
+          <th scope="col" (click)="orderBy('colorCode')" class="cs-pointer">
+            Color code&nbsp;
+            <span
+              ><i
+                *ngIf="optionParams.field == 'ColorCode'"
+                [@rotatedState]="state"
+                class="fa fa-arrow-up"
+              ></i
+            ></span>
+          </th>
+          <!-- Size name column -->
+          <th
+            scope="col"
+            class="cs-pointer text-center"
+            (click)="orderBy('sizeName')"
+          >
+            Size&nbsp;
+            <span
+              ><i
+                *ngIf="optionParams.field == 'SizeName'"
+                [@rotatedState]="state"
+                class="fa fa-arrow-up"
+              ></i
+            ></span>
+          </th>
+          <!-- Additional price column -->
+          <th
+            scope="col"
+            class="cs-pointer text-center"
+            (click)="orderBy('additionalPrice')"
+          >
+            Additional price&nbsp;
+            <span
+              ><i
+                *ngIf="optionParams.field == 'AdditionalPrice'"
+                [@rotatedState]="state"
+                class="fa fa-arrow-up"
+              ></i
+            ></span>
+          </th>
+          <th
+            scope="col"
+            class="cs-pointer text-center"
+            (click)="orderBy('status')"
+          >
+            Status&nbsp;
+            <span
+              ><i
+                *ngIf="optionParams.field == 'Status'"
+                [@rotatedState]="state"
+                class="fa fa-arrow-up"
+              ></i
+            ></span>
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr
+          class="option-item"
+          *ngFor="let option of options"
+          (click)="selectOption(option.id)"
+        >
+          <td>
+            <input
+              type="checkbox"
+              [value]="option.Id"
+              [checked]="isOptionSelected(option.id)"
+            />
+          </td>
+          <td class="text-center">{{ option.id }}</td>
+          <td class="text-center">{{ option.product.id }}</td>
+          <td>{{ option.product.productName }}</td>
+          <td class="text-center">
+            <span><i class="fa fa-circle" [style]="getColor(option)"></i></span>
+          </td>
+          <td>{{ option.color.colorName }}</td>
+          <td>
+            {{ option.color.colorCode | lowercase }}
+          </td>
+          <td class="text-center">{{ option.size.sizeName }}</td>
+          <td class="text-center">{{ option.additionalPrice }}</td>
+          <td class="text-center">
+            <div class="btn px-3 py-1" [style]="getStateStyle(option)">
+              <h6 class="text-white m-0">{{ getOptionState(option) }}</h6>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <div *ngIf="pagination" class="w-100">
+      Total: {{ pagination.totalItems }} option(s)
+    </div>
+  </div>
+
+  <!-- Pagination -->
+  <div
+    class="w-100 d-flex d-inline-block justify-content-between mt-5"
+    *ngIf="pagination"
+  >
+    <div class="d-flex d-inline">
+      <div class="input-group pagination-navigation">
+        <label class="form-control" for="">Page size</label>
+        <input
+          [(ngModel)]="optionParams.pageSize"
+          type="number"
+          (ngModelChange)="loadOptions()"
+          class="form-control border"
+          aria-describedby="button-addon2"
+          (keydown.enter)="loadOptions()"
+        />
+      </div>
+      <div class="input-group pagination-navigation ml-3">
+        <label class="form-control" for="">Go to page</label>
+        <input
+          [(ngModel)]="optionParams.pageNumber"
+          type="number"
+          class="form-control border"
+          aria-describedby="button-addon2"
+          (keydown.enter)="loadOptions()"
+        />
+      </div>
+    </div>
+
+    <div class="ml-auto">
+      <pagination
+        [boundaryLinks]="true"
+        [totalItems]="pagination.totalItems"
+        [itemsPerPage]="pagination.itemsPerPage"
+        [(ngModel)]="pagination.currentPage"
+        (pageChanged)="pageChanged($event)"
+        previousText="Previous"
+        nextText="Next"
+        firstText="First"
+        lastText="Last"
+      >
+      </pagination>
+    </div>
+  </div>
+</div>

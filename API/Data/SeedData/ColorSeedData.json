@@ -1,19 +1,23 @@
 [
     {
+        "ColorName": "Yellow",
+        "ColorCode": "#ffce30"
+    },
+    {
         "ColorName": "Red",
-        "ColorCode": "#gf8dsd"
+        "ColorCode": "#e83845"
     },
     {
-        "ColorName": "Black",
-        "ColorCode": "#fd9sns"
+        "ColorName": "Pink",
+        "ColorCode": "#fd82d4"
     },
     {
-        "ColorName": "Gold",
-        "ColorCode": "#fsd54g"
+        "ColorName": "Purple",
+        "ColorCode": "#9d3bb6"
     },
     {
-        "ColorName": "Silver",
-        "ColorCode": "#ksw467"
+        "ColorName": "Dark teal",
+        "ColorCode": "#288ba8"
     }
     
     

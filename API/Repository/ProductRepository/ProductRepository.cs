@@ -160,7 +160,7 @@ namespace API.Data
         }
     }
 
-    public class ProductOptionRepository : GenericRepository<Option>, IProductOptionRepository
+  public class ProductOptionRepository : GenericRepository<Option>, IProductOptionRepository
     {
         private readonly DataContext _context;
 
@@ -169,12 +169,76 @@ namespace API.Data
             _context = context;
         }
 
-        public async Task<IEnumerable<Option>> GetProductOptionsAsync(int productId)
+        public async Task<PagedList<Option>> GetProductOptionsAsAdminAsync(AdminProductOptionParams productOptionParams)
+        {
+            var query = _context.Options.AsQueryable();
+
+            query = query.Where(x => productOptionParams.ProductOptionStatus.Contains(x.Status));
+
+            if (!string.IsNullOrEmpty(productOptionParams.Query))
+            {
+                if (productOptionParams.Query.Contains("#"))
+                {
+                    int id = int.TryParse(productOptionParams.Query.RemoveSpecialCharacters(), out id) ? id : 0;
+                    if (id != 0)
+                        query = query.Where(x => x.ProductId == id);
+                }
+                else
+                {
+                    var words = productOptionParams.Query.RemoveSpecialCharacters().ToUpper().Split(" ").Distinct();
+                    foreach (var word in words)
+                    {
+                        query = query.Where(x => x.Product.ProductName.ToUpper().Contains(word) ||
+                                                x.Color.ColorName.ToUpper().Contains(word) ||
+                                                x.Color.ColorCode.ToUpper().Contains(word) ||
+                                                x.Size.SizeName.ToUpper().Contains(word));
+                    }
+                }
+            }
+
+            if (productOptionParams.OrderBy == OrderBy.Ascending)
+            {
+                query = productOptionParams.Field switch
+                {
+                    "ColorCode" => query.OrderBy(p => p.Color.ColorCode),
+                    "ColorName" => query.OrderBy(p => p.Color.ColorName),
+                    "SizeName" => query.OrderBy(p => p.Size.SizeName),
+                    "AdditionalPrice" => query.OrderBy(p => p.AdditionalPrice),
+                    "ProductName" => query.OrderBy(p => p.Product.ProductName),
+                    "ProductId" => query.OrderBy(p => p.Product.Id),
+                    "Status" => query.OrderBy(p => p.Status),
+                    "Id" => query.OrderBy(p => p.Id),
+                    _ => query.OrderBy(p => p.DateCreated)
+                };
+            }
+            else
+            {
+                query = productOptionParams.Field switch
+                {
+                    "ColorCode" => query.OrderByDescending(p => p.Color.ColorCode),
+                    "ColorName" => query.OrderByDescending(p => p.Color.ColorName),
+                    "SizeName" => query.OrderByDescending(p => p.Size.SizeName),
+                    "AdditionalPrice" => query.OrderByDescending(p => p.AdditionalPrice),
+                    "ProductName" => query.OrderByDescending(p => p.Product.ProductName),
+                    "ProductId" => query.OrderByDescending(p => p.Product.Id),
+                    "Status" => query.OrderByDescending(p => p.Status),
+                    "Id" => query.OrderByDescending(p => p.Id),
+                    _ => query.OrderByDescending(p => p.DateCreated)
+                };
+            }
+
+            query = query.Include(x => x.Color).Include(x => x.Size).Include(x => x.Product);
+
+            return await PagedList<Option>.CreateAsync(query, productOptionParams.PageNumber, productOptionParams.PageSize);
+        }
+
+        public async Task<IEnumerable<Option>> GetProductOptionsAsCustomerAsync(int productId)
         {
             return await _context.Options
                         .Include(x => x.Color)
                         .Include(x => x.Size)
-                        .Where(x => x.ProductId == productId)
+                        .Include(x => x.Product)
+                        .Where(x => x.ProductId == productId && x.Status == Status.Active)
                         .ToListAsync();
         }
     }

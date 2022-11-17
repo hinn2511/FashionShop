@@ -205,6 +205,17 @@ div.carousel.slide > ol {
   overflow: scroll;
 }
 
+
+td
+{
+  vertical-align: middle !important;
+}
+
+.va-middle
+{
+  vertical-align: middle !important;
+}
+
 /* .modal-dialog
 {
   width: 100% !important;
