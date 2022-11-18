@@ -1,10 +1,9 @@
-div{
+div {
   min-height: 100vh;
 }
 
-
-.focus-mode{
-  top:0;
+.focus-mode {
+  top: 0;
   left: 0;
   z-index: 100;
   width: 100%;
@@ -13,3 +12,12 @@ div{
   background-color: rgba(0, 0, 0, 0.541);
   transition: all 0.5s ease-in-out;
 }
+
+.prevent-scroll
+{
+  height: 90vh;
+  overflow: hidden;
+}
+
+
+

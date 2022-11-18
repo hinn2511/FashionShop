@@ -198,6 +198,7 @@ namespace API.Controllers
 
                     var product = new Product()
                     {
+                        Slug = cols[0].GenerateSlug(),
                         ProductName = cols[0],
                         CategoryId = categoryId,
                         SubCategoryId = string.IsNullOrEmpty(cols[2]) ? null : subCategoryId,

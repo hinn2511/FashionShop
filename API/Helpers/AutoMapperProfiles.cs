@@ -176,6 +176,8 @@ namespace API.Helpers
                         src => src.Option.Product.Id))
                 .ForMember(dest => dest.ProductName, opt => opt.MapFrom(
                         src => src.Option.Product.ProductName))
+                .ForMember(dest => dest.Slug, opt => opt.MapFrom(
+                        src => src.Option.Product.Slug))
                 .ForMember(dest => dest.ImageUrl, opt => opt.MapFrom(
                           src => src.Option.Product.ProductPhotos.FirstOrDefault(x => x.IsMain).Url))
                 .ForMember(dest => dest.Price, opt => opt.MapFrom(

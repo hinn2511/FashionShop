@@ -70,7 +70,8 @@ export class LoginComponent implements OnInit {
         this.authenticationService.login(this.f.username.value, this.f.password.value, 'client')
             .pipe (
                     concatMap (
-                    _ => this.cartService.getAuthenticatedUserCartItems()
+                    _ => this.cartService.
+                    getUserCartItems()
                 )
             )
             .subscribe({

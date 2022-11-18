@@ -9,6 +9,7 @@ import { viLocale } from 'ngx-bootstrap/locale';
 import { defineLocale } from 'ngx-bootstrap/chronos';
 import { FileUploadModule } from 'ng2-file-upload';
 import { ModalModule } from 'ngx-bootstrap/modal';
+import { ToastrModule } from 'ngx-toastr';
 defineLocale('vi', viLocale);
 
 @NgModule({
@@ -21,6 +22,11 @@ defineLocale('vi', viLocale);
     ProgressbarModule.forRoot(),
     CarouselModule.forRoot(),
     ModalModule.forRoot(),
+    ToastrModule.forRoot({
+      timeOut: 3000,
+      positionClass: 'toast-bottom-right',
+      preventDuplicates: true,
+    }),
     FileUploadModule
   ], 
   exports: [

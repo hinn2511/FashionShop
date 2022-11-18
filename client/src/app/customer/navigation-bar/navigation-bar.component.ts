@@ -21,6 +21,7 @@ import { CategoryService } from 'src/app/_services/category.service';
 import { map, take } from 'rxjs/operators';
 import { Observable } from 'rxjs';
 import { User } from 'src/app/_models/user';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-navigation-bar',
@@ -45,12 +46,9 @@ export class NavigationBarComponent implements OnInit, OnDestroy {
     private categoryService: CategoryService,
     public cartService: CartService,
     private router: Router,
-    private eRef: ElementRef
-  ) {
-    this.authenticationService.currentUser$
-      .pipe(take(1))
-      .subscribe((result) => (this.user = result));
-  }
+    private toastr: ToastrService
+  ) {}
+
 
   @HostListener('click', ['$event'])
   clickInside($event) {
@@ -64,6 +62,7 @@ export class NavigationBarComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
+    this.user = this.authenticationService.userValue;
     this.collapseAll();
     this.loadCategoryGroup();
   }
@@ -157,7 +156,7 @@ export class NavigationBarComponent implements OnInit, OnDestroy {
     });
   }
 
-  increaseQuantity(cartItem: CartItem) {    
+  increaseQuantity(cartItem: CartItem) {
     if (cartItem.quantity < 99) {
       if (this.user == null || this.user == undefined) {
         ++cartItem.quantity;
@@ -171,7 +170,6 @@ export class NavigationBarComponent implements OnInit, OnDestroy {
       };
       this.cartService.updateCart(updatedCart).subscribe((_) => {});
     }
-    
   }
 
   decreaseQuantity(cartItem: CartItem) {
@@ -191,11 +189,21 @@ export class NavigationBarComponent implements OnInit, OnDestroy {
   }
 
   deleteCartItem(cartItem: CartItem) {
+    let success = true;
     if (this.user == null || this.user == undefined) 
+    {
       this.cartService.deleteLocalCartItem(cartItem.optionId);
+      success = true;
+    }
     else
-      this.cartService.deleteCart(cartItem.id).subscribe((_) => {});
-
+    this.cartService.deleteCart(cartItem.id).subscribe((_) => {},
+    error => {
+      success = false;
+    });
+    if(success)
+      this.toastr.success('This item has been removed from your cart!', 'Success');
+    else
+      this.toastr.error('Something wrong happen!', 'Error');
   }
 
   viewCart() {
@@ -203,5 +211,12 @@ export class NavigationBarComponent implements OnInit, OnDestroy {
     this.router.navigateByUrl('/my-cart');
   }
 
+  viewProduct(cartItem: CartItem) {
+    this.collapseAll();
+    this.router.navigate(
+      ['product/' + cartItem.slug],
+      { queryParams: { id: cartItem.productId } }
+    );
+  }
 
 }

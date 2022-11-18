@@ -14,6 +14,7 @@ import { OptionService } from 'src/app/_services/option.service';
 import { ProductService } from 'src/app/_services/product.service';
 import { CartItem, NewCartItem } from 'src/app/_models/cart';
 import { User } from 'src/app/_models/user';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-product-detail',
@@ -35,14 +36,13 @@ export class ProductDetailComponent implements OnInit {
     private optionService: OptionService,
     private cartService: CartService,
     private authenticationService: AuthenticationService,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private toastr: ToastrService
   ) {
-    this.authenticationService.currentUser$
-      .pipe(take(1))
-      .subscribe((result) => (this.user = result));
   }
 
-  ngOnInit(): void {
+  ngOnInit(): void {    
+    this.user = this.authenticationService.userValue;
     this.loadProduct(this.route.snapshot.queryParams['id']);
     this.loadOptions(this.route.snapshot.queryParams['id']);
     this.quantity = 1;
@@ -123,6 +123,7 @@ export class ProductDetailComponent implements OnInit {
         price: this.product.price,
         additionalPrice: this.selectedSize.additionalPrice,
         productName: this.product.productName,
+        slug: this.product.slug,
         id: 0,
         productId: this.product.id,
         quantity: this.quantity,
@@ -132,14 +133,19 @@ export class ProductDetailComponent implements OnInit {
         imageUrl: this.product.url,
       };
       this.cartService.updateLocalCart(cartItem);
+      this.toastr.success('This item has been added to your cart!', 'Success');
       return;
     }
+    
     let newCartItem: NewCartItem = {
       quantity: this.quantity,
       optionId: this.selectedSize.optionId,
     };
     this.cartService.addToCart(newCartItem).subscribe((result) => {
-      console.log('ok');
+      this.toastr.success('This item has been added to your cart!', 'Success');
+    },
+    error => {
+      this.toastr.error('Something wrong happen!', 'Error');
     });
   }
 }

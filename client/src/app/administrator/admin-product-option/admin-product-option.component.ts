@@ -9,6 +9,7 @@ import { AuthenticationService } from 'src/app/_services/authentication.service'
 import { IdArray } from 'src/app/_models/adminRequest';
 import { getObjectState, getObjectStateStyle } from 'src/app/_common/function/global';
 import { FormsModule } from '@angular/forms';
+import { ToastrService } from 'ngx-toastr';
 
 
 @Component({
@@ -31,7 +32,7 @@ export class AdminProductOptionComponent implements OnInit {
   constructor(
     private optionService: OptionService,
     private router: Router,
-    private authenticationService: AuthenticationService
+    private toastr: ToastrService
   ) {
     this.optionParams = this.optionService.getOptionParams();
   }
@@ -88,6 +89,11 @@ export class AdminProductOptionComponent implements OnInit {
     this.optionService.hideOptions(ids).subscribe((result) => {
       this.loadOptions();
       this.resetSelectedIds();
+      this.toastr.success('Product options have been hidden or unhidden', 'Success');
+    }, 
+    error => 
+    {
+      this.toastr.error("Something wrong happen!", 'Error');
     });
   }
 
@@ -96,6 +102,11 @@ export class AdminProductOptionComponent implements OnInit {
     this.optionService.deleteOption(this.selectedIds).subscribe((result) => {
       this.loadOptions();
       this.resetSelectedIds();
+      this.toastr.success('Product options have been deleted', 'Success');
+    }, 
+    error => 
+    {
+      this.toastr.error("Something wrong happen!", 'Error');
     });
   }
 

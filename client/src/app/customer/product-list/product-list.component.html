@@ -108,7 +108,7 @@
       <app-breadcrumb [breadCrumbList]="breadCrumb"></app-breadcrumb>
 
       <div class="d-flex justify-content-between">
-        <div class="px-lg-4 d-inline-block my-auto active-filter-list">
+        <div class="px-2 d-inline-block my-auto active-filter-list">
           <button
             class="btn btn-light"
             (click)="resetPriceRange()"
@@ -163,13 +163,14 @@
       </div>
 
       <div
-        class="row px-lg-3 w-100 mx-auto product-list"
+        class="row w-100 px-0 mx-0 product-list"
         *ngIf="!skeletonLoading"
       >
-        <div *ngFor="let product of products" class="col-6 col-md-4 col-lg-3">
+        <div *ngFor="let product of products" class="col-6 col-md-4 col-lg-3 px-2">
           <app-product-card [product]="product"></app-product-card>
         </div>
       </div>
+      
       <div class="skeleton" *ngIf="skeletonLoading">
         <div class="row w-100 mx-auto">
           <div
@@ -200,10 +201,10 @@
           [itemsPerPage]="pagination.itemsPerPage"
           [(ngModel)]="pagination.currentPage"
           (pageChanged)="pageChanged($event)"
-          previousText="Previous"
-          nextText="Next"
-          firstText="First"
-          lastText="Last"
+          previousText="&#8249;"
+          nextText="&#8250;"
+          firstText="&#171;"
+          lastText="&#187;"
         >
         </pagination>
       </div>

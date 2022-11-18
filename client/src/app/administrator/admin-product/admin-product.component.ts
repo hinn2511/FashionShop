@@ -14,6 +14,7 @@ import {
 import { ProductService } from 'src/app/_services/product.service';
 import { FileUploader } from 'ng2-file-upload';
 import { environment } from 'src/environments/environment';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-admin-product',
@@ -46,7 +47,8 @@ export class AdminProductComponent implements OnInit {
     private productService: ProductService,
     private router: Router,
     private authenticationService: AuthenticationService,
-    private fileService: FileService
+    private fileService: FileService,
+    private toastr: ToastrService
   ) {
     this.productParams = this.productService.getManagerProductParams();
   }
@@ -104,6 +106,11 @@ export class AdminProductComponent implements OnInit {
     this.productService.hideProducts(ids).subscribe((result) => {
       this.loadProducts();
       this.resetSelectedIds();
+      this.toastr.success('Products have been hidden or unhidden', 'Success');
+    }, 
+    error => 
+    {
+      this.toastr.error("Something wrong happen!", 'Error');
     });
   }
 
@@ -112,6 +119,11 @@ export class AdminProductComponent implements OnInit {
     this.productService.deleteProduct(this.selectedIds).subscribe((result) => {
       this.loadProducts();
       this.resetSelectedIds();
+      this.toastr.success('Products have been deleted', 'Success');
+    }, 
+    error => 
+    {
+      this.toastr.error("Something wrong happen!", 'Error');
     });
   }
 
@@ -276,6 +288,11 @@ export class AdminProductComponent implements OnInit {
       let file = event.target.files[0];
       this.fileService.uploadFile(file, this.baseUrl + 'product/import', this.authenticationService.userValue.jwtToken).subscribe(result => {
         this.loadProducts();
+        this.toastr.success('Products have been imported', 'Success');
+      }, 
+      error => 
+      {
+        this.toastr.error("Something wrong happen!", 'Error');
       });
     }
   }

@@ -1,4 +1,9 @@
-import { CartItem, CartItemList, UpdateCartItem, UpdateCartItemAfterLogin } from 'src/app/_models/cart';
+import {
+  CartItem,
+  CartItemList,
+  UpdateCartItem,
+  UpdateCartItemAfterLogin,
+} from 'src/app/_models/cart';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable, of, ReplaySubject } from 'rxjs';
@@ -13,11 +18,14 @@ import { NewCartItem } from 'src/app/_models/cart';
 })
 export class CartService {
   baseUrl = environment.apiUrl;
-  private cartSubject = new BehaviorSubject<CartItemList>({cartItems: [], totalItem: 0, totalPrice: 0});
+  private cartSubject = new BehaviorSubject<CartItemList>({
+    cartItems: [],
+    totalItem: 0,
+    totalPrice: 0,
+  });
   currentCarts$ = this.cartSubject.asObservable();
 
-  constructor(private http: HttpClient) {
-  }
+  constructor(private http: HttpClient) {}
 
   public setCart(cart: CartItemList) {
     this.cartSubject.next(cart);
@@ -39,57 +47,55 @@ export class CartService {
     localStorage.removeItem('selectedCartId');
   }
 
-
-  getAuthenticatedUserCartItems() {
-    let cart = localStorage.getItem("userCart");
-    if(cart != null || cart != undefined)
-    {
-      let items: NewCartItem[] = [];
-      this.getLocalCartItems().cartItems.forEach(x => {
-        items.push({optionId: x.optionId, quantity: x.quantity});
-      });
-      let body: UpdateCartItemAfterLogin = {
-        newCartItems: items
-      };
-      return this.http.put(this.baseUrl + 'user/cart-after-login', body).pipe(
-        map((response: CartItemList) => {       
-          if (response){
-            this.clearCart();
-            this.clearLocalCart();
-            this.cartSubject.next(response);   
-            return response;
-          }
-        })
-      );
+  getUserCartItems() {
+      let localCart = this.getLocalCartItems().cartItems;
+      if (localCart.length > 0) {
+        let items: NewCartItem[] = [];
+        localCart.forEach((item) => {
+          items.push({ optionId: item.optionId, quantity: item.quantity });
+        });
+        let body: UpdateCartItemAfterLogin = {
+          newCartItems: items,
+        };
+        return this.http.put(this.baseUrl + 'user/cart-after-login', body).pipe(
+          map((response: CartItemList) => {
+            if (response) {
+              this.clearCart();
+              this.clearLocalCart();
+              this.cartSubject.next(response);
+              return response;
+            }
+          })
+        );
     }
     return this.http.get<CartItemList>(this.baseUrl + 'user/cart').pipe(
       map((response: CartItemList) => {
-        if (response){
+        if (response) {
           this.clearCart();
           this.clearLocalCart();
-          this.cartSubject.next(response);              
-          return response;
-        }
-      })
-    )
-  }
-
-  addToCart(cartItem: NewCartItem) {
-    return this.http.post(this.baseUrl + 'user/cart', cartItem).pipe(
-      map((response: CartItemList) => {      
-        if (response){
-          this.cartSubject.next(response);   
+          this.cartSubject.next(response);
           return response;
         }
       })
     );
-  } 
+  }
+
+  addToCart(cartItem: NewCartItem) {
+    return this.http.post(this.baseUrl + 'user/cart', cartItem).pipe(
+      map((response: CartItemList) => {
+        if (response) {
+          this.cartSubject.next(response);
+          return response;
+        }
+      })
+    );
+  }
 
   updateCart(cartItem: UpdateCartItem) {
     return this.http.put(this.baseUrl + 'user/cart', cartItem).pipe(
-      map((response: CartItemList) => {     
-        if (response){
-          this.cartSubject.next(response);   
+      map((response: CartItemList) => {
+        if (response) {
+          this.cartSubject.next(response);
           return response;
         }
       })
@@ -98,98 +104,103 @@ export class CartService {
 
   deleteCart(cartId: number) {
     return this.http.delete(this.baseUrl + 'user/cart/' + cartId).pipe(
-      map((response: CartItemList) => {       
-        if (response){
-          this.cartSubject.next(response);   
+      map((response: CartItemList) => {
+        if (response) {
+          this.cartSubject.next(response);
           return response;
         }
       })
     );
   }
 
-  clearCart()
-  {
-    this.cartSubject.next({cartItems: [], totalItem: 0, totalPrice: 0});
+  clearCart() {
+    this.cartSubject.next({ cartItems: [], totalItem: 0, totalPrice: 0 });
   }
 
   getLocalCartItems() {
-    let cart = localStorage.getItem("userCart");
-    if(cart != null || cart != undefined)
-    {
-      let cartItemList: CartItemList =  JSON.parse(cart);
-      this.cartSubject.next(cartItemList);    
-      return cartItemList;
+    let cartItemList: CartItemList = {totalItem: 0 , totalPrice: 0, cartItems: []};
+    let cart = localStorage.getItem('userCart');
+    if (cart != null || cart != undefined) {
+      cartItemList = JSON.parse(cart);
     }
+    return cartItemList;
   }
 
   updateLocalCart(cartItem: CartItem) {
-    let cart = localStorage.getItem("userCart");
+    let cart = localStorage.getItem('userCart');
     let cartItemList: CartItemList = {
       cartItems: [],
       totalItem: 0,
-      totalPrice: 0
+      totalPrice: 0,
     };
     // check if cart exist
-    if(cart != null || cart != undefined)
-    {
+    if (cart != null || cart != undefined) {
       cartItemList = JSON.parse(cart);
-      
+
       // check if item exist in cart
-      let cartItemIndex = cartItemList.cartItems.findIndex(x => x.optionId == cartItem.optionId);
+      let cartItemIndex = cartItemList.cartItems.findIndex(
+        (x) => x.optionId == cartItem.optionId
+      );
       // not exist
-      if (cartItemIndex < 0)
-        cartItemList.cartItems.push(cartItem);
+      if (cartItemIndex < 0) cartItemList.cartItems.push(cartItem);
       // exist
-      else
-        cartItemList.cartItems[cartItemIndex].quantity = cartItem.quantity;
+      else cartItemList.cartItems[cartItemIndex].quantity = cartItem.quantity;
     }
     // force push if cart empty
-    else
-    {
+    else {
       cartItemList.cartItems.push(cartItem);
     }
     // calculate total item and price
-    cartItemList.totalItem = cartItemList.cartItems.reduce((a, b) => a + b.quantity, 0);   
-    cartItemList.totalPrice = cartItemList.cartItems.reduce((a, b) => a + (b.price + b.additionalPrice) * b.quantity, 0);
+    cartItemList.totalItem = cartItemList.cartItems.reduce(
+      (a, b) => a + b.quantity,
+      0
+    );
+    cartItemList.totalPrice = cartItemList.cartItems.reduce(
+      (a, b) => a + (b.price + b.additionalPrice) * b.quantity,
+      0
+    );
 
     // update cart
-    this.cartSubject.next(cartItemList);  
-    localStorage.setItem("userCart", JSON.stringify(cartItemList));
+    this.cartSubject.next(cartItemList);
+    localStorage.setItem('userCart', JSON.stringify(cartItemList));
 
     return true;
   }
 
   deleteLocalCartItem(optionId: number) {
-    let cart = localStorage.getItem("userCart");
+    let cart = localStorage.getItem('userCart');
     let cartItemList: CartItemList = {
       cartItems: [],
       totalItem: 0,
-      totalPrice: 0
+      totalPrice: 0,
     };
-    if(cart != null || cart != undefined)
-    {
-      cartItemList =  JSON.parse(cart);
-      let cartItemIndex = cartItemList.cartItems.findIndex(x => x.optionId == optionId);
-      if (cartItemIndex >= 0)
-      {
+    if (cart != null || cart != undefined) {
+      cartItemList = JSON.parse(cart);
+      let cartItemIndex = cartItemList.cartItems.findIndex(
+        (x) => x.optionId == optionId
+      );
+      if (cartItemIndex >= 0) {
         cartItemList.cartItems.splice(cartItemIndex, 1);
       }
-      if (cartItemList.cartItems.length == 0)
-      {
-        localStorage.removeItem("userCart");
+      if (cartItemList.cartItems.length == 0) {
+        localStorage.removeItem('userCart');
       }
     }
 
-    cartItemList.totalItem = cartItemList.cartItems.reduce((a, b) => a + b.quantity, 0);   
-    cartItemList.totalPrice = cartItemList.cartItems.reduce((a, b) => a + (b.price + b.additionalPrice) * b.quantity, 0);
-    this.cartSubject.next(cartItemList);  
-    localStorage.setItem("userCart", JSON.stringify(cartItemList));
+    cartItemList.totalItem = cartItemList.cartItems.reduce(
+      (a, b) => a + b.quantity,
+      0
+    );
+    cartItemList.totalPrice = cartItemList.cartItems.reduce(
+      (a, b) => a + (b.price + b.additionalPrice) * b.quantity,
+      0
+    );
+    this.cartSubject.next(cartItemList);
+    localStorage.setItem('userCart', JSON.stringify(cartItemList));
   }
 
-  clearLocalCart()
-  {
-    localStorage.removeItem("userCart");
-    this.clearCart();
+  clearLocalCart() {
+    localStorage.removeItem('userCart');
   }
 
   // getCartParams() {
@@ -224,8 +235,6 @@ export class CartService {
   // addCart(option: CreateCart) {
   //   return this.http.post<CreateCart>(this.baseUrl + 'productCart/create', option);
   // }
-
-  
 
   // hideCarts(ids: IdArray) {
   //   return this.http.put(this.baseUrl + 'productCart/hide-or-unhide', ids);

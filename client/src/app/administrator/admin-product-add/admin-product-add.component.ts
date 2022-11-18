@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
+import { ToastrService } from 'ngx-toastr';
 import { Brand, Category, SubCategory } from 'src/app/_models/product';
 import { ProductService } from 'src/app/_services/product.service';
 
@@ -18,7 +19,7 @@ export class AdminProductAddComponent implements OnInit {
   validationErrors: string[] = [];
   selectedCategory: number;
 
-  constructor(private fb: FormBuilder, private productService: ProductService, private router: Router) { }
+  constructor(private fb: FormBuilder, private productService: ProductService, private router: Router, private toastr: ToastrService) { }
 
   ngOnInit(): void {
     this.initializeForm();
@@ -53,11 +54,13 @@ export class AdminProductAddComponent implements OnInit {
       //remove in production
       this.productService.removeCache();
       //
-    }
-    ,error =>{
+      this.toastr.success('Products have been added', 'Success');
+    }, 
+    error => 
+    {
+      this.toastr.error('Something wrong happen!', 'Error');
       this.validationErrors = error;
-    }
-    );
+    });
   }
 
   loadCategory() {

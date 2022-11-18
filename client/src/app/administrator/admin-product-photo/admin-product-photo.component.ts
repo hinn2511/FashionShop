@@ -15,6 +15,7 @@ import { AuthenticationService } from 'src/app/_services/authentication.service'
 import { ProductService } from 'src/app/_services/product.service';
 import { environment } from 'src/environments/environment';
 import { calculatePreviewOffset } from 'src/app/_common/function/global';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-admin-product-photo',
@@ -40,7 +41,8 @@ export class AdminProductPhotoComponent implements OnInit {
   constructor(
     private productService: ProductService,
     private authenticationService: AuthenticationService,
-    private modalService: BsModalService
+    private modalService: BsModalService,
+    private toastr: ToastrService
   ) {}
 
   ngOnInit(): void {
@@ -86,6 +88,7 @@ export class AdminProductPhotoComponent implements OnInit {
     };
     this.uploader.onSuccessItem = (item, response, status, headers) => {
       if (response) {
+        this.toastr.success("Product photos have been added", "Success");
         const photo: ManagerProductPhoto = JSON.parse(response);
         this.productPhotos.push(photo);
 
@@ -94,6 +97,9 @@ export class AdminProductPhotoComponent implements OnInit {
         //
       }
     };
+    this.uploader.onErrorItem  = (item, response, status, headers) => {
+      this.toastr.error("Something wrong happen!", "Error")
+    }
   }
 
   fileOverBase(e: any) {
@@ -151,6 +157,11 @@ export class AdminProductPhotoComponent implements OnInit {
               this.loadProductDetail(
                 this.productService.getSelectedProductId()
               );
+              this.toastr.success('Product photos have been hidden or unhidden', 'Success');
+            }, 
+            error => 
+            {
+              this.toastr.error("Something wrong happen!", 'Error');
             });
             break;
           case 'unhide':
@@ -160,6 +171,11 @@ export class AdminProductPhotoComponent implements OnInit {
                 this.loadProductDetail(
                   this.productService.getSelectedProductId()
                 );
+                this.toastr.success('Product photos have been hidden or unhidden', 'Success');
+              }, 
+              error => 
+              {
+                this.toastr.error("Something wrong happen!", 'Error');
               });
             break;
           case 'delete':
@@ -169,6 +185,11 @@ export class AdminProductPhotoComponent implements OnInit {
                 this.loadProductDetail(
                   this.productService.getSelectedProductId()
                 );
+                this.toastr.success('Product photos have been deleted', 'Success');
+              }, 
+              error => 
+              {
+                this.toastr.error("Something wrong happen!", 'Error');
               });
             break;
           default:
@@ -178,6 +199,11 @@ export class AdminProductPhotoComponent implements OnInit {
                 this.loadProductDetail(
                   this.productService.getSelectedProductId()
                 );
+                this.toastr.success('Product photo have been set to main', 'Success');
+              }, 
+              error => 
+              {
+                this.toastr.error("Something wrong happen!", 'Error');
               });
             break;
         }

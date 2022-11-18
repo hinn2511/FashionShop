@@ -10,6 +10,7 @@ import { ManagerCarousel, ManagerCarouselParams } from 'src/app/_models/carousel
 import { IdArray } from 'src/app/_models/adminRequest';
 import { animate, state, style, transition, trigger } from '@angular/animations';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-admin-carousel',
@@ -43,7 +44,8 @@ export class AdminCarouselComponent implements OnInit {
     private contentService: ContentService,
     private router: Router,
     private authenticationService: AuthenticationService,
-    private modalService: BsModalService
+    private modalService: BsModalService,
+    private toastr: ToastrService
   ) {
     this.carouselParams = this.contentService.getManagerCarouselParams();
   }
@@ -101,6 +103,11 @@ export class AdminCarouselComponent implements OnInit {
     this.contentService.hideCarousels(ids).subscribe((result) => {
       this.loadCarousels();
       this.resetSelectedIds();
+      this.toastr.success('Carousel have been hidden or unhidden', 'Success');
+    }, 
+    error => 
+    {
+      this.toastr.error("Something wrong happen!", 'Error');
     });
   }
 
@@ -109,6 +116,11 @@ export class AdminCarouselComponent implements OnInit {
     this.contentService.deleteCarousel(this.selectedIds).subscribe((result) => {
       this.loadCarousels();
       this.resetSelectedIds();
+      this.toastr.success('Carousel have been deleted', 'Success');
+    }, 
+    error => 
+    {
+      this.toastr.error("Something wrong happen!", 'Error');
     });
   }
 

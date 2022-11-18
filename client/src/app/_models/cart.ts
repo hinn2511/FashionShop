@@ -3,6 +3,7 @@ export interface CartItem {
     optionId: number;
     productId: number;
     productName: string;
+    slug: string;
     price: number;
     colorName: string;
     colorCode: string;
