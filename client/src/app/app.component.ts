@@ -61,11 +61,11 @@ export class AppComponent implements OnInit {
         if(localStorage.getItem("user") != null && localStorage.getItem("user") != undefined)
         {
           this.authenticationService.setUser();
-          this.cartService.getAuthenticatedUserCartItems().subscribe(_ => {})         
+          this.cartService.getUserCartItems().subscribe(_ => {})         
         }
         else
         {
-          this.cartService.getLocalCartItems();
+          this.cartService.setCart(this.cartService.getLocalCartItems());
         }
     }
 

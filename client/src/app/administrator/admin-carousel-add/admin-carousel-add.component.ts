@@ -20,6 +20,7 @@ import {
 import { CarouselPreviewComponent } from 'src/app/_common/carousel-preview/carousel-preview.component';
 import { AuthenticationService } from 'src/app/_services/authentication.service';
 import { environment } from 'src/environments/environment';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-admin-carousel-add',
@@ -59,7 +60,8 @@ export class AdminCarouselAddComponent implements OnInit {
     private contentService: ContentService,
     private fileService: FileService,
     private router: Router,
-    private authenticationService: AuthenticationService
+    private authenticationService: AuthenticationService,
+    private toastr: ToastrService
   ) {}
 
   ngOnInit(): void {
@@ -119,6 +121,7 @@ export class AdminCarouselAddComponent implements OnInit {
       )
       .subscribe((result) => {
         this.isUploadingFile = false;
+        this.toastr.success('Carousel have been added', 'Success');
         if (this.selectedButton.submitter.name == 'saveAndContinue') {
           this.setDefaultPreview();
           this.initializeForm();
@@ -126,6 +129,10 @@ export class AdminCarouselAddComponent implements OnInit {
 
           this.router.navigateByUrl('/administrator/carousel-manager/add');
         } else this.router.navigateByUrl('/administrator/carousel-manager');
+      }, 
+      error => 
+      {
+        this.toastr.error("Something wrong happen!", 'Error');
       });
   }
 

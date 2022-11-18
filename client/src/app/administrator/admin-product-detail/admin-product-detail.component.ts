@@ -3,6 +3,7 @@ import { Component, OnInit } from '@angular/core';
 import { ManagerProduct, Product } from 'src/app/_models/product';
 import { ProductService } from 'src/app/_services/product.service';
 import { IdArray } from 'src/app/_models/adminRequest';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-admin-product-detail',
@@ -17,7 +18,7 @@ export class AdminProductDetailComponent implements OnInit {
     ids: [this.productService.getSelectedProductId()],
   };
 
-  constructor(private productService: ProductService, private router: Router) { }
+  constructor(private productService: ProductService, private router: Router, private toastr: ToastrService) { }
 
   ngOnInit(): void {
     this.loadProductDetail(this.productService.getSelectedProductId());
@@ -67,12 +68,22 @@ export class AdminProductDetailComponent implements OnInit {
   hideProduct() {    
     this.productService.hideProducts(this.id).subscribe((result) => {
       this.loadProductDetail(this.productService.getSelectedProductId());
+      this.toastr.success('Product have been hidden or unhidden', 'Success');
+    }, 
+    error => 
+    {
+      this.toastr.error("Something wrong happen!", 'Error');
     });
   }
 
   deleteProduct() {
     this.productService.deleteProduct(this.id.ids).subscribe((result) => {
       this.loadProductDetail(this.productService.getSelectedProductId());
+      this.toastr.success('Product have been deleted', 'Success');
+    }, 
+    error => 
+    {
+      this.toastr.error("Something wrong happen!", 'Error');
     });
   }
 }
