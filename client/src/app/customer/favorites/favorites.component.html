@@ -1,0 +1,48 @@
+<div class="container-fluid" *ngIf="products">
+    <h4>My favorites</h4>
+    <hr>
+    <div class="d-flex justify-content-end pr-4" *ngIf="products.length > 0">
+        <div class="btn-group py-3 filter-dropdown" dropdown>
+            <button
+              dropdownToggle
+              type="button"
+              class="btn dropdown-toggle"
+              aria-controls="dropdown-basic"
+            >
+              {{ selectedOrder }}
+            </button>
+            <ul
+              id="dropdown-basic"
+              *dropdownMenu
+              class="dropdown-menu dropdown-menu-right"
+              role="menu"
+              aria-labelledby="button-basic"
+            >
+              <li class="dropdown-item" *ngFor="let order of filterOrders">
+                <a class="text-dark" (click)="sort(order.id)">{{ order.name }}</a>
+              </li>
+            </ul>
+          </div>
+
+    </div>
+
+    <div class="row w-100 mx-auto" *ngIf="products.length > 0; else noFavorite">
+        <div *ngFor="let product of products" class="col-6 col-md-4 col-lg-3">
+            <app-product-card (update)="reload($event)" [product]="product"></app-product-card>
+        </div>
+    </div>
+    <ng-template #noFavorite>
+        <div class="p-5 text-center">
+            <h4>You have not liked any product yet</h4>
+            <a href="" class="text-muted">Click here to find more!</a>
+        </div>
+    </ng-template>
+    
+    <div class="d-flex justify-content-center mt-4" *ngIf="pagination">
+        <pagination [boundaryLinks]="true" [totalItems]="pagination.totalItems"
+            [itemsPerPage]="pagination.itemsPerPage" [(ngModel)]="pagination.currentPage"
+            (pageChanged)="pageChanged($event)" previousText="Previous" nextText="Next" firstText="First"
+            lastText="Last">
+        </pagination>
+    </div>
+</div>

@@ -8,6 +8,8 @@ import {
   HostListener,
   ElementRef,
   OnDestroy,
+  ViewChild,
+  AfterViewInit,
 } from '@angular/core';
 import { Router } from '@angular/router';
 import { CartItem } from 'src/app/_models/cart';
@@ -18,8 +20,6 @@ import {
 } from 'src/app/_models/category';
 import { AuthenticationService } from 'src/app/_services/authentication.service';
 import { CategoryService } from 'src/app/_services/category.service';
-import { map, take } from 'rxjs/operators';
-import { Observable } from 'rxjs';
 import { User } from 'src/app/_models/user';
 import { ToastrService } from 'ngx-toastr';
 
@@ -28,18 +28,25 @@ import { ToastrService } from 'ngx-toastr';
   templateUrl: './navigation-bar.component.html',
   styleUrls: ['./navigation-bar.component.css'],
 })
-export class NavigationBarComponent implements OnInit, OnDestroy {
+export class NavigationBarComponent implements OnInit, OnDestroy, AfterViewInit {
   @Output() focus = new EventEmitter<boolean>();
+  @ViewChild('nav') navElement: ElementRef;
   collapseNavbar: boolean = true;
   collapseSearchbar: boolean = true;
   collapseCategory: boolean = true;
   collapseCartWindow: boolean = true;
+  hideCategoryGroupDetail: boolean = true;
   categoryGroups: Catalogue[] = [];
   selectedCategoryGroup: Catalogue;
   categories: CategoryCatalogue[] = [];
   selectedCategory: CategoryCatalogue;
   selectedSubCategory: SubCategoryCatalogue;
   user: User;
+  navHeight: string;
+  navMargin: string;
+  cartMargin: string;
+  isMobile: boolean;
+
 
   constructor(
     private authenticationService: AuthenticationService,
@@ -47,7 +54,40 @@ export class NavigationBarComponent implements OnInit, OnDestroy {
     public cartService: CartService,
     private router: Router,
     private toastr: ToastrService
-  ) {}
+  ) {
+    
+  }
+
+  ngAfterViewInit(): void {
+    if(window.innerWidth < 768)
+    {
+      
+      this.navHeight = '';
+      this.navMargin = 'margin-top: ' + this.navElement.nativeElement.offsetHeight + 'px';
+      this.cartMargin = this.navMargin;
+      this.isMobile = true;
+      
+    }
+    if(window.innerWidth >= 768 && window.innerWidth <= 1280)
+    {
+      this.navHeight = 'height: 7vh'
+      this.navMargin = 'margin-top: 7vh';
+      this.cartMargin = 'margin-top: 8vh; margin-right: 1vh; border-radius: 3px;'
+      this.isMobile = false;
+    }
+    if(window.innerWidth > 1280)
+    {
+      this.navHeight = 'height: 8vh'
+      this.navMargin = 'margin-top: 8vh';
+      this.cartMargin = 'margin-top: 9vh; margin-right: 1vh; border-radius: 3px;'
+      this.isMobile = false;
+    }
+  }
+  
+  ngOnDestroy() {
+    this.collapseAll();
+    this.focus.emit(false);
+  }
 
 
   @HostListener('click', ['$event'])
@@ -61,15 +101,11 @@ export class NavigationBarComponent implements OnInit, OnDestroy {
     this.focus.emit(false);
   }
 
-  ngOnInit(): void {
+  ngOnInit(): void {    
+  
     this.user = this.authenticationService.userValue;
     this.collapseAll();
     this.loadCategoryGroup();
-  }
-
-  ngOnDestroy(): void {
-    this.collapseAll();
-    this.focus.emit(false);
   }
 
   navigationBarToggle() {
@@ -92,11 +128,15 @@ export class NavigationBarComponent implements OnInit, OnDestroy {
     this.focus.emit(state);
   }
 
-  cartWindowToggle() {
+  cartWindowToggle() {    
     let state = this.collapseCartWindow;
     this.collapseAll();
     this.collapseCartWindow = !state;
     this.focus.emit(state);
+  }
+
+  hideCategoryGroupDetailToggle() {
+    this.hideCategoryGroupDetail = !this.hideCategoryGroupDetail;
   }
 
   collapseAll() {
@@ -123,6 +163,7 @@ export class NavigationBarComponent implements OnInit, OnDestroy {
   loadCategoryGroup() {
     this.categoryService.getCatalogue().subscribe((result) => {
       this.categoryGroups = result;
+      this.selectCategoryGroup(0);
     });
   }
 
@@ -151,6 +192,7 @@ export class NavigationBarComponent implements OnInit, OnDestroy {
 
   viewCategory(categoryName: string, categorySlug: string, gender: number) {
     this.categoryService.setCurrentCategory(categoryName, gender);
+    this.collapseAll();
     this.router.navigate(['/products'], {
       queryParams: { category: categorySlug, gender: gender },
     });
@@ -216,6 +258,14 @@ export class NavigationBarComponent implements OnInit, OnDestroy {
     this.router.navigate(
       ['product/' + cartItem.slug],
       { queryParams: { id: cartItem.productId } }
+    );
+  }
+
+  viewAccount(tab: string) {
+    this.collapseAll();
+    this.router.navigate(
+      ['account/'],
+      { queryParams: { tab: tab } }
     );
   }
 

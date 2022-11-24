@@ -50,7 +50,7 @@
   </div>
 
   <div
-    class="w-100 justify-content-center img-indicator-container d-flex d-inline-block"
+    class="w-100 justify-content-center img-indicator-container d-flex d-inline-block align-items-center"
   >
     <div
       (click)="indicatorClick(i)"
@@ -61,7 +61,7 @@
     ></div>
   </div>
 
-  <div class="img-review-container py-2 d-flex d-inline-block w-100">
+  <div class="img-review-container py-2 d-flex d-inline-block w-100" *ngIf="showPreview">
     <div
       class="rect-img-container img-review cs-pointer"
       (click)="onThumbnailClick(item)"

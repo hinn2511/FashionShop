@@ -8,6 +8,7 @@ using API.DTOs.Request.AccountRequest;
 using API.DTOs.Request.CartRequest;
 using API.DTOs.Response.AccountResponse;
 using API.DTOs.Response.CartResponse;
+using API.DTOs.Response.ProductResponse;
 using API.Entities;
 using API.Entities.User;
 using API.Entities.UserModel;
@@ -50,11 +51,17 @@ namespace API.Controllers
         {
             var user = await _userManager.FindByIdAsync(GetUserId().ToString());
 
-            _mapper.Map(updateAccountRequest, user);
+            user.DateOfBirth = updateAccountRequest.DateOfBirth;
+            user.Email = updateAccountRequest.Email;
+            user.FirstName = updateAccountRequest.FirstName;
+            user.LastName = updateAccountRequest.LastName;
+            user.PhoneNumber = updateAccountRequest.PhoneNumber;
+            user.Gender = updateAccountRequest.Gender;
 
-            await _userManager.UpdateAsync(user);
+            var result = await _userManager.UpdateAsync(user);
 
-            if (await _unitOfWork.Complete()) return NoContent();
+            if (result.Succeeded)
+                return Ok();
 
             return BadRequest("Failed to update user!");
         }
@@ -64,10 +71,20 @@ namespace API.Controllers
         #region user favorites
 
         [HttpGet("favorite")]
-        public async Task<ActionResult> GetUserFavorite(CustomerProductParams customerProductParams)
+        public async Task<ActionResult> GetUserFavorite([FromQuery] CustomerProductParams customerProductParams)
         {
             var productsLiked = await _unitOfWork.UserLikeRepository.GetUserFavoriteProductsAsync(GetUserId(), customerProductParams);
-            return Ok(productsLiked);
+
+            Response.AddPaginationHeader(productsLiked.CurrentPage, productsLiked.PageSize, productsLiked.TotalCount, productsLiked.TotalPages);
+
+            var result = _mapper.Map<List<CustomerProductsResponse>>(productsLiked.ToList());
+
+            foreach (var item in result)
+            {
+                item.LikedByUser = true;
+            }
+
+            return Ok(result);
         }
 
         [HttpPost("favorite/{productId}")]
@@ -76,7 +93,7 @@ namespace API.Controllers
             if (await _unitOfWork.ProductRepository.GetById(productId) == null)
                 return BadRequest("Product not found");
 
-            if (await _unitOfWork.UserLikeRepository.GetAllBy(x => x.UserId == GetUserId()) != null)
+            if (await _unitOfWork.UserLikeRepository.GetFirstBy(x => x.UserId == GetUserId() && x.ProductId == productId) != null)
                 return BadRequest("The product has been liked by you.");
 
             var newFavorite = new UserLike()
@@ -84,7 +101,7 @@ namespace API.Controllers
                 ProductId = productId,
                 UserId = GetUserId(),
             };
-            
+
             newFavorite.AddCreateInformation(GetUserId());
             _unitOfWork.UserLikeRepository.Insert(newFavorite);
 
@@ -147,7 +164,7 @@ namespace API.Controllers
         public async Task<ActionResult> AddToCart(CreateCartRequest createCartRequest)
         {
             var productOption = await _unitOfWork.ProductOptionRepository.GetById(createCartRequest.OptionId);
-            if (productOption == null || productOption.Status != Status.Active) 
+            if (productOption == null || productOption.Status != Status.Active)
                 return BadRequest("Product option not found");
 
             if (createCartRequest.Quantity < 1)
@@ -193,7 +210,7 @@ namespace API.Controllers
                 return BadRequest("Quantity not valid.");
 
             cartItem.Quantity = updateCartRequest.Quantity;
-            
+
             cartItem.AddUpdateInformation(GetUserId());
 
             _unitOfWork.CartRepository.Update(cartItem);
@@ -212,13 +229,13 @@ namespace API.Controllers
             var cartItems = await _unitOfWork.CartRepository
                     .GetAllBy(x => x.UserId == GetUserId());
 
-            foreach(var item in updateCartAfterLoginRequest.NewCartItems)
+            foreach (var item in updateCartAfterLoginRequest.NewCartItems)
             {
                 var cartItemExist = cartItems.FirstOrDefault(x => x.OptionId == item.OptionId);
-                if(cartItemExist != null)
+                if (cartItemExist != null)
                 {
                     cartItemExist.Quantity = item.Quantity;
-                    _unitOfWork.CartRepository.Update(cartItemExist);                    
+                    _unitOfWork.CartRepository.Update(cartItemExist);
                 }
                 else
                 {
@@ -232,7 +249,7 @@ namespace API.Controllers
                     _unitOfWork.CartRepository.Insert(newCartItem);
                 }
             }
-            
+
 
             // if (cartItem == null)
             //     return BadRequest("Cart item not exist.");
@@ -241,7 +258,7 @@ namespace API.Controllers
             //     return BadRequest("Quantity not valid.");
 
             // cartItem.Quantity = updateCartRequest.Quantity;
-            
+
             // cartItem.AddUpdateInformation(GetUserId());
 
             // _unitOfWork.CartRepository.Update(cartItem);

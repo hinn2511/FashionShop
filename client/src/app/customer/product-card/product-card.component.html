@@ -5,13 +5,20 @@
     </div>
     <!-- <img class="bd-placeholder-img card-img-top p-4" src="{{product.url}}"
          (click)="viewDetail()" > -->
-    <ul class="list icons animate text-center mt-3 mr-3">
-        <li class="list-item">
-            <button class="btn btn-light rounded-circle like-btn shadow">
-                <img class="like-icon" src="../../../assets/red_heart.svg" alt="">
-            </button>
-        </li>
-    </ul>
+         <ul class="list icons animate text-center mt-3 mr-3">
+            <li class="list-item">
+                <ng-container *ngIf="!product.likedByUser">
+                    <button (click)="likeProduct()" class="btn btn-light rounded-circle like-btn shadow">
+                        <img class="like-icon" src="../../../assets/red_heart.svg" alt="">
+                    </button>
+                </ng-container>
+                <ng-container *ngIf="product.likedByUser">
+                    <button (click)="unlikeProduct()" class="btn btn-danger rounded-circle like-btn shadow">
+                        <img class="liked-icon" src="../../../assets/red_heart.svg" alt="">
+                    </button>
+                </ng-container>
+            </li>
+        </ul>
     <div class="card-body mt-3">
         <h5 class="card-text text-uppercase" (click)="viewDetail()">
             {{product.productName}}

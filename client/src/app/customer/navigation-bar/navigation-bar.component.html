@@ -1,5 +1,10 @@
-<nav class="navbar sticky-top navbar-expand-lg navbar-light bg-white shadow-sm">
+<nav
+  #nav
+  [style]="navHeight"
+  class="navbar sticky-top navbar-expand-lg navbar-light bg-white shadow-sm"
+>
   <div class="container-fluid mx-md-3">
+    <!-- Mobile navigation bar button -->
     <div class="nav-container">
       <button
         class="navbar-toggler p-1"
@@ -10,30 +15,38 @@
       </button>
     </div>
 
+    <!-- Brand logo (both mobile and desktop) -->
     <div class="brand nav-container text-center text-md-left">
-      <h2 class="m-0 p-0 text-uppercase" href="#">demo</h2>
+      <h2 class="m-0 p-0 text-uppercase" href="#">Test</h2>
     </div>
 
+    <!-- Right navigation icon (both mobile and desktop) -->
     <div class="d-flex d-inline-block nav-container justify-content-end">
       <button class="btn nav-btn d-lg-none" (click)="searchBarToggle()">
         <img class="nav-icon-mobile" src="../../../assets/search.svg" alt="" />
       </button>
-      <button class="btn position-relative nav-btn cart-btn d-lg-none" (click)="cartWindowToggle()">
+      <button
+        class="btn position-relative nav-btn cart-btn d-lg-none"
+        (click)="cartWindowToggle()"
+      >
         <img class="nav-icon-mobile" src="../../../assets/cart.svg" alt="" />
-        <span *ngIf="cartService.currentCarts$ | async as cartItemList" class="position-absolute text-light translate-middle badge p-1 bg-danger">
-          {{cartItemList.totalItem}}
+        <span
+          *ngIf="cartService.currentCarts$ | async as cartItemList"
+          class="position-absolute text-light translate-middle badge p-1 bg-danger"
+        >
+          {{ cartItemList.totalItem }}
         </span>
       </button>
     </div>
 
-    <div
-      class="navbar-collapse bg-white"
-      [class.collapse]="collapseNavbar"
-    >
-      <ul class="navbar-nav">
-        <li class="nav-item ml-lg-3" 
-        (mouseleave)="setCollapseCategory(true)"
-        (mouseenter)="selectCategoryGroup(-1)">
+    <div class="navbar-collapse bg-white" [class.collapse]="collapseNavbar">
+      <!-- Desktop navigation -->
+      <ul class="navbar-nav" [class.d-none]="isMobile">
+        <li
+          class="nav-item ml-lg-3"
+          (mouseleave)="setCollapseCategory(true)"
+          (mouseenter)="selectCategoryGroup(-1)"
+        >
           <a class="nav-link text-uppercase" aria-current="page" routerLink="/"
             >Home</a
           >
@@ -43,56 +56,214 @@
           class="nav-item cs-pointer"
           *ngFor="let item of categoryGroups; let i = index"
         >
-          <a
-            class="nav-link text-uppercase"
-            [class]="{ 'bg-light': isCategoryGroupSelected(item.gender) }"
-            (mouseenter)="setCollapseCategory(false)"
-            (mouseenter)="selectCategoryGroup(i)"
-            >{{ item.genderTitle }}</a
-          >
+            <a
+              class="nav-link text-uppercase"
+              [class]="{ 'bg-light': isCategoryGroupSelected(item.gender) }"
+              (mouseenter)="setCollapseCategory(false)"
+              (mouseenter)="selectCategoryGroup(i)"
+              >{{ item.genderTitle }}</a
+            >
         </li>
 
-        <li class="nav-item" 
-        (mouseleave)="setCollapseCategory(true)"
-        (mouseenter)="selectCategoryGroup(-1)">
+        <li
+          class="nav-item"
+          (mouseleave)="setCollapseCategory(true)"
+          (mouseenter)="selectCategoryGroup(-1)"
+        >
           <a class="nav-link text-uppercase text-danger">Sale off</a>
         </li>
       </ul>
 
-      <hr class="d-lg-none" />
-
-      <ul class="navbar-nav me-auto mb-2 mb-lg-0 d-lg-none">
-        <li class="nav-item ml-lg-3">
-          <a class="nav-link text-uppercase">my cart</a>
-        </li>
-
-        <li class="nav-item" *ngIf="isUserExist()">
-          <a class="nav-link text-uppercase" routerLink="products"
-            >my favorites</a
+      <!-- Mobile navigation -->
+      <ul
+        class="navbar-nav me-auto pt-4 pt-md-2 pl-lg-0"
+        [class.d-none]="!isMobile"
+        *ngIf="selectedCategoryGroup && hideCategoryGroupDetail"
+      >
+        <li class="nav-item my-2">
+          <a
+            class="nav-link p-2 text-uppercase"
+            aria-current="page"
+            routerLink="/"
+            >Home</a
           >
         </li>
 
-        <li class="nav-item">
-          <a class="nav-link text-uppercase" routerLink="products">Account</a>
+        <!-- Mobile category -->
+        <li
+          dropdown
+          class="nav-item my-2 dropdown"
+          *ngFor="let item of categoryGroups; let i = index"
+        >
+          <div
+            class="cs-pointer d-flex justify-content-between align-items-center"
+            (click)="selectCategoryGroup(i)"
+            (click)="hideCategoryGroupDetailToggle()"
+          >
+            <a class="nav-link p-2 text-uppercase">{{ item.genderTitle }}</a>
+            <i class="fa fa-arrow-right" aria-hidden="true"></i>
+          </div>
         </li>
+
+        <li class="nav-item my-2">
+          <a
+            class="nav-link p-2 text-uppercase text-danger"
+            aria-current="page"
+            routerLink="/"
+            >Sale off</a
+          >
+        </li>
+
+        <hr class="w-100" style="height: 1px;">
+
+        <li class="nav-item my-2" *ngIf="user">
+          <a
+            class="nav-link p-2 text-uppercase"
+            aria-current="page"
+            (click)="viewAccount('information')"
+            >My account</a
+          >
+        </li>
+
+        <li class="nav-item my-2" *ngIf="user">
+          <a
+            class="nav-link p-2 text-uppercase"
+            aria-current="page"
+            (click)="viewAccount('order')"
+            >My orders</a
+          >
+        </li>
+
+        <li class="nav-item my-2" *ngIf="user">
+          <a
+            class="nav-link p-2 text-uppercase"
+            aria-current="page"
+            (click)="viewAccount('favorites')"
+            >Favorites</a
+          >
+        </li>
+
+        <li class="nav-item my-2" *ngIf="user">
+          <a
+            class="nav-link p-2 text-uppercase"
+            aria-current="page"
+            (click)="viewAccount('payment')"
+            >Payment methods</a
+          >
+        </li>
+
+        <li class="nav-item my-2" *ngIf="user">
+          <a
+            class="nav-link p-2 text-uppercase"
+            aria-current="page"
+            (click)="logout()"
+            >Logout</a
+          >
+        </li>
+
+        <li class="nav-item my-2" *ngIf="!user">
+          <a class="nav-link text-dark p-2 text-uppercase" routerLink="/login">Login</a>
+        </li>
+
+        <li class="nav-item my-2" *ngIf="!user">
+          <a
+            class="nav-link text-dark p-2 text-uppercase"
+            *ngIf="!user"
+            routerLink="/register"
+            >Register</a
+          >
+        </li>
+
       </ul>
+
+      <!-- Mobile category detail -->
+      <div [class.d-none]="!isMobile" class="mt-3" *ngIf="selectedCategoryGroup && !hideCategoryGroupDetail">
+        <button class="btn btn-transparent d-flex d-inline-block align-items-center" (click)="hideCategoryGroupDetailToggle()">
+            <i class="fa fa-arrow-left"></i>
+            &nbsp;&nbsp;
+            <h5 class="text-capitalize p-0 m-0">{{ selectedCategoryGroup.genderTitle }}</h5>
+        </button>
+        <ul class="navbar-nav mt-3" [class.d-none]="!isMobile">
+          <li
+            class="nav-item mt-1 ml-lg-3"
+            dropdown
+            *ngFor="let category of selectedCategoryGroup.categories"
+          >
+            <a
+              class="nav-link p-2 text-uppercase dropdown-toggle"
+              dropdownToggle
+              aria-current="page"
+              routerLink="/"
+              >{{ category.categoryName }}</a
+            >
+            <ul
+              id="dropdown-basic"
+              *dropdownMenu
+              class="dropdown-menu border-0"
+              role="menu"
+              aria-labelledby="button-basic"
+            >
+              <li
+                role="menuitem"
+                *ngFor="let subCategory of category.subCategories"
+                (click)="
+                  viewCategory(
+                    subCategory.categoryName,
+                    subCategory.slug,
+                    selectedCategoryGroup.gender
+                  )
+                "
+              >
+                <a class="nav-link py-2 pl-4 pr-2 text-uppercase text-uppercase">{{
+                  subCategory.categoryName
+                }}</a>
+              </li>
+              <li
+                (click)="
+                  viewCategory(
+                    category.categoryName,
+                    category.slug,
+                    selectedCategoryGroup.gender
+                  )
+                "
+              >
+                <a class="nav-link py-2 pl-4 pr-2 text-uppercase text-uppercase"> View all {{ category.categoryName }}</a>
+              </li>
+              
+            </ul>
+          </li>
+        </ul>
+      </div>
 
       <div class="d-none d-lg-block">
         <div class="d-flex flex-fill justify-content-lg-end">
-          <button class="btn nav-btn position-relative p-2" (click)="searchBarToggle()">
+          <button
+            class="btn nav-btn position-relative p-2"
+            (click)="searchBarToggle()"
+          >
             <img class="nav-icon" src="../../../assets/search.svg" />
           </button>
-          
-          <button class="btn nav-btn position-relative py-2 pl-2 cart-btn" (click)="cartWindowToggle()">
+
+          <button
+            class="btn nav-btn position-relative py-2 pl-2 cart-btn"
+            (click)="cartWindowToggle()"
+          >
             <img class="nav-icon" src="../../../assets/cart.svg" />
-            <span *ngIf="cartService.currentCarts$ | async as cartItemList" class="position-absolute text-light translate-middle badge p-1 bg-danger">
-              {{cartItemList.totalItem}}
+            <span
+              *ngIf="cartService.currentCarts$ | async as cartItemList"
+              class="position-absolute text-light translate-middle badge p-1 bg-danger"
+            >
+              {{ cartItemList.totalItem }}
             </span>
           </button>
-          <button class="btn nav-btn p-2" *ngIf="isUserExist()">
+          <button
+            class="btn nav-btn p-2"
+            *ngIf="user"
+            (click)="viewAccount('favorites')"
+          >
             <img class="nav-icon" src="../../../assets/heart.svg" />
           </button>
-          <div class="dropdown" dropdown *ngIf="isUserExist()">
+          <div class="dropdown" dropdown *ngIf="user">
             <button
               class="btn nav-btn p-2"
               dropdownToggle
@@ -101,11 +272,15 @@
               <img class="nav-icon" src="../../../assets/user.svg" />
             </button>
             <div class="dropdown-menu dropdown-menu-end mt-3" *dropdownMenu>
-              <a routerLink="/member/edit" class="dropdown-item"
-                >Edit profile</a
+              <a (click)="viewAccount('information')" class="dropdown-item"
+                >My account</a
               >
-              <a routerLink="/member/edit" class="dropdown-item">My orders</a>
-              <a routerLink="/member/edit" class="dropdown-item"
+              <a (click)="viewAccount('order')" class="dropdown-item"
+                >My orders</a
+              >
+              <a
+                (click)="viewAccount('payment')"
+                class="dropdown-item"
                 >Payment information</a
               >
               <a (click)="logout()" class="dropdown-item">Log out</a>
@@ -114,14 +289,14 @@
 
           <a
             class="text-dark p-2 text-uppercase"
-            *ngIf="!isUserExist()"
+            *ngIf="!user"
             routerLink="/login"
             >Login</a
           >
 
           <a
             class="text-dark p-2 text-uppercase"
-            *ngIf="!isUserExist()"
+            *ngIf="!user"
             routerLink="/register"
             >Register</a
           >
@@ -130,117 +305,33 @@
     </div>
   </div>
 
+  <!-- Search bar -->
   <ng-container *ngIf="!collapseSearchbar">
     <div
+      [style]="navMargin"
       class="bg-white search-bar position-absolute shadow-sm sticky-top"
     >
       <app-search-bar></app-search-bar>
     </div>
   </ng-container>
 
+  <!-- Cart -->
   <div *ngIf="!collapseCartWindow">
     <div
-      class="bg-white position-absolute cart-window shadow-sm sticky-top"
+      [style]="navMargin"
+      class="bg-transparent position-absolute cart shadow-sm sticky-top"
     >
-      <div class="p-3">
-        <h5 class="mb-3">My cart</h5>
-        <div *ngIf="cartService.currentCarts$ | async as cartItemList">
-          <ul class="list-group list-group-flush bg-light mt-2 cart-item-list">
-            <li
-              class="list-group-item bg-light cart-item"
-              *ngFor="let cartItem of cartItemList.cartItems"
-            >
-            <div class="row">
-              <div class="col-4 col-md-2 mx-0 px-0">
-                <div class="rect-image-container w-100">
-                  <img
-                    src="{{ cartItem.imageUrl }}"
-                    alt=""
-                    class="rect-img cart-item-image"
-                  />
-                </div>
-              </div>
-              <div class="col-8 col-md-3 va-center">
-                <a class="p-0 m-0 text-dark text-capitalize cs-pointer" (click)="viewProduct(cartItem)">
-                  {{ cartItem.productName }}
-                </a>
-                <p class="p-0 m-0">Color:&nbsp;{{ cartItem.colorName }}</p>
-                <p class="p-0 m-0">Size:&nbsp;{{ cartItem.sizeName }}</p>
-              </div>
-              <div class="col-4 col-md-2 d-flex align-items-center justify-content-center">
-                  <p class="p-0 m-0">
-                    {{
-                      (cartItem.price + cartItem.additionalPrice) *
-                        cartItem.quantity | currency
-                    }}
-                  </p>
-              </div>
-              <div class="col-6 col-md-4 d-flex align-items-center">
-                <div class="input-group">
-                  <button
-                    #decreaseButton
-                    class="btn btn-light border-top-right-0 border-bottom-right-0"
-                    (click)="decreaseQuantity(cartItem)"
-                    type="button"
-                    id="button-addon1"
-                  >
-                    -
-                  </button>
-                  <input
-                    type="number"
-                    min="0"
-                    [value]="cartItem.quantity"
-                    class="form-control text-center bg-light border-0"
-                  />
-                  <button
-                    #increaseButton
-                    class="btn btn-light border-top-left-0 border-bottom-left-0"
-                    (click)="increaseQuantity(cartItem)"
-                    type="button"
-                    id="button-addon2"
-                  >
-                    +
-                  </button>
-                </div>
-              </div>
-              <div class="col-2 col-md-1 d-flex align-items-center">
-                  <button
-                    class="btn btn-danger"
-                    (click)="deleteCartItem(cartItem)"
-                  >
-                    <span><i class="fa fa-trash"></i></span>
-                  </button>
-                </div>
-            </div>
-            </li>
-          </ul>
-          <div
-            *ngIf="(cartService.currentCarts$ | async).cartItems.length == 0"
-          >
-            <div class="p-5 text-center">
-              <h5 class="text-muted w-100">You don't have any in here yet</h5>
-              <a class="text-dark w-100">Find more things you like</a>
-            </div>
-          </div>
-          <div
-            class="mt-3"
-          >
-            <div class="d-flex justify-content-end align-items-center">
-              <p class="mx-2 my-auto text-right">
-                Total: {{ cartItemList.totalPrice | currency }}
-              </p>
-              <button class="btn btn-light" (click)="viewCart()">View all</button>
-            </div>
-          </div>
-          
-
-        </div>
-      </div>
+      <app-cart (hideCart)="cartWindowToggle()"></app-cart>
     </div>
   </div>
 
-  <ng-container *ngIf="selectedCategoryGroup && !collapseCategory">
+  <!-- Desktop category  -->
+  <ng-container
+    *ngIf="selectedCategoryGroup && !collapseCategory"
+    class="d-md-none d-lg-block"
+  >
     <div
+      [style]="navMargin"
       (mouseleave)="setCollapseCategory(true)"
       class="bg-white position-absolute shadow-sm sticky-top category-window"
     >

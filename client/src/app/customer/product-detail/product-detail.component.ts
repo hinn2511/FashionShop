@@ -1,7 +1,8 @@
+import { AccountService } from 'src/app/_services/account.service';
 import { AuthenticationService } from './../../_services/authentication.service';
 import { CartService } from 'src/app/_services/cart.service';
 import { Component, HostListener, Input, OnInit } from '@angular/core';
-import { ActivatedRoute, ParamMap, Params } from '@angular/router';
+import { ActivatedRoute, ParamMap, Params, Router } from '@angular/router';
 import { mergeMap, switchMap, take } from 'rxjs/operators';
 import { BreadCrumb } from 'src/app/_models/breadcrum';
 import { Product } from 'src/app/_models/product';
@@ -36,6 +37,8 @@ export class ProductDetailComponent implements OnInit {
     private optionService: OptionService,
     private cartService: CartService,
     private authenticationService: AuthenticationService,
+    private accountService: AccountService,
+    private router: Router,
     private route: ActivatedRoute,
     private toastr: ToastrService
   ) {
@@ -146,6 +149,38 @@ export class ProductDetailComponent implements OnInit {
     },
     error => {
       this.toastr.error('Something wrong happen!', 'Error');
+    });
+  }
+
+  likeProduct()
+  {
+    if(this.user == null || this.user == undefined)
+    {
+      this.router.navigateByUrl('/login');
+    }
+    this.accountService.addToFavorite(this.product.id).subscribe(result => {
+        //add notification
+        this.accountService.clearFavoriteCache();
+        this.product.likedByUser = true;
+        this.productService.removeCache();
+        this.toastr.success("This product have been added to your favorites", "Success");
+    },
+    error => {
+      this.toastr.error(error, 'Error');
+    });
+  }
+
+  unlikeProduct()
+  {
+    this.accountService.removeFromFavorite(this.product.id).subscribe(result => {
+        //add notification
+        this.accountService.clearFavoriteCache();
+        this.product.likedByUser = false;
+        this.productService.removeCache();
+        this.toastr.success("This product have been removed from your favorites", "Success");
+    },
+    error => {
+      this.toastr.error(error, 'Error');
     });
   }
 }

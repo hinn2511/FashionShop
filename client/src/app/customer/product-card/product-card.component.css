@@ -70,6 +70,14 @@ ul > li > button {
 .like-icon {
     height: 15px;
     width: 15px;
+    transition: all 0.3s ease-in-out;
+}
+
+.liked-icon {
+    height: 15px;
+    width: 15px;
+    filter: brightness(0) invert(1);
+    transition: all 0.3s ease-in-out;
 }
 
 .like-btn {

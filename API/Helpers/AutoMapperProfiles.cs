@@ -28,6 +28,8 @@ using API.DTOs.Response.ColorResponse;
 using API.DTOs.Request.ColorRequest;
 using API.DTOs.Response.SizeResponse;
 using API.DTOs.Request.SizeRequest;
+using API.DTOs.Response.AccountResponse;
+using API.DTOs.Request.AccountRequest;
 
 namespace API.Helpers
 {
@@ -124,6 +126,8 @@ namespace API.Helpers
             #region customer dto
 
             CreateMap<RegisterRequest, AppUser>();
+
+            CreateMap<AppUser, AccountResponse>();
 
             CreateMap<Product, CustomerProductsResponse>()
                 .ForMember(dest => dest.Url, opt => opt.MapFrom(

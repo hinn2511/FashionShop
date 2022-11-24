@@ -15,6 +15,7 @@ import { AdminProductPhotoComponent } from './administrator/admin-product-photo/
 import { AdminCarouselAddComponent } from './administrator/admin-carousel-add/admin-carousel-add.component';
 import { AdminCarouselComponent } from './administrator/admin-carousel/admin-carousel.component';
 import { AdminProductOptionComponent } from './administrator/admin-product-option/admin-product-option.component';
+import { AccountComponent } from './customer/account/account.component';
 
 const routes: Routes = [
   {path: '', component: HomePageComponent},
@@ -22,6 +23,7 @@ const routes: Routes = [
   {path: 'products', component: ProductListComponent},
   {path: 'product/:slug', component: ProductDetailComponent},
   {path: 'my-cart', component: CartComponent},
+  {path: 'account', component: AccountComponent, canActivate: [AuthGuard] },
   {path: 'administrator/login', component: AdminLoginComponent},
   {path: 'administrator/product-manager', component: AdminProductComponent, canActivate: [AuthGuard] },
   {path: 'administrator/product-manager/add', component: AdminProductAddComponent, canActivate: [AuthGuard] },

@@ -8,6 +8,7 @@
           class="h-100"
           [viewerItems]="product.productPhotos"
           [maxPreviewItem]="8"
+          [showPreview]="false"
         ></app-product-images>
       </div>
     </div>
@@ -146,13 +147,19 @@
         </div>
 
         <div class="mt-5 pr-md-5">
-          <button class="btn btn-dark w-100" (click)="addToCart()">
+          <button class="btn btn-dark w-100 text-center" (click)="addToCart()">
             <h6 class="text-uppercase m-0 py-2">add to cart</h6>
           </button>
-          <div class="text-center text-md-right mt-3">
-            <button class="btn btn-transparent text-muted">
-              <i class="fa fa-heart-o"></i>&nbsp;&nbsp;Add to wishlisht
+          <div class="text-center mt-3">
+            <button class="btn btn-transparent text-muted text-center w-100" (click)="likeProduct()" *ngIf="!product.likedByUser; else unliked">
+              <i class="fa fa-heart-o"></i>&nbsp;&nbsp;Add to favorite
             </button>
+            <ng-template #unliked>
+              <button class="btn btn-transparent text-center w-100" (click)="unlikeProduct()">
+                <i class="fa fa-heart text-danger"></i>&nbsp;&nbsp;Remove from favorite
+              </button>
+            </ng-template>
+            
           </div>
         </div>
       </div>

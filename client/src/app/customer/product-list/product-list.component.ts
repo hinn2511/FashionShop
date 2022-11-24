@@ -108,7 +108,7 @@ export class ProductListComponent implements OnInit {
 
   constructor(
     private productService: ProductService,
-    private categoryService: CategoryService,
+    private categoryService: CategoryService,   
     private route: ActivatedRoute
   ) {
     this.productParams = this.productService.getProductParams();
@@ -194,6 +194,8 @@ export class ProductListComponent implements OnInit {
       this.loadProducts();
     }
   }
+
+  
 
   sort(type: number) {
     let filterOrder = this.filterOrders[type];

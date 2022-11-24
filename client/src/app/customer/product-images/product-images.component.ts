@@ -27,7 +27,8 @@ import { trigger, transition, useAnimation } from '@angular/animations';
 })
 export class ProductImagesComponent implements OnInit {
   @Input() viewerItems: ProductPhoto[] = [];
-  @Input() maxPreviewItem: number;
+  @Input() maxPreviewItem: number = 8;
+  @Input() showPreview: boolean = true;
   @Input() nextItemInterval = 7000;
   animationType = AnimationType.Fade;
   previewItems: ProductPhoto[] = [];

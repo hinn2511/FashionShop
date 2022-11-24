@@ -1,0 +1,42 @@
+<div class="container-fluid" *ngIf="account">
+  <div class="row py-2 py-md-4">
+    <div class="col-12 col-md-4 col-lg-3">
+      <div class="card border-0 shadow mt-2 mt-md-5">
+        <div class="card-body">
+          <div class="px-2 mt-2">
+            <ul class="list-group tab-list overflow-x-hidden-scroll-sm">
+              <!-- [class]="{
+                'list-group-horizontal': horizontalTab
+              }" -->
+              <li
+                class="list-group-item border-0 cs-pointer d-flex align-items-center"
+                *ngFor="let tab of tabs"
+                [class]="{
+                  'bg-light': isActive(tab.queryParam)
+                }"
+                (click)="selectTab(tab.queryParam)"
+              >
+                <a class="text-dark">{{ tab.name }}</a>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-12 col-md-8 col-lg-9">
+      <div class="p-lg-2 h-100 mt-5">
+        <ng-container *ngIf="isActive('information')">
+          <app-account-information
+            [account]="account"
+          ></app-account-information>
+        </ng-container>
+        <ng-container *ngIf="isActive('favorites')">
+          <app-favorites></app-favorites>
+        </ng-container>
+        <ng-container *ngIf="isActive('orders')">
+          <app-order-history></app-order-history>
+        </ng-container>
+      </div>
+    </div>
+  </div>
+</div>
