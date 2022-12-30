@@ -1,0 +1,286 @@
+<div class="container-fluid p-0 m-0" *ngIf="selectedPaymentMethod && selectedShippingMethod">
+  <div
+    class="row g-0 p-0 m-0 w-100 justify-content-lg-end"
+    *ngIf="cartService.currentCarts$ | async as cartItemList"
+  >
+    <div
+      class="col-lg-2 p-0"
+      *ngIf="deviceType == 'desktop'"
+      (click)="closeCheckout()"
+    ></div>
+
+    <div class="col-12 col-lg-7 bg-white p-0">
+      <div class="checkout-detail px-4 pt-4 p-md-5">
+        <a class="text-muted" (click)="goBackToCart()">
+          <i class="fa fa-arrow-left" aria-hidden="true"></i>&nbsp;&nbsp;Back to
+          cart
+        </a>
+
+        <!-- Order detail -->
+
+        <form
+          [formGroup]="orderDetailForm"
+          (ngSubmit)="orderDetailForm.valid && submit()"
+          autocomplete="off"
+        >
+          <h4 class="mt-3 text-uppercase">Place an order</h4>
+
+          <div [class.d-none]="currentOrderStage == 'order summary'">
+            <div class="d-flex d-inline-block align-items-center my-4">
+              <h6 class="text-muted p-0 my-auto mr-2">Order information</h6>
+              <hr class="flex-fill my-auto" style="height: 2px" />
+            </div>
+            <label for="receiverName">Receiver name</label>
+            <app-text-input
+              [formControl]="orderDetailForm.controls['receiverName']"
+              [label]="'Receiver name'"
+            >
+            </app-text-input>
+
+            <label for="address">Address</label>
+            <app-text-input
+              [formControl]="orderDetailForm.controls['address']"
+              [label]="'Address'"
+            >
+            </app-text-input>
+
+            <label for="phoneNumber">Phone number</label>
+            <app-text-input
+              [formControl]="orderDetailForm.controls['phoneNumber']"
+              [label]="'Phone number'"
+            >
+            </app-text-input>
+
+            <label for="email">Email</label>
+            <app-text-input
+              [formControl]="orderDetailForm.controls['email']"
+              [label]="'Email'"
+            >
+            </app-text-input>
+
+            <div class="d-flex d-inline-block align-items-center my-4">
+              <h6 class="text-muted p-0 my-auto mr-2">Delivery</h6>
+              <hr class="flex-fill my-auto" style="height: 2px" />
+            </div>
+
+            <div
+              class="d-flex rounded mb-2 btn"
+              [class]="{
+                'bg-light': selectedShippingMethod.id != item.id,
+                shadow: selectedShippingMethod.id == item.id
+              }"
+              *ngFor="let item of shippingMethods"
+              (click)="selectShippingMethod(item)"
+            >
+              <div class="p-3 my-auto">
+                <i
+                  class="fa fa-check"
+                  *ngIf="selectedShippingMethod.id == item.id"
+                ></i>
+              </div>
+              <div
+                class="flex-fill d-flex align-item-center justify-content-between p-3"
+              >
+                <div class="flex-fill text-left">
+                  <p class="m-0 p-0 fw-bold">
+                    {{ item.name }}
+                  </p>
+                  <p class="m-0 p-0 text-muted">
+                    Arrived after from {{ item.minDate }} to
+                    {{ item.maxDate }} days.
+                  </p>
+                </div>
+                <div class="my-auto">
+                  <p class="m-0 p-0">
+                    {{ item.price | currency }}
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <div class="d-flex d-inline-block align-items-center my-4">
+              <h6 class="text-muted p-0 my-auto mr-2">Payment</h6>
+              <hr class="flex-fill my-auto" style="height: 2px" />
+            </div>
+
+            <div
+              class="d-flex rounded mb-2 btn"
+              [class]="{
+                'bg-light': selectedPaymentMethod.id != item.id,
+                shadow: selectedPaymentMethod.id == item.id
+              }"
+              *ngFor="let item of paymentMethods"
+              (click)="selectPaymentMethod(item)"
+            >
+              <div class="p-3 my-auto">
+                <i
+                  class="fa fa-check"
+                  *ngIf="selectedPaymentMethod.id == item.id"
+                ></i>
+              </div>
+              <div class="flex-fill d-flex align-item-center p-2">
+                <p class="m-0 p-0 my-auto fw-bold">
+                  {{ item.name }}
+                </p>
+              </div>
+            </div>
+
+            <div
+              class="mt-3"
+              *ngIf="
+                selectedPaymentMethod.id == 0 || selectedPaymentMethod.id == 1
+              "
+            >
+              <div class="d-flex d-inline-block align-items-center my-4">
+                <h6 class="text-muted p-0 my-auto mr-2">Card information</h6>
+                <hr class="flex-fill my-auto" style="height: 2px" />
+              </div>
+              <label for="cardHolder">Card holder's name</label>
+              <app-text-input
+                [formControl]="orderDetailForm.controls['cardHolder']"
+                [toUpperCase]="true"
+                [label]="'Card holders name'"
+              >
+              </app-text-input>
+
+              <label for="cardNumber">Card number</label>
+              <app-text-input
+                [formControl]="orderDetailForm.controls['cardNumber']"
+                [label]="'Card number'"
+                [separatorCount]="3"
+              ></app-text-input>
+
+              <div class="row">
+                <div class="col-4">
+                  <label for="cvv">CVV/CCV</label>
+                  <app-text-input
+                    [formControl]="orderDetailForm.controls['cvv']"
+                    [label]="'CVV/CCV'"
+                    [separatorCount]="0"
+                  ></app-text-input>
+                </div>
+                <div class="col-8">
+                  <label for="expiredDate">Expired date</label>
+                  <app-text-input
+                    [formControl]="orderDetailForm.controls['expiredDate']"
+                    [label]="'Expired date'"
+                    [label]="'MM/YY'"
+                    [separatorCount]="1"
+                  ></app-text-input>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-group mt-4 text-right">
+            <button
+              [disabled]="!orderDetailForm.valid"
+              class="btn btn-dark text-capitalize ml-2"
+              name="save"
+              type="submit"
+            >
+              <span
+                *ngIf="checkingOrder"
+                class="spinner-border spinner-border-sm mr-1"
+              ></span>
+              <h6 *ngIf="!checkingOrder" class="p-0 m-0">Submit</h6>
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+    <!-- Checkout items summary -->
+    <div class="col-12 col-lg-3 p-0">
+      <div
+        class="checkout-summary shadow bg-light d-flex flex-column p-4 p-lg-5"
+        [class.shadow]="deviceType != 'desktop'"
+      >
+        <div
+          class="d-lg-none mx-auto w-100 text-center"
+          (click)="expandCheckoutSummaryToggle()"
+        >
+          <div class="expand-summary-button">
+            <img
+              src="../../../assets/arrow-down.svg"
+              alt=""
+              [@rotatedState]="expandCheckoutSummary"
+            />
+          </div>
+        </div>
+        <h4 class="my-2 mt-lg-0">Items</h4>
+
+        <!-- Display summary -->
+        <div *ngIf="expandCheckoutSummary">
+          <div
+            class="checkout-item-list pr-1"
+            *ngIf="cartItemList.cartItems.length > 0"
+          >
+            <ng-container
+              *ngFor="let cartItems of cartItemList.cartItems; let i = index"
+            >
+              <div class="d-flex justify-content-between mb-4">
+                <div>
+                  <h6 (click)="viewProduct(cartItems)">
+                    {{ cartItems.productName }}&nbsp;-&nbsp;{{ cartItems.sizeName }}
+                  </h6>
+                  <p class="m-0 p-0 fw-smaller">
+                    {{ cartItems.colorName }}&nbsp;<i class="fa fa-circle" [ngStyle]="{'color': cartItems.colorCode}"></i>
+                  </p>
+                </div>
+                <div class="text-right">
+                  <p class="m-0 p-0">x&nbsp;{{ cartItems.quantity }}</p>
+                  <p class="m-0 p-0 fw-smaller">
+                    {{ cartItems.price | currency }}
+                  </p>
+                </div>
+              </div>
+            </ng-container>
+          </div>
+          <div class="d-flex mt-4">
+            <div class="bd-highlight">Subtotal</div>
+            <div class="flex-fill text-right fw-bold">
+              {{ cartItemList.totalPrice | currency }}
+            </div>
+          </div>
+          <div class="d-flex mt-2">
+            <div class="bd-highlight">Discount</div>
+            <div class="flex-fill text-right fw-bold">
+              {{ discountAmount | currency }}
+            </div>
+          </div>
+          <div class="d-flex mt-2">
+            <div class="bd-highlight">Tax</div>
+            <div class="flex-fill text-right fw-bold">
+              {{
+                ((cartItemList.totalPrice - discountAmount) * 10) / 100
+                  | currency
+              }}
+            </div>
+          </div>
+          <div class="d-flex mt-2">
+            <div class="bd-highlight">Shipping fee</div>
+            <div class="flex-fill text-right fw-bold">
+              {{ selectedShippingMethod.price | currency }}
+            </div>
+          </div>
+        </div>
+
+        <!-- Checkout total -->
+        <div class="mt-2 mt-lg-auto">
+          <div class="d-flex mt-lg-auto">
+            <div class="fw-bold">Total</div>
+            <div class="flex-fill text-right fw-bold">
+              {{
+                cartItemList.totalPrice -
+                  discountAmount +
+                  selectedShippingMethod.price +
+                  ((cartItemList.totalPrice - discountAmount) * 10) / 100
+                  | currency
+              }}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

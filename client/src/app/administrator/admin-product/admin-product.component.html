@@ -23,7 +23,7 @@
             id="button-addon2"
             (click)="loadProducts()"
           >
-            <span><i class="fa fa-search"></i></span>&nbsp; Search
+            <span><em class="fa fa-search"></em></span>&nbsp; Search
           </button>
         </div>
       </div>
@@ -35,7 +35,7 @@
         class="btn btn-light status-button"
         (click)="statusFilterToggle()"
       >
-        Status&nbsp;<span><i class="fa fa-caret-down"></i></span
+        Status&nbsp;<span><em class="fa fa-caret-down"></em></span
         ><span class="caret"></span>
       </button>
 
@@ -51,7 +51,7 @@
                 class="custom-control-input cs-pointer"
                 id="customCheck1"
                 (click)="selectAllProductStatus()"
-                [checked]="isAllStatusIncluded()"
+                [checked]="productParams.productStatus.length == 3"
               />
               <label class="custom-control-label" for="customCheck1"
                 >Select all</label
@@ -110,14 +110,14 @@
         class="btn btn-success"
         routerLink="/administrator/product-manager/add"
       >
-        <span><i class="fa fa-plus"></i></span>&nbsp; Create
+        <span><em class="fa fa-plus"></em></span>&nbsp; Create
       </button>
     </div>
 
     <!-- Import button -->
     <div class="p-2">
       <button class="btn btn-info" (click)="fileInput.click()">
-        <span><i class="fa fa-cloud-upload"></i></span>&nbsp; Import
+        <span><em class="fa fa-cloud-upload"></em></span>&nbsp; Import
       </button>
     </div>
 
@@ -133,23 +133,17 @@
         padding: 0;
       "
     >
-      <input
-        type="file"
-        #fileInput
-        (change)="onFileSelected($event)"
-        />
-        <!-- ng2FileSelect
-        [uploader]="uploader" -->
+      <input type="file" #fileInput (change)="onFileSelected($event)" />
     </span>
 
     <!-- Edit button -->
     <div class="p-2">
       <button
         class="btn btn-warning"
-        [class.disabled]="!isSingleSelected()"
+        [class.disabled]="selectedIds.length != 1"
         (click)="editProduct()"
       >
-        <span><i class="fa fa-pencil"></i></span>&nbsp; Edit
+        <span><em class="fa fa-pencil"></em></span>&nbsp; Edit
       </button>
     </div>
 
@@ -158,10 +152,10 @@
       <button
         class="btn btn-dark"
         (click)="hideProducts()"
-        [class.disabled]="!isMultipleSelected()"
+        [class.disabled]="selectedIds.length < 1"
       >
-        <span><i class="fa fa-eye-slash"></i></span>&nbsp;Hide&nbsp;/&nbsp;
-        <span><i class="fa fa-eye"></i></span>&nbsp;Unhide
+        <span><em class="fa fa-eye-slash"></em></span>&nbsp;Hide&nbsp;/&nbsp;
+        <span><em class="fa fa-eye"></em></span>&nbsp;Unhide
       </button>
     </div>
 
@@ -170,9 +164,9 @@
       <button
         class="btn btn-danger"
         (click)="deleteProducts()"
-        [class.disabled]="!isMultipleSelected()"
+        [class.disabled]="selectedIds.length < 1"
       >
-        <span><i class="fa fa-trash"></i></span>&nbsp; Delete
+        <span><em class="fa fa-trash"></em></span>&nbsp; Delete
       </button>
     </div>
   </div>
@@ -180,6 +174,9 @@
   <!-- Product table -->
   <div class="table-responsive w-100" *ngIf="products">
     <table class="table table-striped border">
+      <caption>
+        Order items
+      </caption>
       <thead class="bg-light">
         <tr>
           <th scope="col">
@@ -192,54 +189,56 @@
           <th scope="col cs-pointer" (click)="orderBy('id')">
             Id&nbsp;
             <span
-              ><i
+              ><em
                 *ngIf="productParams.field == 'Id'"
                 [@rotatedState]="state"
                 class="fa fa-arrow-up"
-              ></i
+              ></em
             ></span>
           </th>
-          <th scope="col cs-pointer" class="text-center">
-            Product
-          </th>
+          <th scope="col cs-pointer" class="text-center">Product</th>
           <th scope="col cs-pointer" (click)="orderBy('name')">
             Product name&nbsp;
             <span
-              ><i
+              ><em
                 *ngIf="productParams.field == 'Name'"
                 [@rotatedState]="state"
                 class="fa fa-arrow-up"
-              ></i
+              ></em
             ></span>
           </th>
           <th scope="col cs-pointer" (click)="orderBy('price')">
             Price&nbsp;
             <span
-              ><i
+              ><em
                 *ngIf="productParams.field == 'Price'"
                 [@rotatedState]="state"
                 class="fa fa-arrow-up"
-              ></i
+              ></em
             ></span>
           </th>
           <th scope="col cs-pointer" (click)="orderBy('sold')">
             Sold&nbsp;
             <span
-              ><i
+              ><em
                 *ngIf="productParams.field == 'Sold'"
                 [@rotatedState]="state"
                 class="fa fa-arrow-up"
-              ></i
+              ></em
             ></span>
           </th>
-          <th scope="col cs-pointer" class="text-center" (click)="orderBy('status')">
+          <th
+            scope="col cs-pointer"
+            class="text-center"
+            (click)="orderBy('status')"
+          >
             Status&nbsp;
             <span
-              ><i
+              ><em
                 *ngIf="productParams.field == 'Status'"
                 [@rotatedState]="state"
                 class="fa fa-arrow-up"
-              ></i
+              ></em
             ></span>
           </th>
         </tr>
@@ -267,14 +266,16 @@
           <td (click)="viewDetail(product.id)">{{ product.price }}</td>
           <td (click)="viewDetail(product.id)">{{ product.sold }}</td>
           <td class="text-center" (click)="viewDetail(product.id)">
-            <div class="btn px-3 py-1" [style]="getStateStyle(product)">
-              <h6 class="text-white m-0">{{ getProductState(product) }}</h6>
+            <div class="btn px-3 py-1" [class]="getStateStyle(product)">
+              <h6 class="m-0">{{ getProductState(product) }}</h6>
             </div>
           </td>
         </tr>
       </tbody>
     </table>
-    <div *ngIf="pagination" class="w-100">Total: {{ pagination.totalItems }} product(s)</div>
+    <div *ngIf="pagination" class="w-100">
+      Total: {{ pagination.totalItems }} product(s)
+    </div>
   </div>
 
   <!-- Pagination -->

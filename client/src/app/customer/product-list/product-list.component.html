@@ -1,212 +1,217 @@
 <div class="container-fluid px-0">
-  <div class="w-100 row mx-0 px-0 py-1 text-center border-right cover"
-            [style.background-image]="'url(../../assets/cover.webp)'">
-        <div class="col-md-6 p-lg-5 mx-auto my-auto">
-            <h3 class="display-3 fw-normal">All products</h3>
-        </div>
-    </div>
-
   <div class="row mx-auto w-100 product-list-container">
-    <div class="col-12 col-md-4 col-lg-3 col-xl-2 py-4 border-right">
-      <h4 class="mt-5">Filter</h4>
-      <label class="label mt-3">Price</label>
-      <div class="mt-1">
-        <ng-container *ngIf="isPriceRangeSelected(); else priceRangeSelected">
+    <div class="col-12 col-md-4 col-xl-3">
+      <div class="p-2 p-lg-4 mt-4 border rounded mt-lg-5">
+        <h4 class="fw-bold">Filter</h4>
+        <label class="label mt-3 fw-bold">Price</label>
+        <div class="mt-1">
           <ul class="list-group">
-            <li
-              class="list-group-item border-0 cs-pointer"
-              *ngFor="let priceRange of priceRanges"
-              (click)="setPriceRange(priceRange.id)"
-            >
-              <ng-container *ngIf="priceRange.minPrice == 0">
-                <a class="text-dark"
-                  >Less than {{ priceRange.maxPrice | currency }}</a
-                >
-              </ng-container>
-              <ng-container *ngIf="priceRange.maxPrice == 0">
-                <a class="text-dark"
-                  >More than {{ priceRange.minPrice | currency }}</a
-                >
-              </ng-container>
-              <ng-container
-                *ngIf="priceRange.minPrice != 0 && priceRange.maxPrice != 0"
+            <ng-container *ngFor="let priceRange of priceRanges">
+              <li
+                class="list-group-item p-0 mb-2 border-0 d-flex d-inline-block justify-content-between"
+                (click)="setPriceRange(priceRange.id)"
               >
-                <a class="text-dark"
-                  >{{ priceRange.minPrice | currency }} -
-                  {{ priceRange.maxPrice | currency }}</a
-                >
-              </ng-container>
-            </li>
-          </ul>
-        </ng-container>
-
-        <ng-template #priceRangeSelected>
-          <ul class="list-group">
-            <li
-              class="list-group-item border-0 cs-pointer selected"
-              (click)="resetPriceRange()"
-            >
-              <div class="d-flex justify-content-between">
-                <ng-container *ngIf="selectedPriceRange.minPrice == 0">
-                  <a class="text-dark"
-                    >Less than {{ selectedPriceRange.maxPrice | currency }}</a
-                  >
-                </ng-container>
-                <ng-container *ngIf="selectedPriceRange.maxPrice == 0">
-                  <a class="text-dark"
-                    >More than {{ selectedPriceRange.minPrice | currency }}</a
-                  >
-                </ng-container>
-                <ng-container
-                  *ngIf="
-                    selectedPriceRange.minPrice != 0 &&
-                    selectedPriceRange.maxPrice != 0
+                <button
+                  class="btn border rounded"
+                  [disabled]="
+                    selectedPriceRange != null &&
+                    selectedPriceRange.id != priceRange.id
                   "
+                  [class]="{
+                    'btn-light':
+                      selectedPriceRange != null &&
+                      selectedPriceRange.id == priceRange.id,
+                    'border-dark':
+                      selectedPriceRange != null &&
+                      selectedPriceRange.id == priceRange.id
+                  }"
                 >
-                  <a class="text-dark"
-                    >{{ selectedPriceRange.minPrice | currency }} -
-                    {{ selectedPriceRange.maxPrice | currency }}</a
-                  >
-                </ng-container>
-                <i class="fa fa-times p-1"></i>
-              </div>
-            </li>
+                  {{ priceRange.priceRangeString }}
+                  <i
+                    class="fa fa-times p-1 ml-3"
+                    *ngIf="
+                      selectedPriceRange != null &&
+                      selectedPriceRange.id == priceRange.id
+                    "
+                  ></i>
+                </button>
+              </li>
+            </ng-container>
           </ul>
-        </ng-template>
-      </div>
+        </div>
 
-      <label class="label mt-3">Size</label>
-      <div class="mt-1">
-        <ul class="list-group">
-          <li class="list-group-item bg-transparent border-0">
-            <a class="text-dark">Extra small - XS</a>
-          </li>
-          <li class="list-group-item bg-transparent border-0">
-            <a class="text-dark">Small - S</a>
-          </li>
-          <li class="list-group-item bg-transparent border-0">
-            <a class="text-dark">Medium - M</a>
-          </li>
-          <li class="list-group-item bg-transparent border-0">
-            <a class="text-dark">Large - L</a>
-          </li>
-          <li class="list-group-item bg-transparent border-0">
-            <a class="text-dark">Extra large - XL</a>
-          </li>
-          <li class="list-group-item bg-transparent border-0">
-            <a class="text-dark">Ultra large - XXL</a>
-          </li>
-        </ul>
-      </div>
-
-      <button class="btn btn-dark w-100 mt-3">Filtering</button>
-      <button class="btn btn-outline-dark w-100 mt-3" (click)="resetFilter()">
-        Reset filter
-      </button>
-    </div>
-    <div class="col-12 col-md-8 col-lg-9 col-xl-10">
-      <app-breadcrumb [breadCrumbList]="breadCrumb"></app-breadcrumb>
-
-      <div class="d-flex justify-content-between">
-        <div class="px-2 d-inline-block my-auto active-filter-list">
-          <button
-            class="btn btn-light"
-            (click)="resetPriceRange()"
-            *ngIf="!isPriceRangeSelected()"
-          >
-            <ng-container *ngIf="selectedPriceRange.minPrice == 0">
-              <a class="text-dark"
-                >Less than {{ selectedPriceRange.maxPrice | currency }}</a
-              >
-            </ng-container>
-            <ng-container *ngIf="selectedPriceRange.maxPrice == 0">
-              <a class="text-dark"
-                >More than {{ selectedPriceRange.minPrice | currency }}</a
-              >
-            </ng-container>
-            <ng-container
-              *ngIf="
-                selectedPriceRange.minPrice != 0 &&
-                selectedPriceRange.maxPrice != 0
+        <label class="label mt-3 fw-bold">Size</label>
+        <div class="mt-1">
+          <ng-container *ngFor="let sizeFilter of sizeFilters">
+            <button
+              class="btn border rounded mr-2 mb-2"
+              [disabled]="
+                selectedSize != null && selectedSize.id != sizeFilter.id
               "
+              [class]="{
+                'btn-light':
+                  selectedSize != null && selectedSize.id == sizeFilter.id,
+                'border-dark':
+                  selectedSize != null && selectedSize.id == sizeFilter.id
+              }"
+              (click)="setSizeFilter(sizeFilter.id)"
             >
-              <a class="text-dark"
-                >{{ selectedPriceRange.minPrice | currency }} -
-                {{ selectedPriceRange.maxPrice | currency }}</a
+              {{ sizeFilter.sizeName }}
+              <i
+                class="fa fa-times p-1 ml-3"
+                *ngIf="selectedSize != null && selectedSize.id == sizeFilter.id"
+              ></i>
+            </button>
+          </ng-container>
+        </div>
+
+        <div
+          class="mt-3 d-flex d-inline-block flex-wrap"
+          *ngIf="colorFilters.length > 0"
+        >
+          <label class="label w-100 mt-1 fw-bold">Color</label>
+          <ng-container *ngFor="let colorFilter of colorFilters">
+            <div style="max-width: 150px">
+              <app-color-option
+                [colorCode]="colorFilter.colorCode"
+                [colorName]="colorFilter.colorName"
+                [isDisabled]="
+                  selectedColor != null && selectedColor.id != colorFilter.id
+                "
+                [isShowColorOnly]="true"
+                [isSelected]="
+                  selectedColor != null && selectedColor.id == colorFilter.id
+                "
+                (select)="setColorFilter(colorFilter.id)"
+              ></app-color-option>
+            </div>
+          </ng-container>
+        </div>
+
+        <button class="btn btn-dark w-100 mt-3">Filtering</button>
+        <button class="btn btn-outline-dark w-100 mt-3" (click)="resetFilter()">
+          Reset filter
+        </button>
+      </div>
+    </div>
+    <div class="col-12 col-md-8 col-xl-9">
+      <div class="mt-5">
+        <app-breadcrumb
+          [breadCrumbList]="breadCrumb"
+          [showBackground]="true"
+        ></app-breadcrumb>
+
+        <div
+          class="d-flex flex-wrap justify-content-between align-items-center w-100"
+        >
+          <!-- Filter applied list -->
+          <div>
+            <button
+              class="btn btn-light mr-2 mb-2 mb-lg-0"
+              (click)="resetPriceRange()"
+              *ngIf="selectedPriceRange != null"
+            >
+              Price:&nbsp;{{ selectedPriceRange.priceRangeString }}
+              <i class="fa fa-times ml-3 p-1"></i>
+            </button>
+            <button
+              class="btn btn-light mr-2 mb-2 mb-lg-0"
+              (click)="resetSize()"
+              *ngIf="selectedSize != null"
+            >
+              Size:&nbsp;{{ selectedSize.sizeName }}
+              <i class="fa fa-times ml-3 p-1"></i>
+            </button>
+            <button
+              class="btn btn-light mb-2 mb-lg-0"
+              (click)="resetColor()"
+              *ngIf="selectedColor != null"
+            >
+              Color:&nbsp;&nbsp;
+              {{ selectedColor.colorName }}
+              <i class="fa fa-times ml-3 p-1"></i>
+            </button>
+          </div>
+
+          <!-- Order by filter  -->
+          <div class="btn-group text-right ml-auto filter-dropdown" dropdown>
+            <button
+              dropdownToggle
+              type="button"
+              class="btn btn-light dropdown-toggle"
+              aria-controls="dropdown-basic"
+            >
+              {{ selectedOrder }}
+            </button>
+            <ul
+              id="dropdown-basic"
+              *dropdownMenu
+              class="dropdown-menu dropdown-menu-right"
+              role="menu"
+              aria-labelledby="button-basic"
+            >
+              <li
+                class="dropdown-item"
+                *ngFor="let filterOrder of filterOrders"
               >
-            </ng-container>
-            <i class="fa fa-times p-1"></i>
-          </button>
+                <a class="text-dark" (click)="sort(filterOrder.id)">{{
+                  filterOrder.filterName
+                }}</a>
+              </li>
+            </ul>
+          </div>
         </div>
 
-        <div class="btn-group py-3 filter-dropdown" dropdown>
-          <button
-            dropdownToggle
-            type="button"
-            class="btn dropdown-toggle"
-            aria-controls="dropdown-basic"
-          >
-            {{ selectedOrder }}
-          </button>
-          <ul
-            id="dropdown-basic"
-            *dropdownMenu
-            class="dropdown-menu dropdown-menu-right"
-            role="menu"
-            aria-labelledby="button-basic"
-          >
-            <li class="dropdown-item" *ngFor="let order of filterOrders">
-              <a class="text-dark" (click)="sort(order.id)">{{ order.name }}</a>
-            </li>
-          </ul>
-        </div>
-      </div>
+        <!-- Skeleton loading -->
+        <div class="skeleton mt-2" *ngIf="skeletonLoading">
+          <div class="row w-100 mx-auto">
+            <div
+              *ngFor="let key of skeletonItems"
+              class="col-6 col-md-4 col-lg-3"
+            >
+              <div class="card card-img-wrapper border-0 mb-3 shadow-sm">
+                <div class="rect-img-container">
+                  <div class="rect-img skeleton-loading-container"></div>
+                </div>
 
-      <div
-        class="row w-100 px-0 mx-0 product-list"
-        *ngIf="!skeletonLoading"
-      >
-        <div *ngFor="let product of products" class="col-6 col-md-4 col-lg-3 px-2">
-          <app-product-card [product]="product"></app-product-card>
-        </div>
-      </div>
-      
-      <div class="skeleton" *ngIf="skeletonLoading">
-        <div class="row w-100 mx-auto">
-          <div
-            *ngFor="let key of skeletonItems"
-            class="col-6 col-md-4 col-lg-3"
-          >
-            <div class="card card-img-wrapper border-0 mb-3 shadow-sm">
-              <div class="rect-img-container">
-                <div class="rect-img skeleton-loading-container"></div>
-              </div>
-
-              <div class="card-body mt-3">
-                <div
-                  class="skeleton-text skeleton-long-text skeleton-loading-container"
-                ></div>
-                <div
-                  class="mt-1 skeleton-text skeleton-short-text skeleton-loading-container"
-                ></div>
+                <div class="card-body mt-3">
+                  <div
+                    class="skeleton-text skeleton-long-text skeleton-loading-container"
+                  ></div>
+                  <div
+                    class="mt-1 skeleton-text skeleton-short-text skeleton-loading-container"
+                  ></div>
+                </div>
               </div>
             </div>
           </div>
         </div>
-      </div>
-      <div class="d-flex justify-content-center mt-4" *ngIf="pagination">
-        <pagination
-          [boundaryLinks]="true"
-          [totalItems]="pagination.totalItems"
-          [itemsPerPage]="pagination.itemsPerPage"
-          [(ngModel)]="pagination.currentPage"
-          (pageChanged)="pageChanged($event)"
-          previousText="&#8249;"
-          nextText="&#8250;"
-          firstText="&#171;"
-          lastText="&#187;"
-        >
-        </pagination>
+
+        <!-- Product card list -->
+        <div class="row w-100 px-0 mx-0 mt-2 product-list" *ngIf="!skeletonLoading">
+          <div
+            *ngFor="let product of products"
+            class="col-6 col-md-4 col-lg-3 px-2"
+          >
+            <app-product-card [product]="product"></app-product-card>
+          </div>
+        </div>
+
+        <!-- Pagination -->
+        <div class="d-flex justify-content-center mt-4" *ngIf="pagination">
+          <pagination
+            [boundaryLinks]="true"
+            [totalItems]="pagination.totalItems"
+            [itemsPerPage]="pagination.itemsPerPage"
+            [(ngModel)]="pagination.currentPage"
+            (pageChanged)="pageChanged($event)"
+            previousText="&#8249;"
+            nextText="&#8250;"
+            firstText="&#171;"
+            lastText="&#187;"
+          >
+          </pagination>
+        </div>
       </div>
     </div>
   </div>

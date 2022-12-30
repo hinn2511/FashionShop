@@ -90,6 +90,7 @@ namespace API.Controllers
             return Ok(response);
         }
 
+        [AllowAnonymous]
         [HttpPost("revoke-token")]
         public async Task<ActionResult> RevokeToken(RevokeTokenRequest model)
         {

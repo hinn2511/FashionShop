@@ -3,13 +3,7 @@
     <div class="col-12 col-md-8 p-0">
       <div class="pl-lg-5 product-image">
         <app-breadcrumb [breadCrumbList]="breadCrumb"></app-breadcrumb>
-        <!-- <app-image-gallery [mainPhotoUrl]="product.url" [photos]="product.productPhotos"></app-image-gallery> -->
-        <app-product-images
-          class="h-100"
-          [viewerItems]="product.productPhotos"
-          [maxPreviewItem]="8"
-          [showPreview]="false"
-        ></app-product-images>
+        <app-product-images *ngIf="carousels.length > 0" [carousels]="carousels"></app-product-images>
       </div>
     </div>
 
@@ -27,7 +21,7 @@
           {{ product.productPrice | currency }}
         </h4>
 
-        <p class="mt-4 pr-md-5 text-muted">
+        <p class="mt-2 mt-lg-4 pr-md-5 text-muted">
           Nam tellus elit, rutrum at nisi et, suscipit accumsan augue. Donec id
           ligula mauris.
         </p>
@@ -36,73 +30,19 @@
           <label for="size">Color: {{ selectedColor.colorName }}</label>
 
           <div class="form-group d-flex flex-wrap">
-            <button class="btn p-2 m-1"
-            type="button"
-            *ngFor="let item of options"
-            (click)="chooseColor(item.color)"
-              [class]="{
-                'btn-outline-dark':
-                item.color.colorName == selectedColor.colorName,
-                'btn-light':
-                item.color.colorName != selectedColor.colorName
-              }">
-              <div class="d-flex d-inline-block va-middle color-container">
-                <div
-                class="mr-3"
-                [style]="getColorStyle(item.color)"
-                
-              
-              ></div>
-              <p class="m-0 p-0">
-                {{item.color.colorName}}
-              </p>
-              </div>
-            
-            </button>
+            <div *ngFor="let item of options" (click)="chooseColor(item.color)">
+              <app-color-option
+                [colorCode]="item.color.colorCode"
+                [colorName]="item.color.colorName"
+                [isSelected]="item.color.colorName == selectedColor.colorName"
+                (selected)="chooseColor(item.color)"
+              ></app-color-option>
+            </div>
           </div>
-
-          <!-- <div class="d-flex flex-wrap ">
-            <button
-              class="btn m-1 p-2 "
-              *ngFor="let item of options"
-              [class]="{
-                'btn-light': item.color.colorName != selectedColor.colorName,
-                'btn-outline-dark':
-                  item.color.colorName == selectedColor.colorName
-              }"
-              (click)="chooseColor(item.color)"
-            >
-            <!-- <div class="d-flex d-inline text-center va-middle">
-                <div
-                  class="color-container text-center va-middle"
-                  [ngStyle]="{ 'background-color': item.color.colorCode }"
-                >
-            </div> -->
-            <!-- <span class="d-flex d-inline-block">
-                <i class="fa fa-circle" [ngStyle]="{ 'color': item.color.colorCode }"></i>
-                &nbsp;&nbsp;
-                <p class="m-0 p-0">
-                    {{ item.color.colorName }}
-                </p>
-            </span>
-
-            </div> 
-            </button> 
-          </div> -->
-          <!-- <ul class="list-inline my-3" >
-                        <li class="list-inline-item" *ngFor="let item of options">
-                            <div class="round-button" (click)="chooseColor(item.color)" 
-                            [class]="{'round-button-not-selected': item.color.colorName != selectedColor.colorName,
-                            'round-button-selected': item.color.colorName == selectedColor.colorName}"
-                            [ngStyle]="{'background-color': item.color.colorCode}">
-                            </div>
-                            <label>{{item.color.colorName}}</label>
-                        </li>
-                    </ul> -->
         </div>
 
         <div class="row mt-4 pr-md-5">
-          <div class="col-12 col-lg-6">
+          <div class="col-6">
             <label for="size">Size</label>
             <div class="input-group mb-3">
               <select
@@ -115,7 +55,7 @@
               </select>
             </div>
           </div>
-          <div class="col-12 col-lg-6">
+          <div class="col-6">
             <label for="size">Quantity</label>
             <div class="input-group quantity mb-3">
               <button
@@ -151,25 +91,30 @@
             <h6 class="text-uppercase m-0 py-2">add to cart</h6>
           </button>
           <div class="text-center mt-3">
-            <button class="btn btn-transparent text-muted text-center w-100" (click)="likeProduct()" *ngIf="!product.likedByUser; else unliked">
+            <button
+              class="btn btn-transparent text-muted text-center w-100"
+              (click)="likeProduct()"
+              *ngIf="!product.likedByUser; else unliked"
+            >
               <i class="fa fa-heart-o"></i>&nbsp;&nbsp;Add to favorite
             </button>
             <ng-template #unliked>
-              <button class="btn btn-transparent text-center w-100" (click)="unlikeProduct()">
-                <i class="fa fa-heart text-danger"></i>&nbsp;&nbsp;Remove from favorite
+              <button
+                class="btn btn-transparent text-center w-100"
+                (click)="unlikeProduct()"
+              >
+                <i class="fa fa-heart text-danger"></i>&nbsp;&nbsp;Remove from
+                favorite
               </button>
             </ng-template>
-            
           </div>
         </div>
       </div>
     </div>
   </div>
 
-  <div class="p-3 px-md-5">
-    <div class="px-lg-5">
-      <div [innerHTML]="product.description | safeUrl"></div>
-    </div>
+  <div class="mt-5 mt-lg-2 p-3 px-md-5">
+    <div class="ck-content" [innerHTML]="product.description | safeUrl"></div>
   </div>
 
   <div class="p-3 px-md-5">

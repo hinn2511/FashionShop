@@ -1,5 +1,6 @@
+import { Router } from '@angular/router';
 import { Component, Input, OnInit } from '@angular/core';
-import { BreadCrumb } from 'src/app/_models/breadcrum';
+import { BreadCrumb } from 'src/app/_models/breadcrumb';
 
 @Component({
   selector: 'app-breadcrumb',
@@ -9,9 +10,18 @@ import { BreadCrumb } from 'src/app/_models/breadcrum';
 export class BreadcrumbComponent implements OnInit {
   @Input() breadCrumbList: BreadCrumb[];
 
-  constructor() { }
+  @Input() showBackground: boolean = false;
+
+  constructor(private router: Router) { }
 
   ngOnInit(): void {
+    //Not implemented
+  }
+
+  navigatingTo(breadCrumb: BreadCrumb)
+  {
+    if(breadCrumb.active)
+      this.router.navigateByUrl(breadCrumb.route);
   }
 
 }

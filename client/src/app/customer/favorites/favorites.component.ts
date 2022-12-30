@@ -1,4 +1,3 @@
-import { ProductService } from 'src/app/_services/product.service';
 import { Product } from './../../_models/product';
 import { Component, OnInit } from '@angular/core';
 import { Pagination } from 'src/app/_models/pagination';
@@ -17,48 +16,13 @@ export class FavoritesComponent implements OnInit {
   selectedOrder: string;
 
   filterOrders: CustomerFilterOrder[] = [
-    {
-      id: 0,
-      field: 'Name',
-      orderBy: 0,
-      name: 'Name (A-Z)',
-    },
-    {
-      id: 1,
-      field: 'Name',
-      orderBy: 1,
-      name: 'Name (Z-A)',
-    },
-    {
-      id: 2,
-      field: 'Price',
-      orderBy: 0,
-      name: 'Price (low-high)',
-    },
-    {
-      id: 3,
-      field: 'Price',
-      orderBy: 1,
-      name: 'Price (high-low)',
-    },
-    {
-      id: 4,
-      field: 'Sold',
-      orderBy: 1,
-      name: 'Best Seller',
-    },
-    {
-      id: 5,
-      field: 'Date',
-      orderBy: 1,
-      name: 'Newest',
-    },
-    {
-      id: 6,
-      field: '',
-      orderBy: 0,
-      name: 'Liked recently',
-    },
+    new CustomerFilterOrder(0, 'Name', 0, 'Name (A-Z)'),
+    new CustomerFilterOrder(1, 'Name', 1, 'Name (Z-A)'),
+    new CustomerFilterOrder(2, 'Price', 0, 'Price (low-high)'),
+    new CustomerFilterOrder(3, 'Price', 1, 'Price (high-low)'),
+    new CustomerFilterOrder(4, 'Sold', 0, 'Best seller'),
+    new CustomerFilterOrder(5, 'Date', 1, 'Newest'),
+    new CustomerFilterOrder(6, '', 0, 'Liked recently'),
   ];
 
   constructor(private accountService: AccountService) {
@@ -88,7 +52,7 @@ export class FavoritesComponent implements OnInit {
 
   sort(type: number) {
     let filterOrder = this.filterOrders[type];
-    this.selectedOrder = filterOrder.name;
+    this.selectedOrder = filterOrder.filterName;
     this.productParams.orderBy = filterOrder.orderBy;
     this.productParams.field = filterOrder.field;
     this.loadProducts();

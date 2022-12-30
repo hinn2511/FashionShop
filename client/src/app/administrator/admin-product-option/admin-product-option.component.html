@@ -309,8 +309,8 @@
           <td class="text-center">{{ option.size.sizeName }}</td>
           <td class="text-center">{{ option.additionalPrice }}</td>
           <td class="text-center">
-            <div class="btn px-3 py-1" [style]="getStateStyle(option)">
-              <h6 class="text-white m-0">{{ getOptionState(option) }}</h6>
+            <div class="btn px-3 py-1" [class]="getStateStyle(option)">
+              <h6 class="m-0">{{ getOptionState(option) }}</h6>
             </div>
           </td>
         </tr>

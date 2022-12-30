@@ -151,7 +151,7 @@
 
     <!-- Carousel table -->
     <div class="table-responsive w-100" *ngIf="carousels && pagination">
-      <table class="table table-striped border">
+      <table class="table table-striped border" aria-label="carousel-table">
         <thead class="bg-light">
           <tr>
             <th scope="col">
@@ -233,8 +233,8 @@
 
             </td>
             <td class="text-center" >
-              <div class="btn px-3 py-1" [style]="getStateStyle(carousel)">
-                <h6 class="text-white m-0">{{ getCarouselState(carousel) }}</h6>
+              <div class="btn px-3 py-1" [class]="getStateStyle(carousel)">
+                <h6 class="m-0">{{ getCarouselState(carousel) }}</h6>
               </div>
             </td>
 

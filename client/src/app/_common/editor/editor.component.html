@@ -1,0 +1,10 @@
+<ckeditor
+  [editor]="CKEditor"
+  [config]="CKConfig"
+  [(ngModel)]="content"
+  (ngModelChange)="contentChange()"
+  (ready)="onReady($event)"
+></ckeditor>
+<p class="text-muted fw-smaller">
+  *&nbsp;Layout maybe changed depend on device screen size
+</p>

@@ -1,0 +1,41 @@
+.order-item {
+    z-index: 1;
+}
+
+input[type="checkbox"] {
+    z-index: 100;
+}
+
+.pagination-navigation > label {
+    max-width: fit-content;
+    min-width: fit-content;
+}
+
+.pagination-navigation > input {
+    max-width: 100px;
+}
+
+.status-dropdown {
+    top: 70%;
+    left: 4%;
+    z-index: 100;
+}
+
+.status-dropdown, .status-button {
+    width: max(13vw, fit-content);
+    min-width: 13vw;
+}
+
+
+.rect-img-container
+{
+  max-height: 5vh;
+  overflow: hidden;
+}
+
+.list-group-item
+{
+    min-width: 100px;
+    margin-right: 1rem;
+
+}

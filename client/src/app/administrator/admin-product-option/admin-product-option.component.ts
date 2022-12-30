@@ -1,14 +1,12 @@
-import { RotateAnimation } from '../../_common/animation/carousel.animations';
-import { OptionService } from '../../_services/option.service';
-import { ManagerOption } from '../../_models/productOptions';
+import { fnGetObjectStateString, fnGetObjectStateStyle } from 'src/app/_common/function/global';
+import { RotateAnimation } from 'src/app/_common/animation/carousel.animations';
+import { OptionService } from 'src/app/_services/option.service';
+import { ManagerOption } from 'src/app/_models/productOptions';
 import { Component, OnInit } from '@angular/core';
 import { Pagination } from 'src/app/_models/pagination';
 import { ManagerOptionParams } from 'src/app/_models/productOptions';
 import { Router } from '@angular/router';
-import { AuthenticationService } from 'src/app/_services/authentication.service';
 import { IdArray } from 'src/app/_models/adminRequest';
-import { getObjectState, getObjectStateStyle } from 'src/app/_common/function/global';
-import { FormsModule } from '@angular/forms';
 import { ToastrService } from 'ngx-toastr';
 
 
@@ -134,7 +132,6 @@ export class AdminProductOptionComponent implements OnInit {
   }
 
   orderBy(field: string) {
-    console.log(field);
     switch (field) {
       case 'id':
         this.optionParams.field = 'Id';
@@ -192,11 +189,11 @@ export class AdminProductOptionComponent implements OnInit {
   }
 
   getOptionState(option: ManagerOption) {
-    return getObjectState(option.status);
+    return fnGetObjectStateString(option.status);
   }
 
   getStateStyle(option: ManagerOption) {
-    return getObjectStateStyle(option.status);
+    return fnGetObjectStateStyle(option.status);
   }
 
   getColor(option: ManagerOption)
@@ -217,7 +214,7 @@ export class AdminProductOptionComponent implements OnInit {
       this.optionParams.productOptionStatus =
         this.optionParams.productOptionStatus.filter((x) => x !== status);
     else this.optionParams.productOptionStatus.push(status);
-    this.optionParams.productOptionStatus = this.optionParams.productOptionStatus.sort();
+    this.optionParams.productOptionStatus = [...this.optionParams.productOptionStatus].sort((a, b) => a-b);
     this.loadOptions();
   }
 

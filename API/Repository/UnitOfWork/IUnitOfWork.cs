@@ -1,4 +1,5 @@
 using System.Threading.Tasks;
+using API.Repository.ArticleRepository;
 using API.Repository.BrandRepository;
 using API.Repository.ConfigurationRepository;
 using API.Repository.FileRepository;
@@ -12,6 +13,7 @@ namespace API.Interfaces
         ICartRepository CartRepository { get; }
         IProductRepository ProductRepository { get; }
         IProductPhotoRepository ProductPhotoRepository { get; }
+        IPhotoRepository PhotoRepository { get; }
         ICategoryRepository CategoryRepository { get; }
         ISubCategoryRepository SubCategoryRepository { get; }
         IOrderRepository OrderRepository { get; }
@@ -27,6 +29,7 @@ namespace API.Interfaces
         ICarouselRepository CarouselRepository { get; }
         IFeatureProductRepository FeatureProductRepository { get; }
         IFeatureCategoryRepository FeatureCategoryRepository { get; }
+        IArticleRepository ArticleRepository { get; }
         Task<bool> Complete();
         bool HasChanges();
 

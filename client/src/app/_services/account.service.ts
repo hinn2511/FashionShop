@@ -6,7 +6,7 @@ import { environment } from 'src/environments/environment';
 import { Product } from '../_models/product';
 import { ProductParams } from '../_models/productParams';
 import { Account } from '../_models/user';
-import { getPaginatedResult, getPaginationHeaders } from './paginationHelper';
+import { getPaginatedResult, getPaginationHeaders } from '../_helpers/paginationHelper';
 
 @Injectable({
   providedIn: 'root',

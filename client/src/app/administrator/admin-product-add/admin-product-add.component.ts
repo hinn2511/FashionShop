@@ -1,9 +1,12 @@
+import { ConfirmService } from 'src/app/_services/confirm.service';
+
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { Brand, Category, SubCategory } from 'src/app/_models/product';
 import { ProductService } from 'src/app/_services/product.service';
+
 
 @Component({
   selector: 'app-admin-product-add',
@@ -19,7 +22,7 @@ export class AdminProductAddComponent implements OnInit {
   validationErrors: string[] = [];
   selectedCategory: number;
 
-  constructor(private fb: FormBuilder, private productService: ProductService, private router: Router, private toastr: ToastrService) { }
+  constructor(private fb: FormBuilder, private productService: ProductService, private router: Router, private toastr: ToastrService, private confirmService: ConfirmService) { }
 
   ngOnInit(): void {
     this.initializeForm();
@@ -61,6 +64,7 @@ export class AdminProductAddComponent implements OnInit {
       this.toastr.error('Something wrong happen!', 'Error');
       this.validationErrors = error;
     });
+    
   }
 
   loadCategory() {
@@ -86,5 +90,19 @@ export class AdminProductAddComponent implements OnInit {
     })
   }
 
+  updateDescription($event: string)
+  {
+    this.newProductForm.controls['description'].setValue($event, { emitEvent: false });
+  }
+
+  backToList()
+  {
+    this.confirmService.confirm("Confirm", "Are you sure to cancel? Every change will be lost.", false, "Yes", "No").subscribe(result => {
+      if(result.result)
+        {
+          this.router.navigateByUrl("/administrator/product-manager");
+        }
+    })
+  }
 
 }

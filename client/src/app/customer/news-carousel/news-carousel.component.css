@@ -1,0 +1,13 @@
+:host {
+  flex: 1;
+}
+
+img.carousel-content
+{
+  filter: brightness(30%);
+}
+
+.carousel
+{
+  height: 400px;
+}

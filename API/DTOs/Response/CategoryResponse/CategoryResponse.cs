@@ -27,6 +27,7 @@ namespace API.DTOs.Response.CategoryResponse
     #region manager
     public class AdminCategoryResponse : CategoryResponse
     {
+        public string GenderName { get; set; }
         public Status Status { get; set; }
         public int Id { get; set; }
     }

@@ -52,7 +52,8 @@ align-items: center;
 }
 
 .quantity > input {
-    width: 5vw;
+    min-width: 30px;
+    max-width: 100px;
 }
 
 

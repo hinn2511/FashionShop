@@ -1,20 +1,18 @@
-import { AuthenticationService } from './../../_services/authentication.service';
-import { FileService } from './../../_services/file.service';
-import { IdArray } from './../../_models/adminRequest';
+import { AuthenticationService } from 'src/app/_services/authentication.service';
+import { FileService } from 'src/app/_services/file.service';
+import { IdArray } from 'src/app/_models/adminRequest';
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { BreadCrumb } from 'src/app/_models/breadcrum';
 import { Pagination } from 'src/app/_models/pagination';
-import { ManagerProduct, Product } from 'src/app/_models/product';
-import { animate, animateChild, AUTO_STYLE, group, query, state, style, transition, trigger } from '@angular/animations';
+import { ManagerProduct } from 'src/app/_models/product';
+import { animate, state, style, transition, trigger } from '@angular/animations';
 import {
   ManagerProductParams,
-  ParamStatus,
 } from 'src/app/_models/productParams';
 import { ProductService } from 'src/app/_services/product.service';
-import { FileUploader } from 'ng2-file-upload';
 import { environment } from 'src/environments/environment';
 import { ToastrService } from 'ngx-toastr';
+import { fnGetObjectStateString, fnGetObjectStateStyle } from 'src/app/_common/function/global';
 
 @Component({
   selector: 'app-admin-product',
@@ -40,7 +38,6 @@ export class AdminProductComponent implements OnInit {
 
   selectedIds: number[] = [];
   query: string;
-  // uploader: FileUploader;
   baseUrl = environment.apiUrl;
 
   constructor(
@@ -60,7 +57,6 @@ export class AdminProductComponent implements OnInit {
     this.selectAllProduct = false;
     this.showStatusFilter = false;
     this.loadProducts();
-    // this.initializeUploader();
   }
 
   rotate() {
@@ -93,7 +89,7 @@ export class AdminProductComponent implements OnInit {
     if (!this.isSingleSelected()) return;
     this.productService.setSelectedProductId(this.selectedIds[0]);
     this.router.navigateByUrl(
-      '/administrator/product-manager/edit/' + this.selectedIds[0]
+      `/administrator/product-manager/edit/${this.selectedIds[0]}`
     );
   }
 
@@ -151,7 +147,6 @@ export class AdminProductComponent implements OnInit {
   }
 
   orderBy(field: string) {
-    console.log(field);
     switch (field) {
       case 'id':
         this.productParams.field = 'Id';
@@ -201,33 +196,11 @@ export class AdminProductComponent implements OnInit {
   }
 
   getProductState(product: ManagerProduct) {
-    switch (product.status) {
-      case 0:
-        return 'Active';
-      case 1:
-        return 'Hidden';
-      default:
-        return 'Deleted';
-    }
+    return fnGetObjectStateString(product.status);
   }
 
   getStateStyle(product: ManagerProduct) {
-    switch (product.status) {
-      case 0:
-        return 'width: 100px ;background-color: rgb(51, 155, 51)';
-      case 1:
-        return 'width: 100px ;background-color: rgb(124, 124, 124)';
-      default:
-        return 'width: 100px ;background-color: rgb(155, 51, 51)';
-    }
-  }
-
-  // isStatusIncluded(status: number) {
-  //   return this.productParams.productStatus.indexOf(status) > -1;
-  // }
-
-  isAllStatusIncluded() {
-    return this.productParams.productStatus.length == 3;
+    return fnGetObjectStateStyle(product.status);
   }
 
   isStatusIncluded(status: number) {
@@ -239,12 +212,12 @@ export class AdminProductComponent implements OnInit {
       this.productParams.productStatus =
         this.productParams.productStatus.filter((x) => x !== status);
     else this.productParams.productStatus.push(status);
-    this.productParams.productStatus = this.productParams.productStatus.sort();
+    this.productParams.productStatus = [...this.productParams.productStatus].sort((a, b) => a - b);
     this.loadProducts();
   }
 
   selectAllProductStatus() {
-    if(this.isAllStatusIncluded())
+    if(this.productParams.productStatus.length == 3)
       this.productParams.productStatus = [];
     else
       this.productParams.productStatus = [0, 1, 2];
@@ -262,26 +235,6 @@ export class AdminProductComponent implements OnInit {
   isMultipleSelected() {
     return this.selectedIds.length >= 1;
   }
-
-  // initializeUploader() {
-  //   this.uploader = new FileUploader({
-  //     url: this.baseUrl + 'product/import',
-  //     authToken: 'Bearer ' + this.authenticationService.userValue.jwtToken,
-  //     isHTML5: true,
-  //     allowedMimeType: ['text/csv'],
-  //     removeAfterUpload: true,
-  //     autoUpload: true,
-  //     maxFileSize: 10 * 1024 * 1024,
-  //   });
-  //   this.uploader.onAfterAddingFile = (file) => {
-  //     file.withCredentials = true;
-  //   };
-  //   this.uploader.onSuccessItem = (item, response, status, headers) => {
-  //     if (response) {
-  //       this.loadProducts();
-  //     }
-  //   };
-  // }
 
   onFileSelected(event: any) {
     if (event.target.files && event.target.files[0]) {

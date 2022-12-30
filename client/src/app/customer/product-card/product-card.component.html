@@ -1,5 +1,4 @@
-<div class="card card-img-wrapper border-0 mb-3" [ngClass]="shadow" (mouseover)="hover($event)"
-    (mouseout)="hover($event)">
+<div class="card card-img-wrapper border-0 mb-3">
     <div class="rect-img-container">
         <img class="rect-img p-4" src="{{product.url}}" (click)="viewDetail()" alt="Image" id="preview">
     </div>
@@ -9,12 +8,12 @@
             <li class="list-item">
                 <ng-container *ngIf="!product.likedByUser">
                     <button (click)="likeProduct()" class="btn btn-light rounded-circle like-btn shadow">
-                        <img class="like-icon" src="../../../assets/red_heart.svg" alt="">
+                        <img class="like-icon" src="../../../assets/red_heart.svg" alt="like">
                     </button>
                 </ng-container>
                 <ng-container *ngIf="product.likedByUser">
                     <button (click)="unlikeProduct()" class="btn btn-danger rounded-circle like-btn shadow">
-                        <img class="liked-icon" src="../../../assets/red_heart.svg" alt="">
+                        <img class="liked-icon" src="../../../assets/red_heart.svg" alt="like">
                     </button>
                 </ng-container>
             </li>

@@ -1,0 +1,25 @@
+.rect-img-container {
+  max-width: calc(50px + 2vw);
+  min-width: calc(50px + 2vw);
+}
+
+@media (min-width: 768px) {
+  .card-item-list {
+    min-height: 200px;
+    max-height: 200px;
+    overflow: hidden;
+  }
+}
+
+@media (max-width: 768px) {
+  .card-item-list {
+    min-height: 15vh;
+    max-height: 15vh;
+    overflow: hidden;
+  }
+}
+
+p
+{
+  word-break: break-all;
+}

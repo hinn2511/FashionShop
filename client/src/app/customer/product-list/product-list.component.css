@@ -5,10 +5,7 @@
   vertical-align: middle;
 }
 
-.active-filter-list
-{
-  vertical-align: middle;
-}
+
   @media (min-width: 768px) {
     .cover {
       min-height: 50vh;
@@ -19,6 +16,7 @@
       justify-content: center;
       max-width: 1400px;
     }
+    
   }
 
 @media (max-width: 768px) {
@@ -29,6 +27,7 @@
     .cover {
       min-height: 20vh;
     }
+
 }
 
 .filter-dropdown > button{
@@ -47,14 +46,4 @@
 .product-list, .skeleton
 {
   transition: all 1s ease-in-out;
-}
-/* 
-li:empty
-{
-  display: none;
-} */
-
-li:hover, li.selected
-{
-  background: #f8f9fa;
 }

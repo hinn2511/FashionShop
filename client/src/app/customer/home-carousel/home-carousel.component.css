@@ -1,67 +1,8 @@
-.container {
-    min-width: 100%;
-    padding: 0;
+:host {
+  flex: 1;
 }
 
-.carousel-inner, .carousel, .container, img {
-    min-height: 50vh;
+.carousel
+{
+  height: 700px;
 }
-
-.title {
-    font-size: 5rem;
-}
-
-
-img {
-    height: 100%;
-    width: 100%;
-    object-fit: cover;
-}
-
-.slide {
-    padding: 0 !important;
-}
-
-button {
-    border-radius: 0 !important;
-}
-
-.slide {
-    padding: 0 !important;
-}
-
-.carousel-container {
-    position: relative;
-}
-
-.carousel-text {
-    position: absolute;
-    top: 10%;
-    color: white;
-}
-
-.carousel-text-left {
-    left: 5%;
-}
-
-.carousel-text-right {
-    left: 50%;
-}
-
-a {
-    color: black;
-}
-@media (max-width: 768px) {
-    .carousel-inner, .carousel, .container, img {
-        min-height: 70vh;
-    }
-
-    .carousel-text, .carousel-text {
-        left: 0;
-    }
-
-    .title {
-        font-size: 3rem;
-    }
-}
-

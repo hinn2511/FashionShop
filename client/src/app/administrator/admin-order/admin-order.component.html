@@ -1,0 +1,513 @@
+<div class="container-fluid px-3">
+  <!-- Section title -->
+  <h4>Orders</h4>
+
+  <!-- Section content -->
+
+  <!-- Status filter -->
+  <div class="" *ngIf="orderSummary">
+    <ul
+      class="list-group list-group-horizontal flex-wrap bg-light p-1 mobile-horizontal-scroll"
+    >
+      <li
+        class="list-group-item rounded border-0 cs-pointer p-2 text-center position-relative my-1"
+        [class]="{
+          'bg-white': showStatus(item.id, true),
+          'shadow-sm': showStatus(item.id, true),
+          'bg-light': !showStatus(item.id, true)
+        }"
+        *ngFor="let item of OrderStatusList; let i = index"
+        (click)="selectStatus(item.id, false)"
+      >
+        <p class="p-0 m-0">{{ item.statusString }}</p>
+        <span
+          class="badge position-absolute top-0 end-0 mr-1 mt-1"
+          [class]="{
+            'badge-danger': showStatus(item.id, true),
+            'badge-secondary': !showStatus(item.id, true) && item.total > 0,
+            'd-none': item.total == 0
+          }"
+        >
+          {{ item.total }}
+        </span>
+      </li>
+      <li
+        class="list-group-item rounded border-0 cs-pointer p-2 text-center my-auto"
+        [class]="{
+          'bg-white': viewAllStatus,
+          'shadow-sm': viewAllStatus,
+          'bg-light': !viewAllStatus
+        }"
+        (click)="viewAllStatusFilter()"
+      >
+        All status
+      </li>
+    </ul>
+  </div>
+
+  <div class="d-flex flex-wrap w-100 mb-1 py-2">
+    <form
+      [formGroup]="orderFilterForm"
+      (ngSubmit)="(orderFilterForm.valid)"
+      autocomplete="off"
+    >
+      <div class="d-flex d-inline align-items-center">
+        <!-- Query filter -->
+        <div class="mr-4 d-flex d-inline-block align-items-center">
+          <app-icon-text-input
+            [formControl]="orderFilterForm.controls['query']"
+            [label]="'Search'"
+            [icon]="'fa-search'"
+          ></app-icon-text-input>
+        </div>
+
+        <!-- From date filter -->
+        <div class="mr-4 d-flex d-inline-block align-items-center">
+          <label class="mr-2">From</label>
+          <app-date-input
+            [formControl]="orderFilterForm.controls['from']"
+            [maxDate]="fromMaxDate"
+            [label]="'From'"
+          ></app-date-input>
+        </div>
+
+        <!-- To date filter -->
+        <div class="mr-4 d-flex d-inline-block align-items-center">
+          <label class="mr-2">To</label>
+          <app-date-input
+            [formControl]="orderFilterForm.controls['to']"
+            [minDate]="toMinDate"
+            [label]="'To'"
+          >
+          </app-date-input>
+        </div>
+      </div>
+    </form>
+
+    <!-- Payment method filter button -->
+    <div class="position-relative mr-4">
+      <button
+        class="btn btn-light status-button"
+        (click)="paymentMethodFilterToggle()"
+      >
+        Payment method:&nbsp;<span class="badge text-light bg-primary">{{
+          orderParams.paymentMethodFilter.length
+        }}</span
+        >&nbsp;&nbsp;<span><em class="fa fa-caret-down"></em></span
+        ><span class="caret"></span>
+      </button>
+
+      <div
+        class="position-absolute mt-2 status-dropdown"
+        *ngIf="showPaymentMethodFilter"
+      >
+        <ul class="list-group">
+          <li class="list-group-item">
+            <div
+              class="custom-control custom-checkbox"
+              (click)="selectAllPaymentMethod()"
+            >
+              <input
+                type="checkbox"
+                class="custom-control-input cs-pointer"
+                [checked]="
+                  orderParams.paymentMethodFilter.length ==
+                  paymentMethods.length
+                "
+              />
+              <label class="custom-control-label">Select all</label>
+            </div>
+          </li>
+
+          <li class="list-group-item" *ngFor="let item of paymentMethods">
+            <div
+              class="custom-control custom-checkbox"
+              (click)="selectPaymentMethod(item.id)"
+            >
+              <input
+                type="checkbox"
+                class="custom-control-input cs-pointer"
+                [checked]="isPaymentMethodIncluded(item.id)"
+              />
+              <label class="custom-control-label">{{ item.name }}</label>
+            </div>
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Shipping method filter button -->
+    <div class="position-relative mr-4">
+      <button
+        class="btn btn-light status-button"
+        (click)="shippingMethodFilterToggle()"
+      >
+        Shipping method:&nbsp;<span class="badge text-light bg-primary">{{
+          orderParams.shippingMethodFilter.length
+        }}</span
+        >&nbsp;&nbsp;<span><em class="fa fa-caret-down"></em></span
+        ><span class="caret"></span>
+      </button>
+
+      <div
+        class="position-absolute mt-2 status-dropdown"
+        *ngIf="showShippingMethodFilter"
+      >
+        <ul class="list-group">
+          <li class="list-group-item">
+            <div
+              class="custom-control custom-checkbox"
+              (click)="selectAllShippingMethod()"
+            >
+              <input
+                type="checkbox"
+                class="custom-control-input cs-pointer"
+                [checked]="
+                  orderParams.shippingMethodFilter.length ==
+                  shippingMethods.length
+                "
+              />
+              <label class="custom-control-label">Select all</label>
+            </div>
+          </li>
+
+          <li class="list-group-item" *ngFor="let item of shippingMethods">
+            <div
+              class="custom-control custom-checkbox"
+              (click)="selectShippingMethod(item.name)"
+            >
+              <input
+                type="checkbox"
+                class="custom-control-input cs-pointer"
+                [checked]="isShippingMethodIncluded(item.name)"
+              />
+              <label class="custom-control-label">{{ item.name }}</label>
+            </div>
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Status filter button -->
+    <div class="position-relative mr-4" *ngIf="viewAllStatus">
+      <button
+        class="btn btn-light status-button"
+        (click)="statusFilterToggle()"
+      >
+        Status:&nbsp;<span class="badge text-light bg-primary">{{
+          orderParams.orderStatusFilter.length
+        }}</span
+        >&nbsp;&nbsp;<span><em class="fa fa-caret-down"></em></span
+        ><span class="caret"></span>
+      </button>
+
+      <div
+        class="position-absolute mt-2 status-dropdown"
+        *ngIf="showOrderStatusFilter"
+      >
+        <ul class="list-group">
+          <li class="list-group-item">
+            <div
+              class="custom-control custom-checkbox"
+              (click)="selectAllOrderStatus()"
+            >
+              <input
+                type="checkbox"
+                class="custom-control-input cs-pointer"
+                [checked]="
+                  orderParams.orderStatusFilter.length == OrderStatusList.length
+                "
+              />
+              <label class="custom-control-label">Select all</label>
+            </div>
+          </li>
+
+          <li class="list-group-item" *ngFor="let item of OrderStatusList">
+            <div
+              class="custom-control custom-checkbox"
+              (click)="selectStatus(item.id, true)"
+            >
+              <input
+                type="checkbox"
+                class="custom-control-input cs-pointer"
+                [checked]="showStatus(item.id, false)"
+              />
+              <label class="custom-control-label">{{
+                item.statusString
+              }}</label>
+            </div>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- Order table -->
+  <div class="table-responsive w-100" *ngIf="orders">
+    <table class="table table-striped table-hover rounded border" aria-label="order-table">
+      <thead class="bg-light">
+        <tr>
+          <th scope="col">
+            <input
+              type="checkbox"
+              [checked]="selectAll"
+              (click)="selectAllOrders()"
+            />
+          </th>
+
+          <th
+            class="text-center"
+            scope="col cs-pointer"
+            (click)="orderBy('id')"
+          >
+            Id&nbsp;
+            <span
+              ><em
+                *ngIf="orderParams.field == 'Id'"
+                [@rotatedState]="state"
+                class="fa fa-arrow-down"
+              ></em
+            ></span>
+          </th>
+
+          <th
+            class="text-center"
+            scope="col cs-pointer"
+            (click)="orderBy('externalId')"
+          >
+            External Id&nbsp;
+            <span
+              ><em
+                *ngIf="orderParams.field == 'ExternalId'"
+                [@rotatedState]="state"
+                class="fa fa-arrow-down"
+              ></em
+            ></span>
+          </th>
+
+          <th
+            class="text-center"
+            scope="col cs-pointer"
+            (click)="orderBy('firstName')"
+          >
+            First name&nbsp;
+            <span
+              ><em
+                *ngIf="orderParams.field == 'FirstName'"
+                [@rotatedState]="state"
+                class="fa fa-arrow-down"
+              ></em
+            ></span>
+          </th>
+
+          <th
+            class="text-center"
+            scope="col cs-pointer"
+            (click)="orderBy('lastName')"
+          >
+            Last name&nbsp;
+            <span
+              ><em
+                *ngIf="orderParams.field == 'LastName'"
+                [@rotatedState]="state"
+                class="fa fa-arrow-down"
+              ></em
+            ></span>
+          </th>
+
+          <th
+            class="text-center"
+            scope="col cs-pointer"
+            (click)="orderBy('totalPrice')"
+          >
+            Total price&nbsp;
+            <span
+              ><em
+                *ngIf="orderParams.field == 'TotalPrice'"
+                [@rotatedState]="state"
+                class="fa fa-arrow-down"
+              ></em
+            ></span>
+          </th>
+
+          <th
+            class="text-center"
+            scope="col cs-pointer"
+            (click)="orderBy('totalQuantity')"
+          >
+            Total quantity&nbsp;
+            <span
+              ><em
+                *ngIf="orderParams.field == 'TotalQuantity'"
+                [@rotatedState]="state"
+                class="fa fa-arrow-down"
+              ></em
+            ></span>
+          </th>
+
+          <th
+            class="text-center"
+            scope="col cs-pointer"
+            (click)="orderBy('paymentMethod')"
+          >
+            Payment method&nbsp;
+            <span
+              ><em
+                *ngIf="orderParams.field == 'PaymentMethod'"
+                [@rotatedState]="state"
+                class="fa fa-arrow-down"
+              ></em
+            ></span>
+          </th>
+
+          <th
+            class="text-center"
+            scope="col cs-pointer"
+            (click)="orderBy('shippingMethod')"
+          >
+            Shipping method&nbsp;
+            <span
+              ><em
+                *ngIf="orderParams.field == 'ShippingMethod'"
+                [@rotatedState]="state"
+                class="fa fa-arrow-down"
+              ></em
+            ></span>
+          </th>
+
+          <th
+            class="text-center"
+            scope="col cs-pointer"
+            (click)="orderBy('dateCreated')"
+          >
+            Date created&nbsp;
+            <span
+              ><em
+                *ngIf="orderParams.field == 'DateCreated'"
+                [@rotatedState]="state"
+                class="fa fa-arrow-down"
+              ></em
+            ></span>
+          </th>
+
+          <th
+            scope="col cs-pointer"
+            class="text-center"
+            (click)="orderBy('status')"
+          >
+            Status&nbsp;
+            <span
+              ><em
+                *ngIf="orderParams.field == 'Status'"
+                [@rotatedState]="state"
+                class="fa fa-arrow-down"
+              ></em
+            ></span>
+          </th>
+        </tr>
+      </thead>
+
+      <tbody>
+        <tr
+          class="order-item"
+          *ngFor="let order of orders"
+          (click)="selectOrder(order.id)"
+        >
+          <td>
+            <input
+              type="checkbox"
+              [value]="order.Id"
+              [checked]="isOrderSelected(order.id)"
+            />
+          </td>
+
+          <td class="text-center" (click)="viewDetail(order.id)">
+            {{ order.id }}
+          </td>
+          <td class="text-center" (click)="viewDetail(order.id)">
+            {{ order.externalId }}
+          </td>
+          <td class="text-center" (click)="viewDetail(order.id)">
+            {{ order.firstName }}
+          </td>
+          <td class="text-center" (click)="viewDetail(order.id)">
+            {{ order.lastName }}
+          </td>
+          <td class="text-center" (click)="viewDetail(order.id)">
+            {{ order.totalPrice | currency }}
+          </td>
+          <td class="text-center" (click)="viewDetail(order.id)">
+            {{ order.totalItem }}
+          </td>
+          <td class="text-center" (click)="viewDetail(order.id)">
+            {{ order.paymentMethodString }}
+          </td>
+          <td class="text-center" (click)="viewDetail(order.id)">
+            {{ order.shippingMethod }}
+          </td>
+          <td class="text-center" (click)="viewDetail(order.id)">
+            {{ order.dateCreated | date : "medium" }}
+          </td>
+          <td class="text-center" (click)="viewDetail(order.id)">
+            <div
+              class="btn px-3 py-1"
+              [class]="getOrderStateStyle(order.currentStatus)"
+            >
+              <h6 class="m-0">
+                {{ getOrderStateString(order.currentStatus) }}
+              </h6>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <div *ngIf="pagination" class="w-100">
+      Total: {{ pagination.totalItems }} order(s)
+    </div>
+  </div>
+
+  <!-- Pagination -->
+  <div
+    class="w-100 d-flex d-inline-block justify-content-between mt-5"
+    *ngIf="pagination"
+  >
+    <div class="d-flex d-inline">
+      <div class="input-group pagination-navigation">
+        <label class="form-control" for="">Page size</label>
+        <input
+          [(ngModel)]="orderParams.pageSize"
+          type="number"
+          (ngModelChange)="loadOrders()"
+          class="form-control border"
+          aria-describedby="button-addon2"
+          (keydown.enter)="loadOrders()"
+        />
+      </div>
+      <div class="input-group pagination-navigation ml-3">
+        <label class="form-control" for="">Go to page</label>
+        <input
+          [(ngModel)]="orderParams.pageNumber"
+          type="number"
+          class="form-control border"
+          aria-describedby="button-addon2"
+          (keydown.enter)="loadOrders()"
+        />
+      </div>
+    </div>
+
+    <div class="ml-auto">
+      <pagination
+        [boundaryLinks]="true"
+        [totalItems]="pagination.totalItems"
+        [itemsPerPage]="pagination.itemsPerPage"
+        [(ngModel)]="pagination.currentPage"
+        (pageChanged)="pageChanged($event)"
+        previousText="Previous"
+        nextText="Next"
+        firstText="First"
+        lastText="Last"
+      >
+      </pagination>
+    </div>
+  </div>
+</div>

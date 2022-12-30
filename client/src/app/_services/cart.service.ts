@@ -10,7 +10,7 @@ import { BehaviorSubject, Observable, of, ReplaySubject } from 'rxjs';
 import { map, take } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
 import { IdArray } from 'src/app/_models/adminRequest';
-import { getPaginatedResult, getPaginationHeaders } from './paginationHelper';
+import { getPaginatedResult, getPaginationHeaders } from '../_helpers/paginationHelper';
 import { NewCartItem } from 'src/app/_models/cart';
 
 @Injectable({
@@ -202,65 +202,4 @@ export class CartService {
   clearLocalCart() {
     localStorage.removeItem('userCart');
   }
-
-  // getCartParams() {
-  //   return this.managerCartParams;
-  // }
-
-  // setCartParams(params: ManagerCartParams) {
-  //   this.managerCartParams = params;
-  // }
-
-  // resetCartParams() {
-  //   this.managerCartParams = new ManagerCartParams();
-  //   return this.managerCartParams;
-  // }
-
-  // getManagerCarts(optionParams: ManagerCartParams) {
-  //   let params = getPaginationHeaders(optionParams.pageNumber, optionParams.pageSize);
-  //   params = params.append('orderBy', optionParams.orderBy);
-  //   params = params.append('field', optionParams.field);
-  //   params = params.append('query', optionParams.query);
-  //   optionParams.productCartStatus.forEach(element => {
-  //     params = params.append('productCartStatus', element);
-  //   });
-
-  //   return getPaginatedResult<ManagerCart[]>(this.baseUrl + 'productCart/all', params, this.http);
-  // }
-
-  // getManagerCart(id: number) {
-  //   return this.http.get<ManagerCart>(this.baseUrl + 'productCart/' + id + '/detail');
-  // }
-
-  // addCart(option: CreateCart) {
-  //   return this.http.post<CreateCart>(this.baseUrl + 'productCart/create', option);
-  // }
-
-  // hideCarts(ids: IdArray) {
-  //   return this.http.put(this.baseUrl + 'productCart/hide-or-unhide', ids);
-  // }
-
-  // deleteCart(ids: number[]) {
-  //   const options = {
-  //     headers: new HttpHeaders({
-  //       'Content-Type': 'application/json',
-  //     }),
-  //     body: {
-  //       ids
-  //     },
-  //   };
-  //   return this.http.delete(this.baseUrl + 'productCart/soft-delete', options);
-  // }
-
-  // getManagerColorCart() {
-  //   return this.http.get<ManagerCartColor[]>(this.baseUrl + 'color/all');
-  // }
-
-  // getManagerSizeCart() {
-  //   return this.http.get<ManagerCartSize[]>(this.baseUrl + 'size/all');
-  // }
-
-  // getCustomerProductCart(productId: number) {
-  //   return this.http.get<CustomerCart[]>(this.baseUrl + 'productCart/' + productId);
-  // }
 }

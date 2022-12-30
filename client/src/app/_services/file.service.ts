@@ -11,7 +11,7 @@ import {
   HttpEventType,
   HttpHeaders,
 } from '@angular/common/http';
-import { getPaginatedResult, getPaginationHeaders } from './paginationHelper';
+import { getPaginatedResult, getPaginationHeaders } from '../_helpers/paginationHelper';
 import { IdArray } from '../_models/adminRequest';
 import { map, switchMap } from 'rxjs/operators';
 import { FileUploader } from 'ng2-file-upload';

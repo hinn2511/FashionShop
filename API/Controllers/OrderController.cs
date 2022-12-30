@@ -1,7 +1,9 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.Json;
 using System.Threading.Tasks;
+using API.Data;
 using API.DTOs;
 using API.DTOs.Order;
 using API.DTOs.Params;
@@ -23,6 +25,7 @@ namespace API.Controllers
 
     public class OrderController : BaseApiController
     {
+
         private readonly IMapper _mapper;
         private readonly IUnitOfWork _unitOfWork;
         public OrderController(IMapper mapper, IUnitOfWork unitOfWork)
@@ -37,7 +40,7 @@ namespace API.Controllers
         [HttpGet]
         public async Task<ActionResult> GetCustomerOrders([FromQuery] CustomerOrderParams customerOrderParams)
         {
-            var orders = await _unitOfWork.OrderRepository.GetOrdersAsCustomerAsync(customerOrderParams, GetUserId());
+            var orders = await _unitOfWork.OrderRepository.GetOrdersAsync(customerOrderParams, GetUserId());
 
             Response.AddPaginationHeader(orders.CurrentPage, orders.PageSize, orders.TotalCount, orders.TotalPages);
 
@@ -48,15 +51,18 @@ namespace API.Controllers
         }
 
         [Authorize(Policy = "CustomerOnly")]
-        [HttpGet("{orderId}/detail")]
-        public async Task<ActionResult> GetCustomerOrderDetail(int orderId)
+        [HttpGet("{externalOrderId}")]
+        public async Task<ActionResult> GetCustomerOrderDetail(string externalOrderId)
         {
-            var order = await _unitOfWork.OrderRepository.GetOrderWithDetailByIdAsync(orderId);
+            if (!StringExtensions.IsValidEan13(externalOrderId))
+                return NotFound("Order not found");
+
+            var order = await _unitOfWork.OrderRepository.GetOrderWithDetailByExternalIdAsync(externalOrderId);
 
             if (order.CreatedByUserId != GetUserId())
                 return BadRequest("Can not view this order.");
 
-            var result = _mapper.Map<CustomerOrderDetailResponse>(order);
+            var result = _mapper.Map<CustomerOrderResponse>(order);
 
             return Ok(result);
 
@@ -66,61 +72,88 @@ namespace API.Controllers
         [HttpPost("place-order")]
         public async Task<ActionResult> PlaceOrder(OrderRequest orderRequest)
         {
+            var orderDetails = new List<OrderDetail>();
             if (orderRequest.IsFromCart)
             {
                 var cartItems = await _unitOfWork.CartRepository.
-                                        GetAllBy(x => x.UserId == GetUserId() &&
-                                                orderRequest.OrderItemRequests.Select(x => x.OptionId).Contains(x.OptionId));
-                _unitOfWork.CartRepository.Delete(cartItems);
-            }
+                                        GetAllBy(x => x.UserId == GetUserId());
+                if (!cartItems.Any())
+                    return BadRequest("Your cart is empty.");
 
-            var orderDetails = _mapper.Map<List<OrderDetail>>(orderRequest.OrderItemRequests);
+                var optionIds = cartItems.Select(x => x.OptionId);
+                var options = await _unitOfWork.ProductOptionRepository.GetAllAndIncludeAsync(x => optionIds.Contains(x.Id), "Product", true);
 
-            var orderHistories = new List<OrderHistory>();
-
-            if (orderRequest.PaymentMethod == PaymentMethod.Cash)
-            {
-                orderHistories.Add(new OrderHistory()
+                foreach (var item in cartItems)
                 {
-                    CreatedByUserId = GetUserId(),
-                    DateCreated = DateTime.UtcNow,
-                    OrderStatus = OrderStatus.Created,
-                    HistoryDescription = $"Ordered by customer: {User.GetUsername()} at {DateTime.UtcNow}; Payment method: Cash."
-                });
-                orderHistories.Add(new OrderHistory()
-                {
-                    CreatedByUserId = GetUserId(),
-                    DateCreated = DateTime.UtcNow,
-                    OrderStatus = OrderStatus.Checking,
-                    HistoryDescription = $"Waiting for checking at {DateTime.UtcNow}."
-                });
+                    var option = options.FirstOrDefault(x => x.Id == item.OptionId);
+                    var orderDetail = new OrderDetail
+                    {
+                        OptionId = item.OptionId,
+                        Quantity = item.Quantity,
+                        Price = option.Product.Price,
+                        Total = item.Quantity * option.Product.Price
+                    };
+                    orderDetail.AddCreateInformation(GetUserId());
+                    orderDetails.Add(orderDetail);
+                    _unitOfWork.CartRepository.Delete(item.Id);
+                }
             }
             else
             {
-                orderHistories.Add(new OrderHistory()
-                {
-                    CreatedByUserId = GetUserId(),
-                    DateCreated = DateTime.UtcNow,
-                    OrderStatus = OrderStatus.Created,
-                    HistoryDescription = $"Ordered by customer: {User.GetUsername()} at {DateTime.UtcNow}; Payment method: Credit or Debit card."
-                });
-
-                orderHistories.Add(new OrderHistory()
-                {
-                    CreatedByUserId = GetUserId(),
-                    DateCreated = DateTime.UtcNow,
-                    OrderStatus = OrderStatus.AwaitingPayment,
-                    HistoryDescription = $"Waiting for user payment: {User.GetUsername()} at {DateTime.UtcNow}; Payment method: Credit or Debit card."
-                });
+                orderDetails = _mapper.Map<List<OrderDetail>>(orderRequest.OrderItemRequests);
             }
+
+            var orderHistories = new List<OrderHistory>();
+
+            orderHistories.Add(new OrderHistory()
+            {
+                CreatedByUserId = GetUserId(),
+                DateCreated = DateTime.UtcNow,
+                OrderStatus = OrderStatus.Created,
+                HistoryDescription = $"Ordered by customer: {User.GetUsername()} at {DateTime.UtcNow}; Payment method: {orderRequest.PaymentMethod.ConvertToString()}."
+            });
+
+            orderHistories.Add(new OrderHistory()
+            {
+                CreatedByUserId = GetUserId(),
+                DateCreated = DateTime.UtcNow,
+                OrderStatus = OrderStatus.Checking,
+                HistoryDescription = $"Waiting for verifying at {DateTime.UtcNow}."
+            });
+
+            var shippingMethodData = await System.IO.File.ReadAllTextAsync("Data/LocalData/ShippingMethod.json");
+
+            var shippingMethods = JsonSerializer.Deserialize<List<ShippingMethod>>(shippingMethodData);
+
+            var selectedShippingMethod = shippingMethods.FirstOrDefault(x => x.Id == orderRequest.ShippingMethod);
+
+            var now = DateTime.UtcNow;
+
+            var today = new DateTime(now.Year, now.Month, now.Day, 0, 0, 0);
+            var endOfDay = new DateTime(now.Year, now.Month, now.Day, 23, 59, 59);
+
+            var orderIdDate = now.ToString("yyMMdd");
+
+            var orderTodayCount = await _unitOfWork.OrderRepository.GetAllBy(x => x.DateCreated > today && x.DateCreated < endOfDay);
+            var orderIdNumber = (orderTodayCount.Count() + 1).ToString().PadLeft(6, '0');
 
             var order = new Order()
             {
-                ExternalId = Guid.NewGuid().ToString("N"),
-                CurrentStatus = orderRequest.PaymentMethod == PaymentMethod.Cash ? OrderStatus.Checking : OrderStatus.AwaitingPayment,
+                Address = orderRequest.Address,
+                ReceiverName = orderRequest.ReceiverName,
+                PhoneNumber = orderRequest.PhoneNumber,
+                Email = orderRequest.Email,
+                // ExternalId = (DateTime.Now.ToString("yyMMdd") + ().ConvertToEan13(),
+                ExternalId = ($"{orderIdDate}{orderIdNumber}").ConvertToEan13(),
+                CurrentStatus = OrderStatus.Checking,
                 OrderDetails = orderDetails,
                 OrderHistories = orderHistories,
-                PaymentMethod = orderRequest.PaymentMethod
+                PaymentMethod = orderRequest.PaymentMethod,
+                ShippingMethod = selectedShippingMethod.Name,
+                ShippingFee = selectedShippingMethod.Fee,
+                SubTotal = orderDetails.Any() ? orderDetails.Sum(x => x.Total) : 0,
+                Tax = orderDetails.Any() ? orderDetails.Sum(x => x.Total) / 100 * Constant.taxPercent : 0,
+                UserId = GetUserId()
             };
 
             order.AddCreateInformation(GetUserId());
@@ -129,40 +162,52 @@ namespace API.Controllers
 
             if (await _unitOfWork.Complete())
             {
-                return Ok();
+                return Ok(order.ExternalId);
             }
             return BadRequest("Can not create order.");
         }
 
         [Authorize(Policy = "CustomerOnly")]
-        [HttpPost("{orderId}/paid")]
-        public async Task<ActionResult> CustomerPayingOrder(int orderId, PayOrderRequest payOrderRequest)
+        [HttpPost("{externalOrderId}/paid-by-card")]
+        public async Task<ActionResult> CustomerPayingOrder(string externalOrderId, PayOrderRequest payOrderRequest)
         {
-            var order = await _unitOfWork.OrderRepository.GetFirstBy(x => x.Id == orderId && x.CreatedByUserId == GetUserId());
+
+            if (!StringExtensions.IsValidEan13(externalOrderId))
+                return BadRequest("Order ID not valid.");
+
+            var order = await _unitOfWork.OrderRepository.GetFirstBy(x => x.ExternalId == externalOrderId && x.CreatedByUserId == GetUserId());
 
             if (order == null)
                 return BadRequest("Order not found.");
 
-            if (order.PaymentMethod == PaymentMethod.Cash)
+            if (order.PaymentMethod != PaymentMethod.CreditCard && order.PaymentMethod != PaymentMethod.DebitCard)
                 return BadRequest("Payment method not valid.");
 
-            if (order.CurrentStatus != OrderStatus.AwaitingPayment)
+            if (order.CurrentStatus != OrderStatus.Created && order.CurrentStatus != OrderStatus.Checking)
                 return BadRequest("Order already paid.");
-
 
             // Add your billing provider here
             #region demo billing process
 
             Console.WriteLine("Checking card information...");
             Console.WriteLine("Billing...");
-            Task.Delay(2000).Wait();
+            Task.Delay(3000).Wait();
             Random r = new Random();
             int number = r.Next(10);
             if (number > 8)
             {
                 Console.WriteLine("Billing failed!");
-                return BadRequest("Can not process this order.");
+                 _unitOfWork.OrderHistoryRepository.Insert(new OrderHistory
+                {
+                    OrderId = order.Id,
+                    CreatedByUserId = GetUserId(),
+                    DateCreated = DateTime.UtcNow,
+                    OrderStatus = OrderStatus.Checking,
+                    HistoryDescription = $"Payment failed by customer: {User.GetUsername()} at {DateTime.UtcNow}; With card number: **** **** **** {payOrderRequest.CardNumber.Substring(payOrderRequest.CardNumber.Length - 4, 4)}."
+                });
+                return BadRequest("We can not verifying your card information right now. Please try again later.");
             }
+            Console.WriteLine("Billing successfully!");
             #endregion
 
             _unitOfWork.OrderHistoryRepository.Insert(new OrderHistory
@@ -171,7 +216,7 @@ namespace API.Controllers
                 CreatedByUserId = GetUserId(),
                 DateCreated = DateTime.UtcNow,
                 OrderStatus = OrderStatus.Paid,
-                HistoryDescription = $"Paid by customer: {User.GetUsername()} at {DateTime.UtcNow}; With card number: **** **** **** {payOrderRequest.CardNumber.Substring(payOrderRequest.CardNumber.Length - 5, 4)}"
+                HistoryDescription = $"Paid successfully by customer: {User.GetUsername()} at {DateTime.UtcNow}; With card number: **** **** **** {payOrderRequest.CardNumber.Substring(payOrderRequest.CardNumber.Length - 4, 4)}."
             });
 
             _unitOfWork.OrderHistoryRepository.Insert(new OrderHistory
@@ -180,51 +225,20 @@ namespace API.Controllers
                 CreatedByUserId = GetUserId(),
                 DateCreated = DateTime.UtcNow,
                 OrderStatus = OrderStatus.Processing,
-                HistoryDescription = $"Paid by customer: {User.GetUsername()} at {DateTime.UtcNow}; With card number: **** **** **** {payOrderRequest.CardNumber.Substring(payOrderRequest.CardNumber.Length - 5, 4)}"
+                HistoryDescription = $"Order has been paid. Checking passed and move to processing automatically at {DateTime.UtcNow}."
             });
 
-            order.CurrentStatus = OrderStatus.Paid;
+            order.CurrentStatus = OrderStatus.Processing;
+
             order.AddUpdateInformation(GetUserId());
 
             _unitOfWork.OrderRepository.Update(order);
 
             if (await _unitOfWork.Complete())
             {
-                return Ok();
+                return Ok(order.ExternalId);
             }
             return BadRequest("Can not process this order.");
-        }
-
-        [Authorize(Policy = "CustomerOnly")]
-        [HttpPost("{orderId}/request-cancel")]
-        public async Task<ActionResult> RequestCancelOrder(int orderId, CancelOrderRequest cancelOrderRequest)
-        {
-            var order = await _unitOfWork.OrderRepository.GetFirstBy(x => x.Id == orderId && x.CreatedByUserId == GetUserId());
-
-            if (order == null)
-                return BadRequest("Order not found");
-
-            if (order.CurrentStatus >= OrderStatus.Shipping)
-                return BadRequest("Can not cancel order!");
-
-            _unitOfWork.OrderHistoryRepository.Insert(new OrderHistory
-            {
-                OrderId = order.Id,
-                CreatedByUserId = GetUserId(),
-                DateCreated = DateTime.UtcNow,
-                OrderStatus = OrderStatus.CancelRequested,
-                HistoryDescription = $"Cancel request created by: {User.GetUsername()} at {DateTime.UtcNow}; Reason: {cancelOrderRequest.Reason}"
-            });
-
-            order.CurrentStatus = OrderStatus.CancelRequested;
-            order.AddUpdateInformation(GetUserId());
-
-            if (await _unitOfWork.Complete())
-            {
-                return Ok();
-            }
-
-            return BadRequest("Can not make cancel request for this order.");
         }
         #endregion
 
@@ -232,51 +246,127 @@ namespace API.Controllers
         #region manager
 
         [Authorize(Policy = "ManagerOnly")]
-        [HttpPost("check")]
-        public async Task<ActionResult> CheckingOrder(BaseBulkRequest bulkRequest)
+        [HttpGet("all")]
+        public async Task<ActionResult> GetAllOrders([FromQuery] AdminOrderParams adminOrderParams)
         {
-            var orders = await _unitOfWork.OrderRepository.GetAllBy(x => bulkRequest.Ids.Contains(x.Id));
+            var orders = await _unitOfWork.OrderRepository.GetOrdersAsync(adminOrderParams);
 
-            if (orders == null)
+            Response.AddPaginationHeader(orders.CurrentPage, orders.PageSize, orders.TotalCount, orders.TotalPages);
+
+            var result = _mapper.Map<List<AdminOrderSummaryResponse>>(orders.ToList());
+
+            return Ok(result);
+
+        }
+
+        [Authorize(Policy = "ManagerOnly")]
+        [HttpGet("summary")]
+        public async Task<ActionResult> GetOrdersSummary()
+        {
+            var orderSummaries = await _unitOfWork.OrderRepository.GetOrdersSummaryAsync();
+
+            var result = _mapper.Map<List<AdminOrderCountResponse>>(orderSummaries.ToList());
+
+            return Ok(result);
+
+        }
+
+        [Authorize(Policy = "ManagerOnly")]
+        [HttpGet("{orderId}/detail")]
+        public async Task<ActionResult> GetOrderDetail(int orderId)
+        {
+            var order = await _unitOfWork.OrderRepository.GetOrderWithDetailByIdAsync(orderId);
+
+            if (order == null)
+                return NotFound("Order not found");
+
+            var result = _mapper.Map<AdminOrderResponse>(order);
+            
+            var optionIds = order.OrderDetails.Select(x => x.OptionId);
+            var stocks = await _unitOfWork.StockRepository.GetAllBy(x => optionIds.Contains(x.OptionId));
+
+            foreach(var orderDetail in result.OrderDetails)
+            {
+                var stockQuantity = stocks.FirstOrDefault(x => x.OptionId == orderDetail.OptionId).Quantity;
+                orderDetail.StockAvailable = stockQuantity;
+                orderDetail.StockAfterDeduction = stockQuantity - orderDetail.Quantity;               
+            }
+            
+            return Ok(result);
+        }
+
+
+        [Authorize(Policy = "ManagerOnly")]
+        [HttpPut("{orderId}/verify")]
+        public async Task<ActionResult> CheckingOrder(int orderId)
+        {
+            var order = await _unitOfWork.OrderRepository.GetFirstBy(x => x.Id == orderId);
+
+            if (order == null)
                 return BadRequest("Order not found");
 
-            if (orders.Any(x => x.CurrentStatus != OrderStatus.Checking))
-                return BadRequest("Can not checking order!");
+            if (order.CurrentStatus != OrderStatus.Checking)
+                return BadRequest("Can not verify order!");
 
-            foreach (var order in orders)
+            _unitOfWork.OrderHistoryRepository.Insert(new OrderHistory
             {
-                _unitOfWork.OrderHistoryRepository.Insert(new OrderHistory
-                {
-                    OrderId = order.Id,
-                    CreatedByUserId = GetUserId(),
-                    DateCreated = DateTime.UtcNow,
-                    OrderStatus = OrderStatus.Processing,
-                    HistoryDescription = $"Order checked by: {User.GetUsername()} at {DateTime.UtcNow}"
-                });
+                OrderId = orderId,
+                CreatedByUserId = GetUserId(),
+                DateCreated = DateTime.UtcNow,
+                OrderStatus = OrderStatus.Processing,
+                HistoryDescription = $"Order checked by: {User.GetUsername()} at {DateTime.UtcNow}."
+            });
 
-                order.CurrentStatus = OrderStatus.Processing;
-                order.AddUpdateInformation(GetUserId());
+            order.CurrentStatus = OrderStatus.Processing;
+            order.AddUpdateInformation(GetUserId());
+
+            _unitOfWork.OrderRepository.Update(order);
+
+            var orderDetails = await _unitOfWork.OrderDetailRepository.GetAllBy(x => x.OrderId == orderId);
+
+            var optionIds = orderDetails.Select(x => x.OptionId);
+
+            var stocks = await _unitOfWork.StockRepository.GetAllBy(x => optionIds.Contains(x.OptionId));
+
+            foreach(var stock in stocks)
+            {
+                var quantity = order.OrderDetails.FirstOrDefault(x => x.OptionId == stock.OptionId).Quantity;
+                stock.Quantity -= quantity;
+                stock.AddUpdateInformation(GetUserId());
             }
 
-            _unitOfWork.OrderRepository.Update(orders);
+            _unitOfWork.StockRepository.Update(stocks);
 
+            
 
             if (await _unitOfWork.Complete())
             {
                 return Ok();
             }
 
-            return BadRequest("Can not checking orders.");
+            return BadRequest("Can not verify orders.");
         }
 
         [Authorize(Policy = "ManagerOnly")]
-        [HttpPost("{orderId}/cancel")]
+        [HttpPut("{orderId}/cancel")]
         public async Task<ActionResult> CancelOrder(int orderId, CancelOrderRequest cancelOrderRequest)
         {
             var order = await _unitOfWork.OrderRepository.GetFirstBy(x => x.Id == orderId);
 
             if (order == null)
                 return BadRequest("Order not found");
+
+            var allowCancelStatus = new List<OrderStatus>()
+            {
+                OrderStatus.Created,
+                OrderStatus.Checking,
+                OrderStatus.Paid,
+                OrderStatus.Processing,
+                OrderStatus.CancelRequested,
+            };
+
+            if (!allowCancelStatus.Contains(order.CurrentStatus))
+                return BadRequest("Can not cancel this order.");
 
             _unitOfWork.OrderHistoryRepository.Insert(new OrderHistory
             {
@@ -332,7 +422,7 @@ namespace API.Controllers
             {
                 return Ok();
             }
-            
+
 
             return BadRequest("Can not checking this order.");
         }

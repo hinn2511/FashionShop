@@ -1,0 +1,110 @@
+<div class="container-fluid px-3" *ngIf="product">
+  <h3>Edit product</h3>
+  <form
+    [formGroup]="editProductForm"
+    (ngSubmit)="editProductForm.valid && editProduct($event)"
+    autocomplete="off"
+  >
+    <div class="d-flex d-inline-block flex-wrap">
+      <div class="mr-2">
+        <label for="productName">Product name</label>
+        <app-text-input
+          [formControl]="editProductForm.controls['productName']"
+          [label]="'Product name'"
+        >
+        </app-text-input>
+      </div>
+      <div class="mr-2">
+        <label for="price">Price</label>
+        <app-number-input
+          [formControl]="editProductForm.controls['price']"
+          [label]="'Price'"
+        >
+        </app-number-input>
+      </div>
+      <div class="mr-2">
+        <label for="category">Category</label>
+        <div class="form-group">
+          <select
+            class="form-control"
+            [formControl]="editProductForm.controls['categoryId']"
+          >
+            <option
+              *ngFor="let item of categories"
+              (click)="loadSubCategories(item.id)"
+              [value]="item.id"
+            >
+              {{ item.genderName }}&nbsp;-&nbsp;{{ item.categoryName }}
+            </option>
+          </select>
+        </div>
+      </div>
+      <div class="mr-2">
+        <ng-container *ngIf="subCategories.length > 0">
+          <label for="subCategory">Sub category</label>
+          <div class="form-group">
+            <select
+              class="form-control"
+              [formControl]="editProductForm.controls['subCategoryId']"
+            >
+              <option *ngFor="let item of subCategories" [value]="item.id">
+                {{ item.categoryName }}
+              </option>
+            </select>
+          </div>
+        </ng-container>
+      </div>
+
+      <div class="mr-2">
+        <label for="brand">Brand</label>
+        <div class="form-group">
+          <select
+            class="form-control"
+            [formControl]="editProductForm.controls['brandId']"
+          >
+            <option *ngFor="let item of brands" [value]="item.id">
+              {{ item.name }}
+            </option>
+          </select>
+        </div>
+      </div>
+
+      
+    </div>
+
+    <div class="mt-1 editor">
+      <label for="description">Description&nbsp;*</label>
+      <app-editor
+        [initialContent]="product.description"
+        (outputContent)="updateDescription($event)"
+      ></app-editor>
+    </div>
+
+    <div class="form-group text-center text-lg-right mt-3">
+      <button
+        (click)="backToList()"
+        class="btn btn-danger mr-2"
+        name="save"
+        type="button"
+      >
+        Back
+      </button>
+      <button
+        [disabled]="!editProductForm.valid"
+        class="btn btn-success mr-2"
+        name="save"
+        type="submit"
+      >
+        Save
+      </button>
+      <button
+        [disabled]="!editProductForm.valid"
+        class="btn btn-primary"
+        name="saveAndContinue"
+        type="submit"
+      >
+        Save and continue
+      </button>
+    </div>
+  </form>
+</div>

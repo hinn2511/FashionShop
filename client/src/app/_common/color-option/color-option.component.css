@@ -1,0 +1,60 @@
+.color-option-container
+{
+    min-width: 30px;
+    margin-right: 10px;
+    margin-bottom: 10px;
+    min-height: 30px;
+}
+
+.color-option-container > div
+{
+    min-height: 30px;
+    transition: all 0.5s ease-in-out;
+}
+
+
+.color-option-check-container
+{
+    min-width: 30px;
+}
+
+
+.color-option-name
+{
+    min-width: 70px;
+}
+
+
+.color-option-container:hover > div
+{
+    filter: brightness(90%);
+    transition: all 0.5s ease-in-out;
+}
+
+
+.color-option-check
+{
+    top:50%;
+    left: 50%;
+    transform: translate(-50%,-50%); 
+    mix-blend-mode: hard-light;
+    color: white;
+}
+
+.disabled
+{
+    pointer-events: none;
+    opacity: 0.4;
+}
+
+
+.color-option-container.color-option-selected > .color-option-name
+{
+    background-color: rgba(255, 255, 255, 0.753);
+}
+
+
+.color-option-container.color-option-unselected > .color-option-name
+{
+    background-color: rgb(245, 241, 241);
+}

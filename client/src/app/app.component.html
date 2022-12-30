@@ -1,35 +1,30 @@
 <ng-container *ngIf="hasRoute('administrator/login')">
   <app-admin-login></app-admin-login>
 </ng-container>
-<div [class]="{'prevent-scroll': focus}">
+<div [class]="{ 'prevent-scroll': focus }">
   <ng-container *ngIf="!hasRoute('administrator/login')">
-    <div *appHasRole="['Anonymous', 'Customer']"  class="position-relative">
+    <div *appHasRole="['Anonymous', 'Customer']" class="position-relative">
       <ng-container *ngIf="!hasRoute('/login')">
         <app-navigation-bar
           (focus)="focusModeToggle($event)"
         ></app-navigation-bar>
       </ng-container>
-  
-      <div class="container-fluid w-100 px-0" >
+
+      <div class="container-fluid w-100 px-0">
         <router-outlet></router-outlet>
       </div>
-  
+
       <ng-container *ngIf="!hasRoute('/login')">
         <app-footer></app-footer>
       </ng-container>
       <div *ngIf="focus" class="position-absolute focus-mode"></div>
     </div>
-  
+
     <div *appHasRole="['Admin', 'Manager']">
-      <!-- <div> -->
       <div class="w-100">
         <div class="container-fluid">
-          <app-admin-sidebar
-            (mouseenter)="toggleMenu()"
-            (mouseleave)="toggleMenu()"
-            [@slideInOut]="menuState"
-          ></app-admin-sidebar>
-  
+          <app-admin-sidebar [@slideInOut]="menuState" [currentState]="menuState" (newState)="setSidebar($event)"></app-admin-sidebar>
+
           <main class="ms-sm-auto pl-0 p position-relative">
             <nav class="w-100 py-1 d-flex justify-content-end">
               <button
@@ -42,16 +37,13 @@
                 Log out
               </button>
             </nav>
-  
+
             <div class="ml-5">
               <router-outlet></router-outlet>
             </div>
           </main>
-          <!-- </div> -->
         </div>
       </div>
     </div>
   </ng-container>
 </div>
-
-

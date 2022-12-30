@@ -1,5 +1,4 @@
 import { ToastrService } from 'ngx-toastr';
-import { formatDate } from '@angular/common';
 import { Component, Input, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Account } from 'src/app/_models/user';
@@ -13,7 +12,6 @@ import { AccountService } from 'src/app/_services/account.service';
 export class AccountInformationComponent implements OnInit {
   @Input() account: Account;
   accountInformationForm: FormGroup;
-
   isEditMode: boolean;
 
   constructor(private fb: FormBuilder, private accountService: AccountService, private toastr: ToastrService) { }
@@ -71,11 +69,7 @@ export class AccountInformationComponent implements OnInit {
   }
 
   updateAccountInformation()
-  {
-    // this.accountInformationForm.patchValue({
-    //   dateOfBirth: this.getDefaultDate(new Date(this.accountInformationForm.get('dateOfBirth').value))
-    // });
-    
+  {    
     this.accountService.updateAccountInformation(this.accountInformationForm.value).subscribe(result => 
       {
         this.editModeToggle();

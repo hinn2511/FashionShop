@@ -22,6 +22,9 @@ namespace API.Data.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
+                    b.Property<string>("Address")
+                        .HasColumnType("TEXT");
+
                     b.Property<int>("CreatedByUserId")
                         .HasColumnType("INTEGER");
 
@@ -40,6 +43,9 @@ namespace API.Data.Migrations
                     b.Property<int>("DeletedByUserId")
                         .HasColumnType("INTEGER");
 
+                    b.Property<string>("Email")
+                        .HasColumnType("TEXT");
+
                     b.Property<string>("ExternalId")
                         .HasColumnType("TEXT");
 
@@ -55,10 +61,33 @@ namespace API.Data.Migrations
                     b.Property<int>("PaymentMethod")
                         .HasColumnType("INTEGER");
 
+                    b.Property<string>("PhoneNumber")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("ReceiverName")
+                        .HasColumnType("TEXT");
+
+                    b.Property<double>("ShippingFee")
+                        .HasColumnType("REAL");
+
+                    b.Property<string>("ShippingMethod")
+                        .HasColumnType("TEXT");
+
                     b.Property<int>("Status")
                         .HasColumnType("INTEGER");
 
+                    b.Property<double>("SubTotal")
+                        .HasColumnType("REAL");
+
+                    b.Property<double>("Tax")
+                        .HasColumnType("REAL");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("INTEGER");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("Orders");
                 });
@@ -99,11 +128,17 @@ namespace API.Data.Migrations
                     b.Property<int>("OrderId")
                         .HasColumnType("INTEGER");
 
+                    b.Property<double>("Price")
+                        .HasColumnType("REAL");
+
                     b.Property<int>("Quantity")
                         .HasColumnType("INTEGER");
 
                     b.Property<int>("Status")
                         .HasColumnType("INTEGER");
+
+                    b.Property<double>("Total")
+                        .HasColumnType("REAL");
 
                     b.HasKey("Id");
 
@@ -163,7 +198,7 @@ namespace API.Data.Migrations
                     b.ToTable("OrderHistories");
                 });
 
-            modelBuilder.Entity("API.Entities.Other.ProductPhoto", b =>
+            modelBuilder.Entity("API.Entities.Other.Photo", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -184,16 +219,11 @@ namespace API.Data.Migrations
                     b.Property<int>("DeletedByUserId")
                         .HasColumnType("INTEGER");
 
-                    b.Property<int>("FileId")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int>("FileType")
-                        .HasColumnType("INTEGER");
+                    b.Property<string>("Discriminator")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
 
                     b.Property<int>("HiddenByUserId")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<bool>("IsMain")
                         .HasColumnType("INTEGER");
 
                     b.Property<DateTime>("LastUpdated")
@@ -202,8 +232,8 @@ namespace API.Data.Migrations
                     b.Property<int>("LastUpdatedByUserId")
                         .HasColumnType("INTEGER");
 
-                    b.Property<int>("ProductId")
-                        .HasColumnType("INTEGER");
+                    b.Property<string>("LocalPath")
+                        .HasColumnType("TEXT");
 
                     b.Property<string>("PublicId")
                         .HasColumnType("TEXT");
@@ -216,11 +246,9 @@ namespace API.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("FileId");
+                    b.ToTable("Photos");
 
-                    b.HasIndex("ProductId");
-
-                    b.ToTable("ProductPhotos");
+                    b.HasDiscriminator<string>("Discriminator").HasValue("Photo");
                 });
 
             modelBuilder.Entity("API.Entities.OtherModel.UploadedFile", b =>
@@ -889,6 +917,76 @@ namespace API.Data.Migrations
                     b.ToTable("UserLikes");
                 });
 
+            modelBuilder.Entity("API.Entities.WebPageModel.Article", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Content")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("ContentAbstract")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("ContentType")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("CreatedByUserId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<DateTime>("DateCreated")
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime>("DateDeleted")
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime>("DateHidden")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("DeletedByUserId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<bool>("EditorChoice")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Foreword")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Headline")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("HeadlineSlug")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("HiddenByUserId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<DateTime>("LastUpdated")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("LastUpdatedByUserId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("ThumbnailUrl")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("View")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Articles");
+                });
+
             modelBuilder.Entity("API.Entities.WebPageModel.Carousel", b =>
                 {
                     b.Property<int>("Id")
@@ -931,25 +1029,7 @@ namespace API.Data.Migrations
                     b.Property<string>("Link")
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("NavigationText")
-                        .HasColumnType("TEXT");
-
                     b.Property<int>("Status")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int>("TextPaddingBottom")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int>("TextPaddingLeft")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int>("TextPaddingRight")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int>("TextPaddingTop")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int>("TextPosition")
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("Title")
@@ -1201,6 +1281,40 @@ namespace API.Data.Migrations
                     b.ToTable("AspNetUserTokens");
                 });
 
+            modelBuilder.Entity("API.Entities.Other.ProductPhoto", b =>
+                {
+                    b.HasBaseType("API.Entities.Other.Photo");
+
+                    b.Property<int>("FileId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("FileType")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<bool>("IsMain")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("ProductId")
+                        .HasColumnType("INTEGER");
+
+                    b.HasIndex("FileId");
+
+                    b.HasIndex("ProductId");
+
+                    b.HasDiscriminator().HasValue("ProductPhoto");
+                });
+
+            modelBuilder.Entity("API.Entities.OrderModel.Order", b =>
+                {
+                    b.HasOne("API.Entities.User.AppUser", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("API.Entities.OrderModel.OrderDetail", b =>
                 {
                     b.HasOne("API.Entities.ProductModel.Option", "Option")
@@ -1229,25 +1343,6 @@ namespace API.Data.Migrations
                         .IsRequired();
 
                     b.Navigation("Order");
-                });
-
-            modelBuilder.Entity("API.Entities.Other.ProductPhoto", b =>
-                {
-                    b.HasOne("API.Entities.OtherModel.UploadedFile", "File")
-                        .WithMany()
-                        .HasForeignKey("FileId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("API.Entities.ProductModel.Product", "Product")
-                        .WithMany("ProductPhotos")
-                        .HasForeignKey("ProductId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("File");
-
-                    b.Navigation("Product");
                 });
 
             modelBuilder.Entity("API.Entities.ProductModel.Option", b =>
@@ -1429,6 +1524,17 @@ namespace API.Data.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("API.Entities.WebPageModel.Article", b =>
+                {
+                    b.HasOne("API.Entities.User.AppUser", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("API.Entities.WebPageModel.Carousel", b =>
                 {
                     b.HasOne("API.Entities.WebPageModel.HomePage", null)
@@ -1508,6 +1614,25 @@ namespace API.Data.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("API.Entities.Other.ProductPhoto", b =>
+                {
+                    b.HasOne("API.Entities.OtherModel.UploadedFile", "File")
+                        .WithMany()
+                        .HasForeignKey("FileId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("API.Entities.ProductModel.Product", "Product")
+                        .WithMany("ProductPhotos")
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("File");
+
+                    b.Navigation("Product");
                 });
 
             modelBuilder.Entity("API.Entities.OrderModel.Order", b =>

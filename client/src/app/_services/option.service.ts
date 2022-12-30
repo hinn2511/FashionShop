@@ -6,7 +6,7 @@ import { map, take } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
 import { IdArray } from 'src/app/_models/adminRequest';
 import { ManagerOption, ManagerOptionParams } from 'src/app/_models/productOptions';
-import { getPaginatedResult, getPaginationHeaders } from './paginationHelper';
+import { getPaginatedResult, getPaginationHeaders } from '../_helpers/paginationHelper';
 
 @Injectable({
   providedIn: 'root'

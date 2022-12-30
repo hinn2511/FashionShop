@@ -1,6 +1,4 @@
 using System.Linq;
-using System.Net;
-using API.DTOs;
 using API.DTOs.Order;
 using API.DTOs.Request.ConfigurationRequest;
 using API.DTOs.Request.ProductRequest;
@@ -19,7 +17,6 @@ using API.Entities.Other;
 using API.Entities.ProductModel;
 using API.Entities.User;
 using API.Entities.WebPageModel;
-using API.Extensions;
 using AutoMapper;
 using API.DTOs.Request.ContentRequest;
 using API.DTOs.Response.ContentResponse;
@@ -29,7 +26,9 @@ using API.DTOs.Request.ColorRequest;
 using API.DTOs.Response.SizeResponse;
 using API.DTOs.Request.SizeRequest;
 using API.DTOs.Response.AccountResponse;
-using API.DTOs.Request.AccountRequest;
+using System;
+using API.DTOs.Response.ArticleResponse;
+using API.DTOs.Request.ArticleRequest;
 
 namespace API.Helpers
 {
@@ -63,7 +62,9 @@ namespace API.Helpers
 
             CreateMap<UpdateProductRequest, Product>();
 
-            CreateMap<Category, AdminCategoryResponse>();
+            CreateMap<Category, AdminCategoryResponse>()
+            .ForMember(dest => dest.GenderName, opt => opt.MapFrom(
+                          src => src.Gender.ToString()));
 
             CreateMap<SubCategory, AdminSubCategoryResponse>();
 
@@ -121,6 +122,21 @@ namespace API.Helpers
 
             CreateMap<UpdateSizeRequest, Size>();
 
+            CreateMap<Article, AdminArticleResponse>()
+                .ForMember(dest => dest.PublishedDate, opt => opt.MapFrom(
+                            src => src.DateCreated))
+                .ForMember(dest => dest.PublishedBy, opt => opt.MapFrom(
+                            src => $"{src.User.FirstName} {src.User.FirstName}"));
+
+            CreateMap<Article, AdminArticleDetailResponse>()
+                .ForMember(dest => dest.PublishedDate, opt => opt.MapFrom(
+                            src => src.DateCreated))
+                .ForMember(dest => dest.PublishedBy, opt => opt.MapFrom(
+                            src => $"{src.User.FirstName} {src.User.FirstName}"));
+
+            CreateMap<CreateArticleRequest, Article>();
+
+            CreateMap<UpdateArticleRequest, Article>();
             #endregion
 
             #region customer dto
@@ -167,6 +183,8 @@ namespace API.Helpers
 
             CreateMap<Color, CartItemColor>();
 
+            CreateMap<Color, ColorFilterResponse>();
+
             CreateMap<Size, CartItemSize>();
 
             CreateMap<Product, CartItemProduct>();
@@ -207,33 +225,97 @@ namespace API.Helpers
 
             CreateMap<OrderItemRequest, OrderDetail>();
 
-            CreateMap<Order, CustomerOrderResponse>()
-                .ForMember(dest => dest.Url, opt => opt.MapFrom(
-                          src => (src.OrderDetails.FirstOrDefault().Option.Product.ProductPhotos.FirstOrDefault(x => x.IsMain))))
+            CreateMap<Order, CustomerOrderSummaryResponse>()
                 .ForMember(dest => dest.TotalItem, opt => opt.MapFrom(
                           src => src.CalculateOrderTotalItem()))
                 .ForMember(dest => dest.TotalPrice, opt => opt.MapFrom(
                           src => src.CalculateOrderTotalPrice()));
 
-            CreateMap<Order, CustomerOrderDetailResponse>()
-                .ForMember(dest => dest.Url, opt => opt.MapFrom(
-                          src => (src.OrderDetails.FirstOrDefault().Option.Product.ProductPhotos.FirstOrDefault(x => x.IsMain))))
+            CreateMap<Order, CustomerOrderResponse>()
+                .ForMember(dest => dest.OrderDetails, opt => opt.MapFrom(
+                          src => src.OrderDetails.OrderBy(x => x.Option.Product.ProductName)))
+                .ForMember(dest => dest.OrderHistories, opt => opt.MapFrom(
+                          src => src.OrderHistories.OrderByDescending(x => x.DateCreated)))
                 .ForMember(dest => dest.TotalItem, opt => opt.MapFrom(
                           src => src.CalculateOrderTotalItem()))
                 .ForMember(dest => dest.TotalPrice, opt => opt.MapFrom(
-                          src => src.CalculateOrderTotalPrice()));
+                          src => src.CalculateOrderTotalPrice()))
+                .ForMember(dest => dest.PaymentMethodString, opt => opt.MapFrom(
+                          src => src.PaymentMethod.ConvertToString()))
+                .ForMember(dest => dest.CurrentStatusString, opt => opt.MapFrom(
+                          src => src.CurrentStatus.ToString()))
+                .ForMember(dest => dest.IsFinished, opt => opt.MapFrom(
+                          src => src.IsOrderFinished()));
 
             CreateMap<OrderHistory, CustomerOrderHistoriesResponse>()
                 .ForMember(dest => dest.Note, opt => opt.MapFrom(
                           src => src.GenerateOrderNoteForCustomer()));
 
-            CreateMap<OrderDetail, CustomerOrderDetailItemResponse>()
+            CreateMap<OrderDetail, CustomerOrderItemResponse>()
                 .ForMember(dest => dest.ProductId, opt => opt.MapFrom(
                           src => src.Option.Product.Id))
                 .ForMember(dest => dest.ProductName, opt => opt.MapFrom(
                           src => src.Option.Product.ProductName))
                 .ForMember(dest => dest.Url, opt => opt.MapFrom(
-                          src => src.Option.Product.ProductPhotos.FirstOrDefault(x => x.IsMain)))
+                          src => src.Option.Product.ProductPhotos.FirstOrDefault(x => x.IsMain).Url))
+                .ForMember(dest => dest.Price, opt => opt.MapFrom(
+                          src => src.Option.Product.Price + src.Option.AdditionalPrice))
+                .ForMember(dest => dest.ColorCode, opt => opt.MapFrom(
+                          src => src.Option.Color.ColorCode))
+                .ForMember(dest => dest.ColorName, opt => opt.MapFrom(
+                          src => src.Option.Color.ColorName))
+                .ForMember(dest => dest.SizeName, opt => opt.MapFrom(
+                          src => src.Option.Size.SizeName))
+                .ForMember(dest => dest.Total, opt => opt.MapFrom(
+                          src => (src.Option.AdditionalPrice + src.Option.Product.Price) * src.Quantity));
+
+            CreateMap<Tuple<OrderStatus, int>, AdminOrderCountResponse>()
+                .ForMember(dest => dest.OrderStatus, opt => opt.MapFrom(
+                        src => src.Item1))
+                .ForMember(dest => dest.Total, opt => opt.MapFrom(
+                        src => src.Item2));
+
+            CreateMap<Order, AdminOrderSummaryResponse>()
+                .ForMember(dest => dest.FirstName, opt => opt.MapFrom(
+                          src => src.User.FirstName))
+                .ForMember(dest => dest.LastName, opt => opt.MapFrom(
+                          src => src.User.LastName))
+                .ForMember(dest => dest.ShippingMethod, opt => opt.MapFrom(
+                          src => src.ShippingMethod.Split().First()))
+                .ForMember(dest => dest.PaymentMethodString, opt => opt.MapFrom(
+                          src => src.PaymentMethod.ConvertToString()))
+                .ForMember(dest => dest.TotalItem, opt => opt.MapFrom(
+                          src => src.CalculateOrderTotalItem()))
+                .ForMember(dest => dest.TotalPrice, opt => opt.MapFrom(
+                          src => src.CalculateOrderTotalPrice()));
+
+            CreateMap<Order, AdminOrderResponse>()
+                .ForMember(dest => dest.FirstName, opt => opt.MapFrom(
+                          src => src.User.FirstName))
+                .ForMember(dest => dest.LastName, opt => opt.MapFrom(
+                          src => src.User.LastName))
+                .ForMember(dest => dest.ShippingMethod, opt => opt.MapFrom(
+                          src => src.ShippingMethod))
+                // .ForMember(dest => dest.OrderDetails, opt => opt.MapFrom(
+                //           src => src.OrderDetails.OrderBy(x => x.Option.Product.ProductName)))
+                .ForMember(dest => dest.TotalItem, opt => opt.MapFrom(
+                          src => src.CalculateOrderTotalItem()))
+                .ForMember(dest => dest.TotalPrice, opt => opt.MapFrom(
+                          src => src.CalculateOrderTotalPrice()))
+                .ForMember(dest => dest.PaymentMethodString, opt => opt.MapFrom(
+                          src => src.PaymentMethod.ConvertToString()))
+                .ForMember(dest => dest.CurrentStatusString, opt => opt.MapFrom(
+                          src => src.CurrentStatus.ToString()));
+
+            CreateMap<OrderHistory, AdminOrderHistoriesResponse>();
+
+            CreateMap<OrderDetail, AdminOrderItemResponse>()
+                .ForMember(dest => dest.ProductId, opt => opt.MapFrom(
+                          src => src.Option.Product.Id))
+                .ForMember(dest => dest.ProductName, opt => opt.MapFrom(
+                          src => src.Option.Product.ProductName))
+                .ForMember(dest => dest.Url, opt => opt.MapFrom(
+                          src => src.Option.Product.ProductPhotos.FirstOrDefault(x => x.IsMain).Url))
                 .ForMember(dest => dest.Price, opt => opt.MapFrom(
                           src => src.Option.Product.Price + src.Option.AdditionalPrice))
                 .ForMember(dest => dest.ColorCode, opt => opt.MapFrom(
@@ -262,28 +344,18 @@ namespace API.Helpers
             CreateMap<Color, CustomerOptionColorResponse>();
 
             CreateMap<Size, CustomerOptionSizeResponse>();
-            
-            #endregion
 
-            #region comment
-            // CreateMap<Option, CustomerProductStockDto>();
+            CreateMap<Article, CustomerArticleResponse>()
+                .ForMember(dest => dest.PublishedDate, opt => opt.MapFrom(
+                            src => src.DateCreated))
+                .ForMember(dest => dest.PublishedBy, opt => opt.MapFrom(
+                            src => $"{src.User.FirstName} {src.User.FirstName}"));
 
-            // CreateMap<Category, CustomerCategoryDto>();
-
-            // CreateMap<Category, CategoryDto>();
-
-            // CreateMap<AddCategoryDto, Category>();
-
-            // CreateMap<UpdateCategoryDto, Category>();
-
-            // CreateMap<ProductPhoto, ProductPhotoDto>()
-            //     .ForMember(dest => dest.Url, opt => opt.MapFrom(
-            //               src => src.Url))
-            //     .ForMember(dest => dest.PhotoId, opt => opt.MapFrom(
-            //               src => src.Id));
-
-            // CreateMap<OrderItemRequest, OrderDetail>();
-
+            CreateMap<Article, CustomerArticleDetailResponse>()
+                .ForMember(dest => dest.PublishedDate, opt => opt.MapFrom(
+                            src => src.DateCreated))
+                .ForMember(dest => dest.PublishedBy, opt => opt.MapFrom(
+                            src => $"{src.User.FirstName} {src.User.FirstName}"));
 
 
             #endregion
@@ -291,7 +363,7 @@ namespace API.Helpers
     }
 
 
-    #region automapper extension
+    #region auto mapper extension
     public static class AutoMapperExtensions
     {
 
@@ -309,7 +381,7 @@ namespace API.Helpers
                     orderTotalPrice += totalItemPrice;
                 }
             }
-            return orderTotalPrice;
+            return orderTotalPrice + order.Tax + order.ShippingFee;
 
         }
 
@@ -324,10 +396,10 @@ namespace API.Helpers
             {
                 case OrderStatus.Created:
                     return "Your order has been created.";
-                case OrderStatus.AwaitingPayment:
-                    return "Awaiting for payment.";
+                case OrderStatus.Checking:
+                    return "Your order is being checked.";
                 case OrderStatus.Paid:
-                    return "Payment successfully.";
+                    return "Your order has been paid successfully.";
                 case OrderStatus.Processing:
                     return "Your order is being prepared.";
                 case OrderStatus.Shipping:
@@ -339,7 +411,32 @@ namespace API.Helpers
                 default:
                     return "None.";
             }
+        }
 
+        public static string ConvertToString(this OrderStatus orderStatus)
+        {
+            return orderStatus.ToString();
+        }
+
+        public static string ConvertToString(this PaymentMethod paymentMethod)
+        {
+            switch (paymentMethod)
+            {
+                case PaymentMethod.CreditCard:
+                    return "Credit";
+                case PaymentMethod.DebitCard:
+                    return "Debit";
+                case PaymentMethod.CashOnDelivery:
+                    return "COD";
+                default:
+                    return "Mobile";
+            }
+        }
+
+
+        public static bool IsOrderFinished(this Order order)
+        {
+            return order.CurrentStatus == OrderStatus.Finished || order.CurrentStatus == OrderStatus.Cancelled || order.CurrentStatus == OrderStatus.Returned;
         }
     }
 

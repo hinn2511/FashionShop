@@ -1,10 +1,11 @@
+import { CustomerCarousel } from 'src/app/_models/carousel';
+import { Gender } from './../../_models/category';
 import { AccountService } from 'src/app/_services/account.service';
 import { AuthenticationService } from './../../_services/authentication.service';
 import { CartService } from 'src/app/_services/cart.service';
 import { Component, HostListener, Input, OnInit } from '@angular/core';
 import { ActivatedRoute, ParamMap, Params, Router } from '@angular/router';
-import { mergeMap, switchMap, take } from 'rxjs/operators';
-import { BreadCrumb } from 'src/app/_models/breadcrum';
+import { BreadCrumb } from 'src/app/_models/breadcrumb';
 import { Product } from 'src/app/_models/product';
 import {
   CustomerOption,
@@ -16,6 +17,7 @@ import { ProductService } from 'src/app/_services/product.service';
 import { CartItem, NewCartItem } from 'src/app/_models/cart';
 import { User } from 'src/app/_models/user';
 import { ToastrService } from 'ngx-toastr';
+import { DomSanitizer } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-product-detail',
@@ -26,6 +28,8 @@ export class ProductDetailComponent implements OnInit {
   product: Product;
   breadCrumb: BreadCrumb[];
   quantity: number;
+
+  carousels: CustomerCarousel[] = [];
   options: CustomerOption[] = [];
   sizes: CustomerOptionSize[] = [];
   selectedSize: CustomerOptionSize;
@@ -40,7 +44,8 @@ export class ProductDetailComponent implements OnInit {
     private accountService: AccountService,
     private router: Router,
     private route: ActivatedRoute,
-    private toastr: ToastrService
+    private toastr: ToastrService,
+    private sanitizer: DomSanitizer
   ) {
   }
 
@@ -54,9 +59,16 @@ export class ProductDetailComponent implements OnInit {
   loadProduct(id: number) {
     this.productService.getProduct(id).subscribe((response) => {
       this.product = response;
+      this.loadProductImageCarousel();
       this.setBreadcrumb();
     });
     this.loadOptions(id);
+  }
+
+  loadProductImageCarousel() {
+    this.product.productPhotos.forEach(element => {
+      this.carousels.push(new CustomerCarousel("", "", "", element.url));
+    });
   }
 
   setBreadcrumb() {
@@ -64,20 +76,24 @@ export class ProductDetailComponent implements OnInit {
       {
         name: 'Home',
         route: '/',
+        active: false
       },
       {
         name: this.product.categoryName,
         route: '',
+        active: false
       },
       {
         name: this.product.productName,
         route: '',
+        active: false
       },
     ];
     if (this.product.subCategoryName != undefined) {
       let subCategoryBreadcrum: BreadCrumb = {
         name: this.product.subCategoryName,
         route: '',
+        active: true
       };
       this.breadCrumb.splice(2, 0, subCategoryBreadcrum);
     }
@@ -183,4 +199,8 @@ export class ProductDetailComponent implements OnInit {
       this.toastr.error(error, 'Error');
     });
   }
+
+  public createTrustedHtml(blogContent: string) {
+    return this.sanitizer.bypassSecurityTrustHtml(blogContent);
+ }
 }
