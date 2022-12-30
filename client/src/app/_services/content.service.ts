@@ -7,22 +7,16 @@ import { Injectable } from '@angular/core';
 import { environment } from 'src/environments/environment';
 import {
   HttpClient,
-  HttpErrorResponse,
-  HttpEventType,
   HttpHeaders,
 } from '@angular/common/http';
-import { getPaginatedResult, getPaginationHeaders } from './paginationHelper';
+import { getPaginatedResult, getPaginationHeaders } from '../_helpers/paginationHelper';
 import { IdArray } from '../_models/adminRequest';
-import { map, switchMap } from 'rxjs/operators';
-import { FileUploader } from 'ng2-file-upload';
-import { FileUploadedResponse } from 'src/app/_models/file';
 
 @Injectable({
   providedIn: 'root',
 })
 export class ContentService {
   baseUrl = environment.apiUrl;
-  fileUrl = environment.fileUrl;
   carousels: ManagerCarousel[] = [];
   managerCarouselParams: ManagerCarouselParams;
 

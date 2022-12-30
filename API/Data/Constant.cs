@@ -46,5 +46,7 @@ namespace API.Data
             Text,
             Sheet
         }
+
+        public readonly static double taxPercent = 10;
     }
 }

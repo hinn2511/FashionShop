@@ -1,0 +1,38 @@
+<div class="container-fluid w-100 p-0" *ngIf="article">
+  <div
+    class="w-100 article-cover"
+    [style.background-image]="'url(' + article.thumbnailUrl + ')'"
+  ></div>
+  <div class="w-100 d-flex justify-content-center">
+    <div class="p-3 p-lg-5 article w-100">
+      <div class="article-detail">
+        <div class="d-flex d-inline-block ml-1">
+          <a class="text-dark" routerLink="/news">News & Promotion</a>
+          <p class="text-muted">&nbsp;&nbsp;>&nbsp;&nbsp;</p>
+          <p class="text-muted">{{ contentTypeString }}</p>
+        </div>
+        <h1 class="fw-bolder">{{ article.headline }}</h1>
+        <p class="text-muted">
+          {{ article.publishedBy }}&nbsp;&#x22C5;&nbsp;{{
+            article.publishedDate | date : "medium"
+          }}
+        </p>
+        <p class="fw-bold mt-5">
+          {{ article.foreword }}
+        </p>
+      </div>
+      <div
+        class="article-content ck-content w-100 mt-5"
+        [innerHTML]="article.content | safeUrl"
+      ></div>
+      <div class="row mt-5" *ngIf="trendingArticles">
+        <h5 class="mt-2 col-12">
+          Trending now
+        </h5>
+        <div class="col-12 col-lg-4" *ngFor="let trendingArticle of trendingArticles">
+            <app-news-card [article]="trendingArticle"></app-news-card>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

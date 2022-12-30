@@ -1,98 +1,165 @@
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { CancelOrderRequest } from './../_models/order';
+import {
+  CustomerCardInformation,
+  CustomerNewOrder,
+  CustomerOrder,
+  CustomerOrderParams,
+  ManagerOrder,
+  ManagerOrderParams,
+  ManagerOrderSummary,
+} from 'src/app/_models/order';
+import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { of, ReplaySubject } from 'rxjs';
-import { map, take } from 'rxjs/operators';
+import { of } from 'rxjs';
+import { map } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
-import { IdArray } from 'src/app/_models/adminRequest';
-import { getPaginatedResult, getPaginationHeaders } from './paginationHelper';
+import { getPaginatedResult, getPaginationHeaders } from '../_helpers/paginationHelper';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class OrderService {
   baseUrl = environment.apiUrl;
-  // managerOrderParams: ManagerOrderParams;
+  private _selectedOrderId: string;
+  orderCache = new Map();
+  public get selectedOrderId(): string {
+    return this._selectedOrderId;
+  }
+  public set selectedOrderId(value: string) {
+    this._selectedOrderId = value;
+  }
+  customerOrderParams: CustomerOrderParams;
+
+  managerOrderParams: ManagerOrderParams;
 
   constructor(private http: HttpClient) {
-    // this.managerOrderParams = new ManagerOrderParams();
+    this.customerOrderParams = new CustomerOrderParams();
+    this.managerOrderParams = new ManagerOrderParams();
   }
 
-  public getSelectedOrderId(): number {
-    return +(localStorage.getItem("selectedOrderId"));
+  createOrder(order: CustomerNewOrder) {
+    return this.http.post<string>(this.baseUrl + 'order/place-order', order);
   }
 
-  public setSelectedOrderId(value: number) {
-    localStorage.setItem("selectedOrderId", value.toString())
+  payOrderByCard(orderId: string, cardInformation: CustomerCardInformation) {
+    return this.http.post<string>(
+      this.baseUrl + 'order/' + orderId + '/paid-by-card',
+      cardInformation
+    );
   }
 
-  public removeSelectedOrderId() {
-    localStorage.removeItem("selectedOrderId")
+  getOrderParams() {
+    return this.customerOrderParams;
   }
 
-  // getOrderParams() {
-  //   return this.managerOrderParams;
-  // }
+  setOrderParams(params: CustomerOrderParams) {
+    this.customerOrderParams = params;
+  }
 
-  // setOrderParams(params: ManagerOrderParams) {
-  //   this.managerOrderParams = params;
-  // }
+  resetOrderParams() {
+    this.customerOrderParams = new CustomerOrderParams();
+    return this.customerOrderParams;
+  }
 
-  // resetOrderParams() {
-  //   this.managerOrderParams = new ManagerOrderParams();
-  //   return this.managerOrderParams;
-  // }
+  getCustomerOrders(orderParams: CustomerOrderParams) {
+    let params = getPaginationHeaders(
+      orderParams.pageNumber,
+      orderParams.pageSize
+    );
+    params = params.append('orderBy', orderParams.orderBy);
+    params = params.append('field', orderParams.field);
+    params = params.append('query', orderParams.query);
+    orderParams.orderStatusFilter.forEach((element) => {
+      params = params.append('orderStatusFilter', element);
+    });
+    params = params.append('from', orderParams.from.toISOString());
+    params = params.append('to', orderParams.to.toISOString());
 
+    return getPaginatedResult<CustomerOrder[]>(
+      this.baseUrl + 'order',
+      params,
+      this.http
+    ).pipe(
+      map((response) => {
+        this.orderCache.set(Object.values(orderParams).join('-'), response);
+        return response;
+      })
+    );
+  }
 
-  // getManagerOrders(optionParams: ManagerOrderParams) {
-  //   let params = getPaginationHeaders(optionParams.pageNumber, optionParams.pageSize);
-  //   params = params.append('orderBy', optionParams.orderBy);
-  //   params = params.append('field', optionParams.field);
-  //   params = params.append('query', optionParams.query);
-  //   optionParams.productOrderStatus.forEach(element => {
-  //     params = params.append('productOrderStatus', element);
-  //   });
+  getCustomerOrder(externalId: string) {
+    const order = [...this.orderCache.values()]
+      .reduce((arr, elm) => arr.concat(elm.result), [])
+      .find((order: CustomerOrder) => order.externalId === externalId);
+    if (order) {
+      return of(order);
+    }
+    return this.http.get<CustomerOrder>(this.baseUrl + 'order/' + externalId);
+  }
 
-  //   return getPaginatedResult<ManagerOrder[]>(this.baseUrl + 'productOrder/all', params, this.http);
-  // }
+  getManagerOrderParams() {
+    return this.managerOrderParams;
+  }
 
-  // getManagerOrder(id: number) {
-  //   return this.http.get<ManagerOrder>(this.baseUrl + 'productOrder/' + id + '/detail');
-  // }
+  setManagerOrderParams(params: ManagerOrderParams) {
+    this.managerOrderParams = params;
+  }
 
-  // addOrder(option: CreateOrder) {
-  //   return this.http.post<CreateOrder>(this.baseUrl + 'productOrder/create', option);
-  // }
+  resetManagerOrderParams() {
+    this.managerOrderParams = new ManagerOrderParams();
+    return this.managerOrderParams;
+  }
 
-  // editOrder(id: number, option: UpdateOrder) {
-  //   return this.http.put<UpdateOrder>(this.baseUrl + 'productOrder/edit/' + id, option);
-  // }
+  getManagerOrders(managerOrderParams: ManagerOrderParams) {
+    let params = getPaginationHeaders(
+      managerOrderParams.pageNumber,
+      managerOrderParams.pageSize
+    );
+    params = params.append('orderBy', managerOrderParams.orderBy);
+    params = params.append('field', managerOrderParams.field);
+    params = params.append('query', managerOrderParams.query);
+    managerOrderParams.orderStatusFilter.forEach((element) => {
+      params = params.append('orderStatusFilter', element);
+    });
+    params = params.append('from', managerOrderParams.from.toISOString());
+    params = params.append('to', managerOrderParams.to.toISOString());
+    managerOrderParams.orderStatusFilter.forEach((element) => {
+      params = params.append('orderStatusFilter', element);
+    });
 
-  // hideOrders(ids: IdArray) {
-  //   return this.http.put(this.baseUrl + 'productOrder/hide-or-unhide', ids);
-  // }
+    managerOrderParams.paymentMethodFilter.forEach((element) => {
+      params = params.append('paymentMethodFilter', element);
+    });
 
-  // deleteOrder(ids: number[]) {
-  //   const options = {
-  //     headers: new HttpHeaders({
-  //       'Content-Type': 'application/json',
-  //     }),
-  //     body: {
-  //       ids
-  //     },
-  //   };
-  //   return this.http.delete(this.baseUrl + 'productOrder/soft-delete', options);
-  // }
-  
-  // getManagerColorOrder() {
-  //   return this.http.get<ManagerOrderColor[]>(this.baseUrl + 'color/all');
-  // }
+    managerOrderParams.shippingMethodFilter.forEach((element) => {
+      params = params.append('shippingMethodFilter', element);
+    });
 
-  // getManagerSizeOrder() {
-  //   return this.http.get<ManagerOrderSize[]>(this.baseUrl + 'size/all');
-  // }
+    return getPaginatedResult<ManagerOrder[]>(
+      this.baseUrl + 'order/all',
+      params,
+      this.http
+    );
+  }
 
-  // getCustomerProductOrder(productId: number) {
-  //   return this.http.get<CustomerOrder[]>(this.baseUrl + 'productOrder/' + productId);
-  // }
+  getManagerOrderDetail(id: number) {
+    return this.http.get<ManagerOrder>(
+      this.baseUrl + 'order/' + id + '/detail'
+    );
+  }
 
+  getManagerOrderSummary() {
+    return this.http.get<ManagerOrderSummary[]>(this.baseUrl + 'order/summary');
+  }
+
+  verifyOrder(id: number) {
+    return this.http.put(this.baseUrl + 'order/' + id + '/verify', {});
+  }
+
+  cancelOrder(id: number,cancelOrderRequest: CancelOrderRequest) {
+    return this.http.put(
+      this.baseUrl + 'order/' + id + '/cancel',
+      cancelOrderRequest
+    );
+  }
 }

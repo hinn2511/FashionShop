@@ -2,15 +2,7 @@
   display: flex;
 }
 
-.search-bar {
-  top: 0;
-  left: 0;
-  min-width: 100%;
-  z-index: 1021;
-}
-
-/* Category section */
-.category-window {
+.cart, .checkout, .search-bar, .category-window {
   top: 0;
   left: 0;
   min-width: 100%;
@@ -30,9 +22,7 @@
 
 /* Icon sizing */
 
-
-.navbar-toggler-icon
-{
+.navbar-toggler-icon {
   min-height: 24px;
   max-height: 24px;
   background-position: center;
@@ -56,32 +46,11 @@
   padding: 0.5rem 0 0.5rem 1rem;
 }
 
+
 /* For desktop */
-@media (min-width: 1268px) {
+@media (min-width: 992px) {
   .navbar-collapse {
     display: inline;
-    justify-content: space-between;
-  }
-
-  
-}
-
-/* For tablet and desktop */
-@media (min-width: 768px) {
-  .navbar {
-    height: 7vh;
-  }
-
-  .search-bar {
-    margin-top: 7vh;
-  }
-  
-  /* Category section */
-  .category-window {
-    margin-top: 7vh;
-  } 
-
-  .navbar-collapse {
     justify-content: space-between;
   }
 
@@ -89,20 +58,16 @@
     padding-right: 1.75rem;
   }
 
-  .cart-window {
-    margin-right: 1vh;
-    margin-top: 8vh;
-    border-radius: 0.25rem;
+  .nav-btn {
+    margin-right: 0.5rem;
   }
 
-  .nav-btn {
-    margin-right: 1rem;
-  }
+
 
   .cart-item-list {
     max-height: 40vh;
   }
-  
+
   .nav-btn {
     display: grid;
     vertical-align: middle;
@@ -111,38 +76,34 @@
     max-width: 35px;
     max-height: 35px;
   }
-  
-  .nav-btn > img  {
+
+  .nav-btn > img {
     min-height: 17px;
     max-height: 17px;
     object-position: center;
   }
 }
 
-/* For mobile */
-@media (max-width: 768px) {
-  .navbar {
-    height: 8vh;
+/* For mobile and tablet */
+@media (max-width: 992px) {
+  .nav-container {
+    width: 30%;
   }
 
-  .search-bar {
-    margin-top: 8vh;
-  }
-  
-  /* Category section */
-  .category-window {
-    margin-top: 8vh;
+  .navbar-collapse {
+    min-height: 95vh;
+    max-height: 95vh;
+    overflow: hidden;
+    overflow-y: scroll;
+    -ms-overflow-style: none;
+    scrollbar-width: none;
   }
 
-  .nav-container
-{
-  width: 30%;
-}
 
-  .cart-window {
-    margin-top: 8vh;
-    
-  }
+ .navbar-collapse::-webkit-scrollbar {
+  display: none;
+} 
+
 
   .cart-item-list {
     max-height: 70vh;
@@ -155,13 +116,12 @@
     min-height: 35px;
     max-height: 35px;
   }
-  
-  .nav-btn > img  {
+
+  .nav-btn > img {
     min-height: 20px;
     max-height: 20px;
     object-position: center;
   }
-  
 }
 
 .center {
@@ -186,8 +146,6 @@
 .cart-item:hover {
   background-color: #e3e7ec !important;
 }
-
-
 
 .row > div > p,
 .row > div > div > p,

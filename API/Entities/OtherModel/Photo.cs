@@ -9,5 +9,6 @@ namespace API.Entities.Other
     {
         public string Url { get; set; }
         public string PublicId { get; set; }
+        public string LocalPath { get; set; }
     }
 }

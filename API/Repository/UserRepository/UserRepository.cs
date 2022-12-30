@@ -30,7 +30,7 @@ namespace API.Data
 
         public async Task<PagedList<Product>> GetUserFavoriteProductsAsync(int userId, CustomerProductParams productParams)
         {   
-            var userLikes = await _context.UserLikes.Where(x => x.UserId == userId).ToListAsync();
+            var userLikes = await _context.UserLikes.Where(x => x.UserId == userId).OrderByDescending(x => x.DateCreated).ToListAsync();
 
             var query = _context.Products.AsQueryable();
 
@@ -38,29 +38,29 @@ namespace API.Data
 
             query = query.Where(x => x.Status != Status.Hidden && x.Status != Status.Deleted);
             
-            if(productParams.Gender != null)
-                query = query.Where(p => p.Category.Gender == productParams.Gender);
+            // if(productParams.Gender >= 0)
+            //     query = query.Where(p => p.Category.Gender == productParams.Gender);
 
-            if(productParams.Category != null)
-                query = query.Where(p => p.Category.CategoryName == productParams.Category);
+            // if(!string.IsNullOrEmpty(productParams.Category))
+            //     query = query.Where(p => p.Category.CategoryName == productParams.Category);
 
-            if(!string.IsNullOrEmpty(productParams.Query))
-            {   
-                var words = productParams.Query.RemoveSpecialCharacters().ToUpper().Split(" ").Distinct();
-                foreach(var word in words)
-                {
-                    query = query.Where(x => x.ProductName.ToUpper().Contains(word));
-                }
-            }
+            // if(!string.IsNullOrEmpty(productParams.Query))
+            // {   
+            //     var words = productParams.Query.RemoveSpecialCharacters().ToUpper().Split(" ").Distinct();
+            //     foreach(var word in words)
+            //     {
+            //         query = query.Where(x => x.ProductName.ToUpper().Contains(word));
+            //     }
+            // }
 
-            if (productParams.OrderBy == OrderBy.Ascending) 
+            if (productParams.OrderBy == OrderBy.Ascending)
             {
                 query = productParams.Field switch
                 {
                     "DateCreated" => query.OrderBy(p => p.DateCreated),
                     "Price" => query.OrderBy(p => p.Price),
                     "Name" => query.OrderBy(p => p.ProductName),
-                    _ => query.OrderBy(p => p.Sold)
+                    _ => query
                 };
             }
             else
@@ -70,9 +70,10 @@ namespace API.Data
                     "DateCreated" => query.OrderByDescending(p => p.DateCreated),
                     "Price" => query.OrderByDescending(p => p.Price),
                     "Name" => query.OrderByDescending(p => p.ProductName),
-                    _ => query.OrderByDescending(p => p.Sold)
+                    _ => query
                 };
             }
+
 
             query = query.Include(x => x.ProductPhotos.Where(x => x.Status == Status.Active));            
 

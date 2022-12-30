@@ -10,6 +10,7 @@ import { BsDatepickerConfig, BsLocaleService } from 'ngx-bootstrap/datepicker';
 export class DateInputComponent implements ControlValueAccessor {
   @Input() label: string;
   @Input() maxDate: Date;
+  @Input() minDate: Date;
   locale = 'vi';
   bsConfig: Partial<BsDatepickerConfig>;
   
@@ -24,14 +25,18 @@ export class DateInputComponent implements ControlValueAccessor {
 
 
   writeValue(obj: any): void {
+    // Not implemented
   }
   registerOnChange(fn: any): void {
+    // Not implemented
   }
   registerOnTouched(fn: any): void {
+    // Not implemented
   }
   
 
   ngOnInit(): void {
+    // Not implemented
   }
 
 }

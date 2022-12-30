@@ -15,7 +15,8 @@ namespace API.DTOs.Params
     {
         public double MinPrice { get; set; }
         public double MaxPrice { get; set; }
-        public int SizeId { get; set; }
+        public string Size { get; set; }
+        public string ColorCode { get; set; }
     }
 
     public class AdministratorProductParams : BaseProductParams

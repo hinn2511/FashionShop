@@ -31,7 +31,6 @@ export class ImageViewerModalComponent implements OnInit {
 
   ngOnInit(): void {
     this.preparePreview();
-    console.log(this.currentItem);
     
   }
 

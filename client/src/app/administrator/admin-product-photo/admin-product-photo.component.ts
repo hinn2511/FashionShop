@@ -14,7 +14,7 @@ import {
 import { AuthenticationService } from 'src/app/_services/authentication.service';
 import { ProductService } from 'src/app/_services/product.service';
 import { environment } from 'src/environments/environment';
-import { calculatePreviewOffset } from 'src/app/_common/function/global';
+import { calculatePreviewOffset, fnGetObjectStateStyle, fnGetObjectStateString } from 'src/app/_common/function/global';
 import { ToastrService } from 'ngx-toastr';
 
 @Component({
@@ -122,9 +122,11 @@ export class AdminProductPhotoComponent implements OnInit {
         actionTitle = 'Recover photos of ' + product.productName;
         this.multipleSelected = true;
         break;
+      case 'set-main':
+          actionTitle = 'Choose main photo of ' + product.productName;
+          this.multipleSelected = false;
+          break;
       default:
-        actionTitle = 'Choose main photo of ' + product.productName;
-        this.multipleSelected = false;
         break;
     }
     const config = {
@@ -215,7 +217,7 @@ export class AdminProductPhotoComponent implements OnInit {
     let index = this.productPhotos
       .map((el) => el.url)
       .indexOf(productPhoto.url);
-    var previewOffset = calculatePreviewOffset(
+    let previewOffset = calculatePreviewOffset(
       this.productPhotos.length,
       this.maxPreviewItem,
       index
@@ -264,11 +266,13 @@ export class AdminProductPhotoComponent implements OnInit {
             productPhotos.push(productPhoto);
           }
           break;
+          case 'set-main':
+            if (!productPhoto.isMain && productPhoto.status == 0) {
+              productPhoto.checked = false;
+              productPhotos.push(productPhoto);
+            }
+            break;
         default:
-          if (!productPhoto.isMain && productPhoto.status == 0) {
-            productPhoto.checked = false;
-            productPhotos.push(productPhoto);
-          }
           break;
       }
     });
@@ -276,25 +280,11 @@ export class AdminProductPhotoComponent implements OnInit {
   }
 
   getStateStyle() {
-    switch (this.product.status) {
-      case 0:
-        return 'width: 100px ;background-color: rgb(51, 155, 51)';
-      case 1:
-        return 'width: 100px ;background-color: rgb(124, 124, 124)';
-      default:
-        return 'width: 100px ;background-color: rgb(155, 51, 51)';
-    }
+    return fnGetObjectStateStyle(this.product.status);
   }
 
   getProductState() {
-    switch (this.product.status) {
-      case 0:
-        return 'Active';
-      case 1:
-        return 'Hidden';
-      default:
-        return 'Deleted';
-    }
+    return fnGetObjectStateString(this.product.status);
   }
 
 }

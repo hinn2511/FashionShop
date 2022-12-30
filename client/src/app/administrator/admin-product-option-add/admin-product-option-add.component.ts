@@ -56,7 +56,7 @@ export class AdminProductOptionAddComponent implements OnInit {
         this.toastr.success('Product option have been added', 'Success');
         if (event.submitter.name == 'saveAndContinue')
         {
-          this.initializeForm(); 
+          // this.initializeForm(); 
           this.router.navigateByUrl('/administrator/option-manager/add');
         }
         else this.router.navigateByUrl('/administrator/option-manager');

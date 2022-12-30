@@ -1,0 +1,164 @@
+<div class="container-fluid py-3" *ngIf="article">
+    <div class="d-flex w-100 py-1">
+      <button class="btn btn-light" routerLink="/administrator/article-manager">
+        <i class="fa fa-arrow-left"></i>&nbsp;&nbsp;Back
+      </button>
+    </div>
+  
+    <div class="d-flex d-inline-block align-items-center w-100 py-1">
+      <div>
+        <div class="rect-img-container mr-3">
+          <img class="rect-img" src="{{ article.thumbnailUrl }}" alt="" />
+        </div>
+      </div>
+  
+      <div>
+        <div class="article-title">
+          <h3 class="text-uppercase">{{ article.headline }}</h3>
+         
+        </div>
+  
+        <div class="btn px-3 py-1" [class]="getArticleStateStyle()">
+          <h5 class="m-0">{{ getArticleState() }}</h5>
+        </div>
+  
+        <div class="d-flex d-inline-block flex-wrap mt-3">
+  
+          <button class="btn btn-warning mr-2 my-2" (click)="editArticle()">
+            <span><i class="fa fa-pencil"></i></span>&nbsp;Edit
+          </button>
+  
+          <button
+            class="btn btn-dark mr-2 my-2"
+            *ngIf="article.status == 0; else unhide"
+            (click)="hideArticle()"
+          >
+            <span><i class="fa fa-eye-slash"></i></span>&nbsp;Hide
+          </button>
+          <ng-template #unhide>
+            <button class="btn btn-light mr-2 my-2" (click)="hideArticle()">
+              <span><i class="fa fa-eye"></i></span>&nbsp;Unhide
+            </button>
+          </ng-template>
+  
+          <button class="btn btn-danger mr-2 my-2" (click)="deleteArticle()">
+            <span><i class="fa fa-trash"></i></span>&nbsp;Delete
+          </button>
+        </div>
+      </div>
+    </div>
+  
+    <h5 class="text-muted">Article information</h5>
+    <hr />
+    <div class="row">
+      <div class="col-12 col-lg-4">
+        <label for="basic-url">Article ID</label>
+        <div class="input-group mb-3">
+          <input
+            type="text"
+            class="form-control"
+            [disabled]="true"
+            [value]="article.id"
+            id="basic-url"
+            aria-describedby="basic-addon3"
+          />
+        </div>
+
+
+        <label for="basic-url">Published by</label>
+        <div class="input-group mb-3">
+          <input
+            type="text"
+            class="form-control"
+            [disabled]="true"
+            [value]="article.publishedBy"
+            id="basic-url"
+            aria-describedby="basic-addon3"
+          />
+        </div>
+
+        <label for="basic-url">Published date</label>
+        <div class="input-group mb-3">
+          <input
+            type="text"
+            class="form-control"
+            [disabled]="true"
+            [value]="article.publishedDate"
+            id="basic-url"
+            aria-describedby="basic-addon3"
+          />
+        </div>
+  
+        <label for="basic-url">Headline</label>
+        <div class="input-group mb-3">
+          <input
+            type="text"
+            class="form-control"
+            [disabled]="true"
+            [value]="article.headline"
+            id="basic-url"
+            aria-describedby="basic-addon3"
+          />
+        </div>
+  
+        <label for="basic-url">Headline slug</label>
+        <div class="input-group mb-3">
+          <input
+            type="text"
+            class="form-control"
+            [disabled]="true"
+            [value]="article.headlineSlug"
+            id="basic-url"
+            aria-describedby="basic-addon3"
+          />
+        </div>
+  
+        <label for="basic-url">Foreword</label>
+        <div class="input-group mb-3">
+          <input
+            type="text"
+            class="form-control"
+            [disabled]="true"
+            [value]="article.foreword"
+            id="basic-url"
+            aria-describedby="basic-addon3"
+            *ngIf="article.foreword != undefined; else noForeword"
+          />
+          <ng-template #noForeword>
+            <input
+            type="text"
+            class="form-control"
+            [disabled]="true"
+            [value]="'No content'"
+            id="basic-url"
+            aria-describedby="basic-addon3"
+          />
+          </ng-template>
+          
+        </div>
+
+        <label for="basic-url">Content type</label>
+        <div class="input-group mb-3">
+          <input
+            type="text"
+            class="form-control"
+            [disabled]="true"
+            [value]="type"
+            id="basic-url"
+            aria-describedby="basic-addon3"
+          />
+        </div>
+      </div>
+  
+      <div class="col-12 col-lg-8">
+        <label for="basic-url">Content</label>
+        <div class="p-3 border">
+          <div
+            class="ck-content"
+            [innerHTML]="article.content | safeUrl"
+          ></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  

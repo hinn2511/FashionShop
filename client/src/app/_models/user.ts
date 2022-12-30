@@ -7,3 +7,12 @@ export class User {
     jwtToken?: string;
     roles: string[];
 }
+
+export interface Account {
+    dateOfBirth: Date;
+    firstName: string;
+    lastName: string;
+    gender: string;
+    phoneNumber: string;
+    email: string;
+}

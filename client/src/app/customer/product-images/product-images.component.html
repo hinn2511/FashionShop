@@ -1,28 +1,12 @@
-<!-- <div class="modal-header">
-    <h4 class="modal-title pull-left">{{action}}</h4>
-    <button type="button" class="close pull-right" aria-label="Close" (click)="bsModalRef.hide()">
-      <span aria-hidden="true">&times;</span>
-    </button>
-  </div>
-  <div class="modal-body">
-    <div class="rect-img-container">
-        <img class="rect-img" src="{{url}}" alt="">
-      </div>
-  </div>
-  <div class="modal-footer">
-    <button type="button" class="btn btn-default" (click)="bsModalRef.hide()">Done</button>
-  </div> -->
-
-<div class="w-100 container-fluid" *ngIf="viewerItems">
-  <div class="carousel">
-    <ng-container *ngFor="let item of viewerItems">
-      <!-- <div *ngIf="isCurrent(item.url)">
-              <img *ngIf="item.fileType == 0; else video" [src]="item.url" class="slide" [@slideAnimation]="animationType"/>
-              <ng-template #video>
-                <video [src]="item.url" class="slide" autoplay  [@slideAnimation]="animationType"></video>
-              </ng-template>
-            </div> -->
-      <div class="rect-img-container" *ngIf="isCurrent(item.url)">
+<!-- carousel -->
+<div class="w-100 px-0 mx-0" *ngIf="carousels">
+  <div class="carousel position-relative">
+    <ng-container *ngFor="let slide of carousels; let i = index">
+      <div
+        class="cs-pointer carousel-image-container"
+        *ngIf="i === currentSlideIndex"
+      >
+        <!-- <div class="rect-img-container" *ngIf="isCurrent(item.url)">
         <img
           *ngIf="item.fileType == 0; else video"
           [src]="item.url"
@@ -37,31 +21,66 @@
             [@slideAnimation]="animationType"
           ></video>
         </ng-template>
+      </div> -->
+        <div
+          class="carousel-content carousel-image"
+          [@slide]="{
+            value: '',
+            params: { startPos: startPos, endPos: endPos }
+          }"
+        >
+          <div class="rect-img-container">
+            <img [src]="slide.imageUrl" class="rect-img" alt="editor-choice" />
+          </div>
+        </div>
+
+        <div
+          class="carousel-content"
+          [class]="{
+            'carousel-image-next': action == 'next',
+            'carousel-image-prev': action == 'prev'
+          }"
+          [@slide]="{
+            value: '',
+            params: { startPos: startPos, endPos: endPos }
+          }"
+        >
+          <div class="rect-img-container">
+            <img [src]="currentUrl" class="rect-img" alt="editor-choice" />
+          </div>
+        </div>
       </div>
     </ng-container>
-
-    <!-- controls -->
-    <button class="control prev" (click)="onPreviousClick()">
-      <span class="arrow left"></span>
+    <button class="carousel-control carousel-prev">
+      <span class="carousel-arrow carousel-arrow-left carousel-arrow-dark"></span>
     </button>
-    <button class="control next" (click)="onNextClick()">
-      <span class="arrow right"></span>
+    <button class="carousel-control carousel-next">
+      <span class="carousel-arrow carousel-arrow-right carousel-arrow-dark"></span>
+    </button>
+
+    <button class="carousel-control carousel-prev" (click)="onPreviousClick()">
+      <span class="carousel-arrow carousel-arrow-left carousel-arrow-dark"></span>
+    </button>
+    <button class="carousel-control carousel-next" (click)="onNextClick()">
+      <span class="carousel-arrow carousel-arrow-right carousel-arrow-dark"></span>
     </button>
   </div>
-
   <div
-    class="w-100 justify-content-center img-indicator-container d-flex d-inline-block"
+    class="carousel-indicator-container w-100 mt-2 px-2 d-flex d-inline-block align-items-center justify-content-center"
   >
     <div
-      (click)="indicatorClick(i)"
-      class="cs-pointer rounded mx-1"
-      [class]="{ 'img-indicator-active': isCurrent(item.url),
-                'img-indicator': !isCurrent(item.url) }"
-      *ngFor="let item of viewerItems; let i = index"
+      (click)="viewSlide(i)"
+      class="cs-pointer carousel-indicator"
+      [class]="{
+        'carousel-indicator-inactive': i != currentSlideIndex,
+        'carousel-indicator-active': i == currentSlideIndex
+      }"
+      *ngFor="let slide of carousels; let i = index"
     ></div>
   </div>
+</div>
 
-  <div class="img-review-container py-2 d-flex d-inline-block w-100">
+<!-- <div class="img-review-container py-2 d-flex d-inline-block w-100" *ngIf="showPreview">
     <div
       class="rect-img-container img-review cs-pointer"
       (click)="onThumbnailClick(item)"
@@ -70,7 +89,6 @@
       [class.not-selected]="!isCurrent(item.url)"
       *ngFor="let item of previewItems"
     >
-      <!-- <img class="rect-img" src="{{ item.url }}" alt="" /> -->
       <img
         *ngIf="item.fileType == 0; else video"
         [src]="item.url"
@@ -85,5 +103,4 @@
         ></video>
       </ng-template>
     </div>
-  </div>
-</div>
+  </div> -->

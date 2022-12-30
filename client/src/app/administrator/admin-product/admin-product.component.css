@@ -32,6 +32,6 @@ input[type="checkbox"] {
 
 .rect-img-container
 {
-  max-height: 5vh;
+  max-height: 40px;
   overflow: hidden;
 }

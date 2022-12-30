@@ -60,6 +60,7 @@ namespace API.Controllers
             {
                 var userLikes = await _unitOfWork.UserLikeRepository.GetAllBy(x => x.UserId == GetUserId());
                 productsLiked = userLikes.ToList();
+                
             }
 
             var result = _mapper.Map<List<CustomerProductsResponse>>(products.ToList());
@@ -69,7 +70,7 @@ namespace API.Controllers
             {
                 foreach (var item in result)
                 {
-                    if (productsLiked.Any(x => x.Id == item.Id))
+                    if (productsLiked.Any(x => x.ProductId == item.Id))
                         item.LikedByUser = true;
                 }
             }

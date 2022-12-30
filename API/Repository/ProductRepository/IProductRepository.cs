@@ -12,7 +12,7 @@ namespace API.Interfaces
 
     public interface IColorRepository : IGenericRepository<Color>
     {
-
+        Task<IEnumerable<Color>> GetColorsByProductFilter(CustomerProductParams productParams);
     }
 
     public interface IProductPhotoRepository : IGenericRepository<ProductPhoto>

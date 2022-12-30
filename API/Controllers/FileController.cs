@@ -53,42 +53,51 @@ namespace API.Controllers
 
             _unitOfWork.FileRepository.Insert(uploadedFile);
 
-            if(await _unitOfWork.Complete())
+            if (await _unitOfWork.Complete())
                 return Ok($"{Constant.DownloadFileUrl}{uploadedFile.Name}");
-        
+
             return BadRequest("Can not upload file");
         }
 
         [HttpPost("image")]
         public async Task<ActionResult> UploadImageFile(IFormFile file, [FromQuery] int height, [FromQuery] int width, [FromQuery] bool keepRatio)
-        {            
+        {
             if (!FileExtensions.ValidateFile(file, Constant.ImageContentType, 10000))
                 return BadRequest("File not valid");
 
             var filePath = await FileExtensions.SaveFile(file);
 
-            var keepSourceImage = file.ContentType == "image/png";
+            var uploadedFile = new UploadedFile();
 
-            var resizedFilePath = FileExtensions.ResizeImage(width, height, filePath, false, keepRatio, keepSourceImage);
-
-            var resizedFileName = resizedFilePath.Split("\\").Last();
-
-            var resizedFileExtension = resizedFileName.Split(".").Last();
-
-            var uploadedFile = new UploadedFile()
+            if (height != 0 && width != 0)
             {
-                ContentType = file.ContentType,
-                Name = resizedFileName,
-                Extension = resizedFileExtension,
-                Path = resizedFilePath
-            };
-            uploadedFile.AddCreateInformation(GetUserId());
+                var keepSourceImage = file.ContentType == "image/png";
 
+                var resizedFilePath = FileExtensions.ResizeImage(width, height, filePath, false, keepRatio, keepSourceImage);
+
+                var resizedFileName = resizedFilePath.Split("\\").Last();
+
+                var resizedFileExtension = resizedFileName.Split(".").Last();
+
+                uploadedFile.ContentType = file.ContentType;
+                uploadedFile.Name = resizedFileName;
+                uploadedFile.Extension = resizedFileExtension;
+                uploadedFile.Path = resizedFilePath;
+            }
+            else
+            {
+                uploadedFile.ContentType = file.ContentType;
+                uploadedFile.Name = filePath.Split("\\").Last();
+                uploadedFile.Extension = filePath.Split(".").Last();
+                uploadedFile.Path = filePath;
+            }
+        
+            uploadedFile.AddCreateInformation(GetUserId());
             _unitOfWork.FileRepository.Insert(uploadedFile);
 
-            if(await _unitOfWork.Complete())
+            if (await _unitOfWork.Complete())
                 return Ok(new FileUploadedResponse($"{Constant.DownloadFileUrl}{uploadedFile.Name}"));
-        
+
             return BadRequest("Can not upload file");
         }
 
@@ -117,7 +126,7 @@ namespace API.Controllers
             ////  for video file
             if (file.Extension == ".mp4")
                 return File(content, file.ContentType, file.Name);
-            
+
             return new FileContentResult(content, file.ContentType);
 
             //// download from stream and viewable in browser
@@ -142,7 +151,7 @@ namespace API.Controllers
                 throw new KeyNotFoundException("File not found");
             return uploadedFile;
         }
-        
+
     }
 }
 

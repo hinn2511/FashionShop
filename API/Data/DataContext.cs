@@ -42,6 +42,8 @@ namespace API.Data
         public DbSet<FeatureProduct> FeatureProducts { get; set; }
         public DbSet<Cart> Carts { get; set; }
         public DbSet<UserLike> UserLikes { get; set; }
+        public DbSet<Article> Articles { get; set; }
+        public DbSet<Photo> Photos { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {

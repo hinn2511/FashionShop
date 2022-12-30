@@ -3,7 +3,7 @@
 <div *ngIf="!hasRoute('administrator/login')">
     <div *appHasRole='["Anonymous", "Customer"]'>
         <div class="w-100">
-            <app-carousel *ngIf="carousels" [carousels]="carousels"></app-carousel>
+            <app-home-carousel *ngIf="carousels.length > 0" [carousels]="carousels"></app-home-carousel>
             <app-home-categories></app-home-categories>
             <app-home-best-seller></app-home-best-seller>
             <app-home-collection></app-home-collection>

@@ -31,7 +31,7 @@ namespace API.Data
             var query = _context.Products.AsQueryable();
 
             query = query.Where(x => x.Status != Status.Hidden && x.Status != Status.Deleted);
-            
+
             query = query.Include(x => x.Category).Include(x => x.SubCategory);
 
             if (productParams.Gender != null)
@@ -46,10 +46,16 @@ namespace API.Data
             if (!string.IsNullOrEmpty(productParams.Category))
                 query = query.Where(p => p.Category.Slug == productParams.Category || p.SubCategory.Slug == productParams.Category);
 
-            if (productParams.SizeId != 0)
+            if (!string.IsNullOrEmpty(productParams.Size))
             {
-                var productsWithSize = _context.Options.Where(o => o.SizeId == productParams.SizeId);
+                var productsWithSize = _context.Options.Where(o => o.Size.SizeName.ToUpper() == productParams.Size.ToUpper());
                 query = query.Where(x => productsWithSize.Select(o => o.ProductId).Contains(x.Id));
+            }
+
+            if (!string.IsNullOrEmpty(productParams.ColorCode))
+            {
+                var productsWithColor = _context.Options.Where(o => o.Color.ColorCode.ToUpper() == productParams.ColorCode.ToUpper());
+                query = query.Where(x => productsWithColor.Select(o => o.ProductId).Contains(x.Id));
             }
 
             if (!string.IsNullOrEmpty(productParams.Query))
@@ -60,6 +66,7 @@ namespace API.Data
                     query = query.Where(x => x.ProductName.ToUpper().Contains(word));
                 }
             }
+
 
             if (productParams.OrderBy == OrderBy.Ascending)
             {
@@ -82,7 +89,7 @@ namespace API.Data
                 };
             }
 
-            
+
             query = query.Include(x => x.ProductPhotos.Where(x => x.Status == Status.Active));
 
             return await PagedList<Product>.CreateAsync(query, productParams.PageNumber, productParams.PageSize);
@@ -155,12 +162,90 @@ namespace API.Data
     }
     public class ColorRepository : GenericRepository<Color>, IColorRepository
     {
+        private readonly DataContext _context;
         public ColorRepository(DataContext context, DbSet<Color> set) : base(context, set)
         {
+            _context = context;
+
+        }
+
+        public async Task<IEnumerable<Color>> GetColorsByProductFilter(CustomerProductParams productParams)
+        {
+            var query = _context.Products.AsQueryable();
+
+            query = query.Where(x => x.Status != Status.Hidden && x.Status != Status.Deleted);
+
+            query = query.Include(x => x.Category).Include(x => x.SubCategory);
+
+            if (productParams.Gender != null)
+                query = query.Where(p => p.Category.Gender == productParams.Gender);
+
+            if (productParams.MinPrice > 0)
+                query = query.Where(p => p.Price >= productParams.MinPrice);
+
+            if (productParams.MaxPrice > 0)
+                query = query.Where(p => p.Price <= productParams.MaxPrice);
+
+            if (!string.IsNullOrEmpty(productParams.Category))
+                query = query.Where(p => p.Category.Slug == productParams.Category || p.SubCategory.Slug == productParams.Category);
+
+            if (!string.IsNullOrEmpty(productParams.Size))
+            {
+                var productsWithSize = _context.Options.Where(o => o.Size.SizeName.ToUpper() == productParams.Size.ToUpper());
+                query = query.Where(x => productsWithSize.Select(o => o.ProductId).Contains(x.Id));
+            }
+
+            if (!string.IsNullOrEmpty(productParams.ColorCode))
+            {
+                var productsWithColorCode = _context.Options.Where(o => o.Color.ColorCode == productParams.ColorCode);
+                query = query.Where(x => productsWithColorCode.Select(o => o.ProductId).Contains(x.Id));
+            }
+
+            if (!string.IsNullOrEmpty(productParams.Query))
+            {
+                var words = productParams.Query.RemoveSpecialCharacters().ToUpper().Split(" ").Distinct();
+                foreach (var word in words)
+                {
+                    query = query.Where(x => x.ProductName.ToUpper().Contains(word));
+                }
+            }
+
+            var products = await query.AsNoTracking().ToListAsync();
+
+            var productIds = products.Select(x => x.Id);
+
+            var options = await _context.Options.Where(o => productIds.Contains(o.ProductId) && o.Status == Status.Active).ToListAsync();
+
+            var colorIds = options.Select(x => x.ColorId).Distinct();
+
+            return await _context.Colors.Where(c => colorIds.Contains(c.Id)).ToListAsync();
+
+
+            // if (productParams.OrderBy == OrderBy.Ascending)
+            // {
+            //     query = productParams.Field switch
+            //     {
+            //         "DateCreated" => query.OrderBy(p => p.DateCreated),
+            //         "Price" => query.OrderBy(p => p.Price),
+            //         "Name" => query.OrderBy(p => p.ProductName),
+            //         _ => query.OrderBy(p => p.Sold)
+            //     };
+            // }
+            // else
+            // {
+            //     query = productParams.Field switch
+            //     {
+            //         "DateCreated" => query.OrderByDescending(p => p.DateCreated),
+            //         "Price" => query.OrderByDescending(p => p.Price),
+            //         "Name" => query.OrderByDescending(p => p.ProductName),
+            //         _ => query.OrderByDescending(p => p.Sold)
+            //     };
+            // }
+
         }
     }
 
-  public class ProductOptionRepository : GenericRepository<Option>, IProductOptionRepository
+    public class ProductOptionRepository : GenericRepository<Option>, IProductOptionRepository
     {
         private readonly DataContext _context;
 

@@ -1,6 +1,7 @@
 using System.Threading.Tasks;
 using API.Entities;
 using API.Interfaces;
+using API.Repository.ArticleRepository;
 using API.Repository.BrandRepository;
 using API.Repository.ConfigurationRepository;
 using API.Repository.FileRepository;
@@ -38,6 +39,8 @@ namespace API.Data
         public ICarouselRepository CarouselRepository => new CarouselRepository(_context, _context.Carousels);
         public IFeatureProductRepository FeatureProductRepository => new FeatureProductRepository(_context, _context.FeatureProducts);
         public IFeatureCategoryRepository FeatureCategoryRepository => new FeatureCategoryRepository(_context, _context.FeatureCategories);
+        public IArticleRepository ArticleRepository => new ArticleRepository(_context, _context.Articles);
+        public IPhotoRepository PhotoRepository => new PhotoRepository(_context, _context.Photos);
 
         public async Task<bool> Complete()
         {

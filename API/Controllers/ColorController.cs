@@ -25,6 +25,16 @@ namespace API.Controllers
             _mapper = mapper;
         }
 
+        #region anonoymous
+        [AllowAnonymous]
+        [HttpGet("product-filter")]
+        public async Task<ActionResult> GetColorByProductFilter([FromQuery] CustomerProductParams productParams)
+        {
+            var colors = await _unitOfWork.ColorRepository.GetColorsByProductFilter(productParams);
+            return Ok(_mapper.Map<IEnumerable<ColorFilterResponse>>(colors));
+        }
+        #endregion
+
         #region manager
         [HttpGet("all")]
         public async Task<ActionResult> GetColorsAsAdmin()

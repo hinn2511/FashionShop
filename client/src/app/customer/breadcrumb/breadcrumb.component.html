@@ -1,14 +1,26 @@
-<nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb" *ngIf="breadCrumbList">
-    <ol class="breadcrumb bg-transparent">
-        <li *ngFor="let item of breadCrumbList; let i = index" 
-            class="breadcrumb-item">
-            <a *ngIf="i < breadCrumbList.length - 1" class="text-dark link"
-                routerLink="{{item.route}}">
-                {{item.name}}
-            </a>
-        </li>
-        <li class="breadcrumb-item active">
-            {{breadCrumbList[breadCrumbList.length - 1].name}}
-        </li>
-    </ol>
+<nav
+  style="--bs-breadcrumb-divider: '>'"
+  aria-label="breadcrumb"
+  *ngIf="breadCrumbList"
+>
+  <ol
+    class="breadcrumb"
+    [class]="{ 'bg-light': showBackground, 'bg-transparent': !showBackground }"
+  >
+    <li
+      *ngFor="let item of breadCrumbList; let i = index"
+      class="breadcrumb-item"
+    >
+      <a
+        *ngIf="i < breadCrumbList.length - 1"
+        class="text-dark link"
+        (click)="navigatingTo(breadCrumb)"
+      >
+        {{ item.name }}
+      </a>
+    </li>
+    <li class="breadcrumb-item active">
+      {{ breadCrumbList[breadCrumbList.length - 1].name }}
+    </li>
+  </ol>
 </nav>

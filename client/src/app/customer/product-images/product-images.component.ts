@@ -1,127 +1,100 @@
-import { AnimationType } from './../../_common/animation/carousel.animations';
-import { calculatePreviewOffset } from 'src/app/_common/function/global';
-import { Component, Input, OnInit, OnDestroy } from '@angular/core';
-import { fadeIn, fadeOut, flipIn, flipOut, jackIn, jackOut, scaleIn, scaleOut, SlideInOutAnimation } from 'src/app/_common/animation/carousel.animations';
-import { ProductPhoto } from 'src/app/_models/product';
-import { trigger, transition, useAnimation } from '@angular/animations';
+import { Component, Input, OnInit, SimpleChanges } from '@angular/core';
+import { slide } from 'src/app/_common/animation/carousel.animations';
+import { CustomerCarousel } from 'src/app/_models/carousel';
 
 @Component({
   selector: 'app-product-images',
   templateUrl: './product-images.component.html',
   styleUrls: ['./product-images.component.css'],
-  animations: [
-    trigger("slideAnimation", [
-
-      /* fade */
-      transition("void => fade", [
-        useAnimation(fadeIn, { params: { time: "500ms" } })
-      ]),
-      transition("fade => void", [
-        useAnimation(fadeOut, { params: { time: "500ms" } })
-      ]),
-
-
-
-    ])
-  ]
+  animations: [ slide]
 })
 export class ProductImagesComponent implements OnInit {
-  @Input() viewerItems: ProductPhoto[] = [];
-  @Input() maxPreviewItem: number;
-  @Input() nextItemInterval = 7000;
-  animationType = AnimationType.Fade;
-  previewItems: ProductPhoto[] = [];
-  currentItem: ProductPhoto;
-  currentIndex: number;
-  leftOffset: number;
-  rightOffset: number;
-  animationState = 'in';
+  @Input() carousels: CustomerCarousel[] = [];
+  @Input() nextSlideInterval = 10000;
+  currentSlideIndex = 0;
+  currentUrl: string = "";
+  startPos: string = "-100";
+  endPos: string = "-100";
+  currentSlide: CustomerCarousel;
+  action: string = "next";
 
-  constructor() { }
+  interval;
+  carouselTextStyle: string;
 
+  constructor() {
+    //Not implement
+  }
 
-  ngOnInit(): void {
-    this.setItem(0);
-    let offset = calculatePreviewOffset(this.viewerItems.length, this.maxPreviewItem, 0);
-    this.leftOffset = offset[0];
-    this.rightOffset = offset[1];
-    this.preparePreview();
+  ngOnChanges(changes: SimpleChanges): void {
+    if(this.carousels.length > 0)
+      this.viewSlide(0);
+  }
+
+  ngOnInit() {
     this.preloadImages();
+    this.currentUrl = this.carousels[0].imageUrl;
+    this.currentSlide = this.carousels[0];
   }
 
-
-  preloadImages() {
-    for (const slide of this.viewerItems) {
-      new Image().src = slide.url;
-    }
-  }
-
-  private setItem(id: number) {
-    this.currentIndex = id;
-    this.currentItem = this.viewerItems[id];
-  }
-
-  preparePreview() {
-    this.previewItems = this.viewerItems.slice(
-      this.leftOffset,
-      this.rightOffset
-    );
-
-  }
-
-  isCurrent(url: string) {
-    return url == this.currentItem.url;
-  }
-
-  getPreviewItemWidth() {
-    return 'width: calc(' + 100 / this.maxPreviewItem + '% - 1px);';
-  }
-
-  onThumbnailClick(item: ProductPhoto) {
-    this.setItem(this.viewerItems.indexOf(item));
-    this.toggle();
+  ngOnDestroy(): void {
   }
 
   onPreviousClick() {
-    if (this.currentIndex > 0) {
-      this.setItem(--this.currentIndex);
-      if (this.viewerItems.length > this.maxPreviewItem) {
-        this.leftOffset--;
-        this.rightOffset--;
-      }
-    }
-    this.preparePreview();
-    this.toggle();
+    this.startPos = "-100";
+    this.endPos = "-100";
+    this.action = "prev"
+    this.currentUrl = this.currentSlide.imageUrl;
+    this.currentSlideIndex = this.currentSlideIndex - 1;
+
+    if(this.currentSlideIndex < 0)
+      this.currentSlideIndex = this.carousels.length - 1;
+
+    this.currentSlide = this.carousels[this.currentSlideIndex];
   }
 
   onNextClick() {
-    if (this.currentIndex < this.viewerItems.length - 1) {
-      this.setItem(++this.currentIndex);
-      if (this.viewerItems.length > this.maxPreviewItem) {
-        this.leftOffset++;
-        this.rightOffset++;
+    this.startPos = "100";
+    this.endPos = "100";
+    this.action = "next"
+    this.currentUrl = this.currentSlide.imageUrl;
+    this.currentSlideIndex = this.currentSlideIndex + 1;
+
+    if(this.currentSlideIndex === this.carousels.length)
+      this.currentSlideIndex = 0;
+
+    this.currentSlide = this.carousels[this.currentSlideIndex];
+  }
+
+  viewSlide(index: number)
+  {    
+    if (this.currentSlide != undefined)
+      this.currentUrl = this.currentSlide.imageUrl;
+    
+    let step = index - this.currentSlideIndex;
+    
+    if (this.currentSlideIndex < index)
+    {
+      this.action = "next";
+      for(let i = 0; i < step; i++)
+      {
+        this.onNextClick();
       }
     }
-    this.preparePreview();
-    this.toggle();
-  }
-
-  indicatorClick(index: number)
-  {
-    this.currentIndex = index;
-    this.setItem(this.currentIndex);
-    this.leftOffset = this.maxPreviewItem * Math.floor(this.currentIndex / this.maxPreviewItem);
-    this.rightOffset = this.leftOffset + this.maxPreviewItem;
-    if(this.leftOffset <= 0)
+    else
     {
-      this.leftOffset = 0;
-      this.rightOffset = this.leftOffset + this.maxPreviewItem;
+      this.action = "prev";
+      for(let i = 0; i < -step; i++)
+      {
+        this.onPreviousClick();
+      }
     }
-    this.preparePreview();
-    this.toggle();
   }
 
-  toggle() {
-    this.animationState = this.animationState === 'out' ? 'in' : 'out';
+
+
+  preloadImages() {
+    for (const slide of this.carousels) {
+      new Image().src = slide.imageUrl;
+    }
   }
 }

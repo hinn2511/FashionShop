@@ -1,3 +1,4 @@
+import { fnGetObjectStateString, fnGetObjectStateStyle } from 'src/app/_common/function/global';
 import { CarouselPreviewComponent } from '../../_common/carousel-preview/carousel-preview.component';
 import { ContentService } from 'src/app/_services/content.service';
 import { Component, OnInit } from '@angular/core';
@@ -88,7 +89,6 @@ export class AdminCarouselComponent implements OnInit {
 
   editCarousel() {
     if (!this.isSingleSelected()) return;
-    // this.contentService.setSelectedCarouselId(this.selectedIds[0]);
     this.router.navigateByUrl(
       '/administrator/carousel-manager/edit/' + this.selectedIds[0]
     );
@@ -194,30 +194,12 @@ export class AdminCarouselComponent implements OnInit {
   }
 
   getCarouselState(carousel: ManagerCarousel) {
-    switch (carousel.status) {
-      case 0:
-        return 'Active';
-      case 1:
-        return 'Hidden';
-      default:
-        return 'Deleted';
-    }
+    return fnGetObjectStateString(carousel.status);
   }
 
   getStateStyle(carousel: ManagerCarousel) {
-    switch (carousel.status) {
-      case 0:
-        return 'width: 100px ;background-color: rgb(51, 155, 51)';
-      case 1:
-        return 'width: 100px ;background-color: rgb(124, 124, 124)';
-      default:
-        return 'width: 100px ;background-color: rgb(155, 51, 51)';
-    }
+    return fnGetObjectStateStyle(carousel.status);
   }
-
-  // isStatusIncluded(status: number) {
-  //   return this.carouselParams.carouselStatus.indexOf(status) > -1;
-  // }
 
   isAllStatusIncluded() {
     return this.carouselParams.carouselStatus.length == 3;
@@ -232,7 +214,7 @@ export class AdminCarouselComponent implements OnInit {
       this.carouselParams.carouselStatus =
         this.carouselParams.carouselStatus.filter((x) => x !== status);
     else this.carouselParams.carouselStatus.push(status);
-    this.carouselParams.carouselStatus = this.carouselParams.carouselStatus.sort();
+    this.carouselParams.carouselStatus = [...this.carouselParams.carouselStatus].sort((a, b) => a - b);
     this.loadCarousels();
   }
 

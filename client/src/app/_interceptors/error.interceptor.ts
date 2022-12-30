@@ -15,7 +15,9 @@ export class ErrorInterceptor implements HttpInterceptor {
                     localStorage.removeItem('user');
                 this.authenticationService.logout();
             }
-
+            
+            console.log(err);
+            
             const error = (err && err.error && err.error.message) || err.statusText;
             console.error(err);
             return throwError(error);
