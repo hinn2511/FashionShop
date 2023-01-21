@@ -1,6 +1,6 @@
-import { CustomerCarousel } from 'src/app/_models/carousel';
 import { Component, Input, OnInit, SimpleChanges } from '@angular/core';
 import { slide } from 'src/app/_common/animation/carousel.animations';
+import { Carousel } from 'src/app/_models/carousel';
 
 @Component({
   selector: 'app-image-carousel',
@@ -10,13 +10,13 @@ import { slide } from 'src/app/_common/animation/carousel.animations';
 })
 export class ImageCarouselComponent implements OnInit {
 
-  @Input() carousels: CustomerCarousel[] = [];
+  @Input() carousels: Carousel[] = [];
   @Input() nextSlideInterval = 10000;
   currentSlideIndex = 0;
   currentUrl: string = "";
   startPos: string = "-100";
   endPos: string = "-100";
-  currentSlide: CustomerCarousel;
+  currentSlide: Carousel;
   action: string = "next";
 
   interval;
@@ -111,6 +111,11 @@ export class ImageCarouselComponent implements OnInit {
     this.interval = setInterval(() => {
       this.onNextClick();
     }, this.nextSlideInterval);
+  }
+
+  updateCarousel(carousels: Carousel[])
+  {
+    this.carousels = carousels;
   }
 
 }

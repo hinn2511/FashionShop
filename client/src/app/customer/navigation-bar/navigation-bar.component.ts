@@ -247,7 +247,7 @@ export class NavigationBarComponent
   viewCategory(categoryName: string, categorySlug: string, gender: number) {
     this.categoryService.setCurrentCategory(categoryName, gender);
     this.collapseAll();
-    this.router.navigate(['/products'], {
+    this.router.navigate(['/product'], {
       queryParams: { category: categorySlug, gender: gender },
     });
   }

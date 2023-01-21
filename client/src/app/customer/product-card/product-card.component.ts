@@ -34,7 +34,7 @@ export class ProductCardComponent implements OnInit {
 
   viewDetail() {
     this.router.navigate(
-      ['product/' + this.product.slug],
+      [`product/${this.product.slug}`],
       { queryParams: { id: this.product.id } }
     );
   }

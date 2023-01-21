@@ -23,7 +23,8 @@ import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { debounceTime } from 'rxjs/operators';
-import { fnGetOrderStateString, fnGetOrderStateStyle } from 'src/app/_common/function/global';
+import { fnGetOrderStateStyle } from 'src/app/_common/function/style-class';
+import { fnGetOrderStateString } from 'src/app/_common/function/function';
 
 @Component({
   selector: 'app-admin-order',

@@ -1,19 +1,17 @@
 import { ArticleService } from 'src/app/_services/article.service';
 import { FileService } from './../../_services/file.service';
-import { ContentService } from 'src/app/_services/content.service';
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ArticleType, ArticleTypeList } from 'src/app/_models/article';
 import { Router } from '@angular/router';
-import { AddArticle, ManagerArticle } from 'src/app/_models/article';
+import { AddArticle } from 'src/app/_models/article';
 import { concatMap } from 'rxjs/operators';
 import { AuthenticationService } from 'src/app/_services/authentication.service';
 import { ToastrService } from 'ngx-toastr';
 import {
   fnGetFormControlValue,
   fnUpdateFormControlStringValue,
-  fnUpdateFormControlNumberValue,
-} from 'src/app/_common/function/global';
+} from 'src/app/_common/function/function';
 import { FileUploadedResponse } from 'src/app/_models/file';
 
 @Component({

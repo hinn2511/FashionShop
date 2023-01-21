@@ -1,5 +1,5 @@
-import { fnGetObjectStateString, fnGetObjectStateStyle } from 'src/app/_common/function/global';
-import { CarouselPreviewComponent } from '../../_common/carousel-preview/carousel-preview.component';
+import { ImageCarouselComponent } from './../../_common/image-carousel/image-carousel.component';
+import { Carousel } from './../../_models/carousel';
 import { ContentService } from 'src/app/_services/content.service';
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
@@ -12,6 +12,7 @@ import { IdArray } from 'src/app/_models/adminRequest';
 import { animate, state, style, transition, trigger } from '@angular/animations';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 import { ToastrService } from 'ngx-toastr';
+import { fnGetObjectStateString, fnGetObjectStateStyle } from 'src/app/_common/function/style-class';
 
 @Component({
   selector: 'app-admin-carousel',
@@ -239,13 +240,14 @@ export class AdminCarouselComponent implements OnInit {
   }
 
   showPreview(carousel: ManagerCarousel) {
+    let carousels: Carousel[] = [new Carousel(carousel.title, carousel.description, carousel.link, carousel.imageUrl)]; 
     const config = {
       class: 'modal-dialog-centered',
       initialState: {
-        carousel: carousel
+        carousels: carousels
       },
     };
-    this.bsModalRef = this.modalService.show(CarouselPreviewComponent, config);
+    this.bsModalRef = this.modalService.show(ImageCarouselComponent, config);
     this.bsModalRef.setClass('modal-xl');
   }
 }

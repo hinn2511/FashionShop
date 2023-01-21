@@ -1,5 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import { fnGetObjectStateString, fnGetObjectStateStyle } from 'src/app/_common/function/global';
 import { RotateAnimation } from 'src/app/_common/animation/carousel.animations';
 import { ArticleService } from 'src/app/_services/article.service';
 import { Pagination } from 'src/app/_models/pagination';
@@ -8,6 +7,7 @@ import { IdArray } from 'src/app/_models/adminRequest';
 import { ToastrService } from 'ngx-toastr';
 import { ManagerArticle, ManagerArticleParams, ArticleType, ArticleTypeList } from 'src/app/_models/article';
 import { GenericStatus, GenericStatusList } from 'src/app/_models/generic';
+import { fnGetObjectStateString, fnGetObjectStateStyle } from 'src/app/_common/function/style-class';
 
 
 @Component({

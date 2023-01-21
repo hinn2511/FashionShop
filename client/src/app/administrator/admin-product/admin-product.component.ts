@@ -12,7 +12,7 @@ import {
 import { ProductService } from 'src/app/_services/product.service';
 import { environment } from 'src/environments/environment';
 import { ToastrService } from 'ngx-toastr';
-import { fnGetObjectStateString, fnGetObjectStateStyle } from 'src/app/_common/function/global';
+import { fnGetObjectStateString, fnGetObjectStateStyle } from 'src/app/_common/function/style-class';
 
 @Component({
   selector: 'app-admin-product',

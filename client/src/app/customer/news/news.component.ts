@@ -8,7 +8,7 @@ import {
 import { Pagination } from 'src/app/_models/pagination';
 import { ActivatedRoute, Router } from '@angular/router';
 import { CustomerFilterOrder } from 'src/app/_models/productParams';
-import { CustomerCarousel } from 'src/app/_models/carousel';
+import { Carousel } from 'src/app/_models/carousel';
 
 @Component({
   selector: 'app-news',
@@ -18,7 +18,7 @@ import { CustomerCarousel } from 'src/app/_models/carousel';
 export class NewsComponent implements OnInit {
   articles: CustomerArticle[];
   editorChoiceArticles: CustomerArticle[];
-  editorChoiceSlides: CustomerCarousel[] = [];
+  editorChoiceSlides: Carousel[] = [];
   trendingArticles: CustomerArticle[];
 
   skeletonItems: number[];
@@ -85,7 +85,7 @@ export class NewsComponent implements OnInit {
         this.editorChoiceArticles = response;
         this.editorChoiceSlides = [];
         this.editorChoiceArticles.forEach(element => {
-          this.editorChoiceSlides.push(new CustomerCarousel(element.headline, element.foreword, element.headlineSlug, element.thumbnailUrl));
+          this.editorChoiceSlides.push(new Carousel(element.headline, element.foreword, element.headlineSlug, element.thumbnailUrl));
         });
 
         

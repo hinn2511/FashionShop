@@ -8,7 +8,7 @@ import { Brand, ManagerProduct } from 'src/app/_models/product';
 import { ProductService } from 'src/app/_services/product.service';
 import { Category, ManagerCatalogue, ManagerCategoryParams, fnGetGenderName } from 'src/app/_models/category';
 import { DialogService } from 'src/app/_services/dialog.service';
-import { fnFlattenArray, fnUpdateFormControlNumberValue } from 'src/app/_common/function/global';
+import { fnFlattenArray, fnUpdateFormControlNumberValue } from 'src/app/_common/function/function';
 
 @Component({
   selector: 'app-admin-product-edit',

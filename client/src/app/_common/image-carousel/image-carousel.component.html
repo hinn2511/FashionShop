@@ -1,5 +1,5 @@
 <!-- carousel -->
-<div class="w-100 px-0 mx-0" *ngIf="carousels">
+<div class="w-100 px-0 mx-0 fluid-container" *ngIf="carousels">
     <div class="carousel position-relative">
       <ng-container *ngFor="let slide of carousels; let i = index">
         <div
@@ -30,17 +30,17 @@
           />
         </div>
       </ng-container>
-      <button class="carousel-control carousel-prev">
+      <button type="button" class="carousel-control carousel-prev">
         <span class="carousel-arrow carousel-arrow-left"></span>
       </button>
-      <button class="carousel-control carousel-next">
+      <button type="button" class="carousel-control carousel-next">
         <span class="carousel-arrow carousel-arrow-right"></span>
       </button>
   
-      <button class="carousel-control carousel-prev" (click)="onPreviousClick()">
+      <button type="button" class="carousel-control carousel-prev" (click)="onPreviousClick()">
         <span class="carousel-arrow carousel-arrow-left"></span>
       </button>
-      <button class="carousel-control carousel-next" (click)="onNextClick()">
+      <button type="button" class="carousel-control carousel-next" (click)="onNextClick()">
         <span class="carousel-arrow carousel-arrow-right"></span>
       </button>
     </div>

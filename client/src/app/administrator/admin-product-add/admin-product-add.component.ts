@@ -13,7 +13,7 @@ import {
 } from 'src/app/_models/category';
 import { CategoryService } from 'src/app/_services/category.service';
 import { concatMap } from 'rxjs/operators';
-import { fnUpdateFormControlNumberValue } from 'src/app/_common/function/global';
+import { fnUpdateFormControlNumberValue } from 'src/app/_common/function/function';
 
 @Component({
   selector: 'app-admin-product-add',

@@ -1,5 +1,5 @@
 <div class="card card-img-wrapper border-0 mb-3 w-100">
-    <div class="rect-img-container">
+    <div class="rect-img-container cs-pointer">
         <img class="rect-img p-4" src="{{product.url}}" (click)="viewDetail()" alt="Image" id="preview">
     </div>
     <!-- <img class="bd-placeholder-img card-img-top p-4" src="{{product.url}}"
@@ -19,7 +19,7 @@
             </li>
         </ul>
     <div class="card-body mt-3">
-        <h5 class="card-text text-uppercase" (click)="viewDetail()">
+        <h5 class="card-text text-uppercase cs-pointer" (click)="viewDetail()">
             {{product.productName}}
         </h5>
         <h6>{{product.price | currency}}</h6>

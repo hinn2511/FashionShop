@@ -1,4 +1,4 @@
-import { CustomerCarousel } from './../../_models/carousel';
+import { Carousel } from './../../_models/carousel';
 import { Component, Input, OnChanges, OnDestroy, OnInit, SimpleChanges } from '@angular/core';
 import { slide } from 'src/app/_common/animation/carousel.animations';
 
@@ -10,13 +10,13 @@ import { slide } from 'src/app/_common/animation/carousel.animations';
 })
 export class HomeCarouselComponent implements OnInit {
 
-  @Input() carousels: CustomerCarousel[] = [];
+  @Input() carousels: Carousel[] = [];
   @Input() nextSlideInterval = 10000;
   currentSlideIndex = 0;
   currentUrl: string = "";
   startPos: string = "-100";
   endPos: string = "-100";
-  currentSlide: CustomerCarousel;
+  currentSlide: Carousel;
 
   action: string = "next";
 

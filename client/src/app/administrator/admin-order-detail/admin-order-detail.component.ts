@@ -1,14 +1,12 @@
 import { DialogService } from './../../_services/dialog.service';
 import { ToastrService } from 'ngx-toastr';
 import { concatMap } from 'rxjs/operators';
-import {
-  fnGetOrderStateString,
-  fnGetOrderStateStyle,
-} from 'src/app/_common/function/global';
 import { ActivatedRoute } from '@angular/router';
 import { OrderService } from 'src/app/_services/order.service';
 import { Component, OnInit } from '@angular/core';
 import { CancelOrderRequest, ManagerOrder } from 'src/app/_models/order';
+import { fnGetOrderStateStyle } from 'src/app/_common/function/style-class';
+import { fnGetOrderStateString } from 'src/app/_common/function/function';
 
 @Component({
   selector: 'app-admin-order-detail',

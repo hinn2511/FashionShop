@@ -2,7 +2,7 @@ import { Gender } from 'src/app/_models/category';
 import { ManagerCatalogue } from './../../_models/category';
 import { Component, OnInit } from '@angular/core';
 import { BsModalRef } from 'ngx-bootstrap/modal';
-import { fnGetArrayDepth } from 'src/app/_common/function/global';
+import { fnGetArrayDepth } from 'src/app/_common/function/function';
 import { SingleSelectedResult } from 'src/app/_models/dialog';
 
 @Component({

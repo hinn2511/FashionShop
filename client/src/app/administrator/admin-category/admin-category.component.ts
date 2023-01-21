@@ -4,10 +4,6 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { RotateAnimation } from 'src/app/_common/animation/carousel.animations';
-import {
-  fnGetObjectStateString,
-  fnGetObjectStateStyle,
-} from 'src/app/_common/function/global';
 import { IdArray } from 'src/app/_models/adminRequest';
 import {
   Gender,
@@ -18,6 +14,7 @@ import {
 import { GenericStatus, GenericStatusList } from 'src/app/_models/generic';
 import { Pagination } from 'src/app/_models/pagination';
 import { CategoryService } from 'src/app/_services/category.service';
+import { fnGetObjectStateString, fnGetObjectStateStyle } from 'src/app/_common/function/style-class';
 
 @Component({
   selector: 'app-admin-category',

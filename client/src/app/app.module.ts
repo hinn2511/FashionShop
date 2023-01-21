@@ -57,7 +57,6 @@ import { ProductImageModalComponent } from './_modals/product-image-modal/produc
 import { ImageViewerModalComponent } from './_modals/image-viewer-modal/image-viewer-modal.component';
 import { ProductImagesComponent } from './customer/product-images/product-images.component';
 import { AdminCarouselComponent } from './administrator/admin-carousel/admin-carousel.component';
-import { CarouselPreviewComponent } from './_common/carousel-preview/carousel-preview.component';
 import { AdminCarouselAddComponent } from './administrator/admin-carousel-add/admin-carousel-add.component';
 import { AdminProductOptionAddComponent } from './administrator/admin-product-option-add/admin-product-option-add.component';
 import { AdminProductOptionComponent } from './administrator/admin-product-option/admin-product-option.component';
@@ -66,10 +65,10 @@ import { OrderCardComponent } from './customer/order-card/order-card.component';
 import { OrderDetailComponent } from './customer/order-detail/order-detail.component';
 import { AdminOrderComponent } from './administrator/admin-order/admin-order.component';
 import { AdminOrderDetailComponent } from './administrator/admin-order-detail/admin-order-detail.component';
-import { ConfirmDialogComponent } from './_common/confirm-dialog/confirm-dialog.component';
+import { ConfirmDialogComponent } from './_dialog/confirm-dialog/confirm-dialog.component';
 
 import { CKEditorModule } from '@ckeditor/ckeditor5-angular';
-import { EditorComponent } from './_common/editor/editor.component';
+import { EditorComponent } from './_forms/editor/editor.component';
 import { AdminProductEditComponent } from './administrator/admin-product-edit/admin-product-edit.component';
 import { AdminArticleComponent } from './administrator/admin-article/admin-article.component';
 import { AdminArticleAddComponent } from './administrator/admin-article-add/admin-article-add.component';
@@ -123,7 +122,6 @@ import { HomeNewsComponent } from './customer/home-news/home-news.component';
     ProductImageModalComponent,
     ImageViewerModalComponent,
     ProductImagesComponent,
-    CarouselPreviewComponent,
     AdminCarouselAddComponent,
     AdminCarouselComponent,
     AdminProductOptionComponent,

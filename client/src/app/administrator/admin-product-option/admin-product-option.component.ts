@@ -1,4 +1,3 @@
-import { fnGetObjectStateString, fnGetObjectStateStyle } from 'src/app/_common/function/global';
 import { RotateAnimation } from 'src/app/_common/animation/carousel.animations';
 import { OptionService } from 'src/app/_services/option.service';
 import { ManagerOption } from 'src/app/_models/productOptions';
@@ -8,6 +7,7 @@ import { ManagerOptionParams } from 'src/app/_models/productOptions';
 import { Router } from '@angular/router';
 import { IdArray } from 'src/app/_models/adminRequest';
 import { ToastrService } from 'ngx-toastr';
+import { fnGetObjectStateString, fnGetObjectStateStyle } from 'src/app/_common/function/style-class';
 
 
 @Component({
