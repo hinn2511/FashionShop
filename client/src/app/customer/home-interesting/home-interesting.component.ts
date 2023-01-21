@@ -6,6 +6,8 @@ import {
   ViewChild,
   ElementRef,
   AfterViewInit,
+  ViewChildren,
+  QueryList,
 } from '@angular/core';
 import { Product } from 'src/app/_models/product';
 import { ProductParams } from 'src/app/_models/productParams';
@@ -17,18 +19,21 @@ import { DeviceService } from 'src/app/_services/device.service';
   templateUrl: './home-interesting.component.html',
   styleUrls: ['./home-interesting.component.css'],
 })
-export class HomeInterestingComponent implements OnInit, OnDestroy {
-  products: Product[] = [];
+export class HomeInterestingComponent
+  implements OnInit, OnDestroy, AfterViewInit
+{
+  products: Product[];
   currentValue = 0;
   maxValue = 110;
-  step: number = 20;
+  step: number = 1;
+  currentStep: number = 0;
   slideStyle: string = 'margin-left: 20;';
   deviceSubscription$: Subscription;
 
-  @ViewChild('card', { static: false })
-  cards: ElementRef;
+  scrollSubscription$: Subscription;
 
-  cardWidth: number = 0;
+  @ViewChildren('card') items: QueryList<ElementRef>;
+  productCards: ElementRef[] = [];
 
   constructor(
     private productService: ProductService,
@@ -36,30 +41,34 @@ export class HomeInterestingComponent implements OnInit, OnDestroy {
   ) {}
   ngOnDestroy(): void {
     this.deviceSubscription$.unsubscribe();
+    this.scrollSubscription$.unsubscribe();
   }
 
   ngOnInit(): void {
     this.loadProducts();
+    this.deviceSubscribe();
+  }
+
+  ngAfterViewInit() {
+    this.scrollSubscription$ = this.items.changes.subscribe(() => {
+      this.productCards = this.items.toArray();
+    });
   }
 
   private deviceSubscribe() {
-    this.cardWidth = this.cards.nativeElement.offsetWidth;
-    this.maxValue = this.cardWidth * 8;
-
     this.deviceSubscription$ = this.deviceService.deviceWidth$.subscribe(
       (_) => {
         switch (this.deviceService.getDeviceType()) {
           case 'mobile': {
-            this.maxValue = this.cardWidth * 6;
-            this.step = this.cardWidth * 1.1;
+            this.step = 1;
             break;
           }
           case 'tablet': {
-            this.step = this.cardWidth * 2;
+            this.step = 3;
             break;
           }
           default: {
-            this.step = this.cardWidth * 4;
+            this.step = 4;
             break;
           }
         }
@@ -84,39 +93,40 @@ export class HomeInterestingComponent implements OnInit, OnDestroy {
     };
     this.productService.getProducts(productParams).subscribe((response) => {
       this.products = response.result;
-      setTimeout(() => {
-        this.deviceSubscribe();
-      }, 500);
 
-      this.maxValue = this.cardWidth * this.products.length;
+      // this.maxValue = this.cardWidth * this.products.length;
     });
   }
 
-  // scrollLeft() {
-  //   if (this.currentValue == 0) return;
-  //   this.currentValue += this.step;
-  //   this.slideStyle = `margin-left: ${this.currentValue}%;`;
-  //   console.log(this.currentValue);
-  // }
-
-  // scrollRight() {
-  //   let newValue = this.currentValue - this.step;
-  //   if (newValue < -this.maxValue) return;
-  //   this.currentValue -= this.step;
-  //   this.slideStyle = `margin-left: ${this.currentValue}%;`;
-  //   console.log(this.currentValue);
-  // }
-
   scrollLeft() {
-    if (this.currentValue == 0) return;
-    this.currentValue += this.step;
-    this.slideStyle = `margin-left: ${this.currentValue}px;`;
+    if (this.currentStep == 0) return;
+    setTimeout(() => {
+      if (this.productCards.length != 0) {
+        this.currentStep -= this.step;
+        if (this.currentStep < 0)
+          this.currentStep = 0;
+        this.productCards[this.currentStep].nativeElement.scrollIntoView({
+          behavior: 'smooth',
+          block: 'nearest',
+          inline: 'center',
+        });
+      }
+    }, 100);
   }
 
   scrollRight() {
-    let newValue = this.currentValue - this.step;
-    if (newValue < -this.maxValue) return;
-    this.currentValue -= this.step;
-    this.slideStyle = `margin-left: ${this.currentValue}px;`;
+    if (this.currentStep >= this.products.length - 1) return;
+    setTimeout(() => {
+      if (this.productCards.length != 0) {
+        this.currentStep += this.step;
+        if (this.currentStep > this.products.length - 1)
+          this.currentStep = this.products.length - 1;
+        this.productCards[this.currentStep].nativeElement.scrollIntoView({
+          behavior: 'smooth',
+          block: 'nearest',
+          inline: 'center',
+        });
+      }
+    }, 100);
   }
 }

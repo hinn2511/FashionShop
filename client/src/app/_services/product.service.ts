@@ -13,7 +13,7 @@ import { getPaginatedResult, getPaginationHeaders } from '../_helpers/pagination
 })
 export class ProductService {
   baseUrl = environment.apiUrl;
-  products: Product[] = [];
+  recentProducts: Product[] = [];
 
   productCache = new Map();
   productParams: ProductParams;
@@ -62,6 +62,20 @@ export class ProductService {
     params = params.append('maxPrice', productParams.maxPrice);
 
     return this.http.get<CustomerColorFilter[]>(this.baseUrl + 'color/product-filter', { params: params})
+  }
+
+  addToRecent(product: Product)
+  {
+    if(this.recentProducts.length >= 5)
+    {
+      this.recentProducts = this.recentProducts.splice(this.recentProducts.length - 1, 1);
+    }
+    this.recentProducts.unshift(product);
+  }
+
+  getRecent()
+  {
+    return this.recentProducts;
   }
 
   getProducts(productParams: ProductParams) {

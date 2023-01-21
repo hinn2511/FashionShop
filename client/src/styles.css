@@ -85,6 +85,15 @@ body {
   }
 }
 
+.hide-scroll-bar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.hide-scroll-bar::-webkit-scrollbar {
+  display: none;
+}
+
 /* Pagination */
 .pagination > li {
   margin: 0 0.1rem;

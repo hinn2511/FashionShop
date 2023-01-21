@@ -1,4 +1,4 @@
-.product-carousel-container {
+/* .product-carousel-container {
   overflow: hidden;
 }
 
@@ -9,22 +9,11 @@
   transition: all 0.5s ease-in-out;
 }
 
-/* .product-slide {
-  margin-right: 20px;
-} */
-
 @media (min-width: 768px) {
-  /* .product-carousel {
-    padding-left: 20px;
-  } */
 }
 
 @media (max-width: 768px) {
  
-
-  /* .product-carousel {
-    padding-left: 5vw;
-  } */
 }
 
 .product-slide {
@@ -38,4 +27,15 @@
 .btn-scroll
 {
   border-radius: 999px;
+} */
+
+.product-slide {
+  min-width: 250px;
+  max-width: 250px;
 }
+
+.product-carousel-container {
+  overflow-x: scroll;
+  max-width: 100%;
+}
+
