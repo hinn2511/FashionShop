@@ -177,9 +177,54 @@ namespace API.Repository.OrderRepository
             return await PagedList<Order>.CreateAsync(query.AsNoTracking(), orderParams.PageNumber, orderParams.PageSize);
         }
 
-        public Task<List<Tuple<OrderStatus, int>>> GetOrdersSummaryAsync()
+        public Task<List<Tuple<OrderStatus, int>>> GetOrdersSummaryAsync(AdminOrderParams orderParams)
         {
-            var result = _context.Orders.GroupBy(x => x.CurrentStatus).Select(g => Tuple.Create(g.Key,g.Count())).ToListAsync();
+            var query = _context.Orders.AsQueryable();
+
+
+            if (orderParams.OrderStatusFilter.Any())
+                query = query.Where(x => orderParams.OrderStatusFilter.Contains(x.CurrentStatus));
+
+            if (orderParams.ShippingMethodFilter.Any())
+                query = query.Where(x => orderParams.ShippingMethodFilter.Select(x => x.ToUpper()).Contains(x.ShippingMethod.ToUpper()));
+
+            if (orderParams.PaymentMethodFilter.Any())
+                query = query.Where(x => orderParams.PaymentMethodFilter.Contains(x.PaymentMethod));
+
+            if (orderParams.From != DateTime.MinValue)
+            {
+                var from = new DateTime(orderParams.From.Year, orderParams.From.Month, orderParams.From.Day, 0, 0, 0);
+                query = query.Where(x => x.DateCreated >= from);
+
+            }
+
+            if (orderParams.To != DateTime.MinValue)
+            {
+                var to = new DateTime(orderParams.To.Year, orderParams.To.Month, orderParams.To.Day, 23, 59, 59);
+                query = query.Where(x => x.DateCreated <= to);
+            }
+
+            if (orderParams.To != DateTime.MinValue)
+            {
+                var to = new DateTime(orderParams.To.Year, orderParams.To.Month, orderParams.To.Day, 23, 59, 59);
+                query = query.Where(x => x.DateCreated <= to);
+            }
+
+            if (!string.IsNullOrEmpty(orderParams.Query))
+            {
+                var words = orderParams.Query.RemoveSpecialCharacters().ToUpper().Split(" ").Distinct();
+                foreach (var word in words)
+                {
+                    query = query.Where(x => x.ExternalId.ToUpper().Contains(word)
+                    || x.User.FirstName.ToUpper().Contains(word)
+                    || x.User.LastName.ToUpper().Contains(word)
+                    || x.User.PhoneNumber.Contains(word)
+                    );
+                }
+            }
+
+            var result = query.GroupBy(x => x.CurrentStatus).Select(g => Tuple.Create(g.Key,g.Count())).ToListAsync();
+
             return result;
         }
 

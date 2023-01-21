@@ -139,7 +139,6 @@ const routes: Routes = [
 
   {
     path: 'administrator/option-manager',
-    component: AdminProductOptionComponent,
     canActivate: [AuthGuard],
     children: [
       {

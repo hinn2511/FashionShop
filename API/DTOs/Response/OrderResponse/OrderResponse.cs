@@ -134,7 +134,6 @@ namespace API.DTOs.Response.OrderResponse
         public int DeletedByUserId { get; set; }
         public DateTime DateHidden { get; set; }
         public int HiddenByUserId { get; set; }
-        public int Status { get; set; }
         public ICollection<AdminOrderHistoriesResponse> OrderHistories { get; set; }
         public ICollection<AdminOrderItemResponse> OrderDetails { get; set; }
     }

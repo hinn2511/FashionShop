@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text.Json;
 using System.Threading.Tasks;
@@ -143,7 +144,6 @@ namespace API.Controllers
                 ReceiverName = orderRequest.ReceiverName,
                 PhoneNumber = orderRequest.PhoneNumber,
                 Email = orderRequest.Email,
-                // ExternalId = (DateTime.Now.ToString("yyMMdd") + ().ConvertToEan13(),
                 ExternalId = ($"{orderIdDate}{orderIdNumber}").ConvertToEan13(),
                 CurrentStatus = OrderStatus.Checking,
                 OrderDetails = orderDetails,
@@ -197,7 +197,7 @@ namespace API.Controllers
             if (number > 8)
             {
                 Console.WriteLine("Billing failed!");
-                 _unitOfWork.OrderHistoryRepository.Insert(new OrderHistory
+                _unitOfWork.OrderHistoryRepository.Insert(new OrderHistory
                 {
                     OrderId = order.Id,
                     CreatedByUserId = GetUserId(),
@@ -234,11 +234,134 @@ namespace API.Controllers
 
             _unitOfWork.OrderRepository.Update(order);
 
+            await UpdateStockQuantity(order.Id, order, true);
+
             if (await _unitOfWork.Complete())
             {
                 return Ok(order.ExternalId);
             }
             return BadRequest("Can not process this order.");
+        }
+
+        [Authorize(Policy = "CustomerOnly")]
+        [HttpPut("{externalId}/cancel-requested")]
+        public async Task<ActionResult> RequestCancelOrder(string externalId, CancelOrderRequest cancelOrderRequest)
+        {
+            if (!StringExtensions.IsValidEan13(externalId))
+                return BadRequest("Order ID not valid.");
+
+            var order = await _unitOfWork.OrderRepository.GetFirstBy(x => x.ExternalId == externalId && x.UserId == GetUserId());
+
+            if (order == null)
+                return BadRequest("Order not found");
+
+            var allowCancelRequestStatus = new List<OrderStatus>()
+            {
+                OrderStatus.Created,
+                OrderStatus.Checking,
+                OrderStatus.Paid,
+                OrderStatus.Processing
+            };
+
+            if (!allowCancelRequestStatus.Any(x => x == order.CurrentStatus))
+                return BadRequest("Can not request order cancellation!");
+
+            _unitOfWork.OrderHistoryRepository.Insert(new OrderHistory
+            {
+                OrderId = order.Id,
+                CreatedByUserId = GetUserId(),
+                DateCreated = DateTime.UtcNow,
+                OrderStatus = OrderStatus.CancelRequested,
+                HistoryDescription = $"Order cancellation requested by: {User.GetUsername()} at {DateTime.UtcNow}.Reason: {cancelOrderRequest.Reason}"
+            });
+
+            order.CurrentStatus = OrderStatus.CancelRequested;
+            order.AddUpdateInformation(GetUserId());
+
+            _unitOfWork.OrderRepository.Update(order);
+
+            if (await _unitOfWork.Complete())
+            {
+                return Ok();
+            }
+
+            return BadRequest("Can not verify orders.");
+        }
+
+        [Authorize(Policy = "CustomerOnly")]
+        [HttpPut("{externalId}/confirm-delivered")]
+        public async Task<ActionResult> ConfirmReceiveOrder(string externalId)
+        {
+            if (!StringExtensions.IsValidEan13(externalId))
+                return BadRequest("Order ID not valid.");
+                
+            var order = await _unitOfWork.OrderRepository.GetFirstBy(x => x.ExternalId == externalId && x.UserId == GetUserId());
+
+            if (order == null)
+                return BadRequest("Order not found");
+
+
+            if (order.CurrentStatus != OrderStatus.Shipped)
+                return BadRequest("Can not confirm order delivery!");
+
+            _unitOfWork.OrderHistoryRepository.Insert(new OrderHistory
+            {
+                OrderId = order.Id,
+                CreatedByUserId = GetUserId(),
+                DateCreated = DateTime.UtcNow,
+                OrderStatus = OrderStatus.Finished,
+                HistoryDescription = $"Order had been delivered to customer: {User.GetUsername()} at {DateTime.UtcNow}."
+            });
+
+            order.CurrentStatus = OrderStatus.Finished;
+            order.AddUpdateInformation(GetUserId());
+
+            _unitOfWork.OrderRepository.Update(order);
+
+            if (await _unitOfWork.Complete())
+            {
+                return Ok();
+            }
+
+            return BadRequest("Can not verify orders.");
+        }
+
+
+        [Authorize(Policy = "CustomerOnly")]
+        [HttpPut("{externalId}/return-requested")]
+        public async Task<ActionResult> RequestReturnOrder(string externalId, ReturnOrderRequest returnOrderRequest)
+        {
+            if (!StringExtensions.IsValidEan13(externalId))
+                return BadRequest("Order ID not valid.");
+                
+            var order = await _unitOfWork.OrderRepository.GetFirstBy(x => x.ExternalId == externalId && x.UserId == GetUserId());
+
+            if (order == null)
+                return BadRequest("Order not found");
+
+            if (order.CurrentStatus != OrderStatus.Shipped)
+                return BadRequest("Can not request order return!");
+
+            _unitOfWork.OrderHistoryRepository.Insert(new OrderHistory
+            {
+                OrderId = order.Id,
+                CreatedByUserId = GetUserId(),
+                DateCreated = DateTime.UtcNow,
+                OrderStatus = OrderStatus.ReturnRequested,
+                HistoryDescription = $"Order return requested by: {User.GetUsername()} at {DateTime.UtcNow}. Reason: {returnOrderRequest.Reason}"
+            });
+
+            order.CurrentStatus = OrderStatus.ReturnRequested;
+            order.AddUpdateInformation(GetUserId());
+
+            _unitOfWork.OrderRepository.Update(order);
+            
+            if (await _unitOfWork.Complete())
+            {
+                return Ok();
+            }
+
+            return BadRequest("Can not return orders.");
         }
         #endregion
 
@@ -261,9 +384,9 @@ namespace API.Controllers
 
         [Authorize(Policy = "ManagerOnly")]
         [HttpGet("summary")]
-        public async Task<ActionResult> GetOrdersSummary()
+        public async Task<ActionResult> GetOrdersSummary([FromQuery] AdminOrderParams adminOrderParams)
         {
-            var orderSummaries = await _unitOfWork.OrderRepository.GetOrdersSummaryAsync();
+            var orderSummaries = await _unitOfWork.OrderRepository.GetOrdersSummaryAsync(adminOrderParams);
 
             var result = _mapper.Map<List<AdminOrderCountResponse>>(orderSummaries.ToList());
 
@@ -281,20 +404,19 @@ namespace API.Controllers
                 return NotFound("Order not found");
 
             var result = _mapper.Map<AdminOrderResponse>(order);
-            
+
             var optionIds = order.OrderDetails.Select(x => x.OptionId);
             var stocks = await _unitOfWork.StockRepository.GetAllBy(x => optionIds.Contains(x.OptionId));
 
-            foreach(var orderDetail in result.OrderDetails)
+            foreach (var orderDetail in result.OrderDetails)
             {
                 var stockQuantity = stocks.FirstOrDefault(x => x.OptionId == orderDetail.OptionId).Quantity;
                 orderDetail.StockAvailable = stockQuantity;
-                orderDetail.StockAfterDeduction = stockQuantity - orderDetail.Quantity;               
+                orderDetail.StockAfterDeduction = stockQuantity - orderDetail.Quantity;
             }
-            
+
             return Ok(result);
         }
-
 
         [Authorize(Policy = "ManagerOnly")]
         [HttpPut("{orderId}/verify")]
@@ -321,23 +443,7 @@ namespace API.Controllers
             order.AddUpdateInformation(GetUserId());
 
             _unitOfWork.OrderRepository.Update(order);
-
-            var orderDetails = await _unitOfWork.OrderDetailRepository.GetAllBy(x => x.OrderId == orderId);
-
-            var optionIds = orderDetails.Select(x => x.OptionId);
-
-            var stocks = await _unitOfWork.StockRepository.GetAllBy(x => optionIds.Contains(x.OptionId));
-
-            foreach(var stock in stocks)
-            {
-                var quantity = order.OrderDetails.FirstOrDefault(x => x.OptionId == stock.OptionId).Quantity;
-                stock.Quantity -= quantity;
-                stock.AddUpdateInformation(GetUserId());
-            }
-
-            _unitOfWork.StockRepository.Update(stocks);
-
-            
+            await UpdateStockQuantity(orderId, order, true);
 
             if (await _unitOfWork.Complete())
             {
@@ -345,6 +451,75 @@ namespace API.Controllers
             }
 
             return BadRequest("Can not verify orders.");
+        }
+
+        [Authorize(Policy = "ManagerOnly")]
+        [HttpPut("{orderId}/shipping")]
+        public async Task<ActionResult> ShippingOrder(int orderId)
+        {
+            var order = await _unitOfWork.OrderRepository.GetFirstBy(x => x.Id == orderId);
+
+            if (order == null)
+                return BadRequest("Order not found");
+
+            if (order.CurrentStatus != OrderStatus.Processing)
+                return BadRequest("Can not shipping order!");
+
+            _unitOfWork.OrderHistoryRepository.Insert(new OrderHistory
+            {
+                OrderId = orderId,
+                CreatedByUserId = GetUserId(),
+                DateCreated = DateTime.UtcNow,
+                OrderStatus = OrderStatus.Shipping,
+                HistoryDescription = $"Move to shipping process by: {User.GetUsername()} at {DateTime.UtcNow}. Shipping method: {order.ShippingMethod}"
+            });
+
+            order.CurrentStatus = OrderStatus.Shipping;
+            order.AddUpdateInformation(GetUserId());
+
+            _unitOfWork.OrderRepository.Update(order);
+
+            if (await _unitOfWork.Complete())
+            {
+                return Ok();
+            }
+
+            return BadRequest("Can not shipping orders.");
+        }
+
+        // [Authorize(Policy = "LogisticOnly")]
+        [Authorize(Policy = "ManagerOnly")]
+        [HttpPut("{orderId}/shipped")]
+        public async Task<ActionResult> OrderShipped(int orderId)
+        {
+            var order = await _unitOfWork.OrderRepository.GetFirstBy(x => x.Id == orderId);
+
+            if (order == null)
+                return BadRequest("Order not found");
+
+            if (order.CurrentStatus != OrderStatus.Shipping)
+                return BadRequest("Can not move order to shipped!");
+
+            _unitOfWork.OrderHistoryRepository.Insert(new OrderHistory
+            {
+                OrderId = orderId,
+                CreatedByUserId = GetUserId(),
+                DateCreated = DateTime.UtcNow,
+                OrderStatus = OrderStatus.Shipped,
+                HistoryDescription = $"Shipped to customer by: {User.GetUsername()} at {DateTime.UtcNow}. Shipping method: {order.ShippingMethod}"
+            });
+
+            order.CurrentStatus = OrderStatus.Shipped;
+            order.AddUpdateInformation(GetUserId());
+
+            _unitOfWork.OrderRepository.Update(order);
+
+            if (await _unitOfWork.Complete())
+            {
+                return Ok();
+            }
+
+            return BadRequest("Can not shipping orders.");
         }
 
         [Authorize(Policy = "ManagerOnly")]
@@ -380,6 +555,8 @@ namespace API.Controllers
             order.CurrentStatus = OrderStatus.Cancelled;
             order.AddUpdateInformation(GetUserId());
 
+            await UpdateStockQuantity(orderId, order, false);
+
             if (await _unitOfWork.Complete())
             {
                 return Ok();
@@ -389,153 +566,97 @@ namespace API.Controllers
         }
 
         [Authorize(Policy = "ManagerOnly")]
-        [HttpPost("/ship")]
-        public async Task<ActionResult> ShippingOrder(BaseBulkRequest bulkRequest)
+        [HttpPut("{orderId}/return-accepted")]
+        public async Task<ActionResult> AcceptOrderReturnRequest(int orderId)
         {
-            var orders = await _unitOfWork.OrderRepository.GetAllBy(x => bulkRequest.Ids.Contains(x.Id));
+            var order = await _unitOfWork.OrderRepository.GetFirstBy(x => x.Id == orderId);
 
-            if (orders == null)
+            if (order == null)
                 return BadRequest("Order not found");
 
-            if (orders.Any(x => x.CurrentStatus != OrderStatus.Checking))
-                return BadRequest("Can not checking order!");
+            if (order.CurrentStatus != OrderStatus.ReturnRequested)
+                return BadRequest("Can not accept to return this order.");
 
-            foreach (var order in orders)
+            _unitOfWork.OrderHistoryRepository.Insert(new OrderHistory
             {
-                _unitOfWork.OrderHistoryRepository.Insert(new OrderHistory
-                {
-                    OrderId = order.Id,
-                    CreatedByUserId = GetUserId(),
-                    DateCreated = DateTime.UtcNow,
-                    OrderStatus = OrderStatus.Processing,
-                    HistoryDescription = $"Order checked by: {User.GetUsername()} at {DateTime.UtcNow}"
-                });
+                OrderId = order.Id,
+                CreatedByUserId = GetUserId(),
+                DateCreated = DateTime.UtcNow,
+                OrderStatus = OrderStatus.Returned,
+                HistoryDescription = $"Order is accepted to return by: {User.GetUsername()} at {DateTime.UtcNow}"
+            });
 
-                order.CurrentStatus = OrderStatus.Processing;
-                order.AddUpdateInformation(GetUserId());
-            }
+            order.CurrentStatus = OrderStatus.Returned;
+            order.AddUpdateInformation(GetUserId());
 
-            _unitOfWork.OrderRepository.Update(orders);
-
+            await UpdateStockQuantity(orderId, order, false);
 
             if (await _unitOfWork.Complete())
             {
                 return Ok();
             }
 
+            return BadRequest("Can not checking this order.");
+        }
+
+        [Authorize(Policy = "ManagerOnly")]
+        [HttpPut("{orderId}/cancel-accepted")]
+        public async Task<ActionResult> AcceptOrderCancelRequest(int orderId)
+        {
+            var order = await _unitOfWork.OrderRepository.GetFirstBy(x => x.Id == orderId);
+
+            if (order == null)
+                return BadRequest("Order not found");
+
+            if (order.CurrentStatus != OrderStatus.CancelRequested)
+                return BadRequest("Can not accept to cancel this order.");
+
+            _unitOfWork.OrderHistoryRepository.Insert(new OrderHistory
+            {
+                OrderId = order.Id,
+                CreatedByUserId = GetUserId(),
+                DateCreated = DateTime.UtcNow,
+                OrderStatus = OrderStatus.Cancelled,
+                HistoryDescription = $"Order is accepted to cancel by: {User.GetUsername()} at {DateTime.UtcNow}"
+            });
+
+            order.CurrentStatus = OrderStatus.Cancelled;
+            order.AddUpdateInformation(GetUserId());
+
+            await UpdateStockQuantity(orderId, order, false);
+
+            if (await _unitOfWork.Complete())
+            {
+                return Ok();
+            }
 
             return BadRequest("Can not checking this order.");
         }
 
         #endregion
 
+        #region private method
+        private async Task UpdateStockQuantity(int orderId, Order order, bool isDeduction)
+        {
+            var orderDetails = await _unitOfWork.OrderDetailRepository.GetAllBy(x => x.OrderId == orderId);
 
+            var optionIds = orderDetails.Select(x => x.OptionId);
 
+            var stocks = await _unitOfWork.StockRepository.GetAllBy(x => optionIds.Contains(x.OptionId));
 
-        // #endregion
+            foreach (var stock in stocks)
+            {
+                var quantity = order.OrderDetails.FirstOrDefault(x => x.OptionId == stock.OptionId).Quantity;
+                if (isDeduction)
+                    stock.Quantity -= quantity;
+                else
+                    stock.Quantity += quantity;
+                stock.AddUpdateInformation(GetUserId());
+            }
 
-        // #region manager
+            _unitOfWork.StockRepository.Update(stocks);
+        }
 
-
-        // [Authorize(Policy = "BusinessOnly")]
-        // [HttpGet("order-list")]
-        // public async Task<ActionResult> GetOrders([FromQuery] OrderParams orderParams)
-        // {
-
-        //     var orders = await _unitOfWork.OrderRepository.GetOrdersAsync(orderParams);
-
-        //     Response.AddPaginationHeader(orders.CurrentPage, orders.PageSize, orders.TotalCount, orders.TotalPages);
-
-        //     return Ok(orders);
-        // }
-
-        // [Authorize(Policy = "BusinessOnly")]
-        // [HttpPut("processing/{orderId}")]
-        // public async Task<ActionResult> MoveToProcessing(int orderId)
-        // {
-        //     var order = await _unitOfWork.OrderRepository.GetById(orderId);
-
-
-        //     _unitOfWork.OrderHistoryRepository.Insert(new OrderHistory
-        //     {
-        //         OrderId = order.Id,
-        //         CreatedByUserId = GetUserId(),
-        //         DateCreated = DateTime.UtcNow,
-        //         Status = OrderStatus.Processing,
-        //         HistoryDescription = $"Create shipping by staff: {User.GetUsername()} at {DateTime.UtcNow};"
-        //     });
-
-        //     order.CurrentStatus = OrderStatus.Processing;
-        //     order.LastUpdated = DateTime.UtcNow;
-        //     order.LastUpdatedByUserId = GetUserId();
-
-        //     if (await _unitOfWork.Complete())
-        //     {
-        //         return Ok();
-        //     }
-        //     return BadRequest("Can not process this order.");
-        // }
-
-        // [Authorize(Policy = "BusinessOnly")]
-        // [HttpPut("shipping/{orderId}")]
-        // public async Task<ActionResult> ShippingOrder(int orderId)
-        // {
-        //     var order = await _unitOfWork.OrderRepository.GetById(orderId);
-
-        //     foreach (var orderDetail in order.OrderDetails)
-        //     {
-        //         var stock = await _unitOfWork.StockRepository.GetById(orderDetail.OptionId);
-        //         stock.Quantity -= orderDetail.Quantity;
-        //         _unitOfWork.StockRepository.Update(stock);
-        //     }
-
-        //     _unitOfWork.OrderHistoryRepository.Insert(new OrderHistory
-        //     {
-        //         OrderId = order.Id,
-        //         CreatedByUserId = GetUserId(),
-        //         DateCreated = DateTime.UtcNow,
-        //         Status = OrderStatus.Shipping,
-        //         HistoryDescription = $"Change to shipping by staff: {User.GetUsername()} at {DateTime.UtcNow};"
-        //     });
-
-        //     order.CurrentStatus = OrderStatus.Shipping;
-        //     order.LastUpdated = DateTime.UtcNow;
-        //     order.LastUpdatedByUserId = GetUserId();
-
-        //     if (await _unitOfWork.Complete())
-        //     {
-        //         return Ok();
-        //     }
-        //     return BadRequest("Can not process this order.");
-        // }
-
-        // [Authorize(Policy = "BusinessOnly")]
-        // [HttpPut("shipped/{orderId}")]
-        // public async Task<ActionResult> VerifyingOrderShipped(int orderId)
-        // {
-        //     var order = await _unitOfWork.OrderRepository.GetById(orderId);
-
-        //     _unitOfWork.OrderHistoryRepository.Insert(new OrderHistory
-        //     {
-        //         OrderId = order.Id,
-        //         CreatedByUserId = GetUserId(),
-        //         DateCreated = DateTime.UtcNow,
-        //         Status = OrderStatus.Shipped,
-        //         HistoryDescription = $"Order shipped to customer. Verified by staff: {User.GetUsername()} at {DateTime.UtcNow};"
-        //     });
-
-        //     order.CurrentStatus = OrderStatus.Shipped;
-        //     order.LastUpdated = DateTime.UtcNow;
-        //     order.LastUpdatedByUserId = GetUserId();
-
-        //     if (await _unitOfWork.Complete())
-        //     {
-        //         return Ok();
-        //     }
-        //     return BadRequest("Can not process this order.");
-        // }
-
-
-        // #endregion
+        #endregion
     }
 }

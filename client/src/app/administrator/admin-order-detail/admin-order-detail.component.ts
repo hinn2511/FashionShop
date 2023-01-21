@@ -4,7 +4,7 @@ import { concatMap } from 'rxjs/operators';
 import { ActivatedRoute } from '@angular/router';
 import { OrderService } from 'src/app/_services/order.service';
 import { Component, OnInit } from '@angular/core';
-import { CancelOrderRequest, ManagerOrder } from 'src/app/_models/order';
+import { CancelOrderRequest, isAllowCancel, isAllowCancelAccept, isAllowReturnAccept, isAllowShipped, isAllowShipping, isAllowVerify, ManagerOrder, OrderStatusList } from 'src/app/_models/order';
 import { fnGetOrderStateStyle } from 'src/app/_common/function/style-class';
 import { fnGetOrderStateString } from 'src/app/_common/function/function';
 
@@ -17,6 +17,10 @@ export class AdminOrderDetailComponent implements OnInit {
   order: ManagerOrder;
   showCancelButton: boolean = false;
   showVerifyButton: boolean = false;
+  showShippingButton: boolean = false;
+  showShippedButton: boolean = false;
+  showAcceptReturnButton: boolean = false;
+  showAcceptCancelButton: boolean = false;
 
   constructor(
     private orderService: OrderService,
@@ -50,11 +54,99 @@ export class AdminOrderDetailComponent implements OnInit {
       .subscribe(
         (order) => {
           this.order = order;
-          this.showVerifyButton = false;
+          this.displayButton();
           this.toastr.success('Verify order successfully.', 'Success');
         },
         (error) => {
-          this.toastr.error('Can not verify this order', 'Error');
+          this.toastr.error(error, 'Error');
+        }
+      );
+  }
+
+  deliveringOrder() {
+    this.dialogService
+      .openConfirmDialog('Confirm', 'Are you sure you want to ship this order?', false)
+      .pipe(
+        concatMap((confirmResult) => {
+          if (confirmResult.result)
+            return this.orderService.shippingOrder(this.order.id);
+        }),
+        concatMap((_) => this.orderService.getManagerOrderDetail(this.order.id))
+      )
+      .subscribe(
+        (order) => {
+          this.order = order;
+          this.displayButton();
+          this.toastr.success('Move order to delivery successfully.', 'Success');
+        },
+        (error) => {
+          this.toastr.error(error, 'Error');
+        }
+      );
+  }
+
+  orderDelivered() {
+    this.dialogService
+      .openConfirmDialog('Confirm', 'Are you sure you want to confirm this order has been delivered?', false)
+      .pipe(
+        concatMap((confirmResult) => {
+          if (confirmResult.result)
+            return this.orderService.shippedOrder(this.order.id);
+        }),
+        concatMap((_) => this.orderService.getManagerOrderDetail(this.order.id))
+      )
+      .subscribe(
+        (order) => {
+          this.order = order;
+          this.displayButton();
+          this.toastr.success('Order delivery has completed.', 'Success');
+        },
+        (error) => {
+          this.toastr.error(error, 'Error');
+        }
+      );
+  }
+
+  acceptReturn() {
+    this.dialogService
+      .openConfirmDialog('Confirm', 'Are you sure you want to accept this order return request?', false)
+      .pipe(
+        concatMap((confirmResult) => {
+          if (confirmResult.result)
+            return this.orderService.acceptOrderReturnRequest(this.order.id);
+        }),
+        concatMap((_) => this.orderService.getManagerOrderDetail(this.order.id))
+      )
+      .subscribe(
+        (order) => {
+          this.order = order;
+          this.displayButton();
+          this.toastr.success('Order return request accepted.', 'Success');
+        },
+        (error) => {
+          this.toastr.error(error, 'Error');
+        }
+      );
+  }
+
+  acceptCancel() {
+    this.dialogService
+      .openConfirmDialog('Confirm', 'Are you sure you want to accept this order cancel request?', false)
+      .pipe(
+        concatMap((confirmResult) => {
+          if (confirmResult.result)
+            return this.orderService.acceptOrderCancelRequest(this.order.id);
+        }),
+        concatMap((_) => this.orderService.getManagerOrderDetail(this.order.id))
+      )
+      .subscribe(
+        (order) => {
+          this.order = order;
+          this.displayButton();
+          this.toastr.success('Order cancel request accepted.', 'Success');
+        },
+        (error) => {
+          this.toastr.error(error, 'Error');
         }
       );
   }
@@ -75,6 +167,7 @@ export class AdminOrderDetailComponent implements OnInit {
     .subscribe(
       (order) => {
         this.order = order;
+        this.displayButton();
         this.toastr.success('Cancel order successfully.', 'Success');
       },
       (error) => {
@@ -93,9 +186,30 @@ export class AdminOrderDetailComponent implements OnInit {
   }
 
   displayButton() {
-    let statusListAllowCancel = [0, 1, 2, 3];
-    if (statusListAllowCancel.indexOf(this.order.currentStatus) >= 0)
+    this.disableAllButton();
+    let status = OrderStatusList.find(x => x.id == this.order.currentStatus);    
+    if (isAllowCancel(status.id))
       this.showCancelButton = true;
-    if (this.order.currentStatus == 1) this.showVerifyButton = true;
+    if (isAllowVerify(status.id))
+      this.showVerifyButton = true;
+    if (isAllowShipping(status.id))
+      this.showShippingButton = true;
+    if (isAllowShipped(status.id))
+      this.showShippedButton = true;
+    if (isAllowCancelAccept(status.id))
+      this.showAcceptCancelButton = true;
+    if (isAllowReturnAccept(status.id))
+      this.showAcceptReturnButton = true;
+      
+  }
+
+  disableAllButton()
+  {
+    this.showCancelButton = false;
+    this.showVerifyButton = false;
+    this.showShippedButton = false;
+    this.showShippingButton = false;
+    this.showAcceptCancelButton = false;
+    this.showAcceptReturnButton = false;
   }
 }

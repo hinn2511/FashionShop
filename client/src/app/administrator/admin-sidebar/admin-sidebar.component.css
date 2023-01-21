@@ -50,7 +50,7 @@ a {
 
 :host {
   position: fixed;
-  left: auto;
+  /* left: auto; */
   top: 0;
   left: 0;
   bottom: 0;

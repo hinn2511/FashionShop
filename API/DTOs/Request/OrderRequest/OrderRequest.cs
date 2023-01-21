@@ -37,4 +37,8 @@ namespace API.DTOs.Order
     public class CancelOrderRequest {
         public string Reason { get; set; }
     }
+
+     public class ReturnOrderRequest {
+        public string Reason { get; set; }
+    }
 }

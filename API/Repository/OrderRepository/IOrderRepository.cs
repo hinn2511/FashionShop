@@ -14,7 +14,7 @@ namespace API.Repository.OrderRepository
         Task<PagedList<Order>> GetOrdersAsync(AdminOrderParams orderParams);
         Task<Order> GetOrderWithDetailByIdAsync(int orderId);
         Task<Order> GetOrderWithDetailByExternalIdAsync(string externalId);
-        Task<List<Tuple<OrderStatus, int>>> GetOrdersSummaryAsync();
+        Task<List<Tuple<OrderStatus, int>>> GetOrdersSummaryAsync(AdminOrderParams orderParams);
     }
 
     public interface IOrderDetailRepository : IGenericRepository<OrderDetail>

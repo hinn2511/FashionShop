@@ -12,6 +12,8 @@ import {
   ManagerOrderSummary,
   OrderStatus,
   OrderStatusList,
+  OrderStatusSummary,
+  OrderStatusSummaryList,
   PaymentMethod,
   PaymentMethodList,
   ShippingMethod,
@@ -49,7 +51,7 @@ export class AdminOrderComponent implements OnInit {
   showPaymentMethodFilter: boolean = false;
   showShippingMethodFilter: boolean = false;
   selectedIds: number[] = [];
-  OrderStatusList: OrderStatus[] = OrderStatusList;
+  orderStatusSummariesList: OrderStatusSummary[] = OrderStatusSummaryList;
   shippingMethods: ShippingMethod[] = ShippingMethodList;
   paymentMethods: PaymentMethod[] = PaymentMethodList;
   orderSummary: ManagerOrderSummary[] = [];
@@ -100,12 +102,9 @@ export class AdminOrderComponent implements OnInit {
       this.orderParams.from = new Date(
         this.orderFilterForm.controls.from.value
       );
-      this.orderParams.to = new Date(this.orderFilterForm.controls.to.value);
-      this.orderParams.query = this.orderFilterForm.controls.query.value;
 
       this.updateDateFilterValidation();
-
-      this.loadOrders();
+      this.filter(this.orderParams);
     });
   }
 
@@ -128,14 +127,17 @@ export class AdminOrderComponent implements OnInit {
   }
 
   loadOrderSummary() {
-    this.orderService.getManagerOrderSummary().subscribe((response) => {
-      let result = response;
-      this.OrderStatusList.forEach((element) => {
-        let statusCount = result.find((x) => x.orderStatus == element.id);
-        if (statusCount != undefined) element.total = statusCount.total;
+    this.orderService
+      .getManagerOrderSummary(this.orderParams)
+      .subscribe((response) => {
+        let result = response;
+        this.orderStatusSummariesList.forEach((element) => {
+          let statusCount = result.find((x) => x.orderStatus == element.id);
+          if (statusCount != undefined) element.total = statusCount.total;
+          else element.total = 0;
+        });
+        this.orderSummary = result;
       });
-      this.orderSummary = result;
-    });
   }
 
   // apply filter and pagination
@@ -188,7 +190,10 @@ export class AdminOrderComponent implements OnInit {
 
   filter(params: ManagerOrderParams) {
     this.orderParams = params;
+    this.orderParams.to = new Date(this.orderFilterForm.controls.to.value);
+    this.orderParams.query = this.orderFilterForm.controls.query.value;
     this.loadOrders();
+    this.loadOrderSummary();
   }
 
   resetFilter() {
@@ -252,10 +257,13 @@ export class AdminOrderComponent implements OnInit {
   }
 
   selectAllOrderStatus() {
-    if (this.orderParams.orderStatusFilter.length == this.OrderStatusList.length)
+    if (
+      this.orderParams.orderStatusFilter.length ==
+      this.orderStatusSummariesList.length
+    )
       this.orderParams.orderStatusFilter = [];
     else
-      this.orderParams.orderStatusFilter = this.OrderStatusList.map(
+      this.orderParams.orderStatusFilter = this.orderStatusSummariesList.map(
         ({ id }) => id
       );
     this.loadOrders();
@@ -266,10 +274,9 @@ export class AdminOrderComponent implements OnInit {
       if (this.isStatusIncluded(status)) {
         this.orderParams.orderStatusFilter =
           this.orderParams.orderStatusFilter.filter((x) => x != status);
-        console.log(this.orderParams.orderStatusFilter);
       } else this.orderParams.orderStatusFilter.push(status);
       this.orderParams.orderStatusFilter = [
-        ...this.orderParams.orderStatusFilter
+        ...this.orderParams.orderStatusFilter,
       ].sort((a, b) => a - b);
     } else {
       this.viewAllStatus = false;
@@ -304,8 +311,8 @@ export class AdminOrderComponent implements OnInit {
       this.orderParams.paymentMethodFilter =
         this.orderParams.paymentMethodFilter.filter((x) => x !== paymentMethod);
     else this.orderParams.paymentMethodFilter.push(paymentMethod);
-    this.orderParams.paymentMethodFilter =  [
-      ...this.orderParams.paymentMethodFilter
+    this.orderParams.paymentMethodFilter = [
+      ...this.orderParams.paymentMethodFilter,
     ].sort((a, b) => a - b);
     this.loadOrders();
   }
@@ -339,8 +346,9 @@ export class AdminOrderComponent implements OnInit {
           (x) => x !== shippingMethod
         );
     else this.orderParams.shippingMethodFilter.push(shippingMethod);
-    this.orderParams.shippingMethodFilter = 
-      [...this.orderParams.shippingMethodFilter].sort();
+    this.orderParams.shippingMethodFilter = [
+      ...this.orderParams.shippingMethodFilter,
+    ].sort();
     this.loadOrders();
   }
 

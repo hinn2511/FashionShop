@@ -16,12 +16,12 @@
           'shadow-sm': showStatus(item.id, true),
           'bg-light': !showStatus(item.id, true)
         }"
-        *ngFor="let item of OrderStatusList; let i = index"
+        *ngFor="let item of orderStatusSummariesList; let i = index"
         (click)="selectStatus(item.id, false)"
       >
         <p class="p-0 m-0">{{ item.statusString }}</p>
         <span
-          class="badge position-absolute top-0 end-0 mr-1 mt-1"
+          class="badge position-absolute top-0 end-0"
           [class]="{
             'badge-danger': showStatus(item.id, true),
             'badge-secondary': !showStatus(item.id, true) && item.total > 0,
@@ -215,14 +215,14 @@
                 type="checkbox"
                 class="custom-control-input cs-pointer"
                 [checked]="
-                  orderParams.orderStatusFilter.length == OrderStatusList.length
+                  orderParams.orderStatusFilter.length == orderStatusSummariesList.length
                 "
               />
               <label class="custom-control-label">Select all</label>
             </div>
           </li>
 
-          <li class="list-group-item" *ngFor="let item of OrderStatusList">
+          <li class="list-group-item" *ngFor="let item of orderStatusSummariesList">
             <div
               class="custom-control custom-checkbox"
               (click)="selectStatus(item.id, true)"
