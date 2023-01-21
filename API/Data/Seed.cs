@@ -115,17 +115,9 @@ namespace API.Entities
             foreach (var category in categories)
             {
                 category.Slug = category.CategoryName.GenerateSlug();
-                if (category.SubCategories != null && category.SubCategories.Any())
-                {
-                    foreach (var subCategory in category.SubCategories)
-                    {
-                        subCategory.Slug = subCategory.CategoryName.GenerateSlug();
-                    }
-                    await context.Categories.AddAsync(category);
-                }
-
-                await context.SaveChangesAsync();
+                await context.Categories.AddAsync(category);
             }
+            await context.SaveChangesAsync();
         }
 
         public static async Task SeedBrands(DataContext context)

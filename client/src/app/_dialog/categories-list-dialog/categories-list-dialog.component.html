@@ -1,0 +1,81 @@
+<div class="modal-header">
+  <h5 class="modal-title w-100">{{ title }}</h5>
+</div>
+<div class="modal-body p-4">
+  <p>Selected category:&nbsp;{{ selectResult.selectedValue }}</p>
+  <!-- 1 -->
+  <accordion [isAnimated]="true" [closeOthers]="true">
+    <accordion-group *ngFor="let catalogue of catalogues">
+      <p class="p-0 m-0" accordion-heading>
+        {{ catalogue.genderTitle }} ({{ catalogue.categories.length }})
+      </p>
+      <!-- 2 -->
+      <accordion [isAnimated]="true">
+        <accordion-group *ngFor="let category of catalogue.categories">
+          <div
+            class="d-flex d-inline-block flex-wrap align-items-center"
+            accordion-heading
+            (click)="
+              select(category.id, category.categoryName, catalogue.genderTitle)
+            "
+          >
+            <input
+              type="radio"
+              [checked]="selectResult.selectedId == category.id"
+              aria-label="Radio button for following text input"
+            />
+            <p class="px-2 py-0 m-0">
+              {{ category.categoryName }} ({{ category.subCategories.length }})
+            </p>
+          </div>
+          <!-- 3...n -->
+          <accordion [isAnimated]="true">
+            <accordion-group
+              *ngFor="let subCategory of category['subCategories']"
+            >
+              <div
+                class="d-flex d-inline-block flex-wrap align-items-center"
+                accordion-heading
+                (click)="
+                  select(
+                    subCategory.id,
+                    subCategory.categoryName,
+                    catalogue.genderTitle
+                  )
+                "
+              >
+                <input
+                  type="radio"
+                  [checked]="selectResult.selectedId == subCategory.id"
+                  aria-label="Radio button for following text input"
+                />
+                <p class="px-2 py-0 m-0">
+                  {{ subCategory.categoryName }} ({{
+                    subCategory.subCategories.length
+                  }})
+                </p>
+              </div>
+            </accordion-group>
+          </accordion>
+        </accordion-group>
+      </accordion>
+    </accordion-group>
+    <accordion-group *ngIf="showNoneOption" (click)="removeSelected()">
+      <p class="p-0 m-0" accordion-heading>None</p>
+    </accordion-group>
+  </accordion>
+</div>
+<div class="modal-footer d-flex p-0">
+  <div
+    class="flex-fill my-auto cs-pointer text-danger text-center border-right p-3"
+    (click)="decline()"
+  >
+    {{ btnNoText }}
+  </div>
+  <div
+    class="flex-fill my-auto cs-pointer text-primary text-center p-3"
+    (click)="confirm()"
+  >
+    {{ btnYesText }}
+  </div>
+</div>

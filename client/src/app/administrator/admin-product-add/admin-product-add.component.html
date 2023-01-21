@@ -24,35 +24,26 @@
       </div>
       <div class="mr-2">
         <label for="category">Category</label>
-        <div class="form-group">
-          <select
+        <div class="input-group mb-3">
+          <input
+            type="text"
             class="form-control"
-            [formControl]="newProductForm.controls['categoryId']"
-          >
-            <option
-              *ngFor="let item of categories"
-              (click)="loadSubCategories(item.id)"
-              [value]="item.id"
+            [disabled]="true"
+            placeholder="{{ selectedCategoryName }}"
+            aria-label="selectedCategoryName"
+            aria-describedby="button-addon2"
+          />
+          <div class="input-group-append">
+            <button
+              class="btn btn-light px-4"
+              (click)="openCatalogue()"
+              type="button"
+              id="button-addon2"
             >
-              {{ item.genderName }}&nbsp;-&nbsp;{{ item.categoryName }}
-            </option>
-          </select>
-        </div>
-      </div>
-      <div class="mr-2">
-        <ng-container *ngIf="subCategories.length > 0">
-          <label for="subCategory">Sub category</label>
-          <div class="form-group">
-            <select
-              class="form-control"
-              [formControl]="newProductForm.controls['subCategoryId']"
-            >
-              <option *ngFor="let item of subCategories" [value]="item.id">
-                {{ item.categoryName }}
-              </option>
-            </select>
+              <i class="fa fa-ellipsis-v"></i>
+            </button>
           </div>
-        </ng-container>
+        </div>
       </div>
 
       <div class="mr-2">
@@ -68,8 +59,6 @@
           </select>
         </div>
       </div>
-
-
     </div>
 
     <div class="mt-1 editor">

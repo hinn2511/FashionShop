@@ -10,11 +10,11 @@
         ></app-navigation-bar>
       </ng-container>
 
-      <div class="container-fluid w-100 px-0">
+      <div class="container-fluid w-100 px-0 mb-3 mb-lg-5">
         <router-outlet></router-outlet>
       </div>
 
-      <ng-container *ngIf="!hasRoute('/login')">
+      <ng-container  *ngIf="!hasRoute('/login')">
         <app-footer></app-footer>
       </ng-container>
       <div *ngIf="focus" class="position-absolute focus-mode"></div>

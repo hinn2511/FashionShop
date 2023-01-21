@@ -1,12 +1,14 @@
+import { DeviceService } from 'src/app/_services/device.service';
+import { ProductFilterComponent } from './../product-filter/product-filter.component';
 import { CustomerSizeFilter } from './../../_models/productParams';
 import { CategoryService } from 'src/app/_services/category.service';
-import { ActivatedRoute } from '@angular/router';
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { ActivatedRoute, NavigationStart, Router } from '@angular/router';
+import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
 
 import { filter } from 'rxjs/operators';
 import { BreadCrumb } from 'src/app/_models/breadcrumb';
 import { Pagination } from 'src/app/_models/pagination';
-import { Category, Product } from 'src/app/_models/product';
+import { Product } from 'src/app/_models/product';
 import {
   CustomerFilterOrder,
   CustomerPriceRange,
@@ -14,8 +16,9 @@ import {
   ProductParams,
 } from 'src/app/_models/productParams';
 import { ProductService } from 'src/app/_services/product.service';
-import { Subscription } from 'rxjs';
-import { Gender } from 'src/app/_models/category';
+import { BehaviorSubject, Subscription } from 'rxjs';
+import { fnGetGenderName } from 'src/app/_models/category';
+import { ProductFilter } from '../product-filter/product-filter.component';
 
 @Component({
   selector: 'app-product-list',
@@ -23,6 +26,7 @@ import { Gender } from 'src/app/_models/category';
   styleUrls: ['./product-list.component.css'],
 })
 export class ProductListComponent implements OnInit, OnDestroy {
+  @ViewChild('filterComponent') filterComponent: ProductFilterComponent;
   products: Product[];
   skeletonItems: number[];
   skeletonLoading: boolean = false;
@@ -35,9 +39,6 @@ export class ProductListComponent implements OnInit, OnDestroy {
   selectedPriceRange: CustomerPriceRange;
   selectedSize: CustomerSizeFilter;
   selectedColor: CustomerColorFilter;
-  showResetPriceRangeButton: boolean = false;
-  showResetSizeFilterButton: boolean = false;
-  showResetColorFilterButton: boolean = false;
   selectedOrder: string;
   selectedCategory: string;
   selectedGender: number;
@@ -45,24 +46,10 @@ export class ProductListComponent implements OnInit, OnDestroy {
 
   querySubscribe$: Subscription;
 
-  //filter values
-  priceRanges: CustomerPriceRange[] = [
-    new CustomerPriceRange(0, -1, 50),
-    new CustomerPriceRange(1, 50, 100),
-    new CustomerPriceRange(2, 100, 300),
-    new CustomerPriceRange(3, 300, -1),
-  ];
-
-  sizeFilters: CustomerSizeFilter[] = [
-    new CustomerSizeFilter(0, 'XS'),
-    new CustomerSizeFilter(1, 'S'),
-    new CustomerSizeFilter(2, 'M'),
-    new CustomerSizeFilter(3, 'L'),
-    new CustomerSizeFilter(4, 'XL'),
-    new CustomerSizeFilter(5, 'XXL'),
-  ];
-
-  colorFilters: CustomerColorFilter[] = [];
+  showFilterMobile: boolean = false;
+  deviceSubscription$: Subscription;
+  deviceType: BehaviorSubject<string> = new BehaviorSubject('');
+  deviceTypeValue$ = this.deviceType.asObservable();
 
   filterOrders: CustomerFilterOrder[] = [
     new CustomerFilterOrder(0, 'Name', 0, 'Name (A-Z)'),
@@ -72,17 +59,25 @@ export class ProductListComponent implements OnInit, OnDestroy {
     new CustomerFilterOrder(4, 'Sold', 0, 'Best seller'),
     new CustomerFilterOrder(5, 'Date', 1, 'Newest'),
   ];
-  
+  colorFilters: CustomerColorFilter[] = [];
 
   constructor(
     private productService: ProductService,
     private categoryService: CategoryService,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private router: Router,
+    private deviceService: DeviceService
   ) {
     this.productParams = this.productService.getProductParams();
+    router.events.forEach((event) => {
+      if (event instanceof NavigationStart) {
+        this.filterComponent.resetFilter();
+      }
+    });
   }
   ngOnDestroy(): void {
     this.querySubscribe$.unsubscribe();
+    this.deviceSubscription$.unsubscribe();
   }
 
   ngOnInit(): void {
@@ -96,24 +91,30 @@ export class ProductListComponent implements OnInit, OnDestroy {
       .subscribe((queryParamMap) => {
         this.selectedCategory = queryParamMap.get('category');
         this.selectedGender = +queryParamMap.get('gender');
-        this.selectedGenderString = Gender[this.selectedGender];
+        this.selectedGenderString = fnGetGenderName(this.selectedGender);
         if (
           this.selectedCategory != this.productParams.category ||
           this.selectedGender != this.productParams.gender
-          ) {
-            this.productParams.category = this.selectedCategory;
-            this.productParams.gender = this.selectedGender;
-            this.updateBreadCrumb();
-            this.resetFilter();
-            this.loadColorFilters();
-            this.loadProducts();
+        ) {
+          this.productParams.category = this.selectedCategory;
+          this.productParams.gender = this.selectedGender;
+          this.updateBreadCrumb();
+
+          this.loadColorFilters();
+          this.loadProducts();
         }
       });
+
+    this.deviceSubscription$ = this.deviceService.deviceWidth$.subscribe(
+      (_) => {
+        this.deviceType.next(this.deviceService.getDeviceType());
+      }
+    );
 
     this.skeletonLoading = true;
     this.skeletonItems = Array(this.productParams.pageSize).fill(1);
     this.productParams.field = 'Sold';
-    this.productParams.orderBy = 1;    
+    this.productParams.orderBy = 1;
     this.selectedOrder = this.filterOrders[4].filterName;
     this.loadProducts();
     this.loadColorFilters();
@@ -125,7 +126,7 @@ export class ProductListComponent implements OnInit, OnDestroy {
       {
         name: 'Home',
         route: '/',
-        active: false
+        active: false,
       },
     ];
     if (this.productParams.gender != null) {
@@ -139,7 +140,7 @@ export class ProductListComponent implements OnInit, OnDestroy {
       this.breadCrumb.push({
         name: this.categoryService.getCurrentCategory(),
         route: '',
-        active: false
+        active: false,
       });
     }
   }
@@ -164,15 +165,13 @@ export class ProductListComponent implements OnInit, OnDestroy {
       });
   }
 
-  loadColorFilters()
-  {
+  loadColorFilters() {
     this.productService
       .getColorFilter(this.productParams)
       .subscribe((response) => {
         this.colorFilters = response;
       });
-  };
-
+  }
 
   pageChanged(event: any) {
     if (this.productParams.pageNumber !== event.page) {
@@ -190,80 +189,30 @@ export class ProductListComponent implements OnInit, OnDestroy {
     this.loadProducts();
   }
 
-  filter(params: ProductParams) {
-    this.productParams = params;
-    this.loadProducts();
-  }
-
-  resetFilter() {
-    this.resetPriceRange();
-    this.resetSize();
-    this.resetColor();
-    this.productParams = this.productService.resetProductParams();
-    this.productParams.category = this.selectedCategory;
-    this.productParams.gender = this.selectedGender;
-    this.loadProducts();
-  }
-
-  setPriceRange(priceRangeId: number) {
-    if (this.selectedPriceRange != null) {
-      this.selectedPriceRange = null;
-      this.resetPriceRange();
-      return;
-    }
-    var priceRange = this.priceRanges.find((x) => x.id == priceRangeId);
-    this.productParams.minPrice = priceRange?.minPrice;
-    this.productParams.maxPrice = priceRange?.maxPrice;
-    this.selectedPriceRange = priceRange;
-    this.showResetPriceRangeButton = true;
-    this.loadProducts();
-  }
-
-  setSizeFilter(sizeFilterId: number) {
-    if (this.selectedSize != null) {
-      this.selectedSize = null;
-      this.resetSize();
-      return;
-    }
-    var size = this.sizeFilters.find((x) => x.id == sizeFilterId);
-    this.selectedSize = size;
-    this.productParams.size = size.sizeName;
-    this.showResetSizeFilterButton = true;
-    this.loadProducts();
-  }
-
-  setColorFilter(colorFilterId: number) {
-    if (this.selectedColor != null) {
-      this.selectedColor = null;
-      this.resetColor();
-      return;
-    }
-    var color = this.colorFilters.find((x) => x.id == colorFilterId);
-    this.selectedColor = color;
-    this.productParams.colorCode = color.colorCode;
-    this.showResetColorFilterButton = true;
+  filter(productFilter: ProductFilter) {
+    console.log(productFilter);
+    
+    this.productParams = productFilter.productParams;
+    this.selectedColor = productFilter.selectedColor;
+    this.selectedPriceRange = productFilter.selectedPriceRange;
+    this.selectedSize = productFilter.selectedSize;
     this.loadProducts();
   }
 
   resetColor() {
-    this.selectedColor = null;
-    this.showResetColorFilterButton = false;
-    this.productParams.colorCode = '';
-    this.loadProducts();
+    this.filterComponent.resetColor();
   }
 
   resetPriceRange() {
-    this.selectedPriceRange = null;
-    this.showResetPriceRangeButton = false;
-    this.productParams.minPrice = -1;
-    this.productParams.maxPrice = -1;
-    this.loadProducts();
+    this.filterComponent.resetPriceRange();
   }
 
   resetSize() {
-    this.selectedSize = null;
-    this.showResetSizeFilterButton = false;
-    this.productParams.size = '';
-    this.loadProducts();
+    this.filterComponent.resetSize();
+  }
+
+  mobileFilterToggle()
+  {
+    this.showFilterMobile = !this.showFilterMobile;
   }
 }

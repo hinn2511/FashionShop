@@ -38,10 +38,7 @@ import { ProductCarouselComponent } from './customer/product-carousel/product-ca
 import { ProductRecentViewComponent } from './customer/product-recent-view/product-recent-view.component';
 import { HomeCarouselComponent } from './customer/home-carousel/home-carousel.component';
 import { HomeCategoriesComponent } from './customer/home-categories/home-categories.component';
-import { HomeBestSellerComponent } from './customer/home-best-seller/home-best-seller.component';
-import { HomeCollectionComponent } from './customer/home-collection/home-collection.component';
 import { FooterComponent } from './customer/footer/footer.component';
-import { HomeNewsletterComponent } from './customer/home-newsletter/home-newsletter.component';
 import { ReactiveFormsModule,FormsModule } from '@angular/forms'
 import { CartComponent } from './customer/cart/cart.component';
 import { ProductRelatedComponent } from './customer/product-related/product-related.component';
@@ -83,6 +80,13 @@ import { NewsDetailComponent } from './customer/news-detail/news-detail.componen
 import { NewsCarouselComponent } from './customer/news-carousel/news-carousel.component';
 import { ColorOptionComponent } from './_common/color-option/color-option.component';
 import { ImageCarouselComponent } from './_common/image-carousel/image-carousel.component';
+import { ProductFilterComponent } from './customer/product-filter/product-filter.component';
+import { AdminCategoryComponent } from './administrator/admin-category/admin-category.component';
+import { AdminCategoryAddComponent } from './administrator/admin-category-add/admin-category-add.component';
+import { CategoriesListDialogComponent } from './_dialog/categories-list-dialog/categories-list-dialog.component';
+import { AdminCategoryEditComponent } from './administrator/admin-category-edit/admin-category-edit.component';
+import { HomeInterestingComponent } from './customer/home-interesting/home-interesting.component';
+import { HomeNewsComponent } from './customer/home-news/home-news.component';
 
 @NgModule({
   declarations: [
@@ -98,10 +102,7 @@ import { ImageCarouselComponent } from './_common/image-carousel/image-carousel.
     ProductRecentViewComponent,
     HomeCarouselComponent,
     HomeCategoriesComponent,
-    HomeBestSellerComponent,
-    HomeCollectionComponent,
     FooterComponent,
-    HomeNewsletterComponent,
     TextInputComponent,
     DateInputComponent,
     NumberInputComponent,
@@ -150,7 +151,14 @@ import { ImageCarouselComponent } from './_common/image-carousel/image-carousel.
     NewsDetailComponent,
     NewsCarouselComponent,
     ColorOptionComponent,
-    ImageCarouselComponent
+    ImageCarouselComponent,
+    ProductFilterComponent,
+    AdminCategoryComponent,
+    AdminCategoryAddComponent,
+    CategoriesListDialogComponent,
+    AdminCategoryEditComponent,
+    HomeInterestingComponent,
+    HomeNewsComponent
   ],
   imports: [
     BrowserModule,

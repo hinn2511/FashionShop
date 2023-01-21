@@ -42,8 +42,8 @@ export interface SelectedProductPhoto {
 
 export interface ManagerProduct {
     categoryId: number;
-    subCategoryId: number;
     categoryName: string;
+    categoryGender: number;
     brandId: number;
     brandName: string;
     productPhotos: ManagerProductPhoto[];
@@ -67,11 +67,6 @@ export interface ManagerProduct {
 }
 
 
-export interface Category {
-    categoryName: string;
-    genderName: string;
-    id: number;
-}
 
 export interface SubCategory {
     categoryName: string;

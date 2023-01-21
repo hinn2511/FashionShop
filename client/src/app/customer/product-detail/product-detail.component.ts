@@ -1,10 +1,9 @@
 import { CustomerCarousel } from 'src/app/_models/carousel';
-import { Gender } from './../../_models/category';
 import { AccountService } from 'src/app/_services/account.service';
 import { AuthenticationService } from './../../_services/authentication.service';
 import { CartService } from 'src/app/_services/cart.service';
-import { Component, HostListener, Input, OnInit } from '@angular/core';
-import { ActivatedRoute, ParamMap, Params, Router } from '@angular/router';
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
 import { BreadCrumb } from 'src/app/_models/breadcrumb';
 import { Product } from 'src/app/_models/product';
 import {
@@ -17,24 +16,27 @@ import { ProductService } from 'src/app/_services/product.service';
 import { CartItem, NewCartItem } from 'src/app/_models/cart';
 import { User } from 'src/app/_models/user';
 import { ToastrService } from 'ngx-toastr';
-import { DomSanitizer } from '@angular/platform-browser';
+import { GrowAnimation } from 'src/app/_common/animation/common.animation';
 
 @Component({
   selector: 'app-product-detail',
   templateUrl: './product-detail.component.html',
   styleUrls: ['./product-detail.component.css'],
+  animations: [GrowAnimation]
 })
 export class ProductDetailComponent implements OnInit {
   product: Product;
   breadCrumb: BreadCrumb[];
   quantity: number;
-
   carousels: CustomerCarousel[] = [];
   options: CustomerOption[] = [];
   sizes: CustomerOptionSize[] = [];
   selectedSize: CustomerOptionSize;
   selectedColor: CustomerOptionColor;
   user: User;
+  expandDescription: string = 'in';
+
+  @ViewChild('descriptionTitle') descriptionTitleRef: ElementRef;
 
   constructor(
     private productService: ProductService,
@@ -45,11 +47,9 @@ export class ProductDetailComponent implements OnInit {
     private router: Router,
     private route: ActivatedRoute,
     private toastr: ToastrService,
-    private sanitizer: DomSanitizer
-  ) {
-  }
+  ) {}
 
-  ngOnInit(): void {    
+  ngOnInit(): void {
     this.user = this.authenticationService.userValue;
     this.loadProduct(this.route.snapshot.queryParams['id']);
     this.loadOptions(this.route.snapshot.queryParams['id']);
@@ -66,8 +66,8 @@ export class ProductDetailComponent implements OnInit {
   }
 
   loadProductImageCarousel() {
-    this.product.productPhotos.forEach(element => {
-      this.carousels.push(new CustomerCarousel("", "", "", element.url));
+    this.product.productPhotos.forEach((element) => {
+      this.carousels.push(new CustomerCarousel('', '', '', element.url));
     });
   }
 
@@ -76,24 +76,24 @@ export class ProductDetailComponent implements OnInit {
       {
         name: 'Home',
         route: '/',
-        active: false
+        active: false,
       },
       {
         name: this.product.categoryName,
         route: '',
-        active: false
+        active: false,
       },
       {
         name: this.product.productName,
         route: '',
-        active: false
+        active: false,
       },
     ];
     if (this.product.subCategoryName != undefined) {
       let subCategoryBreadcrum: BreadCrumb = {
         name: this.product.subCategoryName,
         route: '',
-        active: true
+        active: true,
       };
       this.breadCrumb.splice(2, 0, subCategoryBreadcrum);
     }
@@ -155,52 +155,66 @@ export class ProductDetailComponent implements OnInit {
       this.toastr.success('This item has been added to your cart!', 'Success');
       return;
     }
-    
+
     let newCartItem: NewCartItem = {
       quantity: this.quantity,
       optionId: this.selectedSize.optionId,
     };
-    this.cartService.addToCart(newCartItem).subscribe((result) => {
-      this.toastr.success('This item has been added to your cart!', 'Success');
-    },
-    error => {
-      this.toastr.error('Something wrong happen!', 'Error');
-    });
+    this.cartService.addToCart(newCartItem).subscribe(
+      (result) => {
+        this.toastr.success(
+          'This item has been added to your cart!',
+          'Success'
+        );
+      },
+      (error) => {
+        this.toastr.error('Something wrong happen!', 'Error');
+      }
+    );
   }
 
-  likeProduct()
-  {
-    if(this.user == null || this.user == undefined)
-    {
+  likeProduct() {
+    if (this.user == null || this.user == undefined) {
       this.router.navigateByUrl('/login');
     }
-    this.accountService.addToFavorite(this.product.id).subscribe(result => {
-        //add notification
+    this.accountService.addToFavorite(this.product.id).subscribe(
+      (result) => {
         this.accountService.clearFavoriteCache();
         this.product.likedByUser = true;
         this.productService.removeCache();
-        this.toastr.success("This product have been added to your favorites", "Success");
-    },
-    error => {
-      this.toastr.error(error, 'Error');
-    });
+        this.toastr.success(
+          'This product have been added to your favorites',
+          'Success'
+        );
+      },
+      (error) => {
+        this.toastr.error(error, 'Error');
+      }
+    );
   }
 
-  unlikeProduct()
-  {
-    this.accountService.removeFromFavorite(this.product.id).subscribe(result => {
-        //add notification
+  unlikeProduct() {
+    this.accountService.removeFromFavorite(this.product.id).subscribe(
+      (result) => {
         this.accountService.clearFavoriteCache();
         this.product.likedByUser = false;
         this.productService.removeCache();
-        this.toastr.success("This product have been removed from your favorites", "Success");
-    },
-    error => {
-      this.toastr.error(error, 'Error');
-    });
+        this.toastr.success(
+          'This product have been removed from your favorites',
+          'Success'
+        );
+      },
+      (error) => {
+        this.toastr.error(error, 'Error');
+      }
+    );
   }
 
-  public createTrustedHtml(blogContent: string) {
-    return this.sanitizer.bypassSecurityTrustHtml(blogContent);
- }
+  expandDescriptionToggle()
+  {
+    this.expandDescription = this.expandDescription === 'in' ? 'out' : 'in';
+    if(this.expandDescription === 'in')
+      this.descriptionTitleRef.nativeElement.scrollIntoView({ behavior: 'smooth'});
+    
+  }
 }

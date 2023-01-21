@@ -1,0 +1,104 @@
+<div class="container-fluid px-3">
+  <h3>Add new category</h3>
+  <form
+    [formGroup]="newCategoryForm"
+    (ngSubmit)="newCategoryForm.valid && addNewCategory($event)"
+    autocomplete="off"
+  >
+    <div class="row mb-2">
+      <div class="col-12 col-lg-6">
+        <label for="categoryName">Category name</label>
+        <app-text-input
+          [formControl]="newCategoryForm.controls['categoryName']"
+          [label]="'Category name'"
+        >
+        </app-text-input>
+
+        <label for="Content type">Gender</label>
+        <div class="form-group">
+          <select
+            class="form-control"
+            [formControl]="newCategoryForm.controls['gender']"
+          >
+            <option *ngFor="let gender of genders" [value]="gender.id">
+              {{ gender.name }}
+            </option>
+          </select>
+        </div>
+
+        <label for="category">Parent category</label>
+        <div class="input-group mb-3">
+          <input
+            type="text"
+            class="form-control"
+            [disabled]="true"
+            placeholder="{{ selectedParentCategoryName }}"
+            aria-label="selectedCategoryName"
+            aria-describedby="button-addon2"
+          />
+          <div class="input-group-append">
+            <button
+              class="btn btn-light px-4"
+              (click)="openCatalogue()"
+              type="button"
+              id="button-addon2"
+            >
+              <i class="fa fa-ellipsis-v"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+      <div class="col-12 col-lg-6">
+        <label for="link">Category image</label>
+        <input
+          class="form-control p-2 h-auto"
+          type="file"
+          (change)="previewImage($event)"
+        />
+        <div class="rect-img-container mt-2">
+          <img class="rect-img bg-light" src="{{ imagePreviewUrl }}" alt="" />
+        </div>
+      </div>
+    </div>
+
+    <div class="form-group text-center text-lg-right">
+      <button
+        [disabled]="isUploadingFile"
+        routerLink="/administrator/category-manager"
+        class="btn btn-danger mr-2"
+        name="save"
+        type="button"
+      >
+        <span
+          *ngIf="isUploadingFile"
+          class="spinner-border spinner-border-sm mr-1"
+        ></span>
+        <h6 *ngIf="!isUploadingFile" class="p-0 m-0">Back</h6>
+      </button>
+      <button
+        [disabled]="!newCategoryForm.valid || isUploadingFile"
+        class="btn btn-success mr-2"
+        name="save"
+        type="submit"
+      >
+        <span
+          *ngIf="isUploadingFile"
+          class="spinner-border spinner-border-sm mr-1"
+        ></span>
+        <h6 *ngIf="!isUploadingFile" class="p-0 m-0">Save</h6>
+      </button>
+      <button
+        [disabled]="!newCategoryForm.valid || isUploadingFile"
+        class="btn btn-primary"
+        name="saveAndContinue"
+        type="submit"
+      >
+        <span
+          *ngIf="isUploadingFile"
+          class="spinner-border spinner-border-sm mr-1"
+        ></span>
+        <h6 *ngIf="!isUploadingFile" class="p-0 m-0">Save and continue</h6>
+      </button>
+    </div>
+  </form>
+</div>

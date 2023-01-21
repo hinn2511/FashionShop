@@ -24,6 +24,9 @@ import { AdminArticleAddComponent } from './administrator/admin-article-add/admi
 import { AdminArticleDetailComponent } from './administrator/admin-article-detail/admin-article-detail.component';
 import { NewsComponent } from './customer/news/news.component';
 import { NewsDetailComponent } from './customer/news-detail/news-detail.component';
+import { AdminCategoryComponent } from './administrator/admin-category/admin-category.component';
+import { AdminCategoryAddComponent } from './administrator/admin-category-add/admin-category-add.component';
+import { AdminCategoryEditComponent } from './administrator/admin-category-edit/admin-category-edit.component';
 
 const routes: Routes = [
   {path: '', component: HomePageComponent},
@@ -46,6 +49,10 @@ const routes: Routes = [
   {path: 'administrator/product-manager/edit/:id', component: AdminProductEditComponent, canActivate: [AuthGuard] },
   {path: 'administrator/product-manager/detail/:id', component: AdminProductDetailComponent, canActivate: [AuthGuard] },
   {path: 'administrator/product-manager/photos/:id', component: AdminProductPhotoComponent, canActivate: [AuthGuard] },
+
+  {path: 'administrator/category-manager', component: AdminCategoryComponent, canActivate: [AuthGuard] },
+  {path: 'administrator/category-manager/add', component: AdminCategoryAddComponent, canActivate: [AuthGuard] },
+  {path: 'administrator/category-manager/edit/:id', component: AdminCategoryEditComponent, canActivate: [AuthGuard] },
 
   {path: 'administrator/carousel-manager', component: AdminCarouselComponent, canActivate: [AuthGuard] },
   {path: 'administrator/carousel-manager/add', component: AdminCarouselAddComponent, canActivate: [AuthGuard] },

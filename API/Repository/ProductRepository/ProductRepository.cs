@@ -32,8 +32,6 @@ namespace API.Data
 
             query = query.Where(x => x.Status != Status.Hidden && x.Status != Status.Deleted);
 
-            query = query.Include(x => x.Category).Include(x => x.SubCategory);
-
             if (productParams.Gender != null)
                 query = query.Where(p => p.Category.Gender == productParams.Gender);
 
@@ -43,8 +41,15 @@ namespace API.Data
             if (productParams.MaxPrice > 0)
                 query = query.Where(p => p.Price <= productParams.MaxPrice);
 
-            if (!string.IsNullOrEmpty(productParams.Category))
-                query = query.Where(p => p.Category.Slug == productParams.Category || p.SubCategory.Slug == productParams.Category);
+            var category = await _context.Categories.FirstOrDefaultAsync(x => x.Slug == productParams.Category);
+
+            if (category.ParentId != 0)
+                query = query.Where(p => p.Category.ParentId == category.Id || p.Category.Id == category.Id);
+            else
+                query = query.Where(p => p.Category.Id == category.Id);
+
+            // if (!string.IsNullOrEmpty(productParams.Category))
+            //     query = query.Where(p => p.Category.Slug == productParams.Category);
 
             if (!string.IsNullOrEmpty(productParams.Size))
             {
@@ -152,7 +157,6 @@ namespace API.Data
             var product = await _context.Products
                         .Include(x => x.Category)
                         .Include(x => x.Brand)
-                        .Include(x => x.SubCategory)
                         .Include(x => x.ProductPhotos)
                         .AsNoTracking()
                         .FirstOrDefaultAsync(x => x.Id == productId);
@@ -175,7 +179,7 @@ namespace API.Data
 
             query = query.Where(x => x.Status != Status.Hidden && x.Status != Status.Deleted);
 
-            query = query.Include(x => x.Category).Include(x => x.SubCategory);
+            query = query.Include(x => x.Category);
 
             if (productParams.Gender != null)
                 query = query.Where(p => p.Category.Gender == productParams.Gender);
@@ -187,7 +191,7 @@ namespace API.Data
                 query = query.Where(p => p.Price <= productParams.MaxPrice);
 
             if (!string.IsNullOrEmpty(productParams.Category))
-                query = query.Where(p => p.Category.Slug == productParams.Category || p.SubCategory.Slug == productParams.Category);
+                query = query.Where(p => p.Category.Slug == productParams.Category);
 
             if (!string.IsNullOrEmpty(productParams.Size))
             {

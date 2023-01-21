@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { environment } from 'src/environments/environment';
 import { IdArray } from 'src/app/_models/adminRequest';
 import { AuthenticationService } from 'src/app/_services/authentication.service';
-import { AddArticle, Article, CustomerArticle, CustomerArticleDetail, CustomerArticleParams, ManagerArticle, ManagerArticleParams, UpdateArticle } from 'src/app/_models/article';
+import { AddArticle, CustomerArticle, CustomerArticleDetail, CustomerArticleParams, ManagerArticle, ManagerArticleParams, UpdateArticle } from 'src/app/_models/article';
 import { getPaginatedResult, getPaginationHeaders } from 'src/app/_helpers/paginationHelper';
 import { map } from 'rxjs/operators';
 import { of } from 'rxjs';

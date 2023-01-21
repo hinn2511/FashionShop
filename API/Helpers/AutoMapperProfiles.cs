@@ -29,6 +29,7 @@ using API.DTOs.Response.AccountResponse;
 using System;
 using API.DTOs.Response.ArticleResponse;
 using API.DTOs.Request.ArticleRequest;
+using static API.Extensions.TreeExtension;
 
 namespace API.Helpers
 {
@@ -43,6 +44,8 @@ namespace API.Helpers
                           src => src.ProductPhotos.FirstOrDefault(pp => pp.IsMain).Url));
 
             CreateMap<Product, AdminProductDetailResponse>()
+                .ForMember(dest => dest.CategoryGender, opt => opt.MapFrom(
+                          src => src.Category.Gender))
                 .ForMember(dest => dest.Url, opt => opt.MapFrom(
                           src => src.ProductPhotos.FirstOrDefault(pp => pp.IsMain).Url))
                 .ForMember(dest => dest.BrandName, opt => opt.MapFrom(
@@ -50,11 +53,7 @@ namespace API.Helpers
                 .ForMember(dest => dest.CategoryId, opt => opt.MapFrom(
                           src => src.Category.Id))
                 .ForMember(dest => dest.CategoryName, opt => opt.MapFrom(
-                          src => src.Category.CategoryName))
-                .ForMember(dest => dest.SubCategoryId, opt => opt.MapFrom(
-                          src => src.SubCategory.Id))
-                .ForMember(dest => dest.SubCategoryName, opt => opt.MapFrom(
-                          src => src.SubCategory.CategoryName));
+                          src => src.Category.CategoryName));
 
             CreateMap<ProductPhoto, AdminProductPhotoResponse>();
 
@@ -63,20 +62,30 @@ namespace API.Helpers
             CreateMap<UpdateProductRequest, Product>();
 
             CreateMap<Category, AdminCategoryResponse>()
-            .ForMember(dest => dest.GenderName, opt => opt.MapFrom(
-                          src => src.Gender.ToString()));
-
-            CreateMap<SubCategory, AdminSubCategoryResponse>();
-
-            CreateMap<SubCategory, SubCategoryGender>();
-
+                .ForMember(dest => dest.GenderName, opt => opt.MapFrom(
+                          src => src.Gender.ToString()))
+                .ForMember(dest => dest.ParentCategory, opt => opt.MapFrom(
+                          src => src.Parent.CategoryName));
+                          
             CreateMap<Category, AdminCategoryDetailResponse>();
 
             CreateMap<Category, CategoryGender>();
 
+            CreateMap<ITree<Category>, AdminCatalogueCategoryResponse>()
+                .ForMember(dest => dest.Id, opt => opt.MapFrom(
+                          src => src.Data.Id))
+                .ForMember(dest => dest.CategoryName, opt => opt.MapFrom(
+                          src => src.Data.CategoryName))
+                .ForMember(dest => dest.Gender, opt => opt.MapFrom(
+                          src => src.Data.Gender))
+                .ForMember(dest => dest.Slug, opt => opt.MapFrom(
+                          src => src.Data.Slug))
+                .ForMember(dest => dest.SubCategories, opt => opt.MapFrom(
+                          src => src.Children.Flatten(node => node.Children).ToList()));
+
             CreateMap<CreateCategoryRequest, Category>();
 
-            CreateMap<CreateCategoryRequest, SubCategory>();
+            CreateMap<UpdateCategoryRequest, Category>();
 
             CreateMap<Option, AdminOptionResponse>();
 
@@ -151,9 +160,7 @@ namespace API.Helpers
                 .ForMember(dest => dest.Gender, opt => opt.MapFrom(
                           src => (Gender)src.Category.Gender))
                 .ForMember(dest => dest.Category, opt => opt.MapFrom(
-                          src => src.Category.CategoryName))
-                .ForMember(dest => dest.SubCategory, opt => opt.MapFrom(
-                          src => src.SubCategory.CategoryName));
+                          src => src.Category.CategoryName));
 
             CreateMap<Product, CustomerProductDetailResponse>()
                 .ForMember(dest => dest.Url, opt => opt.MapFrom(
@@ -164,10 +171,6 @@ namespace API.Helpers
                           src => src.Category.Id))
                 .ForMember(dest => dest.CategoryName, opt => opt.MapFrom(
                           src => src.Category.CategoryName))
-                .ForMember(dest => dest.SubCategoryId, opt => opt.MapFrom(
-                          src => src.SubCategory.Id))
-                .ForMember(dest => dest.SubCategoryName, opt => opt.MapFrom(
-                          src => src.SubCategory.CategoryName))
                 .ForMember(dest => dest.Gender, opt => opt.MapFrom(
                           src => (Gender)src.Category.Gender));
 
@@ -179,7 +182,15 @@ namespace API.Helpers
 
             CreateMap<Category, CustomerCategoryResponse>();
 
-            CreateMap<SubCategory, CustomerSubCategoryResponse>();
+            CreateMap<ITree<Category>, CustomerCategoryResponse>()
+                .ForMember(dest => dest.CategoryName, opt => opt.MapFrom(
+                          src => src.Data.CategoryName))
+                .ForMember(dest => dest.Gender, opt => opt.MapFrom(
+                          src => src.Data.Gender))
+                .ForMember(dest => dest.Slug, opt => opt.MapFrom(
+                          src => src.Data.Slug))
+                .ForMember(dest => dest.SubCategories, opt => opt.MapFrom(
+                          src => src.Children.Flatten(node => node.Children).ToList()));
 
             CreateMap<Color, CartItemColor>();
 

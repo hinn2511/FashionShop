@@ -1,0 +1,52 @@
+.top-new {
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  overflow: hidden;
+}
+
+
+.new-list {
+  transition: all 0.5s ease-out;
+}
+
+.top-new,
+.top-new-text {
+  width: 80%;
+}
+
+@media (min-width: 768px) {
+
+  .container-fluid
+  {
+    overflow: hidden;
+  }
+  
+  .top-new,
+  .new-list {
+    height: 600px;
+  }
+
+  .top-new-text {
+    top: 60%;
+    left: 0;
+    height: 30%;
+  }
+}
+
+@media (max-width: 768px) {
+  .top-new {
+    min-height: 600px;
+    max-height: 600px;
+  }
+
+  .top-new-text {
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
+}
+
+.bg-selected {
+  background-color: #e3e8eb;
+}

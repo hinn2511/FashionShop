@@ -1,10 +1,10 @@
-import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { of, ReplaySubject } from 'rxjs';
-import { map, take } from 'rxjs/operators';
+import { of } from 'rxjs';
+import { map } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
 import { IdArray } from 'src/app/_models/adminRequest';
-import { AddProduct, Brand, Category, UpdateProduct, Product, SubCategory, ManagerProduct } from 'src/app/_models/product';
+import { AddProduct, Brand, UpdateProduct, Product, ManagerProduct } from 'src/app/_models/product';
 import { CustomerColorFilter, ManagerProductParams, ProductParams } from 'src/app/_models/productParams';
 import { getPaginatedResult, getPaginationHeaders } from '../_helpers/paginationHelper';
 
@@ -161,15 +161,6 @@ export class ProductService {
       },
     };
     return this.http.delete(this.baseUrl + 'product/soft-delete', options);
-  }
-  
-
-  getCategories() {
-    return this.http.get<Category[]>(this.baseUrl + 'category/all');
-  }
-
-  getSubCategories(categoryId: number) {
-    return this.http.get<SubCategory[]>(this.baseUrl + 'category/' + categoryId + "/subCategories");
   }
 
   getBrands() {

@@ -11,17 +11,14 @@ import {
   AfterViewInit,
 } from '@angular/core';
 import { NavigationStart, Router } from '@angular/router';
-import {
-  Catalogue,
-  CategoryCatalogue,
-  SubCategoryCatalogue,
-} from 'src/app/_models/category';
+
 import { AuthenticationService } from 'src/app/_services/authentication.service';
 import { CategoryService } from 'src/app/_services/category.service';
 import { User } from 'src/app/_models/user';
 import { ToastrService } from 'ngx-toastr';
 import { DeviceService } from 'src/app/_services/device.service';
 import { BehaviorSubject, Subscription } from 'rxjs';
+import { CustomerCatalogue, CustomerCategoryCatalogue } from 'src/app/_models/category';
 
 export class NavSettings {
   navHeight: string;
@@ -53,11 +50,11 @@ export class NavigationBarComponent
   collapseCartWindow: boolean = true;
   collapseCheckoutWindow: boolean = true;
   hideCategoryGroupDetail: boolean = true;
-  categoryGroups: Catalogue[] = [];
-  selectedCategoryGroup: Catalogue;
-  categories: CategoryCatalogue[] = [];
-  selectedCategory: CategoryCatalogue;
-  selectedSubCategory: SubCategoryCatalogue;
+  categoryGroups: CustomerCatalogue[] = [];
+  selectedCategoryGroup:  CustomerCatalogue;
+  categories:  CustomerCategoryCatalogue[] = [];
+  selectedCategory:  CustomerCategoryCatalogue;
+  selectedSubCategory:  CustomerCategoryCatalogue;
   user: User;
   deviceSubscription$: Subscription;
   settings: BehaviorSubject<NavSettings> = new BehaviorSubject(
@@ -232,7 +229,6 @@ export class NavigationBarComponent
       this.selectedCategoryGroup = {
         gender: -1,
         genderTitle: '',
-        slug: '',
         categories: [],
       };
       if (
@@ -260,4 +256,7 @@ export class NavigationBarComponent
     this.collapseAll();
     this.router.navigate(['account/'], { queryParams: { tab: tab } });
   }
+
+  
+  
 }

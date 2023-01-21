@@ -1,59 +1,46 @@
 .bg-light-0 {
-    background-color: rgb(238, 238, 238);
+  background-color: rgb(238, 238, 238);
 }
 
 .btn-like:hover {
-    background-color: transparent;
-    color: black;
+  background-color: transparent;
+  color: black;
 }
 
 @media (max-width: 768px) {
-
-    div>h2 {
-        text-align: center;
-    }
 }
 
 @media (min-width: 768px) {
-    .container-fluid
-    {
-      max-width: 1400px;
-    }
+  .container-fluid {
+    max-width: 1400px;
   }
 
+  .ck-content
+  {
+    max-width: 1000px;
+  }
+}
+
 .btn-selected {
-    background-color: rgb(194, 194, 194);
-    color: black;
+  background-color: rgb(194, 194, 194);
+  color: black;
 }
 
-.color-container
-{
-align-items: center;
-  justify-content: center;
-}
-.color-container > div
-{
-    width: 15px;
-    height: 15px;
-    border-radius: 999px;
-}
 
-.container-fluid 
-{
-    padding: auto 100vw;
+
+.container-fluid {
+  padding: auto 100vw;
 }
 
 .quantity {
-    width: 100%;
+  width: 100%;
 }
 
 .quantity > button {
-    width: 15%;
+  width: 15%;
 }
 
 .quantity > input {
-    min-width: 30px;
-    max-width: 100px;
+  min-width: 30px;
+  max-width: 100px;
 }
-
-

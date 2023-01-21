@@ -1,3 +1,4 @@
+import { DialogService } from './../../_services/dialog.service';
 import { ToastrService } from 'ngx-toastr';
 import { concatMap } from 'rxjs/operators';
 import {
@@ -8,7 +9,6 @@ import { ActivatedRoute } from '@angular/router';
 import { OrderService } from 'src/app/_services/order.service';
 import { Component, OnInit } from '@angular/core';
 import { CancelOrderRequest, ManagerOrder } from 'src/app/_models/order';
-import { ConfirmService } from 'src/app/_services/confirm.service';
 
 @Component({
   selector: 'app-admin-order-detail',
@@ -24,7 +24,7 @@ export class AdminOrderDetailComponent implements OnInit {
     private orderService: OrderService,
     private route: ActivatedRoute,
     private toastr: ToastrService,
-    private confirmService: ConfirmService
+    private dialogService: DialogService
   ) {}
 
   ngOnInit(): void {
@@ -40,8 +40,8 @@ export class AdminOrderDetailComponent implements OnInit {
   }
 
   verifyingOrder() {
-    this.confirmService
-      .confirm('Confirm', 'Are you sure you want to verify this order?', false)
+    this.dialogService
+      .openConfirmDialog('Confirm', 'Are you sure you want to verify this order?', false)
       .pipe(
         concatMap((confirmResult) => {
           if (confirmResult.result)
@@ -63,8 +63,8 @@ export class AdminOrderDetailComponent implements OnInit {
 
   cancelOrder() {
     let showNotification = true;
-    this.confirmService
-    .confirm('Confirm', 'Are you sure you want to cancel this order? If you do, please provide the reason for this cancellation.', true)
+    this.dialogService
+    .openConfirmDialog('Confirm', 'Are you sure you want to cancel this order? If you do, please provide the reason for this cancellation.', true)
     .pipe(
       concatMap((confirmResult) => {
         if (confirmResult.result)

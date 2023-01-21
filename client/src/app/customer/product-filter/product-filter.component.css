@@ -1,0 +1,19 @@
+@media (min-width: 768px) {
+}
+
+@media (max-width: 768px) {
+    .filter
+    {
+        height: 100%;
+    }
+
+    .filter-top
+    {
+        overflow-y: scroll;
+    }
+
+    .filter-bottom
+    {
+        
+    }
+}

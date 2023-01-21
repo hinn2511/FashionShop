@@ -24,7 +24,6 @@ namespace API.Data
         public ICartRepository CartRepository => new CartRepository(_context, _context.Carts);
         public IProductRepository ProductRepository => new ProductRepository(_context,  _context.Products);
         public ICategoryRepository CategoryRepository => new CategoryRepository(_context, _context.Categories);
-        public ISubCategoryRepository SubCategoryRepository => new SubCategoryRepository(_context, _context.SubCategories);
         public IProductPhotoRepository ProductPhotoRepository => new ProductPhotoRepository(_context, _context.ProductPhotos);
         public IOrderRepository OrderRepository => new OrderRepository(_context, _context.Orders);
         public IOrderDetailRepository OrderDetailRepository => new OrderDetailRepository(_context, _context.OrderDetails);

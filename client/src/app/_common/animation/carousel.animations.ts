@@ -147,7 +147,8 @@ export const RotateAnimation = [
 
 
 export const slide = trigger("slide", [
-  transition(":enter", [
+  transition(
+    ":enter", [
     style({
       transform: "translateX({{startPos}}%)"
     }),
