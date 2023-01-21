@@ -71,6 +71,8 @@ namespace API.Helpers
 
             CreateMap<Category, CategoryGender>();
 
+            CreateMap<Category, CustomerSingleCategoryResponse>();
+
             CreateMap<ITree<Category>, AdminCatalogueCategoryResponse>()
                 .ForMember(dest => dest.Id, opt => opt.MapFrom(
                           src => src.Data.Id))
@@ -167,10 +169,14 @@ namespace API.Helpers
                           src => src.ProductPhotos.FirstOrDefault(pp => pp.IsMain).Url))
                 .ForMember(dest => dest.BrandName, opt => opt.MapFrom(
                           src => src.Brand.Name))
-                .ForMember(dest => dest.CategoryId, opt => opt.MapFrom(
-                          src => src.Category.Id))
-                .ForMember(dest => dest.CategoryName, opt => opt.MapFrom(
+                .ForMember(dest => dest.Category, opt => opt.MapFrom(
                           src => src.Category.CategoryName))
+                .ForMember(dest => dest.CategorySlug, opt => opt.MapFrom(
+                          src => src.Category.Slug))
+                .ForMember(dest => dest.ParentCategory, opt => opt.MapFrom(
+                          src => src.Category.Parent.CategoryName))
+                .ForMember(dest => dest.ParentCategorySlug, opt => opt.MapFrom(
+                          src => src.Category.Parent.Slug))
                 .ForMember(dest => dest.Gender, opt => opt.MapFrom(
                           src => (Gender)src.Category.Gender));
 

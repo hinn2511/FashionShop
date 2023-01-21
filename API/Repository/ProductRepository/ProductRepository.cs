@@ -45,8 +45,10 @@ namespace API.Data
             {
                 var category = await _context.Categories.FirstOrDefaultAsync(x => x.Slug == productParams.Category);
 
-                if (category.ParentId != 0)
+                if (category.ParentId == null)
+                {
                     query = query.Where(p => p.Category.ParentId == category.Id || p.Category.Id == category.Id);
+                }
                 else
                     query = query.Where(p => p.Category.Id == category.Id);
             }
@@ -98,7 +100,7 @@ namespace API.Data
             }
 
 
-            query = query.Include(x => x.ProductPhotos.Where(x => x.Status == Status.Active));
+            query = query.Include(x => x.ProductPhotos.Where(x => x.Status == Status.Active)).Include(x => x.Category);
 
             return await PagedList<Product>.CreateAsync(query, productParams.PageNumber, productParams.PageSize);
         }
@@ -159,6 +161,7 @@ namespace API.Data
 
             var product = await _context.Products
                         .Include(x => x.Category)
+                        .ThenInclude(x => x.Parent)
                         .Include(x => x.Brand)
                         .Include(x => x.ProductPhotos)
                         .AsNoTracking()

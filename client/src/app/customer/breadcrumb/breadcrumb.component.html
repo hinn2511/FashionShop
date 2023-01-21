@@ -10,16 +10,22 @@
     <li
       *ngFor="let item of breadCrumbList; let i = index"
       class="breadcrumb-item"
+     
     >
       <a
         *ngIf="i < breadCrumbList.length - 1"
-        class="text-dark link"
-        (click)="navigatingTo(breadCrumb)"
+        class="link"
+        [class]="{
+          'text-muted': !item.active,
+          'cs-pointer': item.active,
+          'text-dark': item.active
+        }"
+        (click)="navigatingTo(item)"
       >
         {{ item.name }}
       </a>
     </li>
-    <li class="breadcrumb-item active">
+    <li class="breadcrumb-item text-muted" >
       {{ breadCrumbList[breadCrumbList.length - 1].name }}
     </li>
   </ol>

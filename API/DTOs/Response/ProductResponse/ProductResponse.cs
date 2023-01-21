@@ -11,7 +11,7 @@ namespace API.DTOs.Response.ProductResponse
     public class ProductResponse : BaseResponse
     {
         public string ProductName { get; set; }
-        public string Slug { get; set; }        
+        public string Slug { get; set; }
         public double Price { get; set; }
         public string Description { get; set; }
         public string Url { get; set; }
@@ -25,15 +25,14 @@ namespace API.DTOs.Response.ProductResponse
     {
         public bool LikedByUser { get; set; }
         public string Category { get; set; }
-        public string SubCategory { get; set; }
     }
 
     public class CustomerProductDetailResponse : ProductResponse
     {
-        public int CategoryId { get; set; }
-        public string CategoryName { get; set; }
-        public int? SubCategoryId { get; set; }
-        public string SubCategoryName { get; set; }
+        public string Category { get; set; }
+        public string CategorySlug { get; set; }
+        public string ParentCategory { get; set; }
+        public string ParentCategorySlug { get; set; }
         public int BrandId { get; set; }
         public string BrandName { get; set; }
         public bool LikedByUser { get; set; }
@@ -54,12 +53,12 @@ namespace API.DTOs.Response.ProductResponse
         public int Sold { get; set; }
         public Status Status { get; set; }
     }
-    
+
     public class AdminProductDetailResponse : ProductResponse
     {
         public int CategoryId { get; set; }
         public string CategoryName { get; set; }
-         public string CategoryGender { get; set; }
+        public string CategoryGender { get; set; }
         public int BrandId { get; set; }
         public string BrandName { get; set; }
         public IList<AdminProductPhotoResponse> ProductPhotos { get; set; }
@@ -84,5 +83,5 @@ namespace API.DTOs.Response.ProductResponse
     }
 
     #endregion
-    
+
 }

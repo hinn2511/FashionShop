@@ -23,10 +23,14 @@ namespace API.DTOs.Response.CategoryResponse
         public List<CustomerCategoryResponse> Categories { get; set; }
     }
 
-
     public class CustomerCategoryResponse : CategoryResponse
     {
         public List<CustomerCategoryResponse> SubCategories { get; set; }
+    }
+
+    public class CustomerSingleCategoryResponse : CategoryResponse
+    {
+        public CustomerSingleCategoryResponse Parent { get; set; }
     }
 
 

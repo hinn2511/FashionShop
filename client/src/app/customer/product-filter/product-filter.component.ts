@@ -31,7 +31,8 @@ export class ProductFilterComponent implements OnInit {
   @Output() apply = new EventEmitter<ProductFilter>();
   @Output() reset = new EventEmitter<ProductFilter>();
   @Output() close = new EventEmitter<boolean>();
-  
+
+
   priceRanges: CustomerPriceRange[] = [
     new CustomerPriceRange(0, -1, 50),
     new CustomerPriceRange(1, 50, 100),
@@ -57,11 +58,12 @@ export class ProductFilterComponent implements OnInit {
   constructor() { }
 
   ngOnInit(): void {
+    this.productParams = this.productParams;
   }
 
   applyFilter()
   {
-    this.apply.emit(new ProductFilter(this.productParams, this.selectedColor, this.selectedSize, this.selectedPriceRange));
+      this.apply.emit(new ProductFilter(this.productParams, this.selectedColor, this.selectedSize, this.selectedPriceRange));
   }
 
   resetFilter() {
@@ -141,4 +143,5 @@ export class ProductFilterComponent implements OnInit {
   {
     this.close.emit(true);
   }
+
 }

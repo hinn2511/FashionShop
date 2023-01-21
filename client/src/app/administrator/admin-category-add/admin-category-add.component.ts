@@ -111,6 +111,7 @@ export class AdminCategoryAddComponent implements OnInit {
       .openCategorySingleSelectorDialog(
         this.catalogue,
         true,
+        false,
         GenderList.filter(
           (x) => x.id == fnGetFormControlValue(this.newCategoryForm, 'gender')
         ).map((g) => g.name),

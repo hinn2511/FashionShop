@@ -58,11 +58,6 @@
     padding-right: 1.75rem;
   }
 
-  .nav-btn {
-    margin-right: 0.5rem;
-  }
-
-
 
   .cart-item-list {
     max-height: 40vh;
@@ -70,6 +65,7 @@
 
   .nav-btn {
     display: grid;
+    margin-right: 0.5rem;
     vertical-align: middle;
     min-width: 35px;
     min-height: 35px;

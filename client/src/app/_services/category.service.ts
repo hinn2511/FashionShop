@@ -1,13 +1,25 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { environment } from 'src/environments/environment';
-import { getPaginatedResult, getPaginationHeaders } from '../_helpers/paginationHelper';
+import {
+  getPaginatedResult,
+  getPaginationHeaders,
+} from '../_helpers/paginationHelper';
 import { IdArray } from '../_models/adminRequest';
-import { AddCategory, Category, CustomerCatalogue, fnGetGenderName, ManagerCatalogue, ManagerCategory, ManagerCategoryParams, UpdateCategory } from '../_models/category';
+import {
+  AddCategory,
+  Category,
+  CustomerCatalogue,
+  fnGetGenderName,
+  ManagerCatalogue,
+  ManagerCategory,
+  ManagerCategoryParams,
+  UpdateCategory,
+} from '../_models/category';
 import { ResponseMessage } from '../_models/generic';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class CategoryService {
   baseUrl = environment.apiUrl;
@@ -15,23 +27,20 @@ export class CategoryService {
 
   constructor(private http: HttpClient) {
     this.managerCategoryParams = new ManagerCategoryParams();
-   }
-
-  setCurrentCategory(categoryName: string, gender: number)
-  {
-    localStorage.setItem("selectedCategory", categoryName);
-    localStorage.setItem("selectedGender", gender.toString());
   }
 
-  getCurrentCategory()
-  {
-    return localStorage.getItem("selectedCategory");
+  setCurrentCategory(categoryName: string, gender: number) {
+    localStorage.setItem('selectedCategory', categoryName);
+    localStorage.setItem('selectedGender', gender.toString());
   }
 
-  getCurrentGender()
-  {
+  getCurrentCategory() {
+    return localStorage.getItem('selectedCategory');
+  }
+
+  getCurrentGender() {
     // return Gender[+(localStorage.getItem("selectedGender"))];
-    return fnGetGenderName(+(localStorage.getItem("selectedGender")));
+    return fnGetGenderName(+localStorage.getItem('selectedGender'));
   }
 
   getCatalogue() {
@@ -39,7 +48,9 @@ export class CategoryService {
   }
 
   getManagerCatalogue() {
-    return this.http.get<ManagerCatalogue[]>(this.baseUrl + 'category/catalogue');
+    return this.http.get<ManagerCatalogue[]>(
+      this.baseUrl + 'category/catalogue'
+    );
   }
 
   getManagerCategoryParams() {
@@ -63,8 +74,7 @@ export class CategoryService {
     params = params.append('orderBy', categoryParams.orderBy);
     params = params.append('field', categoryParams.field);
     params = params.append('query', categoryParams.query);
-    categoryParams.
-    categoryStatus.forEach((element) => {
+    categoryParams.categoryStatus.forEach((element) => {
       params = params.append('categoryStatus', element);
     });
 
@@ -107,10 +117,7 @@ export class CategoryService {
   }
 
   hideCategories(ids: IdArray) {
-    return this.http.put<ResponseMessage>(
-      this.baseUrl + 'category/hide',
-      ids
-    );
+    return this.http.put<ResponseMessage>(this.baseUrl + 'category/hide', ids);
   }
 
   activateCategories(ids: IdArray) {
@@ -135,11 +142,10 @@ export class CategoryService {
   }
 
   getPromotedCategories() {
-
-    return this.http.get<Category[]>(
-      this.baseUrl + 'category/promoted'
-    );
+    return this.http.get<Category[]>(this.baseUrl + 'category/promoted');
   }
 
-
+  getCategoryDetail(slug: string, gender: number) {
+    return this.http.get<Category>(this.baseUrl + `category/detail?slug=${slug}&gender=${gender}`);
+  }
 }
