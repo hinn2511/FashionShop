@@ -1,93 +1,100 @@
 <div class="container-fluid py-2 py-lg-5" *ngIf="order">
   <div class="row">
     <div class="col-12 col-md-6 col-lg-8">
-      <div class="card border-0 p-3 p-lg-4">
-        
+      <div class="card border-0 p-3">
         <a class="text-muted" (click)="backToOrderHistories()">
           <i class="fa fa-arrow-left"></i>&nbsp;&nbsp;Back to order histories
         </a>
 
-        <div class="mt-3 mt-lg-3 d-flex d-inline-block flex-wrap align-items-center">
-          <h4 class="p-0 m-0">Order #{{ order.externalId }}</h4>
-          <div class="p-2 ml-2 bg-light text-uppercase text-muted">
-            {{order.currentStatusString}}
+        <div class="mt-3 mt-lg-3">
+          <div class="p-2 bg-light text-uppercase text-muted my-2">
+            {{ order.currentStatusString }}
           </div>
         </div>
-        
-        <p>Date: {{ order.dateCreated | date }}</p>
-        <div class="d-flex d-inline-block align-items-center my-4">
-          <h6 class="text-muted p-0 my-auto mr-2">Order information</h6>
-          <hr class="flex-fill my-auto" style="height: 2px" />
+
+        <div class="p-lg-2">
+          <h4 class="p-0 m-0">Order #{{ order.externalId }}</h4>
+          <p>Date: {{ order.dateCreated | date }}</p>
+          <div class="d-flex d-inline-block align-items-center my-4">
+            <h6 class="text-muted p-0 my-auto mr-2">Order information</h6>
+            <hr class="flex-fill my-auto" style="height: 2px" />
+          </div>
+          <label for="receiverName">Receiver name</label>
+          <input
+            class="form-control"
+            type="text"
+            [value]="order.receiverName"
+            [readOnly]="true"
+          />
+
+          <label for="receiverName">Address</label>
+          <input
+            class="form-control"
+            type="text"
+            [value]="order.address"
+            [readOnly]="true"
+          />
+
+          <label for="receiverName">Phone number</label>
+          <input
+            class="form-control"
+            type="text"
+            [value]="order.phoneNumber"
+            [readOnly]="true"
+          />
+
+          <label for="receiverName">Email</label>
+          <input
+            class="form-control"
+            type="text"
+            [value]="order.email"
+            [readOnly]="true"
+          />
+
+          <div class="d-flex d-inline-block align-items-center my-4">
+            <h6 class="text-muted p-0 my-auto mr-2">Delivery</h6>
+            <hr class="flex-fill my-auto" style="height: 2px" />
+          </div>
+
+          <label for="receiverName">Shipping method</label>
+          <input
+            class="form-control"
+            type="text"
+            [value]="order.shippingMethod"
+            [readOnly]="true"
+          />
+
+          <div class="d-flex d-inline-block align-items-center my-4">
+            <h6 class="text-muted p-0 my-auto mr-2">Payment</h6>
+            <hr class="flex-fill my-auto" style="height: 2px" />
+          </div>
+
+          <label for="receiverName">Payment method</label>
+          <input
+            class="form-control"
+            type="text"
+            [value]="paymentMethodString"
+            [readOnly]="true"
+          />
         </div>
-        <label for="receiverName">Receiver name</label>
-        <input
-          class="form-control"
-          type="text"
-          [value]="order.receiverName"
-          [readOnly]="true"
-        />
-
-        <label for="receiverName">Address</label>
-        <input
-          class="form-control"
-          type="text"
-          [value]="order.address"
-          [readOnly]="true"
-        />
-
-        <label for="receiverName">Phone number</label>
-        <input
-          class="form-control"
-          type="text"
-          [value]="order.phoneNumber"
-          [readOnly]="true"
-        />
-
-        <label for="receiverName">Email</label>
-        <input
-          class="form-control"
-          type="text"
-          [value]="order.email"
-          [readOnly]="true"
-        />
-
-        <div class="d-flex d-inline-block align-items-center my-4">
-          <h6 class="text-muted p-0 my-auto mr-2">Delivery</h6>
-          <hr class="flex-fill my-auto" style="height: 2px" />
-        </div>
-
-        <label for="receiverName">Shipping method</label>
-        <input
-          class="form-control"
-          type="text"
-          [value]="order.shippingMethod"
-          [readOnly]="true"
-        />
-
-        <div class="d-flex d-inline-block align-items-center my-4">
-          <h6 class="text-muted p-0 my-auto mr-2">Payment</h6>
-          <hr class="flex-fill my-auto" style="height: 2px" />
-        </div>
-
-        <label for="receiverName">Payment method</label>
-        <input
-          class="form-control"
-          type="text"
-          [value]="paymentMethodString"
-          [readOnly]="true"
-        />
       </div>
-
       <div class="card border-0 p-3 p-lg-4 mt-3">
         <h4 class="mt-3">Tracking</h4>
-        <div [class]="{
-          'timeline': !order.isFinished,
-          'timeline-end': order.isFinished
-        }">
-          <div class="timeline-container right" *ngFor="let item of order.orderHistories">
+        <div
+          [class]="{
+            timeline: !order.isFinished,
+            'timeline-end': order.isFinished
+          }"
+        >
+          <div
+            class="timeline-container right"
+            *ngFor="let item of order.orderHistories"
+          >
             <div class="content rounded">
-              <h6>{{item.note}}</h6>
-              <p class="text-muted">{{item.dateCreated | date:'medium'}}</p>
+              <h6>{{ item.note }}</h6>
+              <p class="text-muted">
+                {{ item.dateCreated | date : "medium" }}
+              </p>
             </div>
           </div>
         </div>
@@ -96,7 +103,7 @@
     <div class="col-12 col-md-6 col-lg-4">
       <div class="card border-0 p-3 p-lg-4 mt-3 mt-md-0">
         <h4 class="mt-3">Items</h4>
-        <p class="fw-smaller">{{order.totalItem}}&nbsp;item(s)</p>
+        <p class="fw-smaller">{{ order.totalItem }}&nbsp;item(s)</p>
         <div class="my-2">
           <div *ngFor="let item of order.orderDetails; let i = index">
             <div class="d-flex d-inline-block align-items-center">
@@ -105,11 +112,19 @@
               </div>
               <div class="flex-fill pl-2">
                 <div class="d-flex d-inline-block">
-                  <p class="m-0 p-0 flex-fill">{{ item.productName }}&nbsp;-&nbsp;{{ item.sizeName }}</p>
+                  <p class="m-0 p-0 flex-fill">
+                    {{ item.productName }}&nbsp;-&nbsp;{{ item.sizeName }}
+                  </p>
                   <p class="m-0 p-0 fw-smaller">x{{ item.quantity }}</p>
                 </div>
                 <div class="d-flex d-inline-block">
-                  <p class="m-0 p-0 fw-smaller flex-fill"><i class="fa fa-circle" [ngStyle]="{'color': item.colorCode}"></i>&nbsp;{{ item.colorName }}</p>
+                  <p class="m-0 p-0 fw-smaller flex-fill">
+                    <i
+                      class="fa fa-circle"
+                      [ngStyle]="{ color: item.colorCode }"
+                    ></i
+                    >&nbsp;{{ item.colorName }}
+                  </p>
                   <p class="m-0 p-0 fw-smaller">{{ item.price | currency }}</p>
                 </div>
               </div>
@@ -134,10 +149,7 @@
         <div class="d-flex mt-2">
           <div class="bd-highlight">Tax</div>
           <div class="flex-fill text-right">
-            {{
-              order.tax
-                | currency
-            }}
+            {{ order.tax | currency }}
           </div>
         </div>
         <div class="d-flex mt-2">
@@ -146,7 +158,7 @@
             {{ order.shippingFee | currency }}
           </div>
         </div>
-        <hr>
+        <hr />
         <div class="d-flex my-2">
           <div class="bd-highlight fw-bold">Total</div>
           <div class="flex-fill text-right fw-bold">
@@ -155,11 +167,29 @@
         </div>
       </div>
       <div class="mt-3">
-        <button class="btn btn-outline-dark p-2 w-100">
+        <!-- <button class="btn btn-outline-dark p-2 w-100">
           <i class="fa fa-commenting-o"></i>&nbsp;&nbsp;Contact us
+        </button> -->
+        <button
+          *ngIf="allowConfirmDelivered"
+          (click)="confirmDelivered()"
+          class="btn btn-dark border p-2 mt-2 w-100"
+        >
+          Confirm delivered
         </button>
-        <button class="btn btn-light border p-2 mt-2 w-100">
-            Cancel
+        <button
+          *ngIf="allowCancelRequest"
+          (click)="requestCancelOrder()"
+          class="btn btn-light border p-2 mt-2 w-100"
+        >
+          Cancel
+        </button>
+        <button
+          *ngIf="allowReturnRequest"
+          (click)="requestReturnOrder()"
+          class="btn btn-light border p-2 mt-2 w-100"
+        >
+          Return&nbsp;/&nbsp;Request refund
         </button>
       </div>
     </div>

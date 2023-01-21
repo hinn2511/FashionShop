@@ -9,7 +9,7 @@
       (click)="closeCart()"
     ></div>
     <!-- Cart items list -->
-    <div class="col-12 col-lg-7 bg-light p-0">
+    <div class="col-12 col-lg-7 p-0 bg-white">
       <div class="cart-detail px-4 pt-4 p-md-5">
         <a class="text-muted" (click)="closeCart()">
           <i class="fa fa-arrow-left" aria-hidden="true"></i>&nbsp;&nbsp;Back to
@@ -59,10 +59,12 @@
                           (click)="viewProduct(cartItem)"
                         >
                           {{ cartItem.productName }}
-                      </h6>
+                        </h6>
                         <p class="m-0 p-0 fw-smaller">
-                          {{ cartItem.colorName }},&nbsp;Size:&nbsp;{{ cartItem.sizeName }}
-                        </p>                        
+                          {{ cartItem.colorName }},&nbsp;Size:&nbsp;{{
+                            cartItem.sizeName
+                          }}
+                        </p>
                       </div>
                     </div>
                   </td>
@@ -114,10 +116,12 @@
 
                   <td>
                     <div class="d-flex flex-column text-center mx-auto">
-                      <button class="btn btn-outline-dark" (click)="deleteCartItem(cartItem)">
+                      <button
+                        class="btn btn-outline-dark"
+                        (click)="deleteCartItem(cartItem)"
+                      >
                         <i class="fa fa-trash-o"></i>
                       </button>
-
                     </div>
                   </td>
                 </tr>
@@ -131,7 +135,12 @@
           <ng-container
             *ngFor="let cartItem of cartItemList.cartItems; let i = index"
           >
-            <div class="row mb-5">
+            <div
+              class="row py-3"
+              [class]="{
+                'border-bottom': i < cartItemList.cartItems.length - 1
+              }"
+            >
               <!-- Item image on mobile -->
               <div class="col-3 px-0">
                 <div class="rect-img-container">
@@ -150,7 +159,7 @@
                 </p>
                 <p class="m-0 p-0">Size:&nbsp;{{ cartItem.sizeName }}</p>
                 <!-- Item quantity on mobile -->
-                <div class="d-flex d-inline-block">
+                <div class="d-flex d-inline-block mt-2">
                   <button
                     #decreaseButton
                     class="btn btn-light border-top-right-0 border-bottom-right-0"
@@ -206,7 +215,7 @@
     <div class="col-12 col-lg-3 p-0">
       <div
         class="cart-summary bg-white d-flex flex-column p-4 p-lg-5"
-        [class.shadow]="deviceType != 'desktop'"
+        [class.shadow-lg]="deviceType != 'desktop'"
       >
         <div
           class="d-lg-none mx-auto py-2 w-100 text-center"

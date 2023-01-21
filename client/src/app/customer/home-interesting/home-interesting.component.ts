@@ -50,15 +50,16 @@ export class HomeInterestingComponent implements OnInit, OnDestroy {
       (_) => {
         switch (this.deviceService.getDeviceType()) {
           case 'mobile': {
+            this.maxValue = this.cardWidth * 6;
             this.step = this.cardWidth * 1.1;
             break;
           }
           case 'tablet': {
-            this.step = this.cardWidth * 3;
+            this.step = this.cardWidth * 2;
             break;
           }
           default: {
-            this.step = this.cardWidth * 5.2;
+            this.step = this.cardWidth * 4;
             break;
           }
         }

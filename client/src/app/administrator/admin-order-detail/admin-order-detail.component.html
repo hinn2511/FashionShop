@@ -31,7 +31,46 @@
       >
         Verify
       </button>
-      <button class="btn btn-danger" *ngIf="showCancelButton"  (click)="cancelOrder()">Cancel</button>
+
+      <button
+        class="btn btn-light mr-2"
+        *ngIf="showShippingButton"
+        (click)="deliveringOrder()"
+      >
+        Delivering
+      </button>
+
+      <button
+        class="btn btn-light mr-2"
+        *ngIf="showShippedButton"
+        (click)="orderDelivered()"
+      >
+        Delivered
+      </button>
+
+      <button
+        class="btn btn-light mr-2"
+        *ngIf="showAcceptReturnButton"
+        (click)="acceptReturn()"
+      >
+        Return accepted
+      </button>
+
+      <button
+        class="btn btn-danger mr-2"
+        *ngIf="showAcceptCancelButton"
+        (click)="acceptCancel()"
+      >
+        Cancel accepted
+      </button>
+
+      <button
+        class="btn btn-danger"
+        *ngIf="showCancelButton"
+        (click)="cancelOrder()"
+      >
+        Cancel
+      </button>
     </div>
   </div>
 
@@ -55,10 +94,10 @@
                 <th class="text-center">Quantity</th>
                 <th class="text-center">Total price</th>
                 <th class="text-center" *ngIf="order.currentStatus == 1">
-                  Available
+                  Quantity available
                 </th>
                 <th class="text-center" *ngIf="order.currentStatus == 1">
-                  Result
+                  Quantity after deduction
                 </th>
               </tr>
             </thead>
@@ -184,9 +223,7 @@
           <h6 class="text-muted p-0 my-auto mr-2">History</h6>
           <hr class="flex-fill my-auto" style="height: 2px" />
         </div>
-      
 
-        
         <div class="mb-3" *ngFor="let item of order.orderHistories">
           <div class="d-flex d-inline-block align-items-center">
             <div class="flex-shrink mr-2">
@@ -207,10 +244,8 @@
                 {{ item.dateCreated | date : "medium" }}
               </p>
             </div>
-          </div>         
+          </div>
         </div>
-
-
       </div>
     </div>
 

@@ -35,9 +35,19 @@ export function fnGetObjectStateStyle(state: number): string {
       case 3:
         return 'status processing-status';
       case 4:
-        return 'status shipping-status';
+        return 'status cancel-requested-status';
       case 5:
         return 'status cancelled-status';
+      case 6:
+        return 'status shipping-status';
+      case 7:
+        return 'status shipped-status';
+      case 9:
+        return 'status finished-status';
+      case 10:
+        return 'status return-requested-status';
+      case 11:
+        return 'status returned-status';
       default:
         return 'status default-status';
     }

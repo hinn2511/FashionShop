@@ -254,7 +254,7 @@ namespace API.Helpers
                 .ForMember(dest => dest.PaymentMethodString, opt => opt.MapFrom(
                           src => src.PaymentMethod.ConvertToString()))
                 .ForMember(dest => dest.CurrentStatusString, opt => opt.MapFrom(
-                          src => src.CurrentStatus.ToString()))
+                          src => src.CurrentStatus.ConvertToString()))
                 .ForMember(dest => dest.IsFinished, opt => opt.MapFrom(
                           src => src.IsOrderFinished()));
 
@@ -414,7 +414,11 @@ namespace API.Helpers
                 case OrderStatus.Processing:
                     return "Your order is being prepared.";
                 case OrderStatus.Shipping:
-                    return "Your order is being shipped.";
+                    return "Your order is being shipped to you by logistic department.";
+                case OrderStatus.Shipped:
+                    return "The logistic department has delivered your order.";
+                case OrderStatus.Finished:
+                    return "Delivering successfully. Your order is finished.";
                 case OrderStatus.CancelRequested:
                     return "You has requested to cancel order.";
                 case OrderStatus.Cancelled:
@@ -424,10 +428,7 @@ namespace API.Helpers
             }
         }
 
-        public static string ConvertToString(this OrderStatus orderStatus)
-        {
-            return orderStatus.ToString();
-        }
+        
 
         public static string ConvertToString(this PaymentMethod paymentMethod)
         {
@@ -441,6 +442,19 @@ namespace API.Helpers
                     return "COD";
                 default:
                     return "Mobile";
+            }
+        }
+
+         public static string ConvertToString(this OrderStatus orderStatus)
+        {
+            switch (orderStatus)
+            {
+                case OrderStatus.CancelRequested:
+                    return "Cancel Requested";
+                case OrderStatus.ReturnRequested:
+                    return "Return Requested";
+                default:
+                    return orderStatus.ToString();
             }
         }
 

@@ -54,33 +54,6 @@ export const CustomerStatusFilters = [
   new OrderStatusFilter([5, 7, 8, 9, 10], 'Finished'),
   new OrderStatusFilter([11], 'Returned'),
 ];
-
-export class OrderStatus {
-  id: number;
-  statusString: string;
-  total: number;
-  constructor(id: number, statusString: string, total: number) {
-    this.id = id;
-    this.statusString = statusString;
-    this.total = total;
-  }
-}
-
-export const OrderStatusList = [
-  new OrderStatus(0, 'Created', 0),
-  new OrderStatus(1, 'Checking', 0),
-  new OrderStatus(2, 'Paid', 0),
-  new OrderStatus(3, 'Processing', 0),
-  new OrderStatus(6, 'Shipping', 0),
-  new OrderStatus(7, 'Shipped', 0),
-  new OrderStatus(9, 'Finished', 0),
-  new OrderStatus(8, 'Declined', 0),
-  new OrderStatus(4, 'Cancel Requested', 0),
-  new OrderStatus(5, 'Cancelled', 0),
-  new OrderStatus(10, 'Return Requested', 0),
-  new OrderStatus(11, 'Returned', 0),
-];
-
 export enum OrderStatusEnum {
   Created,
   Checking,
@@ -95,13 +68,131 @@ export enum OrderStatusEnum {
   ReturnRequested,
   Returned,
 }
+export const allowVerifyStatus: OrderStatusEnum[] = [
+  OrderStatusEnum.Created,
+  OrderStatusEnum.Paid,
+  OrderStatusEnum.Checking,
+];
 
-export class CancelOrderRequest {
+export const allowShippingStatus: number[] = [OrderStatusEnum.Processing];
+
+export const allowShippedStatus: number[] = [OrderStatusEnum.Shipping];
+
+export const allowCancelStatus: number[] = [
+  OrderStatusEnum.Created,
+  OrderStatusEnum.Paid,
+  OrderStatusEnum.Checking,
+  OrderStatusEnum.Processing,
+  OrderStatusEnum.Shipping,
+];
+
+export const allowCancelRequestStatus: number[] = [
+  OrderStatusEnum.Created,
+  OrderStatusEnum.Paid,
+  OrderStatusEnum.Checking,
+  OrderStatusEnum.Processing,
+];
+
+export const allowCancelAcceptStatus: number[] = [
+  OrderStatusEnum.CancelRequested,
+];
+
+export const allowReturnRequestStatus: number[] = [OrderStatusEnum.Shipped];
+
+export const allowConfirmDeliveredStatus: number[] = [OrderStatusEnum.Shipped];
+
+export const allowReturnAcceptStatus: number[] = [
+  OrderStatusEnum.ReturnRequested,
+];
+
+export class OrderStatus {
+  id: number;
+  statusString: string;
+
+  constructor(id: number, statusString: string) {
+    this.id = id;
+    this.statusString = statusString;
+  }
+}
+
+export class OrderStatusSummary extends OrderStatus{
+  total: number;
+
+  constructor(id: number, statusString: string, total: number) {
+    super(id, statusString);
+    this.total = total;
+  }
+}
+
+export const OrderStatusList = [
+  new OrderStatus(0, 'Created'),
+  new OrderStatus(2, 'Paid'),
+  new OrderStatus(1, 'Checking'),
+  new OrderStatus(3, 'Processing'),
+  new OrderStatus(6, 'Shipping'),
+  new OrderStatus(7, 'Shipped'),
+  new OrderStatus(9, 'Finished'),
+  new OrderStatus(8, 'Declined'),
+  new OrderStatus(4, 'Cancel Requested'),
+  new OrderStatus(5, 'Cancelled'),
+  new OrderStatus(10, 'Return Requested'),
+  new OrderStatus(11, 'Returned'),
+];
+
+export const OrderStatusSummaryList = [
+  new OrderStatusSummary(0, 'Created', 0),
+  new OrderStatusSummary(2, 'Paid', 0),
+  new OrderStatusSummary(1, 'Checking', 0),
+  new OrderStatusSummary(3, 'Processing', 0),
+  new OrderStatusSummary(6, 'Shipping', 0),
+  new OrderStatusSummary(7, 'Shipped', 0),
+  new OrderStatusSummary(9, 'Finished', 0),
+  new OrderStatusSummary(8, 'Declined', 0),
+  new OrderStatusSummary(4, 'Cancel Requested', 0),
+  new OrderStatusSummary(5, 'Cancelled', 0),
+  new OrderStatusSummary(10, 'Return Requested', 0),
+  new OrderStatusSummary(11, 'Returned', 0),
+];
+
+export class OrderRequest {
   reason: string;
   constructor(reason: string) {
     this.reason = reason;
   }
 }
+
+export class CancelOrderRequest extends OrderRequest {}
+
+export class ReturnOrderRequest extends OrderRequest {}
+
+
+export const isAllowVerify = (id: number) =>
+  allowVerifyStatus.find((x) => x === id) != undefined;
+
+export const isAllowShipping = (id: number) =>
+  allowShippingStatus.find((x) => x === id) != undefined;
+
+export const isAllowShipped = (id: number) =>
+  allowShippedStatus.find((x) => x === id) != undefined;
+
+export const isAllowCancelRequest = (id: number) =>
+  allowCancelRequestStatus.find((x) => x === id) != undefined;
+
+export const isAllowCancelAccept = (id: number) =>
+  allowCancelAcceptStatus.find((x) => x === id) != undefined;
+
+export const isAllowCancel = (id: number) =>
+  allowCancelStatus.find((x) => x === id) != undefined;
+
+export const isAllowReturnRequest = (id: number) =>
+  allowReturnRequestStatus.find((x) => x === id) != undefined;
+
+export const isAllowReturnAccept = (id: number) =>
+  allowReturnAcceptStatus.find((x) => x === id) != undefined;
+
+export const isAllowConfirmDelivered = (id: number) =>
+  allowConfirmDeliveredStatus.find((x) => x === id) != undefined;
+
 
 // Customer
 export class CustomerNewOrder {
@@ -147,6 +238,7 @@ export interface CustomerOrderDetail {
   total: number;
 }
 
+
 export interface CustomerOrder {
   orderHistories: CustomerOrderHistory[];
   orderDetails: CustomerOrderDetail[];
@@ -154,7 +246,7 @@ export interface CustomerOrder {
   dateCreated: Date;
   paymentMethod: number;
   currentStatus: number;
-  currentStatusString: number;
+  currentStatusString: string;
   receiverName: string;
   address: string;
   phoneNumber: string;
@@ -222,7 +314,6 @@ export interface ManagerOrder {
   deletedByUserId: number;
   dateHidden: Date;
   hiddenByUserId: number;
-  status: number;
   orderHistories: ManagerOrderHistory[];
   orderDetails: ManagerOrderDetail[];
   receiverName: string;
