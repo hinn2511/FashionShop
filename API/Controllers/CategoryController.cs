@@ -53,6 +53,21 @@ namespace API.Controllers
         }
 
         [AllowAnonymous]
+        [HttpGet("detail")]
+        public async Task<ActionResult> GetCategoryAsCustomer([FromQuery] string slug, [FromQuery] Gender gender)
+        {
+            var category = await _unitOfWork.CategoryRepository.GetFirstByAndIncludeAsync(x => x.Slug == slug 
+                && x.Gender == gender && x.Status == Status.Active, "Parent", true);
+
+            if (category == null)
+                return NotFound(new BaseResponseMessage(false, HttpStatusCode.NotFound, $"Category not found."));
+            
+            var result = _mapper.Map<CustomerSingleCategoryResponse>(category);
+
+            return Ok(result);
+        }
+
+        [AllowAnonymous]
         [HttpGet("filtered-by-products")]
         public async Task<ActionResult> GetCategoriesByCategoryFilterAsCustomer([FromQuery] CustomerProductParams customerProductParams)
         {

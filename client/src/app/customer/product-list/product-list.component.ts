@@ -2,7 +2,12 @@ import { DeviceService } from 'src/app/_services/device.service';
 import { ProductFilterComponent } from './../product-filter/product-filter.component';
 import { CustomerSizeFilter } from './../../_models/productParams';
 import { CategoryService } from 'src/app/_services/category.service';
-import { ActivatedRoute, NavigationStart, Router } from '@angular/router';
+import {
+  ActivatedRoute,
+  NavigationEnd,
+  NavigationStart,
+  Router,
+} from '@angular/router';
 import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
 
 import { filter } from 'rxjs/operators';
@@ -17,7 +22,7 @@ import {
 } from 'src/app/_models/productParams';
 import { ProductService } from 'src/app/_services/product.service';
 import { BehaviorSubject, Subscription } from 'rxjs';
-import { fnGetGenderName } from 'src/app/_models/category';
+import { fnGetGenderName, Category } from 'src/app/_models/category';
 import { ProductFilter } from '../product-filter/product-filter.component';
 
 @Component({
@@ -44,6 +49,8 @@ export class ProductListComponent implements OnInit, OnDestroy {
   selectedGender: number;
   selectedGenderString: string;
 
+  category: Category;
+
   querySubscribe$: Subscription;
 
   showFilterMobile: boolean = false;
@@ -51,6 +58,7 @@ export class ProductListComponent implements OnInit, OnDestroy {
   deviceType: BehaviorSubject<string> = new BehaviorSubject('');
   deviceTypeValue$ = this.deviceType.asObservable();
 
+  count = 0;
   filterOrders: CustomerFilterOrder[] = [
     new CustomerFilterOrder(0, 'Name', 0, 'Name (A-Z)'),
     new CustomerFilterOrder(1, 'Name', 1, 'Name (Z-A)'),
@@ -65,15 +73,9 @@ export class ProductListComponent implements OnInit, OnDestroy {
     private productService: ProductService,
     private categoryService: CategoryService,
     private route: ActivatedRoute,
-    private router: Router,
     private deviceService: DeviceService
   ) {
     this.productParams = this.productService.getProductParams();
-    router.events.forEach((event) => {
-      if (event instanceof NavigationStart) {
-        this.filterComponent.resetFilter();
-      }
-    });
   }
   ngOnDestroy(): void {
     this.querySubscribe$.unsubscribe();
@@ -81,28 +83,16 @@ export class ProductListComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.querySubscribe$ = this.route.queryParamMap
-      .pipe(
-        filter(
-          (queryParamMap) =>
-            queryParamMap.has('category') || queryParamMap.has('gender')
-        )
-      )
-      .subscribe((queryParamMap) => {
+    this.querySubscribe$ = this.route.queryParamMap.subscribe((queryParamMap) => {
         this.selectedCategory = queryParamMap.get('category');
         this.selectedGender = +queryParamMap.get('gender');
         this.selectedGenderString = fnGetGenderName(this.selectedGender);
-        if (
-          this.selectedCategory != this.productParams.category ||
-          this.selectedGender != this.productParams.gender
-        ) {
-          this.productParams.category = this.selectedCategory;
-          this.productParams.gender = this.selectedGender;
-          this.updateBreadCrumb();
-
-          this.loadColorFilters();
-          this.loadProducts();
-        }
+        this.productParams.category = this.selectedCategory;
+        this.productParams.gender = this.selectedGender;
+        this.loadCategory();
+        this.loadColorFilters();
+        this.loadProducts();
+        // }
       });
 
     this.deviceSubscription$ = this.deviceService.deviceWidth$.subscribe(
@@ -111,55 +101,58 @@ export class ProductListComponent implements OnInit, OnDestroy {
       }
     );
 
-    this.skeletonLoading = true;
     this.skeletonItems = Array(this.productParams.pageSize).fill(1);
     this.productParams.field = 'Sold';
     this.productParams.orderBy = 1;
     this.selectedOrder = this.filterOrders[4].filterName;
-    this.loadProducts();
-    this.loadColorFilters();
   }
 
-  private updateBreadCrumb() {
+  private loadBreadCrumb() {
     this.breadCrumb = [];
     this.breadCrumb = [
       {
         name: 'Home',
         route: '/',
-        active: false,
+        active: true,
       },
     ];
-    if (this.productParams.gender != null) {
+
+    this.breadCrumb.push({
+      name: `${this.selectedGenderString}`,
+      route: ``,
+      active: false,
+    });
+
+    if (this.category.parent != null) {
       this.breadCrumb.push({
-        name: this.selectedGenderString,
-        route: '',
-        active: false,
+        name: `${this.category.parent.categoryName}`,
+        route: `/product?category=${this.category.parent.slug}&gender=${this.selectedGender}`,
+        active: true,
       });
     }
-    if (this.productParams.category != null) {
-      this.breadCrumb.push({
-        name: this.categoryService.getCurrentCategory(),
-        route: '',
-        active: false,
-      });
-    }
+
+    this.breadCrumb.push({
+      name: `${this.category.categoryName}`,
+      route: `/product?category=${this.category.slug}&gender=${this.selectedGender}`,
+      active: true,
+    });
   }
 
   loadProducts() {
-    if (this.loadingCount == 0) this.skeletonLoading = true;
+    // if (this.loadingCount == 0) this.skeletonLoading = true;
     // this.skeletonLoading = true;
     this.productService.setProductParams(this.productParams);
 
     this.productService
       .getProducts(this.productParams)
       .subscribe((response) => {
-        if (this.loadingCount == 0) {
-          this.loadingCount++;
-          setTimeout(() => {
-            this.skeletonLoading = false;
-          }, 500);
-          // this.skeletonLoading = false;
-        }
+        // if (this.loadingCount == 0) {
+        //   this.loadingCount++;
+        //   setTimeout(() => {
+        //     this.skeletonLoading = false;
+        //   }, 500);
+        // this.skeletonLoading = false;
+        // }
         this.products = response.result;
         this.pagination = response.pagination;
       });
@@ -170,6 +163,15 @@ export class ProductListComponent implements OnInit, OnDestroy {
       .getColorFilter(this.productParams)
       .subscribe((response) => {
         this.colorFilters = response;
+      });
+  }
+
+  loadCategory() {
+    this.categoryService
+      .getCategoryDetail(this.productParams.category, this.productParams.gender)
+      .subscribe((result) => {
+        this.category = result;
+        this.loadBreadCrumb();
       });
   }
 
@@ -190,8 +192,6 @@ export class ProductListComponent implements OnInit, OnDestroy {
   }
 
   filter(productFilter: ProductFilter) {
-    console.log(productFilter);
-    
     this.productParams = productFilter.productParams;
     this.selectedColor = productFilter.selectedColor;
     this.selectedPriceRange = productFilter.selectedPriceRange;
@@ -211,8 +211,7 @@ export class ProductListComponent implements OnInit, OnDestroy {
     this.filterComponent.resetSize();
   }
 
-  mobileFilterToggle()
-  {
+  mobileFilterToggle() {
     this.showFilterMobile = !this.showFilterMobile;
   }
 }

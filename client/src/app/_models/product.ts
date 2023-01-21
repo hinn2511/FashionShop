@@ -1,4 +1,3 @@
-
 export interface ProductPhoto {
     id: number;
     url: string;
@@ -7,10 +6,10 @@ export interface ProductPhoto {
 }
 
 export interface Product {
-    categoryId: number;
-    categoryName: string;
-    subCategoryName?: string;
-    subCategoryId?: number;
+    category: string;
+    categorySlug: string;
+    parentCategory: string;
+    parentCategorySlug: string;
     brandId: number;
     brandName: string;
     likedByUser: boolean;
@@ -18,9 +17,10 @@ export interface Product {
     productName: string;
     slug: string;
     price: number;
-    url: string;
-    id: number;
     description: string;
+    url: string;
+    gender: number;
+    id: number;
 }
 
 export interface ManagerProductPhoto {

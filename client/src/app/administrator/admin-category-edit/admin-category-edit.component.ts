@@ -59,7 +59,7 @@ export class AdminCategoryEditComponent implements OnInit {
       this.category = result;
       this.initializeForm();
       this.imagePreviewUrl = this.category.categoryImageUrl;
-      if (this.category.parentCategory != undefined)
+      if (this.category.parent != undefined)
         this.selectedParentCategoryName = `${this.category.genderName} - ${this.category.categoryName}`;
     });
   }
@@ -68,7 +68,7 @@ export class AdminCategoryEditComponent implements OnInit {
     this.editCategoryForm = this.fb.group({
       categoryName: [this.category.categoryName, Validators.required],
       categoryImageUrl: [this.category.categoryImageUrl, Validators.required],
-      parentId: [this.category.parentCategory ?? 0],
+      parentId: [this.category.parent ?? 0],
       gender: [this.category.gender, Validators.required],
     });
   }
@@ -129,6 +129,7 @@ export class AdminCategoryEditComponent implements OnInit {
       .openCategorySingleSelectorDialog(
         this.catalogue,
         true,
+        false,
         [],
         'Select parent category',
         'Finish',

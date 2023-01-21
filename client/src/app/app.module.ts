@@ -34,14 +34,12 @@ import { ProductDetailComponent } from './customer/product-detail/product-detail
 import { NavigationBarComponent } from './customer/navigation-bar/navigation-bar.component';
 import { BreadcrumbComponent } from './customer/breadcrumb/breadcrumb.component';
 import { ProductRatingComponent } from './customer/product-rating/product-rating.component';
-import { ProductCarouselComponent } from './customer/product-carousel/product-carousel.component';
 import { ProductRecentViewComponent } from './customer/product-recent-view/product-recent-view.component';
 import { HomeCarouselComponent } from './customer/home-carousel/home-carousel.component';
 import { HomeCategoriesComponent } from './customer/home-categories/home-categories.component';
 import { FooterComponent } from './customer/footer/footer.component';
 import { ReactiveFormsModule,FormsModule } from '@angular/forms'
 import { CartComponent } from './customer/cart/cart.component';
-import { ProductRelatedComponent } from './customer/product-related/product-related.component';
 import { SearchBarComponent } from './customer/search-bar/search-bar.component';
 import { ProductAboutComponent } from './customer/product-about/product-about.component';
 import { LoginComponent } from './customer/login/login.component';
@@ -97,7 +95,6 @@ import { HomeNewsComponent } from './customer/home-news/home-news.component';
     NavigationBarComponent,
     BreadcrumbComponent,
     ProductRatingComponent,
-    ProductCarouselComponent,
     ProductRecentViewComponent,
     HomeCarouselComponent,
     HomeCategoriesComponent,
@@ -106,7 +103,6 @@ import { HomeNewsComponent } from './customer/home-news/home-news.component';
     DateInputComponent,
     NumberInputComponent,
     CartComponent,
-    ProductRelatedComponent,
     SearchBarComponent,
     ProductAboutComponent,
     LoginComponent,

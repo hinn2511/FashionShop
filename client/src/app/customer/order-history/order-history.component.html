@@ -1,5 +1,5 @@
 <div class="container-fluid">
-  <div *ngIf="orders">
+  <div>
     <h4>My order</h4>
     <form
       [formGroup]="orderFilterForm"
@@ -35,7 +35,7 @@
     </form>
     <div class="">
       <ul class="list-group list-group-horizontal justify-content-md-between bg-light p-1 mobile-horizontal-scroll">
-        <li class="list-group-item rounded text-center border-0 cs-pointer" 
+        <li #statusBarItem class="list-group-item rounded text-center border-0 cs-pointer" 
         [class]="{
           'bg-white': selectedOrderStatus.statusString == item.statusString,
           'bg-light': selectedOrderStatus.statusString != item.statusString

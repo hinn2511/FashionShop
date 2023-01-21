@@ -1,3 +1,5 @@
+import { fnGetGenderName, Category } from 'src/app/_models/category';
+import { CategoryService } from 'src/app/_services/category.service';
 import { Carousel } from 'src/app/_models/carousel';
 import { AccountService } from 'src/app/_services/account.service';
 import { AuthenticationService } from './../../_services/authentication.service';
@@ -62,7 +64,7 @@ export class ProductDetailComponent implements OnInit {
     this.productService.getProduct(id).subscribe((response) => {
       this.product = response;
       this.loadProductImageCarousel();
-      this.setBreadcrumb();
+      this.loadBreadCrumb();
     });
     this.loadOptions(id);
   }
@@ -73,32 +75,43 @@ export class ProductDetailComponent implements OnInit {
     });
   }
 
-  setBreadcrumb() {
+  private loadBreadCrumb() {
+    this.breadCrumb = [];
     this.breadCrumb = [
       {
         name: 'Home',
         route: '/',
-        active: false,
-      },
-      {
-        name: this.product.categoryName,
-        route: '',
-        active: false,
-      },
-      {
-        name: this.product.productName,
-        route: '',
-        active: false,
+        active: true,
       },
     ];
-    if (this.product.subCategoryName != undefined) {
-      let subCategoryBreadcrum: BreadCrumb = {
-        name: this.product.subCategoryName,
-        route: '',
+
+    this.breadCrumb.push({
+      name: `${fnGetGenderName(this.product.gender)}`,
+      route: ``,
+      active: false,
+    });
+
+    if (this.product.parentCategory != null) {
+      this.breadCrumb.push({
+        name: `${this.product.parentCategory}`,
+        route: `/product?category=${this.product.parentCategorySlug}&gender=${this.product.gender}`,
         active: true,
-      };
-      this.breadCrumb.splice(2, 0, subCategoryBreadcrum);
-    }
+      });
+    } 
+   
+    this.breadCrumb.push({
+      name: `${this.product.category}`,
+      route: `/product?category=${this.product.categorySlug}&gender=${this.product.gender}`,
+      active: true,
+    });  
+
+    
+    this.breadCrumb.push({
+      name: `${this.product.productName}`,
+      route: ``,
+      active: false,
+    });  
+    
   }
 
   chooseColor(color: CustomerOptionColor) {

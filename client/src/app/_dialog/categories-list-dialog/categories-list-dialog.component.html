@@ -34,6 +34,7 @@
               *ngFor="let subCategory of category['subCategories']"
             >
               <div
+                *ngIf="selectSubCategory; else notSelectSubCategory"
                 class="d-flex d-inline-block flex-wrap align-items-center"
                 accordion-heading
                 (click)="
@@ -50,11 +51,31 @@
                   aria-label="Radio button for following text input"
                 />
                 <p class="px-2 py-0 m-0">
-                  {{ subCategory.categoryName }} ({{
-                    subCategory.subCategories.length
-                  }})
+                  {{ subCategory.categoryName }}
                 </p>
               </div>
+              <ng-template #notSelectSubCategory>
+                <div
+                  class="d-flex d-inline-block flex-wrap align-items-center"
+                  accordion-heading
+                  (click)="
+                    select(
+                      subCategory.id,
+                      subCategory.categoryName,
+                      catalogue.genderTitle
+                    )
+                  "
+                >
+                  <input
+                    type="radio"
+                    [checked]="selectResult.selectedId == subCategory.id"
+                    aria-label="Radio button for following text input"
+                  />
+                  <p class="px-2 py-0 m-0">
+                    {{ subCategory.categoryName }}
+                  </p>
+                </div>
+              </ng-template>
             </accordion-group>
           </accordion>
         </accordion-group>

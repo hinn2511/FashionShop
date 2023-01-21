@@ -12,10 +12,15 @@
 
     <div class="col-12 col-md-4">
       <div class="pl-md-4 mt-3 mt-lg-5">
-        <div class="d-inline-block d-flex justify-content-between">
-          <h6 class="text-muted">
-            {{ product.brandName }}&nbsp;&#8901;&nbsp;{{ product.categoryName }}
-          </h6>
+        <div class="d-inline-block d-flex">
+          <a class="text-muted p-0 m-0" routerLink="/">
+            {{ product.brandName }}
+          </a>
+          <p class="text-muted p-0 m-0">&nbsp;&#8901;&nbsp;
+          </p>
+          <a class="text-muted p-0 m-0" routerLink="/">
+            {{ product.category }}
+          </a>
         </div>
         <h1 class="text-uppercase">
           {{ product.productName }}
@@ -174,8 +179,5 @@
     </tabset>
   </div>
 
-  <div class="p-3 mt-3">
-    <h4 class="text-capitalize border-bottom">you may also like</h4>
-    <app-product-related></app-product-related>
-  </div>
+ 
 </div>

@@ -47,7 +47,7 @@ export class DialogService {
     }
   }
 
-  openCategorySingleSelectorDialog(catalogues: ManagerCatalogue[], showNoneOption: boolean = false, includeGender: string[] = [], title = 'Category',
+  openCategorySingleSelectorDialog(catalogues: ManagerCatalogue[], showNoneOption: boolean = false, selectSubCategory: boolean = false, includeGender: string[] = [], title = 'Category',
     btnYesText = 'OK', btnNoText = 'Cancel'): Observable<SingleSelectedResult> {
       const config = {
         initialState: {
@@ -56,7 +56,8 @@ export class DialogService {
           btnNoText,
           catalogues,
           includeGender,
-          showNoneOption
+          showNoneOption,
+          selectSubCategory
         }
       }
     this.bsModalRef = this.modalService.show(CategoriesListDialogComponent, config);

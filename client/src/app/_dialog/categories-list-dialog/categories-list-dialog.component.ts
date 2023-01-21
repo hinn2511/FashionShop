@@ -18,6 +18,7 @@ export class CategoriesListDialogComponent implements OnInit {
   selectResult: SingleSelectedResult = new SingleSelectedResult(false, 0, "");
   includeGender: string[] = [];
   showNoneOption: boolean;
+  selectSubCategory: boolean;
 
   constructor(public bsModalRef: BsModalRef) { }
 

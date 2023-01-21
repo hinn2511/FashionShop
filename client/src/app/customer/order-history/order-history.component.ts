@@ -1,14 +1,19 @@
-import { OrderStatusFilter, CustomerStatusFilters } from 'src/app/_models/order';
 import {
-  FormGroup,
-  FormBuilder,
-} from '@angular/forms';
-import { OrderService } from 'src/app/_services/order.service';
-import { Component, OnInit } from '@angular/core';
-import {
-  CustomerOrder,
-  CustomerOrderParams,
+  OrderStatusFilter,
+  CustomerStatusFilters,
 } from 'src/app/_models/order';
+import { FormGroup, FormBuilder } from '@angular/forms';
+import { OrderService } from 'src/app/_services/order.service';
+import {
+  AfterViewInit,
+  Component,
+  ElementRef,
+  OnInit,
+  QueryList,
+  ViewChild,
+  ViewChildren,
+} from '@angular/core';
+import { CustomerOrder, CustomerOrderParams } from 'src/app/_models/order';
 import { Pagination } from 'src/app/_models/pagination';
 import { debounceTime } from 'rxjs/operators';
 import { CustomerFilterOrder } from 'src/app/_models/productParams';
@@ -18,8 +23,12 @@ import { CustomerFilterOrder } from 'src/app/_models/productParams';
   templateUrl: './order-history.component.html',
   styleUrls: ['./order-history.component.css'],
 })
-export class OrderHistoryComponent implements OnInit {
+export class OrderHistoryComponent implements OnInit, AfterViewInit {
   orders: CustomerOrder[] = [];
+  @ViewChildren('statusBarItem') items: QueryList<ElementRef>;
+
+  statusBarButtons: ElementRef[];
+
   orderFilterForm: FormGroup;
   pagination: Pagination;
   orderParams: CustomerOrderParams;
@@ -45,7 +54,7 @@ export class OrderHistoryComponent implements OnInit {
   ngOnInit(): void {
     let now = new Date();
     let lastMonth = new Date();
-    lastMonth.setMonth(lastMonth.getMonth() - 1);    
+    lastMonth.setMonth(lastMonth.getMonth() - 1);
 
     this.orderParams.to = now;
     this.orderParams.from = lastMonth;
@@ -54,6 +63,10 @@ export class OrderHistoryComponent implements OnInit {
     this.initializeForm();
     this.sort(5);
     this.loadOrders();
+  }
+
+  ngAfterViewInit() {
+    this.statusBarButtons = this.items.toArray();
   }
 
   initializeForm() {
@@ -111,8 +124,16 @@ export class OrderHistoryComponent implements OnInit {
     this.loadOrders();
   }
 
-  setOrderStatus(index: number)
-  {
+  setOrderStatus(index: number) {
+    setTimeout(() => {
+      if (this.statusBarButtons.length != 0) {
+        this.statusBarButtons[index].nativeElement.scrollIntoView({
+          behavior: 'smooth',
+          block: 'nearest',
+          inline: 'center',
+        });
+      }
+    }, 100);
     let status = this.orderStatusList[index];
     this.orderParams.orderStatusFilter = status.ids;
     this.selectedOrderStatus = status;

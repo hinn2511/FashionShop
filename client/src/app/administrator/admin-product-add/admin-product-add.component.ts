@@ -132,7 +132,7 @@ export class AdminProductAddComponent implements OnInit {
 
   openCatalogue() {    
     this.dialogService
-      .openCategorySingleSelectorDialog(this.catalogue)
+      .openCategorySingleSelectorDialog(this.catalogue, false, true)
       .subscribe((selectedResult) => {
         if (selectedResult.result)
         {

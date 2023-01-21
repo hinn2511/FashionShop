@@ -25,7 +25,9 @@ export class Category {
   id: number;
   categoryName: string;
   categoryImageUrl: string;
-  parentCategory: string;
+  gender: number;
+  parent: Category;
+  slug: string;
 }
 
 export interface ManagerCategoryCatalogue {

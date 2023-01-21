@@ -65,7 +65,7 @@ export class ProductService {
   }
 
   getProducts(productParams: ProductParams) {
-    var response = this.productCache.get(Object.values(productParams).join('-'));
+    let response = this.productCache.get(Object.values(productParams).join('-'));
     if (response) {
       return of(response);
     }
@@ -88,12 +88,6 @@ export class ProductService {
   }
   
   getProduct(id: number) {
-    const product = [...this.productCache.values()]
-      .reduce((arr, elm) => arr.concat(elm.result), [])
-      .find((product: Product) => product.id === id);
-    if (product) {
-      return of(product);
-    }
     return this.http.get<Product>(this.baseUrl + 'product/' + id);
   }
 
