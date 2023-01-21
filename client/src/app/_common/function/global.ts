@@ -85,18 +85,52 @@ export function fnGetOrderStateString(status: number) {
   return OrderStatusList.find((x) => x.id == status).statusString;
 }
 
-
-export function fnUpdateFormControlStringValue(formGroup: FormGroup, controlName: string, newValue: string, emitEvent: boolean)
-{
+export function fnUpdateFormControlStringValue(
+  formGroup: FormGroup,
+  controlName: string,
+  newValue: string,
+  emitEvent: boolean
+) {
   formGroup.controls[controlName].setValue(newValue, { emitEvent: emitEvent });
 }
 
-export function fnUpdateFormControlNumberValue(formGroup: FormGroup, controlName: string, newValue: number, emitEvent: boolean)
-{
+export function fnUpdateFormControlNumberValue(
+  formGroup: FormGroup,
+  controlName: string,
+  newValue: number,
+  emitEvent: boolean
+) {
   formGroup.controls[controlName].setValue(newValue, { emitEvent: emitEvent });
 }
 
-export function fnGetFormControlValue(formGroup: FormGroup, controlName: string)
-{
+export function fnGetFormControlValue(
+  formGroup: FormGroup,
+  controlName: string
+) {
   return formGroup.controls[controlName].value;
 }
+
+export function fnGetArrayDepth(arr) {
+  if (Array.isArray(arr)) return 1 + Math.max(...arr.map(fnGetArrayDepth));
+  else {
+    if (typeof arr === 'object')
+      return Math.max(...Object.values(arr).map(fnGetArrayDepth));
+    else return 0;
+  }
+}
+
+export function fnFlattenArray(array) {
+  var result = [];
+  array.forEach(function (a) {
+      result.push(a);
+      if (Array.isArray(a.children)) {
+          result = result.concat(fnFlattenArray(a.children));
+      }
+  });
+  return result;
+}
+
+// getArrayDepth = arr => {
+
+//   return Array.isArray(arr) ? 1 + Math.max(...arr.map(this.getArrayDepth)) : typeof(arr) === 'object' ? Math.max(...Object.values(arr).map(this.getArrayDepth)): 0;
+// };

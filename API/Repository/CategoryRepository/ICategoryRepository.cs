@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using API.DTOs.Params;
 using API.Entities.ProductModel;
+using API.Helpers;
 using API.Repository.GenericRepository;
 
 namespace API.Interfaces
@@ -12,10 +13,6 @@ namespace API.Interfaces
     {
         Task<IEnumerable<Category>> GetCategoriesWithSubCategoriesAsync();
         Task<IEnumerable<Category>> GetCategoriesByProductFilterAsync(CustomerProductParams customerProductParams);
-    }
-
-    public interface ISubCategoryRepository : IGenericRepository<SubCategory>
-    {
-
+        Task<PagedList<Category>> GetCategoriesAsync(AdminCategoryParams adminCategoryParams);
     }
 }

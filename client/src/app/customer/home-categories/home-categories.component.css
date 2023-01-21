@@ -1,64 +1,83 @@
-
-.container {
-    max-width: 100%;
-    padding: 0;
-    min-width: 100%;
+.category-container {
+  background-color: #f8f9fa91;
+  overflow: hidden;
+  height: calc(150px + 10vh);
+  width: 100%;
 }
 
-a {
-    color: black;
+.category-container:hover {
+  background-color: #00000011;
 }
 
-.img-container {
-    position: relative;
-    overflow: hidden;
-    height: 15rem;
+img {
+  height: 100%;
+  object-fit: contain;
 }
 
-.img-container::after {
-    content: "";
-    display: block;
-    padding-bottom: 100%;
+.category-container > .category-text {
+  left: 5%;
+  top: 50%;
+  width: 50%;
+  transform: translate(0, -50%);
+  transition: all 500ms ease-in-out;
+  z-index: 102;
 }
 
-.img {
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
+.category-container > .category-text-backdrop {
+  left: 100%;
+  top: 0;
+  height: 100%;
+  width: 60%;
+  transition: all 500ms ease-in-out;
+  z-index: 101;
+  background-color: #f8f9fa;
+}
+
+.category-container:hover > .category-text-backdrop {
+  left: 40%;
+  top: 0;
+  height: 100%;
+  width: 60%;
+  transition: all 500ms ease-in-out;
+  z-index: 101;
+  background-color: #000000d5;
+  box-shadow: 0 1rem 1rem rgba(0, 0, 0, 0.25) !important;
+}
+
+.category-container > .category-text > a {
+  color: black;
+}
+
+.category-container > .category-text > p {
+  padding-left: 3px;
+  transition: all 500ms ease-in-out;
+}
+
+.category-container:hover > .category-text {
+  left: 45%;
+  top: 50%;
+  color: #f8f9fa;
+  transform: translate(0, -50%);
+  transition: all 500ms ease-in-out;
+}
+
+.category-container:hover > .category-text > a {
+  color: #f8f9fa;
+}
+
+.category-container:hover > .category-text > h3 {
+  transition: all 500ms ease-in-out;
 }
 
 .category-container > img {
-    object-position: 50% 50%;
-    transition: all 500ms ease-in-out;
+  top: 0px;
+  left: 50%;
+  transition: all 500ms ease-in-out;
+  z-index: 90;
 }
-
-
 
 .category-container:hover > img {
-    object-position: 60% 60%;
-    transform: scale(1.1, 1.1);
-    transition: all 500ms ease-in-out;
-}
-
-.category-container:hover > .category-text > h3, 
-.category-container:hover > .category-text > div > a  {
-    padding-left: 1vw;
-    transition: all 500ms ease-in-out;
-}
-
-.category-container > .category-text > h3, 
-.category-container > .category-text > div > a  {
-    transition: all 500ms ease-in-out;
-}
-
-.category-text {
-    top: 30%;
-    left: 5%;
-}
-
-@media (max-width: 768px) { 
-    .img-container {
-        margin-top: 15px;
-    }
+  top: 0px;
+  left: 0;
+  transition: all 500ms ease-in-out;
 }

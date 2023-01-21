@@ -21,8 +21,6 @@
 }
 
 .card {
-    min-height: max-content;
-    max-height: fit-content;
     cursor: pointer;
 }
 

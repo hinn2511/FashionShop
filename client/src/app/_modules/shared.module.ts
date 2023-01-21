@@ -6,6 +6,8 @@ import { PaginationModule } from 'ngx-bootstrap/pagination';
 import { ModalModule } from 'ngx-bootstrap/modal';
 import { PopoverModule } from 'ngx-bootstrap/popover';
 import { defineLocale } from 'ngx-bootstrap/chronos'
+import { AccordionModule } from 'ngx-bootstrap/accordion';
+import { TabsModule } from 'ngx-bootstrap/tabs';
 import { viLocale } from 'ngx-bootstrap/locale';
 import { FileUploadModule } from 'ng2-file-upload';
 import { ToastrModule } from 'ngx-toastr';
@@ -20,6 +22,8 @@ defineLocale('vi', viLocale);
     PaginationModule.forRoot(),
     ModalModule.forRoot(),
     PopoverModule.forRoot(),
+    AccordionModule.forRoot(),
+    TabsModule.forRoot(),
     FileUploadModule,
     ToastrModule.forRoot({
       timeOut: 3000,
@@ -31,6 +35,8 @@ defineLocale('vi', viLocale);
     BsDropdownModule,
     PaginationModule,
     PopoverModule,
+    AccordionModule,
+    TabsModule,
     BsDatepickerModule,
     ModalModule,
     FileUploadModule

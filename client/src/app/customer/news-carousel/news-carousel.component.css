@@ -4,10 +4,11 @@
 
 img.carousel-content
 {
-  filter: brightness(30%);
+  filter: brightness(90%);
 }
 
 .carousel
 {
-  height: 400px;
+  height: calc(400px + 10vh);
 }
+

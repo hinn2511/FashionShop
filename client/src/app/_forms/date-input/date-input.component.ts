@@ -19,7 +19,8 @@ export class DateInputComponent implements ControlValueAccessor {
     this.localeService.use(this.locale);
     this.bsConfig = {
       containerClass: 'theme-dark-blue',
-      dateInputFormat: 'DD MMMM YYYY'
+      // dateInputFormat: 'DD MMMM YYYY'
+      dateInputFormat: 'DD/MM/YYYY'
     }
    }
 

@@ -28,7 +28,6 @@ namespace API.Data
         public DbSet<UploadedFile> Files { get; set; }
         public DbSet<Color> Colors { get; set; }
         public DbSet<Category> Categories { get; set; }
-        public DbSet<SubCategory> SubCategories { get; set; }
         public DbSet<Brand> Brands { get; set; }
         public DbSet<Size> Sizes { get; set; }
         public DbSet<Option> Options { get; set; }
@@ -60,6 +59,19 @@ namespace API.Data
                 .WithOne(u => u.Role)
                 .HasForeignKey(ur => ur.RoleId)
                 .IsRequired();
+
+            builder.Entity<Category>(c =>
+            {
+                c.HasKey(x => x.Id);
+                c.Property(x => x.Gender);
+                c.Property(x => x.CategoryName);
+                c.Property(x => x.Slug);
+                c.HasOne(x => x.Parent)
+                    .WithMany(x => x.SubCategories)
+                    .HasForeignKey(x => x.ParentId)
+                    .IsRequired(false)
+                    .OnDelete(DeleteBehavior.Cascade);
+            });
 
             // builder.Entity<Product>()
             //     .HasOne(p => p.SubCategory)

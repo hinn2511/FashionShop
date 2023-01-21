@@ -142,7 +142,7 @@ namespace API.Controllers
                 {
                     string[] cols = csvParser.ReadFields();
 
-                    int subCategoryId = 0, categoryId = 0, brandId = 0;
+                    int categoryId = 0, brandId = 0;
                     double price = 0;
                     string name;
 
@@ -164,16 +164,6 @@ namespace API.Controllers
                     }
                     else
                         continue;
-
-                    if (!string.IsNullOrEmpty(cols[2]))
-                    {
-
-                        bool success = int.TryParse(cols[2], out subCategoryId);
-                        if (!success)
-                            continue;
-                        if (_unitOfWork.SubCategoryRepository.GetFirstBy(x => x.Id == subCategoryId) == null)
-                            continue;
-                    }
 
                     if (!string.IsNullOrEmpty(cols[3]))
                     {
@@ -202,7 +192,6 @@ namespace API.Controllers
                         Slug = cols[0].GenerateSlug(),
                         ProductName = cols[0],
                         CategoryId = categoryId,
-                        SubCategoryId = string.IsNullOrEmpty(cols[2]) ? null : subCategoryId,
                         BrandId = brandId,
                         Price = price,
                     };

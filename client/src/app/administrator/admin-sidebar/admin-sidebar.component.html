@@ -3,17 +3,17 @@
   (mouseenter)="expand()"
   (mouseleave)="collapse()"
 >
-  <div class="position-relative h-100 bg-light border-right shadow pt-3 px-2 sidebar-container">
+  <div
+    class="position-relative h-100 bg-light border-right shadow pt-3 px-2 sidebar-container"
+  >
     <ul class="nav flex-column">
       <li class="nav-item">
         <a class="nav-link active" aria-current="page" routerLink="">
-          <span data-feather="home"></span>
           <h2 class="text-uppercase">Test</h2>
         </a>
       </li>
       <li class="nav-item">
         <a class="nav-link active" aria-current="page" routerLink="">
-          <span data-feather="home"></span>
           Dashboard
         </a>
       </li>
@@ -22,7 +22,6 @@
         [class.nav-item-active]="hasRoute('/administrator/order-manager')"
       >
         <a class="nav-link" routerLink="administrator/order-manager">
-          <span data-feather="file"></span>
           Orders
         </a>
       </li>
@@ -31,36 +30,38 @@
         [class.nav-item-active]="hasRoute('/administrator/product-manager')"
       >
         <a class="nav-link" routerLink="administrator/product-manager">
-          <span data-feather="shopping-cart"></span>
           Products
         </a>
       </li>
+
       <li
         class="nav-item"
         [class.nav-item-active]="hasRoute('/administrator/option-manager')"
       >
         <a class="nav-link" routerLink="administrator/option-manager">
-          <span data-feather="shopping-cart"></span>
           Product options
+        </a>
+      </li>
+      <li
+        class="nav-item"
+        [class.nav-item-active]="hasRoute('/administrator/category-manager')"
+      >
+        <a class="nav-link" routerLink="administrator/category-manager">
+          Categories
         </a>
       </li>
       <li class="nav-item">
         <a class="nav-link" routerLink="administrator/stock-manager">
-          <span data-feather="shopping-cart"></span>
           Stocks
         </a>
       </li>
       <li class="nav-item">
         <a class="nav-link" routerLink="administrator/customer-manager">
-          <span data-feather="users"></span>
           Customers
         </a>
       </li>
       <li class="nav-item">
-        <a class="nav-link" routerLink="administrator/report">
-          <span data-feather="bar-chart-2"></span>
-          Reports
-        </a>
+        <a class="nav-link" routerLink="administrator/report"> Reports </a>
       </li>
     </ul>
 
@@ -121,11 +122,13 @@
           Carousels
         </a>
       </li>
-      <li class="nav-item"
-        [class.nav-item-active]="hasRoute('/administrator/article-manager')">
+      <li
+        class="nav-item"
+        [class.nav-item-active]="hasRoute('/administrator/article-manager')"
+      >
         <a class="nav-link" routerLink="/administrator/article-manager">
           <span data-feather="file-text"></span>
-          News & Promotions
+          Articles
         </a>
       </li>
       <li class="nav-item">
@@ -134,12 +137,20 @@
           Others page
         </a>
       </li>
-    </ul>    
+    </ul>
   </div>
   <div class="position-absolute toggle-btn-container">
     <button class="btn btn-light p-0" (click)="toggle()">
-      <i class="fa fa-angle-right p-1" *ngIf="currentState == 'in'" aria-hidden="true"></i>
-      <i class="fa fa-angle-left p-1" *ngIf="currentState == 'out'" aria-hidden="true"></i>
+      <i
+        class="fa fa-angle-right p-1"
+        *ngIf="currentState == 'in'"
+        aria-hidden="true"
+      ></i>
+      <i
+        class="fa fa-angle-left p-1"
+        *ngIf="currentState == 'out'"
+        aria-hidden="true"
+      ></i>
     </button>
   </div>
 </nav>

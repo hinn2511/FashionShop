@@ -4,5 +4,15 @@
 
 .carousel
 {
-  height: 700px;
+  height: calc(350px + 20vh);
+}
+
+
+.carousel-indicator-container
+{
+  bottom: 0;
+  width: 100%;
+  z-index: 101;
+  padding-top: 10px;
+  padding-bottom: 10px;
 }

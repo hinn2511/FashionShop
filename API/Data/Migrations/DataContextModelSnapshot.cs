@@ -348,6 +348,9 @@ namespace API.Data.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
+                    b.Property<string>("CategoryImageUrl")
+                        .HasColumnType("TEXT");
+
                     b.Property<string>("CategoryName")
                         .HasColumnType("TEXT");
 
@@ -372,10 +375,16 @@ namespace API.Data.Migrations
                     b.Property<int>("HiddenByUserId")
                         .HasColumnType("INTEGER");
 
+                    b.Property<bool>("IsPromoted")
+                        .HasColumnType("INTEGER");
+
                     b.Property<DateTime>("LastUpdated")
                         .HasColumnType("TEXT");
 
                     b.Property<int>("LastUpdatedByUserId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int?>("ParentId")
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("Slug")
@@ -385,6 +394,8 @@ namespace API.Data.Migrations
                         .HasColumnType("INTEGER");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("ParentId");
 
                     b.ToTable("Categories");
                 });
@@ -543,16 +554,11 @@ namespace API.Data.Migrations
                     b.Property<int>("Status")
                         .HasColumnType("INTEGER");
 
-                    b.Property<int?>("SubCategoryId")
-                        .HasColumnType("INTEGER");
-
                     b.HasKey("Id");
 
                     b.HasIndex("BrandId");
 
                     b.HasIndex("CategoryId");
-
-                    b.HasIndex("SubCategoryId");
 
                     b.ToTable("Products");
                 });
@@ -642,55 +648,6 @@ namespace API.Data.Migrations
                     b.HasIndex("OptionId");
 
                     b.ToTable("Stocks");
-                });
-
-            modelBuilder.Entity("API.Entities.ProductModel.SubCategory", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int>("CategoryId")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<string>("CategoryName")
-                        .HasColumnType("TEXT");
-
-                    b.Property<int>("CreatedByUserId")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<DateTime>("DateCreated")
-                        .HasColumnType("TEXT");
-
-                    b.Property<DateTime>("DateDeleted")
-                        .HasColumnType("TEXT");
-
-                    b.Property<DateTime>("DateHidden")
-                        .HasColumnType("TEXT");
-
-                    b.Property<int>("DeletedByUserId")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int>("HiddenByUserId")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<DateTime>("LastUpdated")
-                        .HasColumnType("TEXT");
-
-                    b.Property<int>("LastUpdatedByUserId")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<string>("Slug")
-                        .HasColumnType("TEXT");
-
-                    b.Property<int>("Status")
-                        .HasColumnType("INTEGER");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("CategoryId");
-
-                    b.ToTable("SubCategories");
                 });
 
             modelBuilder.Entity("API.Entities.User.AppRole", b =>
@@ -1345,6 +1302,16 @@ namespace API.Data.Migrations
                     b.Navigation("Order");
                 });
 
+            modelBuilder.Entity("API.Entities.ProductModel.Category", b =>
+                {
+                    b.HasOne("API.Entities.ProductModel.Category", "Parent")
+                        .WithMany("SubCategories")
+                        .HasForeignKey("ParentId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.Navigation("Parent");
+                });
+
             modelBuilder.Entity("API.Entities.ProductModel.Option", b =>
                 {
                     b.HasOne("API.Entities.ProductModel.Color", "Color")
@@ -1386,15 +1353,9 @@ namespace API.Data.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("API.Entities.ProductModel.SubCategory", "SubCategory")
-                        .WithMany("Products")
-                        .HasForeignKey("SubCategoryId");
-
                     b.Navigation("Brand");
 
                     b.Navigation("Category");
-
-                    b.Navigation("SubCategory");
                 });
 
             modelBuilder.Entity("API.Entities.ProductModel.Stock", b =>
@@ -1406,17 +1367,6 @@ namespace API.Data.Migrations
                         .IsRequired();
 
                     b.Navigation("Option");
-                });
-
-            modelBuilder.Entity("API.Entities.ProductModel.SubCategory", b =>
-                {
-                    b.HasOne("API.Entities.ProductModel.Category", "Category")
-                        .WithMany("SubCategories")
-                        .HasForeignKey("CategoryId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Category");
                 });
 
             modelBuilder.Entity("API.Entities.User.AppUser", b =>
@@ -1654,11 +1604,6 @@ namespace API.Data.Migrations
                     b.Navigation("Options");
 
                     b.Navigation("ProductPhotos");
-                });
-
-            modelBuilder.Entity("API.Entities.ProductModel.SubCategory", b =>
-                {
-                    b.Navigation("Products");
                 });
 
             modelBuilder.Entity("API.Entities.User.AppRole", b =>

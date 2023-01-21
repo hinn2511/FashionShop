@@ -13,8 +13,6 @@ namespace API.Entities.ProductModel
         public string Slug { get; set; }
         public Category Category { get; set; }
         public int CategoryId { get; set; }
-        public SubCategory SubCategory { get; set; }
-        public int? SubCategoryId { get; set; }
         public Brand Brand { get; set; }
         public int BrandId { get; set; }
         public double Price { get; set; }

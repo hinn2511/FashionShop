@@ -1,9 +1,12 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
 using API.DTOs.Params;
+using API.DTOs.Request;
 using API.DTOs.Request.CategoryRequest;
+using API.DTOs.Response;
 using API.DTOs.Response.CategoryResponse;
 using API.Entities;
 using API.Entities.ProductModel;
@@ -32,31 +35,21 @@ namespace API.Controllers
         [HttpGet]
         public async Task<ActionResult> GetCategoriesAsCustomer()
         {
-            var categories = await _unitOfWork.CategoryRepository.GetCategoriesWithSubCategoriesAsync();
-            FilterCategories(categories);
+            var categories = await _unitOfWork.CategoryRepository.GetAllAndIncludeAsync(x => x.Status == Status.Active, "Parent", true);
 
-            foreach(var category in categories)
-            {
-                 category.SubCategories = category.SubCategories.OrderBy(x => x.CategoryName).ToList();
-            }
+            TreeExtension.ITree<Category> rootNode = categories.ToList().ToTree((parent, child) => child.ParentId == parent.Id);
+            List<TreeExtension.ITree<Category>> rootLevelFoldersWithSubTree = rootNode.Children.ToList();
 
-            var result = categories.GroupBy(x => x.Gender).Select(x => new CategoryByGenderResponse
+            var mappedData = _mapper.Map<IEnumerable<CustomerCategoryResponse>>(rootLevelFoldersWithSubTree);
+
+            var result = mappedData.GroupBy(x => x.Gender).Select(x => new CustomerCategoryByGenderResponse
             {
                 Gender = x.Key,
-                GenderTitle = ((Gender) x.Key).ToString(),
-                Categories = _mapper.Map<List<CategoryGender>>(x.OrderBy(x => x.CategoryName))
-            });
-
-            // foreach(var item in result)
-            // {
-            //     foreach(var category in item.Categories)
-            //     {
-            //         category.SubCategories = category.SubCategories.OrderBy(x => x.CategoryName).ToList();
-            //     }
-            // }
+                GenderTitle = ((Gender)x.Key).ToString(),
+                Categories = x.ToList()
+            }).OrderBy(x => x.Gender);
 
             return Ok(result);
-
         }
 
         [AllowAnonymous]
@@ -67,22 +60,60 @@ namespace API.Controllers
             FilterCategories(categories);
             return Ok(_mapper.Map<CustomerCategoryResponse>(categories));
         }
+
+
+        [AllowAnonymous]
+        [HttpGet("promoted")]
+        public async Task<ActionResult> GetEditorChoiceArticlesAsCustomer()
+        {
+
+            var categories = await _unitOfWork.CategoryRepository.GetAllBy(x => x.IsPromoted && x.Status == Status.Active);
+
+            var result = _mapper.Map<List<CustomerCategoryResponse>>(categories);
+
+            return Ok(result);
+
+        }
+
         #endregion
 
 
         #region manager
         [HttpGet("all")]
-        public async Task<ActionResult> GetCategoriesAsAdmin()
+        public async Task<ActionResult> GetCategoriesAsAdmin([FromQuery] AdminCategoryParams adminCategoryParams)
         {
-            var categories = await _unitOfWork.CategoryRepository.GetAll();
-            return Ok(_mapper.Map<IEnumerable<AdminCategoryResponse>>(categories));
+            var categories = await _unitOfWork.CategoryRepository.GetCategoriesAsync(adminCategoryParams);
+
+            Response.AddPaginationHeader(categories.CurrentPage, categories.PageSize, categories.TotalCount, categories.TotalPages);
+
+            return Ok(_mapper.Map<List<AdminCategoryResponse>>(categories.ToList()));
         }
 
         [HttpGet("detail/{id}")]
         public async Task<ActionResult> GetCategoryDetailAsAdmin(int id)
         {
-            var category = await _unitOfWork.CategoryRepository.GetFirstByAndIncludeAsync(x => x.Id == id, "SubCategories", true);
+            var category = await _unitOfWork.CategoryRepository.GetFirstBy(x => x.Id == id);
             return Ok(_mapper.Map<AdminCategoryDetailResponse>(category));
+        }
+
+        [HttpGet("catalogue")]
+        public async Task<ActionResult> GetCatalogueAsAdmin()
+        {
+            var categories = await _unitOfWork.CategoryRepository.GetAllAndIncludeAsync(x => x.Status == Status.Active, "Parent", true);
+
+            TreeExtension.ITree<Category> rootNode = categories.ToList().ToTree((parent, child) => child.ParentId == parent.Id);
+            List<TreeExtension.ITree<Category>> rootLevelFoldersWithSubTree = rootNode.Children.ToList();
+
+            var mappedData = _mapper.Map<IEnumerable<AdminCatalogueCategoryResponse>>(rootLevelFoldersWithSubTree);
+
+            var result = mappedData.GroupBy(x => x.Gender).Select(x => new AdminCatalogueResponse
+            {
+                Gender = x.Key,
+                GenderTitle = ((Gender)x.Key).ToString(),
+                Categories = x.ToList()
+            }).OrderBy(x => x.Gender);
+
+            return Ok(result);
         }
 
 
@@ -90,9 +121,22 @@ namespace API.Controllers
         public async Task<ActionResult> AddCategory(CreateCategoryRequest createCategoryRequest)
         {
             var category = new Category();
+
             _mapper.Map(createCategoryRequest, category);
 
+            if (createCategoryRequest.ParentId > 0)
+            {
+                var parentCategory = await _unitOfWork.CategoryRepository.GetFirstBy(x => x.Id == createCategoryRequest.ParentId);
+
+                if (parentCategory == null)
+                    return NotFound(new BaseResponseMessage(false, HttpStatusCode.NotFound, "Parent category not found."));
+                category.Gender = parentCategory.Gender;
+            }
+            else
+                category.ParentId = null;
+
             category.Slug = category.CategoryName.GenerateSlug();
+
             category.AddCreateInformation(GetUserId());
 
             _unitOfWork.CategoryRepository.Insert(category);
@@ -114,6 +158,17 @@ namespace API.Controllers
 
             _mapper.Map(updateCategoryRequest, category);
 
+            if (updateCategoryRequest.ParentId > 0)
+            {
+                var parentCategory = await _unitOfWork.CategoryRepository.GetFirstBy(x => x.Id == updateCategoryRequest.ParentId);
+
+                if (parentCategory == null)
+                    return NotFound(new BaseResponseMessage(false, HttpStatusCode.NotFound, "Parent category not found."));
+                category.Gender = parentCategory.Gender;
+            }
+            else
+                category.ParentId = null;
+
             category.Id = id;
             category.Slug = updateCategoryRequest.CategoryName.GenerateSlug();
             category.AddUpdateInformation(GetUserId());
@@ -133,19 +188,24 @@ namespace API.Controllers
             var categories = await _unitOfWork.CategoryRepository.GetAllBy(x => deleteCategoriesRequest.Ids.Contains(x.Id));
 
             if (categories == null)
-                return BadRequest("Category not found");
+                return BadRequest(new BaseResponseMessage(false, HttpStatusCode.NotFound, "Category not found"));
 
             foreach (var category in categories)
             {
-                category.AddDeleteInformation(GetUserId());
-            }
+                if (category.Status == Status.Deleted)
 
-            if (deleteCategoriesRequest.IncludeProducts)
-            {
-                var products = await _unitOfWork.ProductRepository.GetAllBy(x => deleteCategoriesRequest.Ids.Contains(x.CategoryId));
-                foreach(var product in products)
-                    product.AddDeleteInformation(GetUserId());
-                _unitOfWork.ProductRepository.Update(products);
+                    continue;
+
+                var subCategories = await _unitOfWork.CategoryRepository.GetAllBy(x => x.ParentId == category.Id);
+                foreach (var subCategory in subCategories)
+                {
+                     if (subCategory.Status == Status.Deleted)
+
+                    continue;
+                    category.AddDeleteInformation(GetUserId());
+
+                }
+                category.AddDeleteInformation(GetUserId());
             }
 
             _unitOfWork.CategoryRepository.Update(categories);
@@ -154,7 +214,7 @@ namespace API.Controllers
             {
                 return Ok();
             }
-            return BadRequest("An error occurred while deleting categories.");
+            return BadRequest(new BaseResponseMessage(false, HttpStatusCode.BadRequest, "An error occurred while deleting categories."));
         }
 
         [HttpDelete("hard-delete")]
@@ -163,7 +223,7 @@ namespace API.Controllers
             var categories = await _unitOfWork.CategoryRepository.GetAllBy(x => deleteCategoriesRequest.Ids.Contains(x.Id));
 
             if (categories == null)
-                return BadRequest("Category not found");
+                return BadRequest(new BaseResponseMessage(false, HttpStatusCode.NotFound, "Category not found"));
 
             _unitOfWork.CategoryRepository.Delete(categories);
 
@@ -171,101 +231,100 @@ namespace API.Controllers
             {
                 return Ok();
             }
-            return BadRequest("An error occurred while deleting categories.");
+            return BadRequest(new BaseResponseMessage(false, HttpStatusCode.BadRequest, "An error occurred while deleting categories."));
         }
 
         [HttpPut("hide")]
         public async Task<ActionResult> HidingCategory(HideCategoriesRequest hideCategoriesRequest)
         {
-            var categories = await _unitOfWork.CategoryRepository.GetAllBy(x => hideCategoriesRequest.Ids.Contains(x.Id));
+            var categories = await _unitOfWork.CategoryRepository.GetAllBy(x => hideCategoriesRequest.Ids.Contains(x.Id) && x.Status == Status.Active);
 
             if (categories == null)
-                return BadRequest("Category not found");
+                return BadRequest(new BaseResponseMessage(false, HttpStatusCode.NotFound, "Category not found"));
 
             foreach (var category in categories)
             {
                 category.AddHiddenInformation(GetUserId());
-            }
 
-            if (hideCategoriesRequest.IncludeProducts)
-            {
-                var products = await _unitOfWork.ProductRepository.GetAllBy(x => hideCategoriesRequest.Ids.Contains(x.CategoryId));
-                foreach(var product in products)
-                {
-                    if(product.Status == Status.Active)
-                        product.AddHiddenInformation(GetUserId());
-                }
-                _unitOfWork.ProductRepository.Update(products);
             }
 
             _unitOfWork.CategoryRepository.Update(categories);
 
             if (await _unitOfWork.Complete())
             {
-                return Ok();
+                return Ok(new BaseResponseMessage(false, HttpStatusCode.BadRequest, $"Successfully hide {categories.Count()} category(s)."));
             }
-            return BadRequest("An error occurred while hiding categories.");
+            return BadRequest(new BaseResponseMessage(false, HttpStatusCode.BadRequest, "An error occurred while active categories."));
         }
 
-        [HttpPut("unhide")]
-        public async Task<ActionResult> UndoHidingCategory(HideCategoriesRequest hideCategoriesRequest)
+        [HttpPut("activate")]
+        public async Task<ActionResult> ActiveCategory(HideCategoriesRequest hideCategoriesRequest)
         {
-            var categories = await _unitOfWork.CategoryRepository.GetAllBy(x => hideCategoriesRequest.Ids.Contains(x.Id));
+            var categories = await _unitOfWork.CategoryRepository.GetAllBy(x => hideCategoriesRequest.Ids.Contains(x.Id) && x.Status == Status.Hidden);
 
             if (categories == null)
-                return BadRequest("Category not found");
+                return BadRequest(new BaseResponseMessage(false, HttpStatusCode.NotFound, "Category not found"));
 
             foreach (var category in categories)
             {
                 category.Status = Status.Active;
-            }
-
-            if (hideCategoriesRequest.IncludeProducts)
-            {
-                var products = await _unitOfWork.ProductRepository.GetAllBy(x => hideCategoriesRequest.Ids.Contains(x.CategoryId));
-                foreach(var product in products)
-                {
-                    if(product.Status == Status.Hidden)
-                        product.Status = Status.Active;
-                }
-                _unitOfWork.ProductRepository.Update(products);
+                category.AddUpdateInformation(GetUserId());
             }
 
             _unitOfWork.CategoryRepository.Update(categories);
 
             if (await _unitOfWork.Complete())
             {
-                return Ok();
+                return Ok(new BaseResponseMessage(false, HttpStatusCode.BadRequest, $"Successfully unhide {categories.Count()} category(s)."));
             }
-            return BadRequest("An error occurred while undo hiding categories.");
+            return BadRequest(new BaseResponseMessage(false, HttpStatusCode.BadRequest, "An error occurred while hiding categories."));
         }
 
-        [HttpPost("{categoryId}/create/sub-category")]
-        public async Task<ActionResult> AddSubCategory(int categoryId, CreateCategoryRequest createCategoryRequest)
+        [HttpPut("demote")]
+        public async Task<ActionResult> RemoveEditorChoiceForCategory(BulkDemoteRequest bulkDemoteRequest)
         {
-            var category = await _unitOfWork.CategoryRepository.GetFirstBy(x => x.Id == categoryId);
+            var categories = await _unitOfWork.CategoryRepository.GetAllBy(x => bulkDemoteRequest.Ids.Contains(x.Id));
 
-            if (category == null)
-                return BadRequest("Category not found");
+            if (categories == null)
+                return BadRequest(new BaseResponseMessage(false, HttpStatusCode.NotFound, "Category not found"));
 
-            var subCategory = new SubCategory();
-            
-            _mapper.Map(createCategoryRequest, subCategory);
+            foreach (var category in categories)
+            {
+                if (category.IsPromoted)
+                    category.IsPromoted = false;
+            }
 
-            subCategory.Slug = subCategory.CategoryName.GenerateSlug();
-            subCategory.AddCreateInformation(GetUserId());
-            subCategory.CategoryId = categoryId;
-
-            _unitOfWork.SubCategoryRepository.Insert(subCategory);
+            _unitOfWork.CategoryRepository.Update(categories);
 
             if (await _unitOfWork.Complete())
             {
-                return Ok();
+                return Ok(new BaseResponseMessage(true, HttpStatusCode.OK, $"Successfully demote for {categories.Count()} category(s)."));
             }
-            return BadRequest("An error occurred while adding the sub category.");
+            return BadRequest(new BaseResponseMessage(false, HttpStatusCode.BadRequest, "An error occurred while demote for categories."));
         }
 
+        [HttpPut("promote")]
+        public async Task<ActionResult> SetEditorChoiceForCategory(BulkPromoteRequest bulkPromoteRequest)
+        {
+            var categories = await _unitOfWork.CategoryRepository.GetAllBy(x => bulkPromoteRequest.Ids.Contains(x.Id));
 
+            if (categories == null)
+                return BadRequest(new BaseResponseMessage(false, HttpStatusCode.NotFound, "Category not found"));
+
+            foreach (var category in categories)
+            {
+                if (!category.IsPromoted)
+                    category.IsPromoted = true;
+            }
+
+            _unitOfWork.CategoryRepository.Update(categories);
+
+            if (await _unitOfWork.Complete())
+            {
+                return Ok(new BaseResponseMessage(true, HttpStatusCode.OK, $"Successfully promote for {categories.Count()} category(s)."));
+            }
+            return BadRequest(new BaseResponseMessage(false, HttpStatusCode.BadRequest, "An error occurred while promote for categories."));
+        }
 
         #endregion
 

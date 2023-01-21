@@ -1,15 +1,23 @@
-
 :host {
   flex: 1;
 }
 
-.carousel
-{
-  height: 500px;
+@media (max-width: 768px) {
+  .carousel {
+    height: 300px;
+  }
+
+  .rect-img-container {
+    height: 300px;
+  }
 }
 
+@media (min-width: 768px) {
+  .carousel {
+    height: 500px;
+  }
 
-.rect-img-container
-{
-  height: 500px;
+  .rect-img-container {
+    height: 500px;
+  }
 }

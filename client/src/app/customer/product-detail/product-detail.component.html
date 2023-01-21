@@ -1,9 +1,12 @@
 <div class="container-fluid w-100 px-0" *ngIf="product">
   <div class="row mx-0">
     <div class="col-12 col-md-8 p-0">
-      <div class="pl-lg-5 product-image">
+      <div class="product-image">
         <app-breadcrumb [breadCrumbList]="breadCrumb"></app-breadcrumb>
-        <app-product-images *ngIf="carousels.length > 0" [carousels]="carousels"></app-product-images>
+        <app-product-images
+          *ngIf="carousels.length > 0"
+          [carousels]="carousels"
+        ></app-product-images>
       </div>
     </div>
 
@@ -86,13 +89,13 @@
           </div>
         </div>
 
-        <div class="mt-5 pr-md-5">
+        <div class="mt-2">
           <button class="btn btn-dark w-100 text-center" (click)="addToCart()">
             <h6 class="text-uppercase m-0 py-2">add to cart</h6>
           </button>
-          <div class="text-center mt-3">
+          <div class="text-center mt-2">
             <button
-              class="btn btn-transparent text-muted text-center w-100"
+              class="btn btn-transparent fw-smaller text-muted text-center w-100"
               (click)="likeProduct()"
               *ngIf="!product.likedByUser; else unliked"
             >
@@ -100,7 +103,7 @@
             </button>
             <ng-template #unliked>
               <button
-                class="btn btn-transparent text-center w-100"
+                class="btn btn-transparent fw-smaller text-center w-100"
                 (click)="unlikeProduct()"
               >
                 <i class="fa fa-heart text-danger"></i>&nbsp;&nbsp;Remove from
@@ -113,21 +116,66 @@
     </div>
   </div>
 
-  <div class="mt-5 mt-lg-2 p-3 px-md-5">
-    <div class="ck-content" [innerHTML]="product.description | safeUrl"></div>
+  <div class="mt-5 mx-2 mx-lg-0">
+    <tabset>
+      <tab>
+        <ng-template tabHeading>
+          <h5>Description</h5>
+        </ng-template>
+        <div #descriptionTitle *ngIf="product.description != undefined">
+          <!-- <h4  #descriptionTitle class="text-capitalize mt-md-4">Description</h4> -->
+          <div
+            class="description d-flex justify-content-center"
+            [@grow]="{
+              value: expandDescription,
+              params: { collapseHeight: '500px' }
+            }"
+          >
+            <div
+              class="ck-content p-2 p-lg-3"
+              [innerHTML]="product.description | safeUrl"
+            ></div>
+          </div>
+          <div class="description-btn w-100 text-center bg-light">
+            <button
+              class="btn p-2 w-100 h-100 border-0"
+              (click)="expandDescriptionToggle()"
+              *ngIf="expandDescription === 'in'; else hide"
+            >
+              More
+            </button>
+            <ng-template #hide>
+              <button
+                class="btn p-2 w-100 h-100 border-0"
+                (click)="expandDescriptionToggle()"
+              >
+                Hide
+              </button>
+            </ng-template>
+          </div>
+        </div>
+      </tab>
+      <tab>
+        <ng-template tabHeading>
+          <h5>Rating & review</h5>
+        </ng-template>
+        <app-product-rating></app-product-rating>
+      </tab>
+      <tab>
+        <ng-template tabHeading>
+          <h5>Size chart</h5>
+        </ng-template>
+      </tab>
+      <tab>
+        <ng-template tabHeading>
+          <h5>Description</h5>
+        </ng-template>
+      </tab>
+    </tabset>
   </div>
 
-  <div class="p-3 px-md-5">
-    <div class="px-lg-5">
-      <h2 class="text-uppercase mt-md-4">rating & reviews</h2>
-      <app-product-rating></app-product-rating>
-    </div>
-  </div>
-
-  <div class="p-1 mt-3 mt-md-5 px-md-5">
-    <div class="px-lg-5">
-      <h2 class="text-uppercase">you may also like</h2>
-      <app-product-related></app-product-related>
-    </div>
+  <div class="p-3 mt-3">
+    <h4 class="text-capitalize border-bottom">you may also like</h4>
+    <app-product-related></app-product-related>
   </div>
 </div>

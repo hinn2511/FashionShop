@@ -15,7 +15,6 @@ namespace API.Interfaces
         IProductPhotoRepository ProductPhotoRepository { get; }
         IPhotoRepository PhotoRepository { get; }
         ICategoryRepository CategoryRepository { get; }
-        ISubCategoryRepository SubCategoryRepository { get; }
         IOrderRepository OrderRepository { get; }
         IOrderDetailRepository OrderDetailRepository { get; }
         IOrderHistoryRepository OrderHistoryRepository { get; }
