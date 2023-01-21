@@ -4,7 +4,7 @@ import * as CKEditor from 'src/build/ckeditor';
 import {
   CKEditorFullConfiguration,
   CkEditorUploadAdapter,
-} from 'src/app/_common/editor/ckeditor';
+} from 'src/app/_forms/editor/ckeditor';
 
 @Component({
   selector: 'app-editor',
@@ -21,9 +21,8 @@ export class EditorComponent implements OnInit {
     //Not implement
   }
 
-  ngOnInit(): void {
-    if (this.initialContent != undefined) this.content = this.initialContent;
-    else this.content = '';
+  ngOnInit(): void { 
+    this.content = this.initialContent;
   }
 
   contentChange() {

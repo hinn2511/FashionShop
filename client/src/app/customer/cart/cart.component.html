@@ -21,11 +21,11 @@
         </div>
         <!-- Cart item table for desktop device -->
         <div
-          class="table-responsive p-3 d-none d-md-block mt-3"
+          class="table-responsive d-none d-md-block mt-3"
           *ngIf="cartItemList.cartItems.length > 0; else cartEmpty"
         >
           <table class="table table-borderless align-middle">
-            <thead class="">
+            <thead class="border-bottom">
               <!-- Cart item table header -->
               <tr>
                 <th class="text-muted">Items</th>

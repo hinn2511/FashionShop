@@ -29,47 +29,174 @@ import { AdminCategoryAddComponent } from './administrator/admin-category-add/ad
 import { AdminCategoryEditComponent } from './administrator/admin-category-edit/admin-category-edit.component';
 
 const routes: Routes = [
-  {path: '', component: HomePageComponent},
+  { path: '', component: HomePageComponent },
   
   {path: 'login', component: LoginComponent },
   {path: 'administrator/login', component: AdminLoginComponent},
 
-  {path: 'products', component: ProductListComponent},
-  {path: 'product/:slug', component: ProductDetailComponent},
+  {
+    path: 'product',
+    children: [
+      {
+        path: '',
+        component: ProductListComponent,
+      },
+      {
+        path: ':slug',
+        component: ProductDetailComponent,
+      },
+    ],
+  },
 
-  {path: 'news', component: NewsComponent},
-  {path: 'news/:slug', component: NewsDetailComponent},
+  {
+    path: 'news',
+    children: [
+      {
+        path: '',
+        component: NewsComponent,
+      },
+      {
+        path: ':slug',
+        component: NewsDetailComponent,
+      },
+    ],
+  },
 
-  {path: 'order', component: OrderDetailComponent, canActivate: [AuthGuard]},
+  { path: 'order', component: OrderDetailComponent, canActivate: [AuthGuard] },
 
-  {path: 'account', component: AccountComponent, canActivate: [AuthGuard] },
+  { path: 'account', component: AccountComponent, canActivate: [AuthGuard] },
 
-  {path: 'administrator/product-manager', component: AdminProductComponent, canActivate: [AuthGuard] },
-  {path: 'administrator/product-manager/add', component: AdminProductAddComponent, canActivate: [AuthGuard] },
-  {path: 'administrator/product-manager/edit/:id', component: AdminProductEditComponent, canActivate: [AuthGuard] },
-  {path: 'administrator/product-manager/detail/:id', component: AdminProductDetailComponent, canActivate: [AuthGuard] },
-  {path: 'administrator/product-manager/photos/:id', component: AdminProductPhotoComponent, canActivate: [AuthGuard] },
+  {
+    path: 'administrator/product-manager',
+    canActivate: [AuthGuard],
+    children: [
+      {
+        path: '',
+        component: AdminProductComponent,
+        canActivate: [AuthGuard],
+      },
+      {
+        path: 'add',
+        component: AdminProductAddComponent,
+        canActivate: [AuthGuard],
+      },
+      {
+        path: 'edit/:id',
+        component: AdminProductEditComponent,
+        canActivate: [AuthGuard],
+      },
+      {
+        path: 'detail/:id',
+        component: AdminProductDetailComponent,
+        canActivate: [AuthGuard],
+      },
+      {
+        path: 'photos/:id',
+        component: AdminProductPhotoComponent,
+        canActivate: [AuthGuard],
+      },
+    ],
+  },
 
-  {path: 'administrator/category-manager', component: AdminCategoryComponent, canActivate: [AuthGuard] },
-  {path: 'administrator/category-manager/add', component: AdminCategoryAddComponent, canActivate: [AuthGuard] },
-  {path: 'administrator/category-manager/edit/:id', component: AdminCategoryEditComponent, canActivate: [AuthGuard] },
+  {
+    path: 'administrator/category-manager',
+    canActivate: [AuthGuard],
+    children: [
+      {
+        path: '',
+        component: AdminCategoryComponent,
+        canActivate: [AuthGuard],
+      },
+      {
+        path: 'add',
+        component: AdminCategoryAddComponent,
+        canActivate: [AuthGuard],
+      },
+      {
+        path: 'edit/:id',
+        component: AdminCategoryEditComponent,
+        canActivate: [AuthGuard],
+      },
+    ],
+  },
 
-  {path: 'administrator/carousel-manager', component: AdminCarouselComponent, canActivate: [AuthGuard] },
-  {path: 'administrator/carousel-manager/add', component: AdminCarouselAddComponent, canActivate: [AuthGuard] },
+  {
+    path: 'administrator/carousel-manager',
+    canActivate: [AuthGuard],
+    children: [
+      {
+        path: '',
+        component: AdminCarouselComponent,
+        canActivate: [AuthGuard],
+      },
+      {
+        path: 'add',
+        component: AdminCarouselAddComponent,
+        canActivate: [AuthGuard],
+      },
+    ],
+  },
 
-  {path: 'administrator/option-manager', component: AdminProductOptionComponent, canActivate: [AuthGuard] },
-  {path: 'administrator/option-manager/add', component: AdminProductOptionAddComponent, canActivate: [AuthGuard] },
+  {
+    path: 'administrator/option-manager',
+    component: AdminProductOptionComponent,
+    canActivate: [AuthGuard],
+    children: [
+      {
+        path: '',
+        component: AdminProductOptionComponent,
+        canActivate: [AuthGuard],
+      },
+      {
+        path: 'add',
+        component: AdminProductOptionAddComponent,
+        canActivate: [AuthGuard],
+      },
+    ],
+  },
 
-  {path: 'administrator/order-manager', component: AdminOrderComponent, canActivate: [AuthGuard] },
-  {path: 'administrator/order-manager/detail/:id', component: AdminOrderDetailComponent, canActivate: [AuthGuard] },
+  {
+    path: 'administrator/order-manager',
+    canActivate: [AuthGuard],
+    children: [
+      {
+        path: '',
+        component: AdminOrderComponent,
+        canActivate: [AuthGuard],
+      },
+      {
+        path: 'detail/:id',
+        component: AdminOrderDetailComponent,
+        canActivate: [AuthGuard],
+      },
+    ],
+  },
 
-  {path: 'administrator/article-manager', component: AdminArticleComponent, canActivate: [AuthGuard] },
-  {path: 'administrator/article-manager/add', component: AdminArticleAddComponent, canActivate: [AuthGuard] },
-  {path: 'administrator/article-manager/detail/:id', component: AdminArticleDetailComponent, canActivate: [AuthGuard] },
+  {
+    path: 'administrator/article-manager',
+    canActivate: [AuthGuard],
+    children: [
+      {
+        path: '',
+        component: AdminArticleComponent,
+        canActivate: [AuthGuard],
+      },
+      {
+        path: 'add',
+        component: AdminArticleAddComponent,
+        canActivate: [AuthGuard],
+      },
+      {
+        path: 'detail/:id',
+        component: AdminArticleDetailComponent,
+        canActivate: [AuthGuard],
+      },
+    ],
+  },
 ];
 
 @NgModule({
   imports: [RouterModule.forRoot(routes)],
-  exports: [RouterModule]
+  exports: [RouterModule],
 })
-export class AppRoutingModule { }
+export class AppRoutingModule {}

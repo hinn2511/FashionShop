@@ -8,9 +8,8 @@ import {
   fnGetFormControlValue,
   fnUpdateFormControlNumberValue,
   fnUpdateFormControlStringValue,
-} from 'src/app/_common/function/global';
+} from 'src/app/_common/function/function';
 import {
-  AddCategory,
   Gender,
   GenderList,
   ManagerCatalogue,

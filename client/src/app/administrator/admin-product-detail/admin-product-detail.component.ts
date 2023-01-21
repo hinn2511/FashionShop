@@ -4,7 +4,7 @@ import { ManagerProduct } from 'src/app/_models/product';
 import { ProductService } from 'src/app/_services/product.service';
 import { IdArray } from 'src/app/_models/adminRequest';
 import { ToastrService } from 'ngx-toastr';
-import { fnGetObjectStateString, fnGetObjectStateStyle } from 'src/app/_common/function/global';
+import { fnGetObjectStateString, fnGetObjectStateStyle } from 'src/app/_common/function/style-class';
 
 @Component({
   selector: 'app-admin-product-detail',

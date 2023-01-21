@@ -1,6 +1,5 @@
-import { PhotoViewerItem } from './../../_models/product';
 import { ImageViewerModalComponent } from './../../_modals/image-viewer-modal/image-viewer-modal.component';
-import { Component, OnChanges, OnInit, SimpleChanges } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FileUploader } from 'ng2-file-upload';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 import { ProductImageModalComponent } from 'src/app/_modals/product-image-modal/product-image-modal.component';
@@ -8,14 +7,13 @@ import { IdArray } from 'src/app/_models/adminRequest';
 import {
   ManagerProduct,
   ManagerProductPhoto,
-  Product,
-  ProductPhoto,
 } from 'src/app/_models/product';
 import { AuthenticationService } from 'src/app/_services/authentication.service';
 import { ProductService } from 'src/app/_services/product.service';
 import { environment } from 'src/environments/environment';
-import { calculatePreviewOffset, fnGetObjectStateStyle, fnGetObjectStateString } from 'src/app/_common/function/global';
 import { ToastrService } from 'ngx-toastr';
+import { fnGetObjectStateString, fnGetObjectStateStyle } from 'src/app/_common/function/style-class';
+import { fnCalculatePreviewOffset } from 'src/app/_common/function/function';
 
 @Component({
   selector: 'app-admin-product-photo',
@@ -217,7 +215,7 @@ export class AdminProductPhotoComponent implements OnInit {
     let index = this.productPhotos
       .map((el) => el.url)
       .indexOf(productPhoto.url);
-    let previewOffset = calculatePreviewOffset(
+    let previewOffset = fnCalculatePreviewOffset(
       this.productPhotos.length,
       this.maxPreviewItem,
       index

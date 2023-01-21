@@ -41,12 +41,15 @@ namespace API.Data
             if (productParams.MaxPrice > 0)
                 query = query.Where(p => p.Price <= productParams.MaxPrice);
 
-            var category = await _context.Categories.FirstOrDefaultAsync(x => x.Slug == productParams.Category);
+            if(!string.IsNullOrEmpty(productParams.Category))
+            {
+                var category = await _context.Categories.FirstOrDefaultAsync(x => x.Slug == productParams.Category);
 
-            if (category.ParentId != 0)
-                query = query.Where(p => p.Category.ParentId == category.Id || p.Category.Id == category.Id);
-            else
-                query = query.Where(p => p.Category.Id == category.Id);
+                if (category.ParentId != 0)
+                    query = query.Where(p => p.Category.ParentId == category.Id || p.Category.Id == category.Id);
+                else
+                    query = query.Where(p => p.Category.Id == category.Id);
+            }
 
             // if (!string.IsNullOrEmpty(productParams.Category))
             //     query = query.Where(p => p.Category.Slug == productParams.Category);

@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
-import { fnGetObjectStateString, fnGetObjectStateStyle } from 'src/app/_common/function/global';
+import { fnGetObjectStateString, fnGetObjectStateStyle } from 'src/app/_common/function/style-class';
 import { IdArray } from 'src/app/_models/adminRequest';
 import { ManagerArticle, ArticleTypeList } from 'src/app/_models/article';
 import { ArticleService } from 'src/app/_services/article.service';

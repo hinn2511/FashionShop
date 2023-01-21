@@ -1,3 +1,4 @@
+import { Carousel } from './../../_models/carousel';
 import { FileService } from './../../_services/file.service';
 import { ContentService } from 'src/app/_services/content.service';
 import { Component, OnInit, ViewChild } from '@angular/core';
@@ -9,9 +10,9 @@ import {
 import {
   concatMap,
 } from 'rxjs/operators';
-import { CarouselPreviewComponent } from 'src/app/_common/carousel-preview/carousel-preview.component';
 import { AuthenticationService } from 'src/app/_services/authentication.service';
 import { ToastrService } from 'ngx-toastr';
+import { ImageCarouselComponent } from 'src/app/_common/image-carousel/image-carousel.component';
 
 @Component({
   selector: 'app-admin-carousel-add',
@@ -19,14 +20,18 @@ import { ToastrService } from 'ngx-toastr';
   styleUrls: ['./admin-carousel-add.component.css'],
 })
 export class AdminCarouselAddComponent implements OnInit {
-  @ViewChild(CarouselPreviewComponent) preview: CarouselPreviewComponent;
+  @ViewChild(ImageCarouselComponent) carouselComponent: ImageCarouselComponent;
   newCarouselForm: FormGroup;
   validationErrors: string[] = [];
+
+  previewCarousels: Carousel[] = [new Carousel("", "", "", "")];
+
+  
 
   image: File;
   isUploadingFile = false;
 
-  previewCarousel: ManagerCarousel;
+  carousel: ManagerCarousel;
   defaultPreviewCarousel: ManagerCarousel = {
     id: -1,
     status: -1,
@@ -55,10 +60,10 @@ export class AdminCarouselAddComponent implements OnInit {
   initializeForm() {
     this.setDefaultPreview();
     this.newCarouselForm = this.fb.group({
-      title: [this.previewCarousel.title, Validators.required],
-      imageUrl: [this.previewCarousel.imageUrl],
-      link: [this.previewCarousel.link, Validators.required],
-      description: [this.previewCarousel.description],
+      title: [this.carousel.title, Validators.required],
+      imageUrl: [this.carousel.imageUrl],
+      link: [this.carousel.link, Validators.required],
+      description: [this.carousel.description],
      
     });
     this.newCarouselForm.valueChanges.subscribe(() => this.reload());
@@ -76,7 +81,7 @@ export class AdminCarouselAddComponent implements OnInit {
         concatMap((uploadResult) =>
           this.contentService.addCarousel(
             uploadResult.url,
-            this.previewCarousel
+            this.carousel
           )
         )
       )
@@ -86,7 +91,6 @@ export class AdminCarouselAddComponent implements OnInit {
         if (this.selectedButton.submitter.name == 'saveAndContinue') {
           this.setDefaultPreview();
           this.initializeForm();
-          this.preview.setCarouselStyle(this.previewCarousel);
 
           this.router.navigateByUrl('/administrator/carousel-manager/add');
         } else this.router.navigateByUrl('/administrator/carousel-manager');
@@ -98,7 +102,7 @@ export class AdminCarouselAddComponent implements OnInit {
   }
 
   reload() {
-    this.previewCarousel = {
+    this.carousel = {
       id: -1,
       status: -1,
       imageUrl: this.newCarouselForm.controls['imageUrl'].value,
@@ -106,7 +110,7 @@ export class AdminCarouselAddComponent implements OnInit {
       description: this.newCarouselForm.controls['description'].value,
       link: this.newCarouselForm.controls['link'].value,
     };
-    this.preview.setCarouselStyle(this.previewCarousel);
+    this.previewCarousels[0].imageUrl = "";
   }
 
   previewImage(event: any) {
@@ -114,18 +118,19 @@ export class AdminCarouselAddComponent implements OnInit {
       this.image = event.target.files[0];
       const reader = new FileReader();
       reader.onload = (event: any) => {
-        this.previewCarousel.imageUrl = event.target.result;
+        this.carousel.imageUrl = event.target.result;
         this.newCarouselForm.controls['imageUrl'].setValue(
-          this.previewCarousel.imageUrl
+          this.carousel.imageUrl
         );
-        this.preview.setCarouselStyle(this.previewCarousel);
+        this.previewCarousels[0].imageUrl = this.carousel.imageUrl;
+        this.carouselComponent.updateCarousel(this.previewCarousels);
       };
       reader.readAsDataURL(event.target.files[0]);
     }
   }
 
   setDefaultPreview() {
-    this.previewCarousel = this.defaultPreviewCarousel;
-    this.previewCarousel.imageUrl = '';
+    this.carousel = this.defaultPreviewCarousel;
+    this.carousel.imageUrl = '';
   }
 }

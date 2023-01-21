@@ -1,4 +1,4 @@
-import { CustomerCarousel } from 'src/app/_models/carousel';
+import { Carousel } from 'src/app/_models/carousel';
 import { AccountService } from 'src/app/_services/account.service';
 import { AuthenticationService } from './../../_services/authentication.service';
 import { CartService } from 'src/app/_services/cart.service';
@@ -28,7 +28,7 @@ export class ProductDetailComponent implements OnInit {
   product: Product;
   breadCrumb: BreadCrumb[];
   quantity: number;
-  carousels: CustomerCarousel[] = [];
+  carousels: Carousel[] = [];
   options: CustomerOption[] = [];
   sizes: CustomerOptionSize[] = [];
   selectedSize: CustomerOptionSize;
@@ -51,6 +51,8 @@ export class ProductDetailComponent implements OnInit {
 
   ngOnInit(): void {
     this.user = this.authenticationService.userValue;
+    console.log(this.route.snapshot.queryParams['id']);
+    
     this.loadProduct(this.route.snapshot.queryParams['id']);
     this.loadOptions(this.route.snapshot.queryParams['id']);
     this.quantity = 1;
@@ -67,7 +69,7 @@ export class ProductDetailComponent implements OnInit {
 
   loadProductImageCarousel() {
     this.product.productPhotos.forEach((element) => {
-      this.carousels.push(new CustomerCarousel('', '', '', element.url));
+      this.carousels.push(new Carousel('', '', '', element.url));
     });
   }
 

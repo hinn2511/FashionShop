@@ -3,7 +3,7 @@ import { CategoriesListDialogComponent } from './../_dialog/categories-list-dial
 import { Injectable } from '@angular/core';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 import { Observable } from 'rxjs';
-import { ConfirmDialogComponent } from '../_common/confirm-dialog/confirm-dialog.component';
+import { ConfirmDialogComponent } from '../_dialog/confirm-dialog/confirm-dialog.component';
 import { ConfirmResult, SingleSelectedResult } from '../_models/dialog';
 
 @Injectable({

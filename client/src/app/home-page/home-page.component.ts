@@ -1,4 +1,4 @@
-import { CustomerCarousel } from './../_models/carousel';
+import { Carousel } from './../_models/carousel';
 import { ContentService } from 'src/app/_services/content.service';
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
@@ -11,7 +11,7 @@ import { AnimationType } from '../_common/animation/carousel.animations';
 })
 export class HomePageComponent implements OnInit {
   animationType: AnimationType.Fade;
-  carousels: CustomerCarousel[] = [];
+  carousels: Carousel[] = [];
 
   constructor(private contentService: ContentService, private router: Router) { }
 

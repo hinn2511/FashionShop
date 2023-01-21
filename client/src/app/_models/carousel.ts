@@ -35,7 +35,7 @@ export class ManagerCarouselParams {
   carouselStatus = [0, 1];
 }
 
-export class CustomerCarousel {
+export class Carousel {
   title: string;
   description: string;
   link: string;
