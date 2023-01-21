@@ -88,3 +88,8 @@ ul > li > button {
     vertical-align: middle;
     align-items: center;
 }
+
+.card-body
+{
+    height: 130px;
+}

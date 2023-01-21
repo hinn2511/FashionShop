@@ -53,7 +53,6 @@ export class ProductDetailComponent implements OnInit {
 
   ngOnInit(): void {
     this.user = this.authenticationService.userValue;
-    console.log(this.route.snapshot.queryParams['id']);
     
     this.loadProduct(this.route.snapshot.queryParams['id']);
     this.loadOptions(this.route.snapshot.queryParams['id']);
@@ -63,6 +62,7 @@ export class ProductDetailComponent implements OnInit {
   loadProduct(id: number) {
     this.productService.getProduct(id).subscribe((response) => {
       this.product = response;
+      this.productService.addToRecent(this.product);
       this.loadProductImageCarousel();
       this.loadBreadCrumb();
     });
