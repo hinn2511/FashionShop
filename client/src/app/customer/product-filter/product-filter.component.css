@@ -2,18 +2,20 @@
 }
 
 @media (max-width: 768px) {
-    .filter
-    {
-        height: 100%;
-    }
+  .filter {
+    height: 100%;
+  }
 
-    .filter-top
-    {
-        overflow-y: scroll;
-    }
+  .filter-top {
+    overflow-y: scroll;
+  }
 
-    .filter-bottom
-    {
-        
-    }
+  .filter-bottom {
+  }
+
+  .filter > div {
+    max-height: 80%;
+    overflow-y: scroll;
+  }
 }
+

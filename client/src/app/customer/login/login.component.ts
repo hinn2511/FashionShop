@@ -8,73 +8,67 @@ import { AuthenticationService } from 'src/app/_services/authentication.service'
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
-  styleUrls: ['./login.component.css']
+  styleUrls: ['./login.component.css'],
 })
 export class LoginComponent implements OnInit {
+  loginForm: FormGroup;
+  loading = false;
+  submitted = false;
+  returnUrl: string;
+  error = '';
 
-    loginForm: FormGroup;
-    loading = false;
-    submitted = false;
-    returnUrl: string;
-    error = '';
-
-    constructor(
-        private formBuilder: FormBuilder,
-        private route: ActivatedRoute,
-        private cartService: CartService,
-        private router: Router,
-        private authenticationService: AuthenticationService
-    ) {
-        if (this.authenticationService.userValue) {
-            this.router.navigate(['/']);
-        }
+  constructor(
+    private formBuilder: FormBuilder,
+    private route: ActivatedRoute,
+    private cartService: CartService,
+    private router: Router,
+    private authenticationService: AuthenticationService
+  ) {
+    if (this.authenticationService.userValue) {
+      this.router.navigate(['/']);
     }
+  }
 
-    ngOnInit() {
+  ngOnInit() {
+    new Image().src = '../../../assets/login-cover.jpg';
+    this.loginForm = this.formBuilder.group({
+      username: ['', Validators.required],
+      password: ['', Validators.required],
+    });
+    this.returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/';
+  }
 
-        new Image().src = '../../../assets/login-cover.jpg';
-        this.loginForm = this.formBuilder.group({
-            username: ['', Validators.required],
-            password: ['', Validators.required]
-        });
-        this.returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/';
-    }
+  get f() {
+    return this.loginForm.controls;
+  }
 
-    get f() { return this.loginForm.controls; }
+  onSubmit() {
+    this.submitted = true;
 
-    onSubmit() {
-        this.submitted = true;      
-        
-        this.loading = true;
-        // this.authenticationService.login(this.f.username.value, this.f.password.value, 'client')
-        //     .pipe(first())
-        //     .subscribe({
-        //         next: () => {
-        //             this.cartService.getAuthenticatedUserCartItems().subscribe(( ) => {});
-        //             this.router.navigate([this.returnUrl]);
-        //         },
-        //         error: error => {
-        //             this.error = error;
-        //             this.loading = false;
-        //         }
-        //     });
-        this.authenticationService.login(this.f.username.value, this.f.password.value, 'client')
-            .pipe (
-                    concatMap (
-                    _ => this.cartService.
-                    getUserCartItems()
-                )
-            )
-            .subscribe({
-                        next: () => {
-                            this.router.navigate([this.returnUrl]);
-                        },
-                        error: error => {
-                            this.error = error;
-                            this.loading = false;
-                        }
-                    });
-        
-    }
-
+    this.loading = true;
+    // this.authenticationService.login(this.f.username.value, this.f.password.value, 'client')
+    //     .pipe(first())
+    //     .subscribe({
+    //         next: () => {
+    //             this.cartService.getAuthenticatedUserCartItems().subscribe(( ) => {});
+    //             this.router.navigate([this.returnUrl]);
+    //         },
+    //         error: error => {
+    //             this.error = error;
+    //             this.loading = false;
+    //         }
+    //     });
+    this.authenticationService
+      .login(this.f.username.value, this.f.password.value, 'client')
+      .pipe(concatMap((_) => this.cartService.getUserCartItems()))
+      .subscribe({
+        next: () => {
+          this.router.navigate([this.returnUrl]);
+        },
+        error: (error) => {
+          this.error = error;
+          this.loading = false;
+        },
+      });
+  }
 }

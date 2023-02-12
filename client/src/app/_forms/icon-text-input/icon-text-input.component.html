@@ -1,4 +1,4 @@
-<div class="form-group position-relative">
+<div class="form-group mb-0 position-relative">
   <input
     [class.is-invalid]="ngControl.touched && ngControl.invalid"
     type="{{ type }}"
@@ -29,5 +29,5 @@
   <div *ngIf="ngControl.control.errors?.isMatching" class="invalid-feedback">
     Password not match
   </div>
-  <i class="fa text-muted position-absolute top-0 start-0" [class]="icon" aria-hidden="true"></i>
+  <i class="fa text-muted position-absolute cs-pointer top-0 end-0" [class]="icon" aria-hidden="true" (click)="clear()"></i>
 </div>

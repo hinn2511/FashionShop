@@ -1,11 +1,8 @@
-.form-group > input
-{
-    padding-left: 40px;
-}
+
 
 .form-group > i
 {
-    margin-left: 20px;
+    margin-right: 10px;
     top: 50%;
     transform: translate(-50%,-50%);
 }
