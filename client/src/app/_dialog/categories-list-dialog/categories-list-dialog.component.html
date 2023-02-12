@@ -6,14 +6,14 @@
   <!-- 1 -->
   <accordion [isAnimated]="true" [closeOthers]="true">
     <accordion-group *ngFor="let catalogue of catalogues">
-      <p class="p-0 m-0" accordion-heading>
+      <p class="p-2 m-0" accordion-heading>
         {{ catalogue.genderTitle }} ({{ catalogue.categories.length }})
       </p>
       <!-- 2 -->
       <accordion [isAnimated]="true">
         <accordion-group *ngFor="let category of catalogue.categories">
           <div
-            class="d-flex d-inline-block flex-wrap align-items-center"
+            class="d-flex d-inline-block flex-wrap align-items-center p-2"
             accordion-heading
             (click)="
               select(category.id, category.categoryName, catalogue.genderTitle)
@@ -35,7 +35,7 @@
             >
               <div
                 *ngIf="selectSubCategory; else notSelectSubCategory"
-                class="d-flex d-inline-block flex-wrap align-items-center"
+                class="d-flex d-inline-block flex-wrap align-items-center p-2"
                 accordion-heading
                 (click)="
                   select(
@@ -56,7 +56,7 @@
               </div>
               <ng-template #notSelectSubCategory>
                 <div
-                  class="d-flex d-inline-block flex-wrap align-items-center"
+                  class="d-flex d-inline-block flex-wrap align-items-center p-2"
                   accordion-heading
                   (click)="
                     select(
