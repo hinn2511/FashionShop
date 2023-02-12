@@ -14,7 +14,7 @@ a {
 
 .toggle-btn-container
 {
-  top: 30px;
+  top: 70px;
   right: 15px;
 }
 
@@ -24,7 +24,7 @@ a {
   height:  30px;
   border-radius: 999px;
   overflow: hidden;
-  box-shadow: 0.125rem 0 5px -2px #888;
+  box-shadow: 0.1rem 0 5px -2px #888;
 }
 
 .toggle-btn-container > button > img
