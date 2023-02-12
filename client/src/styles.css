@@ -602,12 +602,25 @@ a {
 }
 
 accordion-group > .panel {
-  border-bottom: none;
-  border-top: none;
-  border-right: none;
-  margin-bottom: 0.5rem;
+  border: none;
   box-shadow: none !important;
   border-radius: 0;
+}
+
+
+accordion-group > .card > .card-header {
+  border: 1px solid #dee2e6!important;
+  margin-top: 0.5rem;
+  background-color: #fff;
+  border-radius: .25rem!important;
+  padding: 0;
+}
+
+
+accordion-group.active > .card > .card-header {
+  color: #212529;
+  background-color: #f8f9fa;
+  border: 1px solid #343a40 !important;
 }
 
 accordion-group > .panel:hover {
@@ -620,6 +633,13 @@ accordion-group > .panel > .panel-heading {
 
 accordion-group > .panel > .panel-collapse > .panel-body {
   padding-right: 0;
+  margin-left: 0.5rem;
+  border-left: 1px solid #dee2e6!important;
+  padding-left:  0.5rem;
+}
+
+.panel-collapse:empty, .panel-body:empty {
+  display: none;
 }
 
 

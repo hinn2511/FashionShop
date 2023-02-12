@@ -84,6 +84,7 @@ import { CategoriesListDialogComponent } from './_dialog/categories-list-dialog/
 import { AdminCategoryEditComponent } from './administrator/admin-category-edit/admin-category-edit.component';
 import { HomeInterestingComponent } from './customer/home-interesting/home-interesting.component';
 import { HomeNewsComponent } from './customer/home-news/home-news.component';
+import { SearchResultComponent } from './customer/search-result/search-result.component';
 
 @NgModule({
   declarations: [
@@ -152,7 +153,8 @@ import { HomeNewsComponent } from './customer/home-news/home-news.component';
     CategoriesListDialogComponent,
     AdminCategoryEditComponent,
     HomeInterestingComponent,
-    HomeNewsComponent
+    HomeNewsComponent,
+    SearchResultComponent
   ],
   imports: [
     BrowserModule,

@@ -276,24 +276,23 @@
       <div class="d-none d-lg-block">
         <div class="d-flex flex-fill justify-content-lg-end">
           <div
-            class="input-group"
+            class="mr-2"
             *ngIf="!collapseSearchBar && setting.deviceType == 'desktop'"
-            style="min-width: 200px; max-width: 300px"
+            style="min-width: 20vw; max-width: 300px; min-height: 35px; max-height: 35px;"
           >
-            <input
-              type="text"
-              style="height: 35px"
-              class="form-control border-top-right-0 border-bottom-right-0"
-              placeholder="Search"
-            />
-            <button
-              class="btn btn-light border-bottom-left-0 border-top-left-0 position-relative nav-btn position-relative p-2"
+            <form
+              [formGroup]="searchForm"
+              (ngSubmit)="searchForm.valid && viewSearchResult()"
+              autocomplete="off"
             >
-              <img class="nav-icon" src="../../../assets/search.svg" />
-            </button>
-            <button class="btn nav-btn p-2" (click)="searchWindowToggle()">
-              <img class="nav-icon" src="../../../assets/x.svg" />
-            </button>
+              <app-icon-text-input
+                [formControl]="searchForm.controls['query']"
+                [label]="'Search'"
+                [icon]="searchBarIcon"
+                (clearInput)="clearSearchQuery()"
+              ></app-icon-text-input>
+            </form>
+
           </div>
           <button
             *ngIf="collapseSearchBar && setting.deviceType == 'desktop'"

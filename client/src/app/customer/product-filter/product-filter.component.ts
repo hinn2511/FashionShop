@@ -1,5 +1,8 @@
+import { CategoryService } from './../../_services/category.service';
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { CustomerCatalogue } from 'src/app/_models/category';
 import { CustomerColorFilter, CustomerPriceRange, CustomerSizeFilter, ProductParams } from 'src/app/_models/productParams';
+import { fnConvertToSlug } from 'src/app/_common/function/function';
 
 export class ProductFilter {
   productParams: ProductParams;
@@ -26,12 +29,13 @@ export class ProductFilter {
 export class ProductFilterComponent implements OnInit {
   @Input() productParams: ProductParams;
   @Input() selectedCategory: string;
+  @Input() showCategory: boolean = false;
+  catalogues: CustomerCatalogue[] = [];
   @Input() selectedGender: number;  
   @Input()  colorFilters: CustomerColorFilter[] = [];
   @Output() apply = new EventEmitter<ProductFilter>();
   @Output() reset = new EventEmitter<ProductFilter>();
   @Output() close = new EventEmitter<boolean>();
-
 
   priceRanges: CustomerPriceRange[] = [
     new CustomerPriceRange(0, -1, 50),
@@ -51,14 +55,25 @@ export class ProductFilterComponent implements OnInit {
 
   selectedColor: CustomerColorFilter;
   selectedSize: CustomerSizeFilter;
+
   selectedPriceRange: CustomerPriceRange;
   showResetPriceRangeButton: boolean = false;
   showResetSizeFilterButton: boolean = false;
+  showResetCategoryFilterButton: boolean = false;
   showResetColorFilterButton: boolean = false;
-  constructor() { }
+  constructor(private categoryService: CategoryService) { }
 
   ngOnInit(): void {
-    this.productParams = this.productParams;
+    if(this.showCategory)
+    {
+      this.loadCategoryGroup();
+    }
+  }
+
+  applyAndCloseFilter()
+  {
+      this.apply.emit(new ProductFilter(this.productParams, this.selectedColor, this.selectedSize, this.selectedPriceRange));
+      this.closeFilter();
   }
 
   applyFilter()
@@ -94,6 +109,13 @@ export class ProductFilterComponent implements OnInit {
     this.selectedSize = null;
     this.showResetSizeFilterButton = false;
     this.productParams.size = '';
+    this.applyFilter();
+  }
+
+  resetCategory() {
+    this.selectedCategory = '';
+    this.showResetSizeFilterButton = false;
+    this.productParams.category = '';
     this.applyFilter();
   }
 
@@ -139,9 +161,44 @@ export class ProductFilterComponent implements OnInit {
     this.applyFilter();
   }
 
+  setCategoryFilter(category: string) {
+    if (this.selectedCategory == category)  
+    {
+      this.selectedCategory = undefined;
+      return;
+    }
+    else
+      this.selectedCategory = category;
+    this.productParams.category = fnConvertToSlug(category);
+    this.showResetCategoryFilterButton = true;
+    console.log(this.selectedGender);
+    
+    this.applyFilter();
+  }
+
+  setGender(gender: number)
+  {
+    if (this.selectedGender == gender)  
+    this.selectedGender = undefined;
+    else
+    this.selectedGender = gender;
+    console.log(this.selectedGender);
+
+  }
+
+  
+
   closeFilter()
   {
     this.close.emit(true);
   }
+
+  loadCategoryGroup() {
+    this.categoryService.getCatalogue().subscribe((result) => {
+      this.catalogues = result;
+    });
+  }
+
+
 
 }

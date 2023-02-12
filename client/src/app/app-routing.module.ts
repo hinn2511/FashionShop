@@ -1,3 +1,4 @@
+import { SearchResultComponent } from './customer/search-result/search-result.component';
 import { OrderDetailComponent } from './customer/order-detail/order-detail.component';
 import { AdminProductOptionAddComponent } from './administrator/admin-product-option-add/admin-product-option-add.component';
 import { NgModule } from '@angular/core';
@@ -47,6 +48,8 @@ const routes: Routes = [
       },
     ],
   },
+
+  { path: 'search', component: SearchResultComponent },
 
   {
     path: 'news',

@@ -1,4 +1,4 @@
-import { Component, Input, Self } from '@angular/core';
+import { Component, Input, Self, EventEmitter, Output } from '@angular/core';
 import { ControlValueAccessor, NgControl } from '@angular/forms';
 
 
@@ -13,6 +13,8 @@ export class IconTextInputComponent implements ControlValueAccessor {
   @Input() type = 'text';
   @Input() icon = 'fa-search';
   @Input() separatorCount = 0;
+
+  @Output() clearInput = new EventEmitter<boolean>();
 
   constructor(@Self() public ngControl: NgControl) {
     this.ngControl.valueAccessor = this;
@@ -29,6 +31,11 @@ export class IconTextInputComponent implements ControlValueAccessor {
 
   ngOnInit(): void {
     // Not implemented
+  }
+
+  clear()
+  {
+    this.clearInput.emit(true);
   }
 
 }

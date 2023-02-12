@@ -84,3 +84,10 @@ export function fnFlattenArray(array) {
   });
   return result;
 }
+
+
+export function fnConvertToSlug(text: string) {
+  return text.toLowerCase()
+             .replace(/ /g, '-')
+             .replace(/[^\w-]+/g, '');
+}

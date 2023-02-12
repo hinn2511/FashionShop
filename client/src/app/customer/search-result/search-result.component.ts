@@ -18,15 +18,16 @@ import {
 } from 'src/app/_models/productParams';
 import { ProductService } from 'src/app/_services/product.service';
 import { BehaviorSubject, Subscription } from 'rxjs';
-import { fnGetGenderName, Category } from 'src/app/_models/category';
+import { fnGetGenderName, Category, CustomerCatalogue } from 'src/app/_models/category';
 import { ProductFilter } from '../product-filter/product-filter.component';
 
+
 @Component({
-  selector: 'app-product-list',
-  templateUrl: './product-list.component.html',
-  styleUrls: ['./product-list.component.css'],
+  selector: 'app-search-result',
+  templateUrl: './search-result.component.html',
+  styleUrls: ['./search-result.component.css']
 })
-export class ProductListComponent implements OnInit, OnDestroy {
+export class SearchResultComponent implements OnInit, OnDestroy {
   @ViewChild('filterComponent') filterComponent: ProductFilterComponent;
   products: Product[];
   skeletonItems: number[];
@@ -37,6 +38,7 @@ export class ProductListComponent implements OnInit, OnDestroy {
   breadCrumb: BreadCrumb[];
 
   // filter selected value
+  query: string;
   selectedPriceRange: CustomerPriceRange;
   selectedSize: CustomerSizeFilter;
   selectedColor: CustomerColorFilter;
@@ -44,10 +46,8 @@ export class ProductListComponent implements OnInit, OnDestroy {
   selectedCategory: string;
   selectedGender: number;
   selectedGenderString: string;
-
-  category: Category;
-
   querySubscribe$: Subscription;
+  categoryGroups: CustomerCatalogue[] = [];
 
   showFilterMobile: boolean = false;
   deviceSubscription$: Subscription;
@@ -80,14 +80,12 @@ export class ProductListComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.querySubscribe$ = this.route.queryParamMap.subscribe((queryParamMap) => {
-        this.selectedCategory = queryParamMap.get('category');
-        this.selectedGender = +queryParamMap.get('gender');
-        this.selectedGenderString = fnGetGenderName(this.selectedGender);
-        this.productParams.category = this.selectedCategory;
-        this.productParams.gender = this.selectedGender;
-        this.loadCategory();
+        this.query = queryParamMap.get('q');
+        this.productParams.query = this.query;
+        this.loadBreadCrumb();
         this.loadColorFilters();
         this.loadProducts();
+        this.loadCategoryGroup();
         // }
       });
 
@@ -100,7 +98,7 @@ export class ProductListComponent implements OnInit, OnDestroy {
     this.skeletonItems = Array(this.productParams.pageSize).fill(1);
     this.productParams.field = 'Sold';
     this.productParams.orderBy = 1;
-    this.selectedOrder = this.filterOrders[4].filterName;
+    this.selectedOrder = this.filterOrders[0].filterName;
   }
 
   private loadBreadCrumb() {
@@ -114,41 +112,20 @@ export class ProductListComponent implements OnInit, OnDestroy {
     ];
 
     this.breadCrumb.push({
-      name: `${this.selectedGenderString}`,
+      name: `Search result: "${this.query}"`,
       route: ``,
       active: false,
     });
 
-    if (this.category.parent != null) {
-      this.breadCrumb.push({
-        name: `${this.category.parent.categoryName}`,
-        route: `/product?category=${this.category.parent.slug}&gender=${this.selectedGender}`,
-        active: true,
-      });
-    }
-
-    this.breadCrumb.push({
-      name: `${this.category.categoryName}`,
-      route: `/product?category=${this.category.slug}&gender=${this.selectedGender}`,
-      active: true,
-    });
+  
   }
 
   loadProducts() {
-    // if (this.loadingCount == 0) this.skeletonLoading = true;
-    // this.skeletonLoading = true;
     this.productService.setProductParams(this.productParams);
 
     this.productService
       .getProducts(this.productParams)
       .subscribe((response) => {
-        // if (this.loadingCount == 0) {
-        //   this.loadingCount++;
-        //   setTimeout(() => {
-        //     this.skeletonLoading = false;
-        //   }, 500);
-        // this.skeletonLoading = false;
-        // }
         this.products = response.result;
         this.pagination = response.pagination;
       });
@@ -159,15 +136,6 @@ export class ProductListComponent implements OnInit, OnDestroy {
       .getColorFilter(this.productParams)
       .subscribe((response) => {
         this.colorFilters = response;
-      });
-  }
-
-  loadCategory() {
-    this.categoryService
-      .getCategoryDetail(this.productParams.category, this.productParams.gender)
-      .subscribe((result) => {
-        this.category = result;
-        this.loadBreadCrumb();
       });
   }
 
@@ -210,4 +178,13 @@ export class ProductListComponent implements OnInit, OnDestroy {
   mobileFilterToggle() {
     this.showFilterMobile = !this.showFilterMobile;
   }
+
+  loadCategoryGroup() {
+    this.categoryService.getCatalogue().subscribe((result) => {
+      this.categoryGroups = result;
+      console.log(result);
+      
+    });
+  }
+
 }
