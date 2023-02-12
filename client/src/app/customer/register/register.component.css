@@ -1,0 +1,55 @@
+.container-fluid {
+  width: 100%;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  /* background: url(../../../assets/customer-login-cover.jpg) no-repeat center; */
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
+  background-size: cover;
+}
+
+.card-container {
+  margin: auto;
+}
+
+.card {
+  border-radius: 10px;
+}
+
+input {
+  text-align: center;
+}
+
+.card-header {
+  border-bottom: none;
+  background-color: transparent;
+}
+
+.other-method-login > label {
+  margin: auto 0;
+  padding: 0;
+}
+
+.align-center {
+  display: flex;
+  align-items: center;
+  margin: 0 auto;
+}
+
+.nav-icon {
+  width: 20px;
+  height: 20px;
+}
+
+.logo {
+  top: 0;
+  left: 0;
+}
+
+.navbar-brand {
+  font-size: xx-large;
+  font-weight: 400;
+  font-family: "Bebas Neue", cursive;
+}

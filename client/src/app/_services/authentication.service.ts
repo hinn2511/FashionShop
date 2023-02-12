@@ -1,3 +1,4 @@
+import { RegisterAccount } from './../_models/user';
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
@@ -5,6 +6,7 @@ import { BehaviorSubject, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { User } from '../_models/user';
 import { environment } from 'src/environments/environment';
+import { ResponseMessage } from '../_models/generic';
 
 @Injectable({ providedIn: 'root' })
 export class AuthenticationService {
@@ -33,21 +35,10 @@ export class AuthenticationService {
     return this.userSubject.getValue();
   }
 
-  // public setRoles(roles: string[])
-  // {
-  //     localStorage.setItem('roles', roles.join(",").toString());
-  // }
-
-  // public getRoles()
-  // {
-  //     //if()
-  //     return localStorage.getItem('roles').split(",");
-  // }
-
-  // public clearRoles()
-  // {
-  //     localStorage.removeItem('roles');
-  // }
+  register(account: RegisterAccount)
+  {
+    return this.http.post<ResponseMessage>(this.baseUrl + 'account/register', account);
+  }
 
   login(username: string, password: string, type: string) {
     let url = '';

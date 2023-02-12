@@ -1,3 +1,4 @@
+import { RegisterComponent } from './customer/register/register.component';
 import { SearchResultComponent } from './customer/search-result/search-result.component';
 import { OrderDetailComponent } from './customer/order-detail/order-detail.component';
 import { AdminProductOptionAddComponent } from './administrator/admin-product-option-add/admin-product-option-add.component';
@@ -30,7 +31,9 @@ import { AdminCategoryAddComponent } from './administrator/admin-category-add/ad
 import { AdminCategoryEditComponent } from './administrator/admin-category-edit/admin-category-edit.component';
 
 const routes: Routes = [
-  { path: '', component: HomePageComponent },
+  {path: '', component: HomePageComponent },
+
+  {path: 'register', component: RegisterComponent },
   
   {path: 'login', component: LoginComponent },
   {path: 'administrator/login', component: AdminLoginComponent},
