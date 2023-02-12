@@ -1,10 +1,12 @@
 using System;
+using System.Net;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 using API.Data;
 using API.DTOs;
 using API.DTOs.Request.AuthenticationRequest;
+using API.DTOs.Response;
 using API.Entities;
 using API.Entities.User;
 using API.Extensions;
@@ -41,7 +43,7 @@ namespace API.Controllers
         public async Task<ActionResult> Register(RegisterRequest registerRequest)
         {
             if (await UserExist(registerRequest.Username))
-                return BadRequest("Username already taken");
+                return BadRequest(new BaseResponseMessage(false, HttpStatusCode.BadRequest, "Username already taken."));
 
             var user = _mapper.Map<AppUser>(registerRequest);
 
@@ -50,14 +52,14 @@ namespace API.Controllers
             var result = await _userManager.CreateAsync(user, registerRequest.Password);
 
             if (!result.Succeeded) 
-                return BadRequest(result.Errors);
+                return BadRequest(new BaseResponseMessage(false, HttpStatusCode.BadRequest, "Can not register user."));
 
             var roleResult = await _userManager.AddToRoleAsync(user, "Customer");
 
             if(!roleResult.Succeeded) 
-                return BadRequest(result.Errors);
+                return BadRequest(new BaseResponseMessage(false, HttpStatusCode.BadRequest, "Can not register user."));
 
-            return Ok();
+            return Ok(new BaseResponseMessage(true, HttpStatusCode.OK, "Register success."));
         }
 
         [AllowAnonymous]

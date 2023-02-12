@@ -4,7 +4,7 @@
 <div [class]="{ 'prevent-scroll': focus }">
   <ng-container *ngIf="!hasRoute('administrator/login')">
     <div *appHasRole="['Anonymous', 'Customer']" class="position-relative">
-      <ng-container *ngIf="!hasRoute('/login')">
+      <ng-container *ngIf="!hasRoute('/login') && !hasRoute('/register')">
         <app-navigation-bar
           (focus)="focusModeToggle($event)"
         ></app-navigation-bar>
@@ -14,7 +14,7 @@
         <router-outlet></router-outlet>
       </div>
 
-      <ng-container  *ngIf="!hasRoute('/login')">
+      <ng-container  *ngIf="!hasRoute('/login') && !hasRoute('/register')">
         <app-footer></app-footer>
       </ng-container>
       <div *ngIf="focus" class="position-absolute focus-mode"></div>

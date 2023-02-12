@@ -85,6 +85,7 @@ import { AdminCategoryEditComponent } from './administrator/admin-category-edit/
 import { HomeInterestingComponent } from './customer/home-interesting/home-interesting.component';
 import { HomeNewsComponent } from './customer/home-news/home-news.component';
 import { SearchResultComponent } from './customer/search-result/search-result.component';
+import { RegisterComponent } from './customer/register/register.component';
 
 @NgModule({
   declarations: [
@@ -154,7 +155,8 @@ import { SearchResultComponent } from './customer/search-result/search-result.co
     AdminCategoryEditComponent,
     HomeInterestingComponent,
     HomeNewsComponent,
-    SearchResultComponent
+    SearchResultComponent,
+    RegisterComponent
   ],
   imports: [
     BrowserModule,

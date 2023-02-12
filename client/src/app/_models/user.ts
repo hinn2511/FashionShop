@@ -8,11 +8,17 @@ export class User {
     roles: string[];
 }
 
-export interface Account {
+export class Account {
     dateOfBirth: Date;
     firstName: string;
     lastName: string;
     gender: string;
     phoneNumber: string;
     email: string;
+}
+
+export class RegisterAccount extends Account {
+    username: string;
+    password: string;
+
 }
