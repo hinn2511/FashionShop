@@ -22,6 +22,7 @@ import {
   trigger,
 } from '@angular/animations';
 import { Subscription } from 'rxjs';
+import { fnCalculatePrice } from 'src/app/_common/function/function';
 
 @Component({
   selector: 'app-cart',
@@ -180,5 +181,14 @@ export class CartComponent implements OnInit, OnDestroy {
       this.router.navigateByUrl('login');
     };
     this.goToCheckout.emit(true);
+  }
+
+  calculatePrice(
+    saleType: number,
+    price: number,
+    saleOffPercent: number,
+    saleOffValue: number
+  ) {
+    return fnCalculatePrice(saleType, price, saleOffPercent, saleOffValue);
   }
 }

@@ -97,9 +97,9 @@ namespace API.Data
             }
 
 
-            query = query.Include(x => x.ProductPhotos.Where(x => x.Status == Status.Active)).Include(x => x.Category);
+            query = query.Include(x => x.Options).Include(x => x.ProductPhotos.Where(x => x.Status == Status.Active)).Include(x => x.Category);
 
-            return await PagedList<Product>.CreateAsync(query, productParams.PageNumber, productParams.PageSize);
+            return await PagedList<Product>.CreateAsync(query.AsNoTracking(), productParams.PageNumber, productParams.PageSize);
         }
 
         public async Task<PagedList<Product>> GetProductsAsync(AdministratorProductParams productParams)

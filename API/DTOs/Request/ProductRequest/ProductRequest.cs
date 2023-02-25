@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using API.Entities.ProductModel;
 
 namespace API.DTOs.Request.ProductRequest
 {
@@ -43,6 +44,15 @@ namespace API.DTOs.Request.ProductRequest
     public class HideProductPhotosRequest : BaseBulkRequest
     {
 
+    }
+
+    public class CreateProductSaleRequest : BaseBulkRequest
+    {
+        public ProductSaleOffType SaleOffType { get; set; }
+        public double Value { get; set; }
+        public double Percent { get; set; }
+        public DateTime From { get; set; }
+        public DateTime To { get; set; }
     }
 
 }

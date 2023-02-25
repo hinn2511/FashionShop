@@ -10,6 +10,7 @@ using API.DTOs.Response.OptionResponse;
 using API.Entities;
 using API.Entities.ProductModel;
 using API.Extensions;
+using API.Helpers;
 using API.Interfaces;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
@@ -33,6 +34,8 @@ namespace API.Controllers
         [HttpGet("{productId}")]
         public async Task<ActionResult> GetProductOptionsAsCustomer(int productId)
         {
+            var product = await _unitOfWork.ProductRepository.GetFirstBy(x => x.Id == productId);
+
             var options = await _unitOfWork.ProductOptionRepository.GetProductOptionsAsCustomerAsync(productId);
 
             var optionResponse = new List<CustomerOptionResponse>();
@@ -42,11 +45,13 @@ namespace API.Controllers
                 if (optionResponse.FirstOrDefault(x => x.Color.ColorCode == option.ColorCode) != null)
                     continue;
 
+                option.Product = product;
+
                 var sizes = options.Where(x => x.ColorCode == option.ColorCode).Select(x => new CustomerOptionSizeResponse
                     {
                         SizeName = x.SizeName,
                         OptionId = x.Id,
-                        AdditionalPrice = x.AdditionalPrice
+                        Price = option.CalculatePriceAfterSaleOff()
                     }
                 );
                 

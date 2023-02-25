@@ -27,7 +27,7 @@ namespace API.DTOs.Response.OptionResponse
     {
         public string SizeName { get; set; }
         public int OptionId { get; set; }
-        public double AdditionalPrice { get; set; }
+        public double Price { get; set; }
     }
     #endregion
 

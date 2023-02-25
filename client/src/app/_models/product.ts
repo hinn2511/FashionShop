@@ -6,6 +6,14 @@ export interface ProductPhoto {
 }
 
 export interface Product {
+    isPromoted: boolean;
+    isNew: boolean;
+    isOnSale: boolean;
+    saleType: number;
+    saleOffPercent:number;
+    saleOffValue: number;
+    saleOffFrom: Date;
+    saleOffTo: Date;
     category: string;
     categorySlug: string;
     parentCategory: string;
@@ -21,6 +29,13 @@ export interface Product {
     url: string;
     gender: number;
     id: number;
+    options: ProductColorOption[];
+    
+}
+
+export class ProductColorOption {
+    colorName: string;
+    colorCode: string;
 }
 
 export interface ManagerProductPhoto {

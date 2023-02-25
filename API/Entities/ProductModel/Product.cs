@@ -18,10 +18,23 @@ namespace API.Entities.ProductModel
         public double Price { get; set; }
         public int Sold { get; set; }
         public string Description { get; set; }
+        
         [JsonIgnore]
         public ICollection<Option> Options { get; set; }
         public ICollection<ProductPhoto> ProductPhotos { get; set; }
         public bool IsPromoted { get; set; }
+        public ProductSaleOffType SaleType { get; set; }
+        public int SaleOffPercent { get; set; }
+        public int SaleOffValue { get; set; }
+        public DateTime SaleOffFrom { get; set; }
+        public DateTime SaleOffTo { get; set; }
+    }
+    
+    public enum ProductSaleOffType
+    {
+        None,
+        SaleOffPercent,
+        SaleOffValue
     }
 
 }
