@@ -12,8 +12,8 @@ export interface CartItem {
     quantity: number;
     totalItemPrice: number;
     imageUrl: string;
-    saleOffPercent:number;
-    saleOffValue:number;
+    saleOffPercent: number;
+    saleOffValue: number;
     saleType: number;
     isOnSale: boolean;
 

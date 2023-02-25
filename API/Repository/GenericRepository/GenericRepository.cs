@@ -64,11 +64,6 @@ namespace API.Repository.GenericRepository
 
         public void Delete(Expression<Func<T, bool>> expression)
         {
-            // foreach(var id in ids)
-            // {
-            //     T existing = table.Find(id);
-            //     table.Remove(existing);
-            // }
             var deleted = table.Where(expression);
             table.RemoveRange(deleted);
         }

@@ -1,3 +1,4 @@
+import { RotateAnimation } from './../../_common/animation/carousel.animations';
 import { ImageCarouselComponent } from './../../_common/image-carousel/image-carousel.component';
 import { Carousel } from './../../_models/carousel';
 import { ContentService } from 'src/app/_services/content.service';
@@ -9,7 +10,6 @@ import { FileUploader } from 'ng2-file-upload';
 import { Pagination } from 'src/app/_models/pagination';
 import { ManagerCarousel, ManagerCarouselParams } from 'src/app/_models/carousel';
 import { IdArray } from 'src/app/_models/adminRequest';
-import { animate, state, style, transition, trigger } from '@angular/animations';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 import { ToastrService } from 'ngx-toastr';
 import { fnGetObjectStateString, fnGetObjectStateStyle } from 'src/app/_common/function/style-class';
@@ -18,14 +18,7 @@ import { fnGetObjectStateString, fnGetObjectStateStyle } from 'src/app/_common/f
   selector: 'app-admin-carousel',
   templateUrl: './admin-carousel.component.html',
   styleUrls: ['./admin-carousel.component.css'],
-  animations: [
-    trigger('rotatedState', [
-        state('default', style({ transform: 'rotate(0)' })),
-        state('rotated', style({ transform: 'rotate(-180deg)' })),
-        transition('rotated => default', animate('500ms ease-out')),
-        transition('default => rotated', animate('500ms ease-in'))
-      ])
-  ]
+  animations: [ RotateAnimation ]
 })
 export class AdminCarouselComponent implements OnInit {
 
@@ -38,9 +31,6 @@ export class AdminCarouselComponent implements OnInit {
   bsModalRef: BsModalRef;
 
   selectedIds: number[] = [];
-  query: string;
-  uploader: FileUploader;
-  baseUrl = environment.apiUrl;
 
   constructor(
     private contentService: ContentService,
@@ -149,23 +139,7 @@ export class AdminCarouselComponent implements OnInit {
   }
 
   orderBy(field: string) {
-    switch (field) {
-      case 'id':
-        this.carouselParams.field = 'Id';
-        break;
-      case 'status':
-        this.carouselParams.field = 'Status';
-        break;
-        case 'title':
-          this.carouselParams.field = 'Title';
-          break;
-          case 'link':
-        this.carouselParams.field = 'Link';
-        break;
-      default:
-        this.carouselParams.field = 'Date';
-        break;
-    }
+    this.carouselParams.field = field; 
     if (this.carouselParams.orderBy == 0) this.carouselParams.orderBy = 1;
     else this.carouselParams.orderBy = 0;
     this.rotate();

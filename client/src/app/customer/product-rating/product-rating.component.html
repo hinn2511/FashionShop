@@ -1,9 +1,8 @@
 <div
   class="row mx-0 justify-content-center"
-  style="min-height: 500px"
-  *ngIf="reviews && productReviewSummary"
+  style="min-height: 500px"  
 >
-  <div class="col-12 col-md-5 p-0">
+  <div class="col-12 col-md-5 p-0" *ngIf="productReviewSummary">
     <div class="p-md-3">
       <div class="d-inline-block d-flex justify-content-between bg-light p-4">
         <p class="fw-larger my-0">
@@ -50,7 +49,7 @@
     </div>
   </div>
 
-  <div class="col-12 col-md-6 p-0 mt-1 mt-md-0">
+  <div class="col-12 col-md-6 p-0 mt-1 mt-md-0" *ngIf="reviews && reviews.length > 0; else noReview">
     <div class="card my-2" *ngFor="let item of reviews">
       <div class="card-body">
         <div class="d-inline-block d-flex flex-wrap justify-content-between">
@@ -97,4 +96,10 @@
       </pagination>
     </div>
   </div>
+  <ng-template #noReview>
+    <div class="col-12 col-md-6 p-5 text-center d-flex align-items-center">
+      <h4 class="text-muted w-100">This product has no review</h4>
+    </div>
+  </ng-template>
 </div>
+

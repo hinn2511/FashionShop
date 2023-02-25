@@ -82,7 +82,7 @@
                       </p>
                       <p class="my-0 py-0 old-price fw-smaller">
                         {{
-                          (cartItem.price + cartItem.additionalPrice) | currency
+                          cartItem.price + cartItem.additionalPrice | currency
                         }}
                       </p>
                     </ng-template>
@@ -105,7 +105,7 @@
                       <input
                         type="number"
                         [value]="cartItem.quantity"
-                        class="form-control text-center quantity bg-light border-0"
+                        class="form-control rounded-0 text-center quantity bg-light border-0"
                       />
                       <button
                         #increaseButton
@@ -122,17 +122,26 @@
                   </td>
 
                   <td class="text-center">
-                    <p class="m-0 p-0">
-                      {{
-                        calculatePrice(cartItem) * cartItem.quantity | currency
-                      }}
+                    <p
+                      class="m-0 p-0"
+                      *ngIf="cartItem.saleType == 0; else onSale"
+                    >
+                      {{ cartItem.price * cartItem.quantity | currency }}
                     </p>
+                    <ng-template #onSale>
+                      <p class="m-0 p-0">
+                        {{
+                          calculatePrice(cartItem) * cartItem.quantity
+                            | currency
+                        }}
+                      </p>
+                    </ng-template>
                   </td>
 
                   <td>
                     <div class="d-flex flex-column text-center mx-auto">
                       <button
-                        class="btn btn-outline-dark"
+                        class="btn btn-light"
                         (click)="deleteCartItem(cartItem)"
                       >
                         <i class="fa fa-trash-o"></i>
@@ -157,7 +166,7 @@
               }"
             >
               <!-- Item image on mobile -->
-              <div class="col-4 px-0">
+              <div class="col-4 px-2">
                 <div class="rect-img-container">
                   <img class="rect-img" src="{{ cartItem.imageUrl }}" alt="" />
                 </div>
@@ -208,7 +217,7 @@
                   <input
                     type="number"
                     [value]="cartItem.quantity"
-                    class="form-control text-center quantity bg-light border-0"
+                    class="form-control rounded-0 text-center quantity bg-light border-0"
                   />
                   <button
                     #increaseButton
@@ -259,7 +268,7 @@
             <img
               src="../../../assets/arrow-down.svg"
               alt=""
-              [@rotatedState]="expandCartSummary"
+              [@rotatedState]="isRotate()"
             />
           </div>
         </div>

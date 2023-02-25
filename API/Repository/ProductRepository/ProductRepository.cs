@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using API.DTOs;
 using API.DTOs.Params;
 using API.Entities;
 using API.Entities.Other;
@@ -11,9 +10,6 @@ using API.Extensions;
 using API.Helpers;
 using API.Interfaces;
 using API.Repository.GenericRepository;
-using AutoMapper;
-using AutoMapper.QueryableExtensions;
-using CloudinaryDotNet.Actions;
 using Microsoft.EntityFrameworkCore;
 
 namespace API.Data
@@ -86,9 +82,9 @@ namespace API.Data
             {
                 query = productParams.Field switch
                 {
-                    "DateCreated" => query.OrderBy(p => p.DateCreated),
-                    "Price" => query.OrderBy(p => p.Price),
-                    "Name" => query.OrderBy(p => p.ProductName),
+                    "dateCreated" => query.OrderBy(p => p.DateCreated),
+                    "price" => query.OrderBy(p => p.Price),
+                    "name" => query.OrderBy(p => p.ProductName),
                     _ => query.OrderBy(p => p.Sold)
                 };
             }
@@ -96,9 +92,9 @@ namespace API.Data
             {
                 query = productParams.Field switch
                 {
-                    "DateCreated" => query.OrderByDescending(p => p.DateCreated),
-                    "Price" => query.OrderByDescending(p => p.Price),
-                    "Name" => query.OrderByDescending(p => p.ProductName),
+                    "dateCreated" => query.OrderByDescending(p => p.DateCreated),
+                    "price" => query.OrderByDescending(p => p.Price),
+                    "name" => query.OrderByDescending(p => p.ProductName),
                     _ => query.OrderByDescending(p => p.Sold)
                 };
             }
@@ -140,12 +136,12 @@ namespace API.Data
             {
                 query = productParams.Field switch
                 {
-                    "Date" => query.OrderBy(p => p.DateCreated),
-                    "Status" => query.OrderBy(p => p.Status),
-                    "Sold" => query.OrderBy(p => p.Sold),
-                    "Price" => query.OrderBy(p => p.Price),
-                    "Name" => query.OrderBy(p => p.ProductName),
-                    "Promoted" => query.OrderBy(p => p.IsPromoted),
+                    "date" => query.OrderBy(p => p.DateCreated),
+                    "status" => query.OrderBy(p => p.Status),
+                    "sold" => query.OrderBy(p => p.Sold),
+                    "price" => query.OrderBy(p => p.Price),
+                    "name" => query.OrderBy(p => p.ProductName),
+                    "promoted" => query.OrderBy(p => p.IsPromoted),
                     _ => query.OrderBy(p => p.Id)
                 };
             }
@@ -153,12 +149,12 @@ namespace API.Data
             {
                 query = productParams.Field switch
                 {
-                    "Date" => query.OrderByDescending(p => p.DateCreated),
-                    "Status" => query.OrderByDescending(p => p.Status),
-                    "Sold" => query.OrderByDescending(p => p.Sold),
-                    "Price" => query.OrderByDescending(p => p.Price),
+                    "date" => query.OrderByDescending(p => p.DateCreated),
+                    "status" => query.OrderByDescending(p => p.Status),
+                    "sold" => query.OrderByDescending(p => p.Sold),
+                    "price" => query.OrderByDescending(p => p.Price),
                     "Name" => query.OrderByDescending(p => p.ProductName),
-                    "Promoted" => query.OrderByDescending(p => p.IsPromoted),
+                    "promoted" => query.OrderByDescending(p => p.IsPromoted),
                     _ => query.OrderByDescending(p => p.Id)
                 };
             }
@@ -252,9 +248,9 @@ namespace API.Data
             {
                 query = productParams.Field switch
                 {
-                    "DateCreated" => query.OrderBy(p => p.DateCreated),
-                    "Price" => query.OrderBy(p => p.Price),
-                    "Name" => query.OrderBy(p => p.ProductName),
+                    "dateCreated" => query.OrderBy(p => p.DateCreated),
+                    "price" => query.OrderBy(p => p.Price),
+                    "name" => query.OrderBy(p => p.ProductName),
                     _ => query.OrderBy(p => p.Sold)
                 };
             }
@@ -262,9 +258,9 @@ namespace API.Data
             {
                 query = productParams.Field switch
                 {
-                    "DateCreated" => query.OrderByDescending(p => p.DateCreated),
-                    "Price" => query.OrderByDescending(p => p.Price),
-                    "Name" => query.OrderByDescending(p => p.ProductName),
+                    "dateCreated" => query.OrderByDescending(p => p.DateCreated),
+                    "price" => query.OrderByDescending(p => p.Price),
+                    "name" => query.OrderByDescending(p => p.ProductName),
                     _ => query.OrderByDescending(p => p.Sold)
                 };
             }
@@ -312,14 +308,14 @@ namespace API.Data
             {
                 query = productOptionParams.Field switch
                 {
-                    "ColorCode" => query.OrderBy(p => p.ColorCode),
-                    "ColorName" => query.OrderBy(p => p.ColorName),
-                    "SizeName" => query.OrderBy(p => p.SizeName),
-                    "AdditionalPrice" => query.OrderBy(p => p.AdditionalPrice),
-                    "ProductName" => query.OrderBy(p => p.Product.ProductName),
-                    "ProductId" => query.OrderBy(p => p.Product.Id),
-                    "Status" => query.OrderBy(p => p.Status),
-                    "Id" => query.OrderBy(p => p.Id),
+                    "colorCode" => query.OrderBy(p => p.ColorCode),
+                    "colorName" => query.OrderBy(p => p.ColorName),
+                    "sizeName" => query.OrderBy(p => p.SizeName),
+                    "additionalPrice" => query.OrderBy(p => p.AdditionalPrice),
+                    "productName" => query.OrderBy(p => p.Product.ProductName),
+                    "productId" => query.OrderBy(p => p.Product.Id),
+                    "status" => query.OrderBy(p => p.Status),
+                    "id" => query.OrderBy(p => p.Id),
                     _ => query.OrderBy(p => p.DateCreated)
                 };
             }
@@ -327,14 +323,14 @@ namespace API.Data
             {
                 query = productOptionParams.Field switch
                 {
-                    "ColorCode" => query.OrderByDescending(p => p.ColorCode),
-                    "ColorName" => query.OrderByDescending(p => p.ColorName),
-                    "SizeName" => query.OrderByDescending(p => p.SizeName),
-                    "AdditionalPrice" => query.OrderByDescending(p => p.AdditionalPrice),
-                    "ProductName" => query.OrderByDescending(p => p.Product.ProductName),
-                    "ProductId" => query.OrderByDescending(p => p.Product.Id),
-                    "Status" => query.OrderByDescending(p => p.Status),
-                    "Id" => query.OrderByDescending(p => p.Id),
+                    "colorCode" => query.OrderByDescending(p => p.ColorCode),
+                    "colorName" => query.OrderByDescending(p => p.ColorName),
+                    "sizeName" => query.OrderByDescending(p => p.SizeName),
+                    "additionalPrice" => query.OrderByDescending(p => p.AdditionalPrice),
+                    "productName" => query.OrderByDescending(p => p.Product.ProductName),
+                    "productId" => query.OrderByDescending(p => p.Product.Id),
+                    "status" => query.OrderByDescending(p => p.Status),
+                    "id" => query.OrderByDescending(p => p.Id),
                     _ => query.OrderByDescending(p => p.DateCreated)
                 };
             }

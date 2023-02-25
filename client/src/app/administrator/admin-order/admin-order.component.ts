@@ -1,17 +1,9 @@
+import { RotateAnimation } from './../../_common/animation/carousel.animations';
 import { Component, OnInit } from '@angular/core';
-import {
-  animate,
-  state,
-  style,
-  transition,
-  trigger,
-} from '@angular/animations';
 import {
   ManagerOrder,
   ManagerOrderParams,
   ManagerOrderSummary,
-  OrderStatus,
-  OrderStatusList,
   OrderStatusSummary,
   OrderStatusSummaryList,
   PaymentMethod,
@@ -32,14 +24,7 @@ import { fnGetOrderStateString } from 'src/app/_common/function/function';
   selector: 'app-admin-order',
   templateUrl: './admin-order.component.html',
   styleUrls: ['./admin-order.component.css'],
-  animations: [
-    trigger('rotatedState', [
-      state('default', style({ transform: 'rotate(0)' })),
-      state('rotated', style({ transform: 'rotate(-180deg)' })),
-      transition('rotated => default', animate('500ms ease-out')),
-      transition('default => rotated', animate('500ms ease-in')),
-    ]),
-  ],
+  animations: [ RotateAnimation ],
 })
 export class AdminOrderComponent implements OnInit {
   orders: ManagerOrder[];
@@ -150,38 +135,7 @@ export class AdminOrderComponent implements OnInit {
   }
 
   orderBy(field: string) {
-    switch (field) {
-      case 'id':
-        this.orderParams.field = 'Id';
-        break;
-      case 'externalId':
-        this.orderParams.field = 'ExternalId';
-        break;
-      case 'firstName':
-        this.orderParams.field = 'FirstName';
-        break;
-      case 'lastName':
-        this.orderParams.field = 'LastName';
-        break;
-      case 'totalPrice':
-        this.orderParams.field = 'TotalPrice';
-        break;
-      case 'shippingMethod':
-        this.orderParams.field = 'ShippingMethod';
-        break;
-      case 'paymentMethod':
-        this.orderParams.field = 'PaymentMethod';
-        break;
-      case 'totalQuantity':
-        this.orderParams.field = 'TotalQuantity';
-        break;
-      case 'status':
-        this.orderParams.field = 'Status';
-        break;
-      default:
-        this.orderParams.field = 'DateCreated';
-        break;
-    }
+    this.orderParams.field = field;
     if (this.orderParams.orderBy == 0) this.orderParams.orderBy = 1;
     else this.orderParams.orderBy = 0;
     this.rotate();

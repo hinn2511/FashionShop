@@ -273,27 +273,35 @@
       <div class="d-none d-lg-block">
         <div class="d-flex flex-fill justify-content-lg-end">
           <div
-            class="mr-2"
+            class="mr-2 desktop-search-bar-container"
             *ngIf="!collapseSearchBar && setting.deviceType == 'desktop'"
-            style="
-              min-width: 20vw;
-              max-width: 300px;
-              min-height: 35px;
-              max-height: 35px;
-            "
           >
-            <form
-              [formGroup]="searchForm"
-              (ngSubmit)="searchForm.valid && viewSearchResult()"
-              autocomplete="off"
-            >
-              <app-icon-text-input
-                [formControl]="searchForm.controls['query']"
-                [label]="'Search'"
-                [icon]="searchBarIcon"
-                (clearInput)="clearSearchQuery()"
-              ></app-icon-text-input>
-            </form>
+            <div class="form-group mb-0 position-relative">
+              <input
+                type="text"
+                class="form-control"
+                [(ngModel)]="searchQuery"
+                (change)="updateSearchAction()"
+                (keyup.enter)="search()"
+              />
+              <p
+                class="fa fa-search text-muted p-1 m-0 position-absolute cs-pointer top-0 end-0"
+                *ngIf="action == 'search'; else clear"
+                aria-hidden="true"
+                (click)="search()"
+              >
+                Search
+              </p>
+              <ng-template #clear>
+                <p
+                  class="fa fa-times text-muted p-1 m-0 position-absolute cs-pointer top-0 end-0"
+                  aria-hidden="true"
+                  (click)="clearSearch()"
+                >
+                  Clear
+                </p>
+              </ng-template>
+            </div>
           </div>
           <button
             *ngIf="collapseSearchBar && setting.deviceType == 'desktop'"

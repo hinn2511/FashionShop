@@ -27,7 +27,6 @@ export class AdminArticleComponent implements OnInit {
   selectedIds: number[] = [];
   articleTypes: ArticleType[] = ArticleTypeList;
   genericStatus: GenericStatus[] = GenericStatusList;
-  query: string;
 
   constructor(
     private articleService: ArticleService,
@@ -79,7 +78,7 @@ export class AdminArticleComponent implements OnInit {
   }
 
   hideArticles() {
-    // if (!this.isMultipleSelected()) return;
+    if (!this.isMultipleSelected()) return;
     let ids: IdArray = {
       ids: this.selectedIds,
     };
@@ -100,7 +99,7 @@ export class AdminArticleComponent implements OnInit {
   }
 
   activateArticles() {
-    // if (!this.isMultipleSelected()) return;
+    if (!this.isMultipleSelected()) return;
     let ids: IdArray = {
       ids: this.selectedIds,
     };
@@ -115,7 +114,7 @@ export class AdminArticleComponent implements OnInit {
         );
       },
       (error) => {
-        this.toastr.error('Something wrong happen!', 'Error');
+        this.toastr.error(error, 'Error');
       }
     );
   }
@@ -135,7 +134,7 @@ export class AdminArticleComponent implements OnInit {
         );
       },
       (error) => {
-        this.toastr.error(error.message, 'Error');
+        this.toastr.error(error, 'Error');
       }
     );
   }
@@ -155,7 +154,7 @@ export class AdminArticleComponent implements OnInit {
         );
       },
       (error) => {
-        this.toastr.error(error.message, 'Error');
+        this.toastr.error(error, 'Error');
       }
     );
   }
@@ -166,10 +165,10 @@ export class AdminArticleComponent implements OnInit {
       (result) => {
         this.loadArticles();
         this.resetSelectedIds();
-        this.toastr.success('Product articles have been deleted', 'Success');
+        this.toastr.success(result.message, 'Success');
       },
       (error) => {
-        this.toastr.error('Something wrong happen!', 'Error');
+        this.toastr.error(error, 'Error');
       }
     );
   }
@@ -198,35 +197,7 @@ export class AdminArticleComponent implements OnInit {
   }
 
   orderBy(field: string) {
-    switch (field) {
-      case 'id':
-        this.articleParams.field = 'Id';
-        break;
-      case 'headline':
-        this.articleParams.field = 'Headline';
-        break;
-      case 'headlineSlug':
-        this.articleParams.field = 'HeadlineSlug';
-        break;
-      case 'publishedBy':
-        this.articleParams.field = 'PublishedBy';
-        break;
-      case 'publishedDate':
-        this.articleParams.field = 'PublishedDate';
-        break;
-      case 'status':
-        this.articleParams.field = 'Status';
-        break;
-      case 'view':
-          this.articleParams.field = 'View';
-          break;
-      case 'promoted':
-          this.articleParams.field = 'Promoted';
-          break;
-      default:
-        this.articleParams.field = 'PublishedDate';
-        break;
-    }
+    this.articleParams.field = field;
     if (this.articleParams.orderBy == 0) this.articleParams.orderBy = 1;
     else this.articleParams.orderBy = 0;
     this.rotate();

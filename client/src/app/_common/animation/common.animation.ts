@@ -20,20 +20,6 @@ export const GrowAnimation = trigger('grow', [
   transition('in => out', animate('0.5s ease-in-out')),
 ]);
 
-export const SlideOverflowAnimation = trigger('slideOverflow', [
-  state('out', style({})),
-  state(
-    'in',
-    style({
-      height: '700px',
-      overflow: 'hidden',
-    }),
-    { params: { collapseHeight: '100%' } }
-  ),
-  transition('out => in', animate('0.5s ease-in-out')),
-  transition('in => out', animate('0.5s ease-in-out')),
-]);
-
 const fadeIn = transition(':enter', [
   style({ opacity: 0 }), // start state
   animate(

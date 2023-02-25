@@ -98,7 +98,7 @@ export class AdminCategoryComponent implements OnInit {
   }
 
   hideCategories() {
-    // if (!this.isMultipleSelected()) return;
+    if (!this.isMultipleSelected()) return;
     let ids: IdArray = {
       ids: this.selectedIds,
     };
@@ -116,7 +116,7 @@ export class AdminCategoryComponent implements OnInit {
   }
 
   activateCategories() {
-    // if (!this.isMultipleSelected()) return;
+    if (!this.isMultipleSelected()) return;
     let ids: IdArray = {
       ids: this.selectedIds,
     };
@@ -226,29 +226,7 @@ export class AdminCategoryComponent implements OnInit {
   }
 
   orderBy(field: string) {
-    switch (field) {
-      case 'id':
-        this.categoryParams.field = 'Id';
-        break;
-      case 'categoryName':
-        this.categoryParams.field = 'CategoryName';
-        break;
-      case 'gender':
-        this.categoryParams.field = 'Gender';
-        break;
-      case 'status':
-        this.categoryParams.field = 'Status';
-        break;
-      case 'promoted':
-        this.categoryParams.field = 'Promoted';
-        break;
-      case 'parentCategory':
-        this.categoryParams.field = 'ParentCategory';
-        break;
-      default:
-        this.categoryParams.field = 'DateCreated';
-        break;
-    }
+    this.categoryParams.field = field;
     if (this.categoryParams.orderBy == 0) this.categoryParams.orderBy = 1;
     else this.categoryParams.orderBy = 0;
     this.rotate();

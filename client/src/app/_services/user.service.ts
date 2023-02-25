@@ -1,5 +1,5 @@
 import { ResponseMessage } from './../_models/generic';
-import { Role, UserResponse, Permission, CreateRoleRequest, UserDetailResponse, ChangeUserPasswordRequest } from './../_models/user';
+import { UserResponse, UserDetailResponse, ChangeUserPasswordRequest } from './../_models/user';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { environment } from 'src/environments/environment';
