@@ -5,7 +5,7 @@
 <div [class]="{ 'prevent-scroll': focus }">
   <ng-container *ngIf="currentRoute != 'Administrator Login'">
     <div *appHasRole="['Anonymous', 'ClientAccess']" class="position-relative">
-      <ng-container *ngIf="currentRoute != 'CLient Login' && currentRoute != 'Client Register'">
+      <ng-container *ngIf="currentRoute != 'Client Login' && currentRoute != 'Client Register'">
         <app-navigation-bar (focus)="setFocus($event)"></app-navigation-bar>
       </ng-container>
 
@@ -13,7 +13,7 @@
         <router-outlet></router-outlet>
       </div>
 
-      <ng-container *ngIf="currentRoute != 'CLient Login' && currentRoute != 'Client Register'">
+      <ng-container *ngIf="currentRoute != 'Client Login' && currentRoute != 'Client Register'">
         <app-footer></app-footer>
       </ng-container>
       <div *ngIf="focus" [@fadeInAndOut] class="position-absolute focus-mode"></div>
@@ -46,7 +46,7 @@
               Log out
             </button>
             </span>
-             
+
             </nav>
 
             <div class="ml-4 ml-lg-5 mt-4">

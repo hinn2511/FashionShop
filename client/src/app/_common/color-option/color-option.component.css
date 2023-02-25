@@ -37,7 +37,7 @@
 {
     top:50%;
     left: 50%;
-    transform: translate(-50%,-50%); 
+    transform: translate(-50%,-50%);
     mix-blend-mode: hard-light;
     color: rgb(46, 41, 41);
 }
@@ -48,11 +48,15 @@
     opacity: 0.4;
 }
 
-
+.color-option-container
+{
+    border: 2px solid #bbbcbd7e;
+    padding: 0px;
+}
 
 .color-option-container.color-option-selected
 {
-    border: 2px solid #bbbcbd7e;
+    border: 2px solid #8485857e;
     padding: 0px;
 }
 

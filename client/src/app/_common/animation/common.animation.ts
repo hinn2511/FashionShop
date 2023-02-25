@@ -45,18 +45,18 @@ export const SlideRightToLeft = trigger('slideRightToLeft', [
 export const SlideTopToBottom = trigger('slideTopToBottom', [
   transition(':enter', [
     style({}),
-    animate('500ms ease-in', style({ opacity: 1})),
+    animate('500ms ease-in', style({})),
   ]),
   transition(':leave', [
-    animate('500ms ease-out', style({ height: '0px', 'z-index': 1, opacity: 0})),
+    animate('500ms ease-out', style({ height: '0px'})),
   ]),
 ]);
 
 export const SlideTopToBottom2 = trigger('slideTopToBottom2', [
-  state('out', style({height: '100%',  opacity: 1})),
+  state('out', style({height: '100%',  })),
   state(
     'in',
-    style({ height: '0px', 'z-index': 1, opacity: 0}),
+    style({ height: '0px'}),
   ),
   transition('out => in', animate('0.5s ease-in-out')),
   transition('in => out', animate('0.5s ease-in-out')),

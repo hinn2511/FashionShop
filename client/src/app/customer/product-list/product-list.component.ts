@@ -199,8 +199,6 @@ export class ProductListComponent implements OnInit, OnDestroy {
   }
 
   resetColor() {
-    console.log(this.filterComponent);
-    
     this.filterComponent.resetColor();
   }
 

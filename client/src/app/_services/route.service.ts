@@ -21,7 +21,10 @@ export class RouteService {
     } else {
       if (url.includes('/login')) this.setRoute('Client Login');
       if (url.includes('/register')) this.setRoute('Client Register');
+      if (url == '/')
+        this.setRoute('Home');
     }
+
   }
 
   private updateAdminRoute(url: string) {
@@ -37,7 +40,7 @@ export class RouteService {
     if (url.includes('/category')) {
       this.setRoute('Categories');
     }
-    if (url.includes('/product-option')) {
+    if (url.includes('/option')) {
       this.setRoute('Product Options');
     }
     if (url.includes('/setting')) {

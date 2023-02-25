@@ -147,10 +147,10 @@ import { ImageSelectorComponent } from './_dialog/image-selector/image-selector.
     AdminProductOptionComponent,
     AdminProductOptionAddComponent,
     AccountComponent,
-    AccountInformationComponent, 
-    FavoritesComponent, 
-    DebounceClickDirective, 
-    CheckOutComponent, 
+    AccountInformationComponent,
+    FavoritesComponent,
+    DebounceClickDirective,
+    CheckOutComponent,
     OrderHistoryComponent,
     OrderCardComponent,
     OrderDetailComponent,
@@ -200,7 +200,7 @@ import { ImageSelectorComponent } from './_dialog/image-selector/image-selector.
     ChangePasswordDialogComponent,
     AdminSettingComponent,
     ImageSelectorComponent,
-    
+
   ],
   imports: [
     BrowserModule,
@@ -208,12 +208,12 @@ import { ImageSelectorComponent } from './_dialog/image-selector/image-selector.
     HttpClientModule,
     FormsModule,
     ReactiveFormsModule,
-    BrowserAnimationsModule,   
+    BrowserAnimationsModule,
     CKEditorModule,
     SharedModule
   ],
   providers: [
-    { provide: APP_INITIALIZER, useFactory: appInitializer, multi: true, deps: [AuthenticationService] },
+    // { provide: APP_INITIALIZER, useFactory: appInitializer, multi: true, deps: [AuthenticationService] },
     { provide: APP_INITIALIZER, useFactory: settingInitializer, multi: true, deps: [SettingService] },
     { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true },
     { provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true },
