@@ -1,0 +1,23 @@
+@media (max-width: 768px) {
+  .rect-img-container {
+    max-width: calc(100px + 2vw);
+    min-width: calc(100px + 2vw);
+  }
+}
+
+@media (min-width: 768px) {
+  .container-fluid {
+    max-width: 1400px;
+  }
+
+  .rect-img-container {
+    max-width: 100px;
+    min-width: 100px;
+  }
+}
+
+.content {
+  padding-top: 15px;
+  position: relative;
+  border-radius: 6px;
+}

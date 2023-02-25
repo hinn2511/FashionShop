@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Net;
 using System.Text.Json;
 using System.Threading.Tasks;
 using API.Data;
@@ -10,9 +11,11 @@ using API.DTOs.Order;
 using API.DTOs.Params;
 using API.DTOs.Request;
 using API.DTOs.Request.OrderRequest;
+using API.DTOs.Response;
 using API.DTOs.Response.OrderResponse;
 using API.Entities;
 using API.Entities.OrderModel;
+using API.Entities.UserModel;
 using API.Extensions;
 using API.Helpers;
 using API.Interfaces;
@@ -363,6 +366,7 @@ namespace API.Controllers
 
             return BadRequest("Can not return orders.");
         }
+        
         #endregion
 
 

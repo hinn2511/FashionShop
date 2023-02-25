@@ -101,7 +101,7 @@ export class CheckOutComponent implements OnInit {
     this.user = this.authenticationService.userValue;
   }
 
-  initializeForm() {
+  initializeForm() {    
     this.orderDetailForm = this.fb.group({
       receiverName: ['', Validators.required],
       address: ['', [Validators.required]],

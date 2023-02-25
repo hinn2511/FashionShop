@@ -10,8 +10,8 @@ namespace API.Entities.UserModel
         public int UserId { get; set; }
         public Order Order { get; set; }
         public int OrderId { get; set; }
-        public Product Product { get; set; }
-        public int ProductId { get; set; }
+        public Option Option { get; set; }
+        public int OptionId { get; set; }
         public string Comment { get; set; }
         public int Score { get; set; }
     }

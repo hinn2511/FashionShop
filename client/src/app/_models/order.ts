@@ -105,6 +105,10 @@ export const allowReturnAcceptStatus: number[] = [
   OrderStatusEnum.ReturnRequested,
 ];
 
+export const allowReviewStatus: number[] = [
+  OrderStatusEnum.Finished,
+];
+
 export class OrderStatus {
   id: number;
   statusString: string;
@@ -193,6 +197,9 @@ export const isAllowReturnAccept = (id: number) =>
 export const isAllowConfirmDelivered = (id: number) =>
   allowConfirmDeliveredStatus.find((x) => x === id) != undefined;
 
+export const isAllowReview = (id: number) =>
+  allowReviewStatus.find((x) => x === id) != undefined;
+
 
 // Customer
 export class CustomerNewOrder {
@@ -233,9 +240,11 @@ export interface CustomerOrderDetail {
   id: number;
   productId: number;
   productName: string;
+  optionId: number;
   price: number;
   quantity: number;
   total: number;
+  isReviewed: boolean;
 }
 
 
@@ -333,3 +342,4 @@ export interface ManagerOrder {
   totalItem: number;
   totalPrice: number;
 }
+

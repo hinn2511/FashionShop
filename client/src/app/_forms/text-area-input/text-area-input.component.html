@@ -3,11 +3,16 @@
         [class.is-invalid]='ngControl.touched && ngControl.invalid'
         class="form-control" 
         rows={{rows}}
+        maxlength={{maxLength}}
         [formControl]="ngControl.control"
         placeholder={{label}}>
         <div *ngIf="ngControl.control.errors?.required"
             class="invalid-feedback">
             This field is required
+        </div>
+        <div *ngIf="ngControl.control.errors?.maxlength"
+            class="invalid-feedback">
+            Maximum length is {{maxLength}} characters
         </div>
 
     </textarea>
