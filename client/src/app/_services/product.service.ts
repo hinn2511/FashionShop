@@ -54,7 +54,8 @@ export class ProductService {
   {
     let params = getPaginationHeaders(productParams.pageNumber, productParams.pageSize);
     params = params.append('category', productParams.category);
-    params = params.append('gender', productParams.gender);
+    if (productParams.gender != undefined)
+      params = params.append('gender', productParams.gender);
     params = params.append('orderBy', productParams.orderBy);
     params = params.append('size', productParams.size);
     params = params.append('field', productParams.field);
@@ -86,7 +87,8 @@ export class ProductService {
     }
     let params = getPaginationHeaders(productParams.pageNumber, productParams.pageSize);
     params = params.append('category', productParams.category);
-    params = params.append('gender', productParams.gender);
+    if (productParams.gender != undefined)
+      params = params.append('gender', productParams.gender);
     params = params.append('orderBy', productParams.orderBy);
     params = params.append('colorCode', productParams.colorCode);
     params = params.append('size', productParams.size);

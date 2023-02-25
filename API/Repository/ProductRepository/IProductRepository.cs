@@ -33,11 +33,7 @@ namespace API.Interfaces
 
    
 
-    public interface IStockRepository : IGenericRepository<Stock>
-    {
-
-    }
-
+   
     // {
     //     #region customer
     //     Task<PagedList<CustomerProductDto>> GetProductsAsCustomerAsync(ProductParams productParams);

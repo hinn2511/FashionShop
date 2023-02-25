@@ -66,8 +66,10 @@ export class AdminCategoryAddComponent implements OnInit {
     this.fileService
       .uploadImage(
         this.image,
+        1000,
+        1000,
         0,
-        0,
+        'fill',
         this.authenticationService.userValue.jwtToken
       )
       .pipe(

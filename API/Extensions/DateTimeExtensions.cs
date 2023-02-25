@@ -16,5 +16,17 @@ namespace API.Extensions
         {
             return DateTime.UtcNow;
         }
+
+        public static int GetQuarter(this int month)
+        {
+            var result = month / 3;
+            result++;
+            if (result <= 0)
+                result = 1;
+            if (result > 4)
+                result = 4;
+            return result;
+        }
+
     }
 }

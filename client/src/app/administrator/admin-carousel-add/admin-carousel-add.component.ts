@@ -76,7 +76,7 @@ export class AdminCarouselAddComponent implements OnInit {
     this.isUploadingFile = true;
 
     this.fileService
-      .uploadImage(this.image, 1600, 900, this.authenticationService.userValue.jwtToken)
+      .uploadImage(this.image, 1600, 900, 0, 'fill', this.authenticationService.userValue.jwtToken)
       .pipe(
         concatMap((uploadResult) =>
           this.contentService.addCarousel(

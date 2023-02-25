@@ -94,8 +94,8 @@ namespace API.Controllers
                     {
                         OptionId = item.OptionId,
                         Quantity = item.Quantity,
-                        Price = option.Product.Price,
-                        Total = item.Quantity * option.Product.Price
+                        Price = option.Product.Price + option.AdditionalPrice,
+                        Total = item.Quantity * ( option.Product.Price + option.AdditionalPrice)
                     };
                     orderDetail.AddCreateInformation(GetUserId());
                     orderDetails.Add(orderDetail);
@@ -112,17 +112,17 @@ namespace API.Controllers
             orderHistories.Add(new OrderHistory()
             {
                 CreatedByUserId = GetUserId(),
-                DateCreated = DateTime.UtcNow,
+                DateCreated = DateTime.UtcNow.AddMonths(3),
                 OrderStatus = OrderStatus.Created,
-                HistoryDescription = $"Ordered by customer: {User.GetUsername()} at {DateTime.UtcNow}; Payment method: {orderRequest.PaymentMethod.ConvertToString()}."
+                HistoryDescription = $"Ordered by customer: {User.GetUsername()} at {DateTime.UtcNow.AddMonths(3)}; Payment method: {orderRequest.PaymentMethod.ConvertToString()}."
             });
 
             orderHistories.Add(new OrderHistory()
             {
                 CreatedByUserId = GetUserId(),
-                DateCreated = DateTime.UtcNow,
+                DateCreated = DateTime.UtcNow.AddMonths(3),
                 OrderStatus = OrderStatus.Checking,
-                HistoryDescription = $"Waiting for verifying at {DateTime.UtcNow}."
+                HistoryDescription = $"Waiting for verifying at {DateTime.UtcNow.AddMonths(3)}."
             });
 
             var shippingMethodData = await System.IO.File.ReadAllTextAsync("Data/LocalData/ShippingMethod.json");
@@ -131,7 +131,7 @@ namespace API.Controllers
 
             var selectedShippingMethod = shippingMethods.FirstOrDefault(x => x.Id == orderRequest.ShippingMethod);
 
-            var now = DateTime.UtcNow;
+            var now = DateTime.UtcNow.AddMonths(3);
 
             var today = new DateTime(now.Year, now.Month, now.Day, 0, 0, 0);
             var endOfDay = new DateTime(now.Year, now.Month, now.Day, 23, 59, 59);
@@ -204,9 +204,9 @@ namespace API.Controllers
                 {
                     OrderId = order.Id,
                     CreatedByUserId = GetUserId(),
-                    DateCreated = DateTime.UtcNow,
+                    DateCreated = DateTime.UtcNow.AddMonths(3),
                     OrderStatus = OrderStatus.Checking,
-                    HistoryDescription = $"Payment failed by customer: {User.GetUsername()} at {DateTime.UtcNow}; With card number: **** **** **** {payOrderRequest.CardNumber.Substring(payOrderRequest.CardNumber.Length - 4, 4)}."
+                    HistoryDescription = $"Payment failed by customer: {User.GetUsername()} at {DateTime.UtcNow.AddMonths(3)}; With card number: **** **** **** {payOrderRequest.CardNumber.Substring(payOrderRequest.CardNumber.Length - 4, 4)}."
                 });
                 return BadRequest("We can not verifying your card information right now. Please try again later.");
             }
@@ -217,18 +217,18 @@ namespace API.Controllers
             {
                 OrderId = order.Id,
                 CreatedByUserId = GetUserId(),
-                DateCreated = DateTime.UtcNow,
+                DateCreated = DateTime.UtcNow.AddMonths(3),
                 OrderStatus = OrderStatus.Paid,
-                HistoryDescription = $"Paid successfully by customer: {User.GetUsername()} at {DateTime.UtcNow}; With card number: **** **** **** {payOrderRequest.CardNumber.Substring(payOrderRequest.CardNumber.Length - 4, 4)}."
+                HistoryDescription = $"Paid successfully by customer: {User.GetUsername()} at {DateTime.UtcNow.AddMonths(3)}; With card number: **** **** **** {payOrderRequest.CardNumber.Substring(payOrderRequest.CardNumber.Length - 4, 4)}."
             });
 
             _unitOfWork.OrderHistoryRepository.Insert(new OrderHistory
             {
                 OrderId = order.Id,
                 CreatedByUserId = GetUserId(),
-                DateCreated = DateTime.UtcNow,
+                DateCreated = DateTime.UtcNow.AddMonths(3),
                 OrderStatus = OrderStatus.Processing,
-                HistoryDescription = $"Order has been paid. Checking passed and move to processing automatically at {DateTime.UtcNow}."
+                HistoryDescription = $"Order has been paid. Checking passed and move to processing automatically at {DateTime.UtcNow.AddMonths(3)}."
             });
 
             order.CurrentStatus = OrderStatus.Processing;
@@ -273,9 +273,9 @@ namespace API.Controllers
             {
                 OrderId = order.Id,
                 CreatedByUserId = GetUserId(),
-                DateCreated = DateTime.UtcNow,
+                DateCreated = DateTime.UtcNow.AddMonths(3),
                 OrderStatus = OrderStatus.CancelRequested,
-                HistoryDescription = $"Order cancellation requested by: {User.GetUsername()} at {DateTime.UtcNow}.Reason: {cancelOrderRequest.Reason}"
+                HistoryDescription = $"Order cancellation requested by: {User.GetUsername()} at {DateTime.UtcNow.AddMonths(3)}.Reason: {cancelOrderRequest.Reason}"
             });
 
             order.CurrentStatus = OrderStatus.CancelRequested;
@@ -311,15 +311,25 @@ namespace API.Controllers
             {
                 OrderId = order.Id,
                 CreatedByUserId = GetUserId(),
-                DateCreated = DateTime.UtcNow,
+                DateCreated = DateTime.UtcNow.AddMonths(3),
                 OrderStatus = OrderStatus.Finished,
-                HistoryDescription = $"Order had been delivered to customer: {User.GetUsername()} at {DateTime.UtcNow}."
+                HistoryDescription = $"Order had been delivered to customer: {User.GetUsername()} at {DateTime.UtcNow.AddMonths(3)}."
             });
 
             order.CurrentStatus = OrderStatus.Finished;
             order.AddUpdateInformation(GetUserId());
 
             _unitOfWork.OrderRepository.Update(order);
+
+            var orderDetails = await _unitOfWork.OrderDetailRepository.GetAllAndIncludeAsync(x => x.OrderId == order.Id, "Option", true);
+
+            foreach(var orderDetail in orderDetails)
+            {
+                var product = await _unitOfWork.ProductRepository.GetFirstBy(x => x.Id == orderDetail.Option.ProductId);
+                if (product != null)
+                    product.Sold += orderDetail.Quantity;
+                _unitOfWork.ProductRepository.Update(product);
+            }
 
             if (await _unitOfWork.Complete())
             {
@@ -349,9 +359,9 @@ namespace API.Controllers
             {
                 OrderId = order.Id,
                 CreatedByUserId = GetUserId(),
-                DateCreated = DateTime.UtcNow,
+                DateCreated = DateTime.UtcNow.AddMonths(3),
                 OrderStatus = OrderStatus.ReturnRequested,
-                HistoryDescription = $"Order return requested by: {User.GetUsername()} at {DateTime.UtcNow}. Reason: {returnOrderRequest.Reason}"
+                HistoryDescription = $"Order return requested by: {User.GetUsername()} at {DateTime.UtcNow.AddMonths(3)}. Reason: {returnOrderRequest.Reason}"
             });
 
             order.CurrentStatus = OrderStatus.ReturnRequested;
@@ -409,12 +419,13 @@ namespace API.Controllers
 
             var result = _mapper.Map<AdminOrderResponse>(order);
 
-            var optionIds = order.OrderDetails.Select(x => x.OptionId);
-            var stocks = await _unitOfWork.StockRepository.GetAllBy(x => optionIds.Contains(x.OptionId));
+            var orderDetails = await _unitOfWork.OrderDetailRepository.GetAllBy(x => x.OrderId == orderId);
+
+            var options = await _unitOfWork.ProductOptionRepository.GetAllBy(x => orderDetails.Select(x => x.OptionId).Contains(x.Id));
 
             foreach (var orderDetail in result.OrderDetails)
             {
-                var stockQuantity = stocks.FirstOrDefault(x => x.OptionId == orderDetail.OptionId).Quantity;
+                var stockQuantity = options.FirstOrDefault(x => x.Id == orderDetail.OptionId).Stock;
                 orderDetail.StockAvailable = stockQuantity;
                 orderDetail.StockAfterDeduction = stockQuantity - orderDetail.Quantity;
             }
@@ -438,9 +449,9 @@ namespace API.Controllers
             {
                 OrderId = orderId,
                 CreatedByUserId = GetUserId(),
-                DateCreated = DateTime.UtcNow,
+                DateCreated = DateTime.UtcNow.AddMonths(3),
                 OrderStatus = OrderStatus.Processing,
-                HistoryDescription = $"Order checked by: {User.GetUsername()} at {DateTime.UtcNow}."
+                HistoryDescription = $"Order checked by: {User.GetUsername()} at {DateTime.UtcNow.AddMonths(3)}."
             });
 
             order.CurrentStatus = OrderStatus.Processing;
@@ -473,9 +484,9 @@ namespace API.Controllers
             {
                 OrderId = orderId,
                 CreatedByUserId = GetUserId(),
-                DateCreated = DateTime.UtcNow,
+                DateCreated = DateTime.UtcNow.AddMonths(3),
                 OrderStatus = OrderStatus.Shipping,
-                HistoryDescription = $"Move to shipping process by: {User.GetUsername()} at {DateTime.UtcNow}. Shipping method: {order.ShippingMethod}"
+                HistoryDescription = $"Move to shipping process by: {User.GetUsername()} at {DateTime.UtcNow.AddMonths(3)}. Shipping method: {order.ShippingMethod}"
             });
 
             order.CurrentStatus = OrderStatus.Shipping;
@@ -508,9 +519,9 @@ namespace API.Controllers
             {
                 OrderId = orderId,
                 CreatedByUserId = GetUserId(),
-                DateCreated = DateTime.UtcNow,
+                DateCreated = DateTime.UtcNow.AddMonths(3),
                 OrderStatus = OrderStatus.Shipped,
-                HistoryDescription = $"Shipped to customer by: {User.GetUsername()} at {DateTime.UtcNow}. Shipping method: {order.ShippingMethod}"
+                HistoryDescription = $"Shipped to customer by: {User.GetUsername()} at {DateTime.UtcNow.AddMonths(3)}. Shipping method: {order.ShippingMethod}"
             });
 
             order.CurrentStatus = OrderStatus.Shipped;
@@ -551,9 +562,9 @@ namespace API.Controllers
             {
                 OrderId = order.Id,
                 CreatedByUserId = GetUserId(),
-                DateCreated = DateTime.UtcNow,
+                DateCreated = DateTime.UtcNow.AddMonths(3),
                 OrderStatus = OrderStatus.Cancelled,
-                HistoryDescription = $"Order is canceled by: {User.GetUsername()} at {DateTime.UtcNow}; Reason: {cancelOrderRequest.Reason}"
+                HistoryDescription = $"Order is canceled by: {User.GetUsername()} at {DateTime.UtcNow.AddMonths(3)}; Reason: {cancelOrderRequest.Reason}"
             });
 
             order.CurrentStatus = OrderStatus.Cancelled;
@@ -585,9 +596,9 @@ namespace API.Controllers
             {
                 OrderId = order.Id,
                 CreatedByUserId = GetUserId(),
-                DateCreated = DateTime.UtcNow,
+                DateCreated = DateTime.UtcNow.AddMonths(3),
                 OrderStatus = OrderStatus.Returned,
-                HistoryDescription = $"Order is accepted to return by: {User.GetUsername()} at {DateTime.UtcNow}"
+                HistoryDescription = $"Order is accepted to return by: {User.GetUsername()} at {DateTime.UtcNow.AddMonths(3)}"
             });
 
             order.CurrentStatus = OrderStatus.Returned;
@@ -619,9 +630,9 @@ namespace API.Controllers
             {
                 OrderId = order.Id,
                 CreatedByUserId = GetUserId(),
-                DateCreated = DateTime.UtcNow,
+                DateCreated = DateTime.UtcNow.AddMonths(3),
                 OrderStatus = OrderStatus.Cancelled,
-                HistoryDescription = $"Order is accepted to cancel by: {User.GetUsername()} at {DateTime.UtcNow}"
+                HistoryDescription = $"Order is accepted to cancel by: {User.GetUsername()} at {DateTime.UtcNow.AddMonths(3)}"
             });
 
             order.CurrentStatus = OrderStatus.Cancelled;
@@ -646,19 +657,19 @@ namespace API.Controllers
 
             var optionIds = orderDetails.Select(x => x.OptionId);
 
-            var stocks = await _unitOfWork.StockRepository.GetAllBy(x => optionIds.Contains(x.OptionId));
+            var options = await _unitOfWork.ProductOptionRepository.GetAllBy(x => optionIds.Contains(x.Id));
 
-            foreach (var stock in stocks)
+            foreach (var option in options)
             {
-                var quantity = order.OrderDetails.FirstOrDefault(x => x.OptionId == stock.OptionId).Quantity;
+                var quantity = order.OrderDetails.FirstOrDefault(x => x.OptionId == option.Id).Quantity;
                 if (isDeduction)
-                    stock.Quantity -= quantity;
+                    option.Stock -= quantity;
                 else
-                    stock.Quantity += quantity;
-                stock.AddUpdateInformation(GetUserId());
+                    option.Stock += quantity;
+                option.AddUpdateInformation(GetUserId());
             }
 
-            _unitOfWork.StockRepository.Update(stocks);
+            _unitOfWork.ProductOptionRepository.Update(options);
         }
 
         #endregion

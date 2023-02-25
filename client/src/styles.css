@@ -725,3 +725,9 @@ sketch-picker, chrome-picker
 {
   width: 100% !important;
 }
+
+.chart
+{
+    width: 100%;
+    min-height: 200px;
+}

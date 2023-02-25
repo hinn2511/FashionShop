@@ -88,6 +88,11 @@ import { SearchResultComponent } from './customer/search-result/search-result.co
 import { RegisterComponent } from './customer/register/register.component';
 import { AdminProductOptionEditComponent } from './administrator/admin-product-option-edit/admin-product-option-edit.component';
 import { OrderReviewComponent } from './customer/order-review/order-review.component';
+import { AdminDashboardComponent } from './administrator/dashboard/admin-dashboard/admin-dashboard.component';
+import { AdminChartOrderStatusComponent } from './administrator/dashboard/admin-chart-order-status/admin-chart-order-status.component';
+import { AdminChartPopularProductComponent } from './administrator/dashboard/admin-chart-popular-product/admin-chart-popular-product.component';
+import { AdminChartOrderRateComponent } from './administrator/dashboard/admin-chart-order-rate/admin-chart-order-rate.component';
+import { AdminChartRevenueComponent } from './administrator/dashboard/admin-chart-revenue/admin-chart-revenue.component';
 
 @NgModule({
   declarations: [
@@ -160,7 +165,12 @@ import { OrderReviewComponent } from './customer/order-review/order-review.compo
     SearchResultComponent,
     RegisterComponent,
     AdminProductOptionEditComponent,
-    OrderReviewComponent
+    OrderReviewComponent,
+    AdminDashboardComponent,
+    AdminChartOrderStatusComponent,
+    AdminChartPopularProductComponent,
+    AdminChartOrderRateComponent,
+    AdminChartRevenueComponent
   ],
   imports: [
     BrowserModule,

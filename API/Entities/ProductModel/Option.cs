@@ -13,5 +13,6 @@ namespace API.Entities.ProductModel
         public string SizeName { get; set; }
         public int ProductId { get; set; }
         public double AdditionalPrice { get; set; }
+        public int Stock { get; set; }
     }
 }

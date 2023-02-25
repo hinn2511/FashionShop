@@ -1,5 +1,7 @@
 ﻿using API.Data;
+using API.DTOs.Response;
 using API.DTOs.Response.FileResponse;
+using API.Entities.Other;
 using API.Entities.OtherModel;
 using API.Extensions;
 using API.Interfaces;
@@ -12,6 +14,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
 
 namespace API.Controllers
@@ -23,9 +26,11 @@ namespace API.Controllers
     {
         private readonly IMapper _mapper;
         private readonly IUnitOfWork _unitOfWork;
+        private readonly IPhotoService _photoService;
 
-        public FileController(IMapper mapper, IUnitOfWork unitOfWork)
+        public FileController(IMapper mapper, IUnitOfWork unitOfWork, IPhotoService photoService)
         {
+            _photoService = photoService;
             _unitOfWork = unitOfWork;
             _mapper = mapper;
         }
@@ -60,43 +65,25 @@ namespace API.Controllers
         }
 
         [HttpPost("image")]
-        public async Task<ActionResult> UploadImageFile(IFormFile file, [FromQuery] int height, [FromQuery] int width, [FromQuery] bool keepRatio)
+        public async Task<ActionResult> UploadImageFile(IFormFile file, [FromQuery] int height, [FromQuery] int width, [FromQuery] double ratio, [FromQuery] string cropOption)
         {
             if (!FileExtensions.ValidateFile(file, Constant.ImageContentType, 10000))
                 return BadRequest("File not valid");
 
-            var filePath = await FileExtensions.SaveFile(file);
+            var result = await _photoService.AddPhotoAsync(file, height, width, cropOption, ratio);
 
-            var uploadedFile = new UploadedFile();
+            if (result.Error != null) 
+                return BadRequest(new BaseResponseMessage(false, HttpStatusCode.BadRequest, "Can not upload photo"));
+            
+            var image = new Photo();
 
-            if (height != 0 && width != 0)
-            {
-                var keepSourceImage = file.ContentType == "image/png";
+            image.PublicId = result.PublicId;
+            image.Url = result.SecureUrl.AbsoluteUri;
 
-                var resizedFilePath = FileExtensions.ResizeImage(width, height, filePath, false, keepRatio, keepSourceImage);
-
-                var resizedFileName = resizedFilePath.Split("\\").Last();
-
-                var resizedFileExtension = resizedFileName.Split(".").Last();
-
-                uploadedFile.ContentType = file.ContentType;
-                uploadedFile.Name = resizedFileName;
-                uploadedFile.Extension = resizedFileExtension;
-                uploadedFile.Path = resizedFilePath;
-            }
-            else
-            {
-                uploadedFile.ContentType = file.ContentType;
-                uploadedFile.Name = filePath.Split("\\").Last();
-                uploadedFile.Extension = filePath.Split(".").Last();
-                uploadedFile.Path = filePath;
-            }
-        
-            uploadedFile.AddCreateInformation(GetUserId());
-            _unitOfWork.FileRepository.Insert(uploadedFile);
+            _unitOfWork.PhotoRepository.Insert(image);
 
             if (await _unitOfWork.Complete())
-                return Ok(new FileUploadedResponse($"{Constant.DownloadFileUrl}{uploadedFile.Name}"));
+                return Ok(new FileUploadedResponse(image.Url));
 
             return BadRequest("Can not upload file");
         }

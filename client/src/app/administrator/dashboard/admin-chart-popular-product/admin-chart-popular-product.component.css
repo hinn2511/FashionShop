@@ -1,0 +1,14 @@
+.filter-dropdown {
+    top: 70%;
+    left: 0;
+}
+
+.filter-dropdown, .filter-button {
+    width: max(10vw, fit-content);
+    min-width: 10vw;
+}
+
+input[type="checkbox"] {
+    z-index: 100;
+}
+

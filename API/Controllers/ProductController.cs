@@ -409,24 +409,10 @@ namespace API.Controllers
             if (!FileExtensions.ValidateFile(file, Constant.ImageContentType, 10000))
                 return BadRequest("File not valid");
 
-            var filePath = await FileExtensions.SaveFile(file);
+            var result = await _photoService.AddPhotoAsync(file, 1000, 1000, "lfill", 1);
 
-            var keepSourceImage = file.ContentType == "image/png";
-
-            var resizedFilePath = FileExtensions.ResizeImage(Constant.DefaultImageWidth, Constant.DefaultImageHeight, filePath, true, true, keepSourceImage);
-
-            var resizedFileName = resizedFilePath.Split("\\").Last();
-
-            var resizedFileExtension = resizedFileName.Split(".").Last();
-
-            var uploadedFile = new UploadedFile()
-            {
-                ContentType = file.ContentType,
-                Name = resizedFileName,
-                Extension = resizedFileExtension,
-                Path = resizedFilePath
-            };
-            uploadedFile.AddCreateInformation(GetUserId());
+            if (result.Error != null) 
+                return BadRequest(new BaseResponseMessage(false, HttpStatusCode.BadRequest, "Can not upload photo"));
 
             bool IsMain = false;
 
@@ -435,13 +421,13 @@ namespace API.Controllers
 
             var photo = new ProductPhoto
             {
-                Url = Constant.DownloadFileUrl + resizedFileName,
-                PublicId = "",
+                Url = result.SecureUrl.AbsoluteUri,
+                PublicId = result.PublicId,
                 IsMain = IsMain,
                 Product = product,
-                File = uploadedFile,
                 FileType = Constant.FileType.Image
             };
+
             photo.AddCreateInformation(GetUserId());
 
             _unitOfWork.ProductPhotoRepository.Insert(photo);
@@ -489,7 +475,6 @@ namespace API.Controllers
                 PublicId = "",
                 IsMain = IsMain,
                 Product = product,
-                File = uploadedFile,
                 FileType = Constant.FileType.Video
             };
 
@@ -548,7 +533,7 @@ namespace API.Controllers
         [HttpDelete("delete-product-photo")]
         public async Task<ActionResult> DeleteProductPhoto(DeleteProductPhotosRequest deleteProductPhotosRequest)
         {
-            var productPhotos = await _unitOfWork.ProductPhotoRepository.GetAllBy(x => deleteProductPhotosRequest.Ids.Contains(x.Id));
+            var productPhotos = await _unitOfWork.ProductPhotoRepository.GetAllBy(x => deleteProductPhotosRequest.Ids.Contains(x.Id));            
 
             if (productPhotos == null)
                 return BadRequest("Product photo not found");
@@ -556,12 +541,14 @@ namespace API.Controllers
             if (productPhotos.Any(x => x.IsMain))
                 return BadRequest("Can not delete main photo.");
 
-            var filesDelete = await _unitOfWork.FileRepository.GetAllBy(x => productPhotos.Select(x => x.FileId).Contains(x.Id));
-
-            foreach (var fileDelete in filesDelete)
-                FileExtensions.DeleteFile(fileDelete.Path);
-
             _unitOfWork.ProductPhotoRepository.Delete(x => productPhotos.Select(x => x.Id).Contains(x.Id));
+            
+            foreach(var photo in productPhotos)
+            {
+                var result = await _photoService.DeletePhotoAsync(photo.PublicId);
+                if(result.Error != null)
+                    return BadRequest(result.Error.Message);
+            }
 
             if (await _unitOfWork.Complete())
                 return Ok();

@@ -339,12 +339,7 @@ namespace API.Data
         }
     }
 
-    public class StockRepository : GenericRepository<Stock>, IStockRepository
-    {
-        public StockRepository(DataContext context, DbSet<Stock> set) : base(context, set)
-        {
-        }
-    }
+   
 
     public class ProductPhotoRepository : GenericRepository<ProductPhoto>, IProductPhotoRepository
     {

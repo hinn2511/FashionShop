@@ -454,6 +454,9 @@ namespace API.Data.Migrations
                     b.Property<int>("Status")
                         .HasColumnType("INTEGER");
 
+                    b.Property<int>("Stock")
+                        .HasColumnType("INTEGER");
+
                     b.HasKey("Id");
 
                     b.HasIndex("ProductId");
@@ -525,52 +528,6 @@ namespace API.Data.Migrations
                     b.HasIndex("CategoryId");
 
                     b.ToTable("Products");
-                });
-
-            modelBuilder.Entity("API.Entities.ProductModel.Stock", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int>("CreatedByUserId")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<DateTime>("DateCreated")
-                        .HasColumnType("TEXT");
-
-                    b.Property<DateTime>("DateDeleted")
-                        .HasColumnType("TEXT");
-
-                    b.Property<DateTime>("DateHidden")
-                        .HasColumnType("TEXT");
-
-                    b.Property<int>("DeletedByUserId")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int>("HiddenByUserId")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<DateTime>("LastUpdated")
-                        .HasColumnType("TEXT");
-
-                    b.Property<int>("LastUpdatedByUserId")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int>("OptionId")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int>("Quantity")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int>("Status")
-                        .HasColumnType("INTEGER");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("OptionId");
-
-                    b.ToTable("Stocks");
                 });
 
             modelBuilder.Entity("API.Entities.User.AppRole", b =>
@@ -1224,9 +1181,6 @@ namespace API.Data.Migrations
                 {
                     b.HasBaseType("API.Entities.Other.Photo");
 
-                    b.Property<int>("FileId")
-                        .HasColumnType("INTEGER");
-
                     b.Property<int>("FileType")
                         .HasColumnType("INTEGER");
 
@@ -1235,8 +1189,6 @@ namespace API.Data.Migrations
 
                     b.Property<int>("ProductId")
                         .HasColumnType("INTEGER");
-
-                    b.HasIndex("FileId");
 
                     b.HasIndex("ProductId");
 
@@ -1322,17 +1274,6 @@ namespace API.Data.Migrations
                     b.Navigation("Brand");
 
                     b.Navigation("Category");
-                });
-
-            modelBuilder.Entity("API.Entities.ProductModel.Stock", b =>
-                {
-                    b.HasOne("API.Entities.ProductModel.Option", "Option")
-                        .WithMany()
-                        .HasForeignKey("OptionId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Option");
                 });
 
             modelBuilder.Entity("API.Entities.User.AppUser", b =>
@@ -1561,19 +1502,11 @@ namespace API.Data.Migrations
 
             modelBuilder.Entity("API.Entities.Other.ProductPhoto", b =>
                 {
-                    b.HasOne("API.Entities.OtherModel.UploadedFile", "File")
-                        .WithMany()
-                        .HasForeignKey("FileId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("API.Entities.ProductModel.Product", "Product")
                         .WithMany("ProductPhotos")
                         .HasForeignKey("ProductId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("File");
 
                     b.Navigation("Product");
                 });

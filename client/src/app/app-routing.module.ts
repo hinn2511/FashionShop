@@ -1,3 +1,4 @@
+import { AdminDashboardComponent } from './administrator/dashboard/admin-dashboard/admin-dashboard.component';
 import { OrderReviewComponent } from './customer/order-review/order-review.component';
 import { RegisterComponent } from './customer/register/register.component';
 import { SearchResultComponent } from './customer/search-result/search-result.component';
@@ -88,6 +89,18 @@ const routes: Routes = [
   },
 
   { path: 'account', component: AccountComponent, canActivate: [AuthGuard] },
+  
+  {
+    path: 'administrator/dashboard',
+    canActivate: [AuthGuard],
+    children: [
+      {
+        path: '',
+        component: AdminDashboardComponent,
+        canActivate: [AuthGuard],
+      }
+    ],
+  },
 
   {
     path: 'administrator/product-manager',
