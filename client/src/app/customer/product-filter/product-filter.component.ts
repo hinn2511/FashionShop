@@ -148,13 +148,13 @@ export class ProductFilterComponent implements OnInit {
     this.applyFilter();
   }
 
-  setColorFilter(colorFilterId: number) {
+  setColorFilter(colorCode: string) {
     if (this.selectedColor != null) {
       this.selectedColor = null;
       this.resetColor();
       return;
     }
-    let color = this.colorFilters.find((x) => x.id == colorFilterId);
+    let color = this.colorFilters.find((x) => x.colorCode == colorCode);
     this.selectedColor = color;
     this.productParams.colorCode = color.colorCode;
     this.showResetColorFilterButton = true;

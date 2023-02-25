@@ -1,31 +1,38 @@
 import { RotateAnimation } from 'src/app/_common/animation/carousel.animations';
 import { OptionService } from 'src/app/_services/option.service';
 import { ManagerOption } from 'src/app/_models/productOptions';
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { Pagination } from 'src/app/_models/pagination';
 import { ManagerOptionParams } from 'src/app/_models/productOptions';
 import { Router } from '@angular/router';
 import { IdArray } from 'src/app/_models/adminRequest';
 import { ToastrService } from 'ngx-toastr';
-import { fnGetObjectStateString, fnGetObjectStateStyle } from 'src/app/_common/function/style-class';
-
+import {
+  fnGetObjectStateString,
+  fnGetObjectStateStyle,
+} from 'src/app/_common/function/style-class';
+import { GenericStatus, GenericStatusList } from 'src/app/_models/generic';
 
 @Component({
   selector: 'app-admin-product-option',
   templateUrl: './admin-product-option.component.html',
   styleUrls: ['./admin-product-option.component.css'],
-  animations: [RotateAnimation]
+  animations: [RotateAnimation],
 })
 export class AdminProductOptionComponent implements OnInit {
-
+  @Input() minimize: boolean = false;
   options: ManagerOption[];
   pagination: Pagination;
   optionParams: ManagerOptionParams;
   isSelectAllOptionStatus: boolean;
   state: string = 'default';
   showStatusFilter: boolean;
+
+  selectAllOption: boolean;
+
   selectedIds: number[] = [];
   query: string;
+  genericStatus: GenericStatus[] = GenericStatusList;
 
   constructor(
     private optionService: OptionService,
@@ -36,6 +43,8 @@ export class AdminProductOptionComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.optionParams.productIds = [];
+    this.selectAllOption = false;
     this.optionParams.field = 'Id';
     this.optionParams.orderBy = 0;
     this.optionParams.productOptionStatus = [0, 1];
@@ -45,7 +54,7 @@ export class AdminProductOptionComponent implements OnInit {
   }
 
   rotate() {
-    this.state = (this.state === 'default' ? 'rotated' : 'default');
+    this.state = this.state === 'default' ? 'rotated' : 'default';
   }
 
   loadOptions() {
@@ -57,6 +66,11 @@ export class AdminProductOptionComponent implements OnInit {
         this.options = response.result;
         this.pagination = response.pagination;
       });
+  }
+
+  filterByProductIds(productIds: number[]) {
+    this.optionParams.productIds = productIds;
+    this.loadOptions();
   }
 
   resetSelectedIds() {
@@ -84,28 +98,48 @@ export class AdminProductOptionComponent implements OnInit {
       ids: this.selectedIds,
     };
 
-    this.optionService.hideOptions(ids).subscribe((result) => {
-      this.loadOptions();
-      this.resetSelectedIds();
-      this.toastr.success('Product options have been hidden or unhidden', 'Success');
-    }, 
-    error => 
-    {
-      this.toastr.error("Something wrong happen!", 'Error');
-    });
+    this.optionService.hideOptions(ids).subscribe(
+      (result) => {
+        this.loadOptions();
+        this.resetSelectedIds();
+        this.toastr.success(result.message, 'Success');
+      },
+      (error) => {
+        this.toastr.error(error, 'Error');
+      }
+    );
+  }
+
+  activateOptions() {
+    if (!this.isMultipleSelected()) return;
+    let ids: IdArray = {
+      ids: this.selectedIds,
+    };
+
+    this.optionService.activateOptions(ids).subscribe(
+      (result) => {
+        this.loadOptions();
+        this.resetSelectedIds();
+        this.toastr.success(result.message, 'Success');
+      },
+      (error) => {
+        this.toastr.error(error, 'Error');
+      }
+    );
   }
 
   deleteOptions() {
     if (!this.isMultipleSelected()) return;
-    this.optionService.deleteOption(this.selectedIds).subscribe((result) => {
-      this.loadOptions();
-      this.resetSelectedIds();
-      this.toastr.success('Product options have been deleted', 'Success');
-    }, 
-    error => 
-    {
-      this.toastr.error("Something wrong happen!", 'Error');
-    });
+    this.optionService.deleteOption(this.selectedIds).subscribe(
+      (result) => {
+        this.loadOptions();
+        this.resetSelectedIds();
+        this.toastr.success('Product options have been deleted', 'Success');
+      },
+      (error) => {
+        this.toastr.error('Something wrong happen!', 'Error');
+      }
+    );
   }
 
   pageChanged(event: any) {
@@ -139,15 +173,15 @@ export class AdminProductOptionComponent implements OnInit {
       case 'productName':
         this.optionParams.field = 'ProductName';
         break;
-        case 'productId':
-          this.optionParams.field = 'ProductId';
-          break;
+      case 'productId':
+        this.optionParams.field = 'ProductId';
+        break;
       case 'colorName':
         this.optionParams.field = 'ColorName';
         break;
       case 'colorCode':
-          this.optionParams.field = 'ColorCode';
-          break;
+        this.optionParams.field = 'ColorCode';
+        break;
       case 'sizeName':
         this.optionParams.field = 'SizeName';
         break;
@@ -155,8 +189,8 @@ export class AdminProductOptionComponent implements OnInit {
         this.optionParams.field = 'Status';
         break;
       case 'additionalPrice':
-          this.optionParams.field = 'AdditionalPrice';
-          break;
+        this.optionParams.field = 'AdditionalPrice';
+        break;
       default:
         this.optionParams.field = 'Date';
         break;
@@ -184,8 +218,17 @@ export class AdminProductOptionComponent implements OnInit {
     }
   }
 
+  selectAllOptions() {
+    if (this.selectAllOption) {
+      this.selectedIds = [];
+    } else {
+      this.selectedIds = this.options.map(({ id }) => id);
+    }
+    this.selectAllOption = !this.selectAllOption;
+  }
+
   isOptionSelected(id: number) {
-    return (this.selectedIds.indexOf(id) >= 0);
+    return this.selectedIds.indexOf(id) >= 0;
   }
 
   getOptionState(option: ManagerOption) {
@@ -196,9 +239,8 @@ export class AdminProductOptionComponent implements OnInit {
     return fnGetObjectStateStyle(option.status);
   }
 
-  getColor(option: ManagerOption)
-  {
-    return 'color: ' + option.color.colorCode;
+  getColor(option: ManagerOption) {
+    return 'color: ' + option.colorCode;
   }
 
   isAllStatusIncluded() {
@@ -214,15 +256,15 @@ export class AdminProductOptionComponent implements OnInit {
       this.optionParams.productOptionStatus =
         this.optionParams.productOptionStatus.filter((x) => x !== status);
     else this.optionParams.productOptionStatus.push(status);
-    this.optionParams.productOptionStatus = [...this.optionParams.productOptionStatus].sort((a, b) => a-b);
+    this.optionParams.productOptionStatus = [
+      ...this.optionParams.productOptionStatus,
+    ].sort((a, b) => a - b);
     this.loadOptions();
   }
 
   selectAllOptionStatus() {
-    if(this.isAllStatusIncluded())
-      this.optionParams.productOptionStatus = [];
-    else
-      this.optionParams.productOptionStatus = [0, 1, 2];
+    if (this.isAllStatusIncluded()) this.optionParams.productOptionStatus = [];
+    else this.optionParams.productOptionStatus = [0, 1, 2];
     this.loadOptions();
   }
 
@@ -237,6 +279,4 @@ export class AdminProductOptionComponent implements OnInit {
   isMultipleSelected() {
     return this.selectedIds.length >= 1;
   }
-
-
 }

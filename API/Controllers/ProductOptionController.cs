@@ -1,8 +1,11 @@
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
 using API.DTOs.Params;
 using API.DTOs.ProductOptionRequest;
+using API.DTOs.Request;
+using API.DTOs.Response;
 using API.DTOs.Response.OptionResponse;
 using API.Entities;
 using API.Entities.ProductModel;
@@ -34,25 +37,29 @@ namespace API.Controllers
 
             var optionResponse = new List<CustomerOptionResponse>();
 
-            foreach (var color in options.Select(x => x.Color).Distinct())
+            foreach(var option in options)
             {
-                var sizes = options.Where(x => x.ColorId == color.Id).Select(x => x.Size);
+                if (optionResponse.FirstOrDefault(x => x.Color.ColorCode == option.ColorCode) != null)
+                    continue;
+
+                var sizes = options.Where(x => x.ColorCode == option.ColorCode).Select(x => new CustomerOptionSizeResponse
+                    {
+                        SizeName = x.SizeName,
+                        OptionId = x.Id,
+                        AdditionalPrice = x.AdditionalPrice
+                    }
+                );
+                
                 var optionResult = new CustomerOptionResponse
                 {
-                    Color = _mapper.Map<CustomerOptionColorResponse>(color),
-                    Sizes = _mapper.Map<List<CustomerOptionSizeResponse>>(sizes)
+                    Color = new CustomerOptionColorResponse(option.ColorName, option.ColorCode),
+                    Sizes = sizes.ToList()
                 };
-                foreach (var size in optionResult.Sizes)
-                {
-                    var opt = options.FirstOrDefault(x => x.ColorId == optionResult.Color.Id && x.SizeId == size.Id);
-                    
-                    size.AdditionalPrice = opt.AdditionalPrice;
-                    size.OptionId = opt.Id;
-                }
                 optionResponse.Add(optionResult);
             }
             return Ok(optionResponse);
         }
+
         #endregion
 
 
@@ -67,9 +74,9 @@ namespace API.Controllers
         }
 
         [HttpGet("{id}/detail")]
-        public async Task<ActionResult> GetCategoryDetailAsAdmin(int id)
+        public async Task<ActionResult> GetProductOptionDetailAsAdmin(int id)
         {
-            var productOptions = await _unitOfWork.ProductOptionRepository.GetFirstByAndIncludeAsync(x => x.Id == id, "Color,Size", true);
+            var productOptions = await _unitOfWork.ProductOptionRepository.GetFirstByAndIncludeAsync(x => x.Id == id, "Product", true);
             return Ok(_mapper.Map<AdminOptionDetailResponse>(productOptions));
         }
 
@@ -83,16 +90,10 @@ namespace API.Controllers
             if(await _unitOfWork.ProductRepository.GetFirstBy(x => x.Id == createProductOptionRequest.ProductId) == null)
                 return BadRequest("Product not found");
 
-            if(await _unitOfWork.ColorRepository.GetFirstBy(x => x.Id == createProductOptionRequest.ColorId) == null)
-                return BadRequest("Color not found");
-
-            if(await _unitOfWork.SizeRepository.GetFirstBy(x => x.Id == createProductOptionRequest.SizeId) == null)
-                return BadRequest("Size not found");
-
             if(await _unitOfWork.ProductOptionRepository.GetFirstBy(x => 
                     x.ProductId == createProductOptionRequest.ProductId 
-                    && x.ColorId == createProductOptionRequest.ColorId 
-                    && x.SizeId == createProductOptionRequest.SizeId) != null)
+                    && x.ColorName.ToUpper() == createProductOptionRequest.ColorName.ToUpper()
+                    && x.SizeName.ToUpper() == createProductOptionRequest.SizeName.ToUpper()) != null)
                 return BadRequest("Option already exist!");
 
             option.AddCreateInformation(User.GetUserId());
@@ -122,15 +123,12 @@ namespace API.Controllers
             if (productOption == null)
                 return BadRequest("Product option not found");
 
-            if(await _unitOfWork.ColorRepository.GetFirstBy(x => x.Id == updateProductOptionRequest.ColorId) == null)
-                return BadRequest("Color not found");
-
-            if(await _unitOfWork.SizeRepository.GetFirstBy(x => x.Id == updateProductOptionRequest.SizeId) == null)
-                return BadRequest("Size not found");
+            var productId = productOption.ProductId;
 
             _mapper.Map(updateProductOptionRequest, productOption);
 
             productOption.Id = id;
+            productOption.ProductId = productId;
             
             productOption.AddUpdateInformation(User.GetUserId());
 
@@ -151,9 +149,9 @@ namespace API.Controllers
             if (productOptions == null)
                 return BadRequest("Option not found");
 
-            foreach (var category in productOptions)
+            foreach (var productOption in productOptions)
             {
-                category.AddDeleteInformation(User.GetUserId());
+                productOption.AddDeleteInformation(User.GetUserId());
             }
 
             _unitOfWork.ProductOptionRepository.Update(productOptions);
@@ -165,95 +163,53 @@ namespace API.Controllers
             return BadRequest("An error occurred while deleting productOptions.");
         }
 
-         [HttpPut("hide-or-unhide")]
-        public async Task<ActionResult> HidingCategory(HideProductOptionsRequest hideProductOptionsRequest)
+        [HttpPut("hide")]
+        public async Task<ActionResult> HidingProductOption(BaseBulkRequest hideProductOptionRequest)
         {
-            var productOptions = await _unitOfWork.ProductOptionRepository.GetAllBy(x => hideProductOptionsRequest.Ids.Contains(x.Id));
+            var productOptions = await _unitOfWork.ProductOptionRepository.GetAllBy(x => hideProductOptionRequest.Ids.Contains(x.Id) && x.Status == Status.Active);
 
             if (productOptions == null)
-                return BadRequest("Category not found");
+                return BadRequest(new BaseResponseMessage(false, HttpStatusCode.NotFound, "Product option not found"));
 
-            
-            foreach (var option in productOptions)
+            foreach (var productOption in productOptions)
             {
-                if(option.Status == Status.Active)
-                {
-                    option.AddHiddenInformation(GetUserId());
-                    continue;
-                }
-                    
-                if(option.Status == Status.Hidden)
-                {
-                    option.Status = Status.Active;
-                    continue;
-                }
+                productOption.AddHiddenInformation(GetUserId());
 
-                if(option.Status == Status.Deleted)
-                {
-                    continue;
-                }
             }
 
             _unitOfWork.ProductOptionRepository.Update(productOptions);
 
             if (await _unitOfWork.Complete())
             {
-                return Ok();
+                return Ok(new BaseResponseMessage(false, HttpStatusCode.BadRequest, $"Successfully hide {productOptions.Count()} product option(s)."));
             }
-            return BadRequest("An error occurred while hiding productOptions.");
+            return BadRequest(new BaseResponseMessage(false, HttpStatusCode.BadRequest, "An error occurred while active product option(s)."));
         }
 
-        // [HttpDelete("hard-delete")]
-        // public async Task<ActionResult> HardDeleteCategory(DeleteProductOptionsRequest deleteProductOptionsRequest)
-        // {
-        //     var productOptions = await _unitOfWork.ProductOptionRepository.GetAllBy(x => deleteProductOptionsRequest.Ids.Contains(x.Id));
+        [HttpPut("activate")]
+        public async Task<ActionResult> ActiveProductOption(BaseBulkRequest activateProductOptionRequest)
+        {
+            var productOptions = await _unitOfWork.ProductOptionRepository.GetAllBy(x => activateProductOptionRequest.Ids.Contains(x.Id) && x.Status == Status.Hidden);
 
-        //     if (productOptions == null)
-        //         return BadRequest("Category not found");
+            if (productOptions == null)
+                return BadRequest(new BaseResponseMessage(false, HttpStatusCode.NotFound, "Product option not found"));
 
-        //     _unitOfWork.ProductOptionRepository.Delete(productOptions);
+            foreach (var productOption in productOptions)
+            {
+                productOption.Status = Status.Active;
+                productOption.AddUpdateInformation(GetUserId());
+            }
 
-        //     if (await _unitOfWork.Complete())
-        //     {
-        //         return Ok();
-        //     }
-        //     return BadRequest("An error occurred while deleting productOptions.");
-        // }
+            _unitOfWork.ProductOptionRepository.Update(productOptions);
+
+            if (await _unitOfWork.Complete())
+            {
+                return Ok(new BaseResponseMessage(false, HttpStatusCode.BadRequest, $"Successfully unhide {productOptions.Count()} product option(s)."));
+            }
+            return BadRequest(new BaseResponseMessage(false, HttpStatusCode.BadRequest, "An error occurred while hiding product option(s)."));
+        }
 
        
-
-        // [HttpPut("unhide")]
-        // public async Task<ActionResult> UndoHidingCategory(HideProductOptionsRequest hideProductOptionsRequest)
-        // {
-        //     var productOptions = await _unitOfWork.ProductOptionRepository.GetAllBy(x => hideProductOptionsRequest.Ids.Contains(x.Id));
-
-        //     if (productOptions == null)
-        //         return BadRequest("Category not found");
-
-        //     foreach (var category in productOptions)
-        //     {
-        //         category.Status = Status.Active;
-        //     }
-
-        //     if (hideProductOptionsRequest.IncludeProducts)
-        //     {
-        //         var products = await _unitOfWork.ProductRepository.GetAllBy(x => hideProductOptionsRequest.Ids.Contains(x.CategoryId));
-        //         foreach(var product in products)
-        //         {
-        //             if(product.Status == Status.Hidden)
-        //                 product.Status = Status.Active;
-        //         }
-        //         _unitOfWork.ProductRepository.Update(products);
-        //     }
-
-        //     _unitOfWork.ProductOptionRepository.Update(productOptions);
-
-        //     if (await _unitOfWork.Complete())
-        //     {
-        //         return Ok();
-        //     }
-        //     return BadRequest("An error occurred while undo hiding productOptions.");
-        // }
         #endregion
 
 

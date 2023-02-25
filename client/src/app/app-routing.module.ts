@@ -29,6 +29,7 @@ import { NewsDetailComponent } from './customer/news-detail/news-detail.componen
 import { AdminCategoryComponent } from './administrator/admin-category/admin-category.component';
 import { AdminCategoryAddComponent } from './administrator/admin-category-add/admin-category-add.component';
 import { AdminCategoryEditComponent } from './administrator/admin-category-edit/admin-category-edit.component';
+import { AdminProductOptionEditComponent } from './administrator/admin-product-option-edit/admin-product-option-edit.component';
 
 const routes: Routes = [
   {path: '', component: HomePageComponent },
@@ -155,6 +156,11 @@ const routes: Routes = [
       {
         path: 'add',
         component: AdminProductOptionAddComponent,
+        canActivate: [AuthGuard],
+      },
+      {
+        path: 'edit/:id',
+        component: AdminProductOptionEditComponent,
         canActivate: [AuthGuard],
       },
     ],

@@ -91,9 +91,9 @@ namespace API.Helpers
 
             CreateMap<Option, AdminOptionResponse>();
 
-            CreateMap<Color, AdminOptionColorResponse>();
+            // CreateMap<Color, AdminOptionColorResponse>();
 
-            CreateMap<Size, AdminOptionSizeResponse>();
+            // CreateMap<Size, AdminOptionSizeResponse>();
 
             CreateMap<AppUser, UserRoleResponse>()
                 .ForMember(dest => dest.Roles, opt => opt.MapFrom(
@@ -111,27 +111,29 @@ namespace API.Helpers
 
             CreateMap<FeatureProductRequest, FeatureProduct>();
 
+            CreateMap<Option, AdminOptionDetailResponse>();
+
             CreateMap<CreateProductOptionRequest, Option>();
 
-            CreateMap<Option, AdminOptionDetailResponse>();
+            CreateMap<UpdateProductOptionRequest, Option>();
 
             CreateMap<Product, AdminOptionProductResponse>();
 
-            CreateMap<Color, AdminColorResponse>();
+            // CreateMap<Color, AdminColorResponse>();
 
-            CreateMap<Color, AdminColorDetailResponse>();
+            // CreateMap<Color, AdminColorDetailResponse>();
 
-            CreateMap<CreateColorRequest, Color>();
+            // CreateMap<CreateColorRequest, Color>();
 
-            CreateMap<UpdateColorRequest, Color>();
+            // CreateMap<UpdateColorRequest, Color>();
 
-            CreateMap<Size, AdminSizeResponse>();
+            // CreateMap<Size, AdminSizeResponse>();
 
-            CreateMap<Size, AdminSizeDetailResponse>();
+            // CreateMap<Size, AdminSizeDetailResponse>();
 
-            CreateMap<CreateSizeRequest, Size>();
+            // CreateMap<CreateSizeRequest, Size>();
 
-            CreateMap<UpdateSizeRequest, Size>();
+            // CreateMap<UpdateSizeRequest, Size>();
 
             CreateMap<Article, AdminArticleResponse>()
                 .ForMember(dest => dest.PublishedDate, opt => opt.MapFrom(
@@ -182,9 +184,9 @@ namespace API.Helpers
 
             CreateMap<ProductPhoto, CustomerProductPhotoResponse>();
 
-            CreateMap<Color, CustomerOptionColorResponse>();
+            // CreateMap<Color, CustomerOptionColorResponse>();
 
-            CreateMap<Size, CustomerOptionSizeResponse>();
+            // CreateMap<Size, CustomerOptionSizeResponse>();
 
             CreateMap<Category, CustomerCategoryResponse>();
 
@@ -198,11 +200,11 @@ namespace API.Helpers
                 .ForMember(dest => dest.SubCategories, opt => opt.MapFrom(
                           src => src.Children.Flatten(node => node.Children).ToList()));
 
-            CreateMap<Color, CartItemColor>();
+            // CreateMap<Color, CartItemColor>();
 
-            CreateMap<Color, ColorFilterResponse>();
+            CreateMap<Option, ColorFilterResponse>();
 
-            CreateMap<Size, CartItemSize>();
+            // CreateMap<Size, CartItemSize>();
 
             CreateMap<Product, CartItemProduct>();
 
@@ -222,11 +224,11 @@ namespace API.Helpers
                 .ForMember(dest => dest.Price, opt => opt.MapFrom(
                         src => src.Option.Product.Price))
                           .ForMember(dest => dest.ColorName, opt => opt.MapFrom(
-                          src => src.Option.Color.ColorName))
+                          src => src.Option.ColorName))
                           .ForMember(dest => dest.ColorCode, opt => opt.MapFrom(
-                          src => src.Option.Color.ColorCode))
+                          src => src.Option.ColorCode))
                           .ForMember(dest => dest.SizeName, opt => opt.MapFrom(
-                          src => src.Option.Size.SizeName))
+                          src => src.Option.SizeName))
                           .ForMember(dest => dest.AdditionalPrice, opt => opt.MapFrom(
                           src => src.Option.AdditionalPrice))
                           .ForMember(dest => dest.TotalItemPrice, opt => opt.MapFrom(
@@ -278,11 +280,11 @@ namespace API.Helpers
                 .ForMember(dest => dest.Price, opt => opt.MapFrom(
                           src => src.Option.Product.Price + src.Option.AdditionalPrice))
                 .ForMember(dest => dest.ColorCode, opt => opt.MapFrom(
-                          src => src.Option.Color.ColorCode))
+                          src => src.Option.ColorCode))
                 .ForMember(dest => dest.ColorName, opt => opt.MapFrom(
-                          src => src.Option.Color.ColorName))
+                          src => src.Option.ColorName))
                 .ForMember(dest => dest.SizeName, opt => opt.MapFrom(
-                          src => src.Option.Size.SizeName))
+                          src => src.Option.SizeName))
                 .ForMember(dest => dest.Total, opt => opt.MapFrom(
                           src => (src.Option.AdditionalPrice + src.Option.Product.Price) * src.Quantity));
 
@@ -336,11 +338,11 @@ namespace API.Helpers
                 .ForMember(dest => dest.Price, opt => opt.MapFrom(
                           src => src.Option.Product.Price + src.Option.AdditionalPrice))
                 .ForMember(dest => dest.ColorCode, opt => opt.MapFrom(
-                          src => src.Option.Color.ColorCode))
+                          src => src.Option.ColorCode))
                 .ForMember(dest => dest.ColorName, opt => opt.MapFrom(
-                          src => src.Option.Color.ColorName))
+                          src => src.Option.ColorName))
                 .ForMember(dest => dest.SizeName, opt => opt.MapFrom(
-                          src => src.Option.Size.SizeName))
+                          src => src.Option.SizeName))
                 .ForMember(dest => dest.Total, opt => opt.MapFrom(
                           src => (src.Option.AdditionalPrice + src.Option.Product.Price) * src.Quantity));
 
@@ -357,10 +359,6 @@ namespace API.Helpers
             CreateMap<FeatureCategory, CustomerFeatureCategoryResponse>()
                 .ForMember(dest => dest.CategoryName, opt => opt.MapFrom(
                           src => src.Category.CategoryName));
-
-            CreateMap<Color, CustomerOptionColorResponse>();
-
-            CreateMap<Size, CustomerOptionSizeResponse>();
 
             CreateMap<Article, CustomerArticleResponse>()
                 .ForMember(dest => dest.PublishedDate, opt => opt.MapFrom(

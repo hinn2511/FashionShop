@@ -26,10 +26,8 @@ namespace API.Data
         public DbSet<Product> Products { get; set; }
         public DbSet<ProductPhoto> ProductPhotos { get; set; }
         public DbSet<UploadedFile> Files { get; set; }
-        public DbSet<Color> Colors { get; set; }
         public DbSet<Category> Categories { get; set; }
         public DbSet<Brand> Brands { get; set; }
-        public DbSet<Size> Sizes { get; set; }
         public DbSet<Option> Options { get; set; }
         public DbSet<Stock> Stocks { get; set; }
         public DbSet<Order> Orders { get; set; }

@@ -20,8 +20,6 @@ namespace API.Interfaces
         IOrderHistoryRepository OrderHistoryRepository { get; }
         IFileRepository FileRepository { get; }
         IBrandRepository BrandRepository { get; }
-        IColorRepository ColorRepository { get; }
-        ISizeRepository SizeRepository { get; }
         IStockRepository StockRepository { get; }
         IProductOptionRepository ProductOptionRepository { get; }
         IHomePageRepository HomePageRepository { get; }

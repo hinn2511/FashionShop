@@ -177,13 +177,13 @@
             [colorCode]="colorFilter.colorCode"
             [colorName]="colorFilter.colorName"
             [isDisabled]="
-              selectedColor != null && selectedColor.id != colorFilter.id
+              selectedColor != null && selectedColor.colorCode != colorFilter.colorCode
             "
             [isShowColorOnly]="true"
             [isSelected]="
-              selectedColor != null && selectedColor.id == colorFilter.id
+              selectedColor != null && selectedColor.colorCode == colorFilter.colorCode
             "
-            (select)="setColorFilter(colorFilter.id)"
+            (select)="setColorFilter(colorFilter.colorCode)"
           ></app-color-option>
         </div>
       </ng-container>

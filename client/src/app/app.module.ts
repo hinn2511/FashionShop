@@ -86,6 +86,7 @@ import { HomeInterestingComponent } from './customer/home-interesting/home-inter
 import { HomeNewsComponent } from './customer/home-news/home-news.component';
 import { SearchResultComponent } from './customer/search-result/search-result.component';
 import { RegisterComponent } from './customer/register/register.component';
+import { AdminProductOptionEditComponent } from './administrator/admin-product-option-edit/admin-product-option-edit.component';
 
 @NgModule({
   declarations: [
@@ -156,7 +157,8 @@ import { RegisterComponent } from './customer/register/register.component';
     HomeInterestingComponent,
     HomeNewsComponent,
     SearchResultComponent,
-    RegisterComponent
+    RegisterComponent,
+    AdminProductOptionEditComponent
   ],
   imports: [
     BrowserModule,

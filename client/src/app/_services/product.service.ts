@@ -62,7 +62,7 @@ export class ProductService {
     params = params.append('minPrice', productParams.minPrice);
     params = params.append('maxPrice', productParams.maxPrice);
 
-    return this.http.get<CustomerColorFilter[]>(this.baseUrl + 'color/product-filter', { params: params})
+    return this.http.get<CustomerColorFilter[]>(this.baseUrl + 'filter/color', { params: params})
   }
 
   addToRecent(product: Product)

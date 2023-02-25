@@ -29,9 +29,7 @@ namespace API.Data
         public IOrderDetailRepository OrderDetailRepository => new OrderDetailRepository(_context, _context.OrderDetails);
         public IOrderHistoryRepository OrderHistoryRepository => new OrderHistoryRepository(_context, _context.OrderHistories);
         public IBrandRepository BrandRepository => new BrandRepository(_context, _context.Brands);
-        public IColorRepository ColorRepository => new ColorRepository(_context, _context.Colors);
         public IFileRepository FileRepository => new FileRepository(_context, _context.Files);
-        public ISizeRepository SizeRepository => new SizeRepository(_context, _context.Sizes);
         public IStockRepository StockRepository => new StockRepository(_context, _context.Stocks);
         public IProductOptionRepository ProductOptionRepository => new ProductOptionRepository(_context, _context.Options);
         public IHomePageRepository HomePageRepository => new HomePageRepository(_context, _context.HomePages);

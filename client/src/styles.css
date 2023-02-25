@@ -720,3 +720,8 @@ accordion-group > .panel > .panel-collapse > .panel-body {
     rgba(248, 249, 250, 1) 100%
   );
 }
+
+sketch-picker, chrome-picker
+{
+  width: 100% !important;
+}
