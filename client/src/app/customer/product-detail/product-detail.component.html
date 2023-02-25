@@ -30,7 +30,7 @@
        
 
         <h4 class="mt-2" *ngIf="product.saleType == 0; else onSale">
-          {{ product.price | currency }}
+          {{ price | currency }}
         </h4>
 
         <p *ngIf="product.saleType == 1" class="text-danger my-2">
@@ -44,12 +44,7 @@
           <div class="d-flex d-inline align-items-center mt-2">
             <h4 class="mr-1 my-0 py-0 text-danger">
               {{
-                calculatePrice(
-                  product.saleType,
-                  product.price,
-                  product.saleOffPercent,
-                  product.saleOffValue
-                ) | currency
+                price | currency
               }}
             </h4>
             <p class="my-0 py-0 h-100 old-price fw-smaller">
@@ -81,12 +76,12 @@
         <div class="row mt-4 pr-md-5">
           <div class="col-6">
             <label for="size">Size</label>
-            <div class="input-group mb-3">
+            <div class="input-group mb-3" *ngIf="options">
               <select
-                (change)="onSizeChange($event.target.value)"
+              [ngModel]="selectedSize" (ngModelChange)="onSizeChange($event)"
                 class="form-select w-100 bg-light border-0 p-2"
               >
-                <option *ngFor="let size of sizes" [ngValue]="optionId">
+                <option [ngValue]="size" *ngFor="let size of sizes">
                   {{ size.sizeName }}
                 </option>
               </select>
@@ -157,7 +152,6 @@
           <h5>Description</h5>
         </ng-template>
         <div #descriptionTitle *ngIf="product.description != undefined">
-          <!-- <h4  #descriptionTitle class="text-capitalize mt-md-4">Description</h4> -->
           <div
             class="description d-flex justify-content-center"
             [@grow]="{
@@ -195,7 +189,7 @@
         </ng-template>
         <app-product-rating [productId]="product.id"></app-product-rating>
       </tab>
-      <tab>
+      <!-- <tab>
         <ng-template tabHeading>
           <h5>Size chart</h5>
         </ng-template>
@@ -204,7 +198,7 @@
         <ng-template tabHeading>
           <h5>Description</h5>
         </ng-template>
-      </tab>
+      </tab> -->
     </tabset>
   </div>
 </div>

@@ -1,3 +1,4 @@
+import { RotateAnimation } from './../../_common/animation/carousel.animations';
 import { DeviceService } from 'src/app/_services/device.service';
 import { AccountService } from 'src/app/_services/account.service';
 import { Router } from '@angular/router';
@@ -14,13 +15,6 @@ import { CartItem, UpdateCartItem } from 'src/app/_models/cart';
 import { User } from 'src/app/_models/user';
 import { CartService } from 'src/app/_services/cart.service';
 import { ProductService } from 'src/app/_services/product.service';
-import {
-  animate,
-  state,
-  style,
-  transition,
-  trigger,
-} from '@angular/animations';
 import { Subscription } from 'rxjs';
 import { fnCalculatePrice } from 'src/app/_common/function/function';
 
@@ -28,14 +22,7 @@ import { fnCalculatePrice } from 'src/app/_common/function/function';
   selector: 'app-cart',
   templateUrl: './cart.component.html',
   styleUrls: ['./cart.component.css'],
-  animations: [
-    trigger('rotatedState', [
-      state('true', style({ transform: 'rotate(0)' })),
-      state('false', style({ transform: 'rotate(-180deg)' })),
-      transition('false => true', animate('500ms ease-out')),
-      transition('true => false', animate('500ms ease-in')),
-    ]),
-  ],
+  animations: [ RotateAnimation ],
 })
 export class CartComponent implements OnInit, OnDestroy {
   @Output() hideCart = new EventEmitter<boolean>();
@@ -87,6 +74,12 @@ export class CartComponent implements OnInit, OnDestroy {
 
   expandCartSummaryToggle() {
     this.expandCartSummary = !this.expandCartSummary;
+  }
+
+  isRotate() {
+    if (this.expandCartSummary)
+      return 'default';
+    return 'rotated';
   }
 
   increaseQuantity(cartItem: CartItem) {

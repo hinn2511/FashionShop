@@ -38,28 +38,13 @@ namespace API.Data
 
             query = query.Where(x => x.Status != Status.Hidden && x.Status != Status.Deleted);
 
-            // if(productParams.Gender >= 0)
-            //     query = query.Where(p => p.Category.Gender == productParams.Gender);
-
-            // if(!string.IsNullOrEmpty(productParams.Category))
-            //     query = query.Where(p => p.Category.CategoryName == productParams.Category);
-
-            // if(!string.IsNullOrEmpty(productParams.Query))
-            // {   
-            //     var words = productParams.Query.RemoveSpecialCharacters().ToUpper().Split(" ").Distinct();
-            //     foreach(var word in words)
-            //     {
-            //         query = query.Where(x => x.ProductName.ToUpper().Contains(word));
-            //     }
-            // }
-
             if (productParams.OrderBy == OrderBy.Ascending)
             {
                 query = productParams.Field switch
                 {
-                    "DateCreated" => query.OrderBy(p => p.DateCreated),
-                    "Price" => query.OrderBy(p => p.Price),
-                    "Name" => query.OrderBy(p => p.ProductName),
+                    "dateCreated" => query.OrderBy(p => p.DateCreated),
+                    "price" => query.OrderBy(p => p.Price),
+                    "name" => query.OrderBy(p => p.ProductName),
                     _ => query
                 };
             }
@@ -67,9 +52,9 @@ namespace API.Data
             {
                 query = productParams.Field switch
                 {
-                    "DateCreated" => query.OrderByDescending(p => p.DateCreated),
-                    "Price" => query.OrderByDescending(p => p.Price),
-                    "Name" => query.OrderByDescending(p => p.ProductName),
+                    "dateCreated" => query.OrderByDescending(p => p.DateCreated),
+                    "price" => query.OrderByDescending(p => p.Price),
+                    "name" => query.OrderByDescending(p => p.ProductName),
                     _ => query
                 };
             }

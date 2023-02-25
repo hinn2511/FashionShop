@@ -166,35 +166,7 @@ export class AdminProductOptionComponent implements OnInit {
   }
 
   orderBy(field: string) {
-    switch (field) {
-      case 'id':
-        this.optionParams.field = 'Id';
-        break;
-      case 'productName':
-        this.optionParams.field = 'ProductName';
-        break;
-      case 'productId':
-        this.optionParams.field = 'ProductId';
-        break;
-      case 'colorName':
-        this.optionParams.field = 'ColorName';
-        break;
-      case 'colorCode':
-        this.optionParams.field = 'ColorCode';
-        break;
-      case 'sizeName':
-        this.optionParams.field = 'SizeName';
-        break;
-      case 'status':
-        this.optionParams.field = 'Status';
-        break;
-      case 'additionalPrice':
-        this.optionParams.field = 'AdditionalPrice';
-        break;
-      default:
-        this.optionParams.field = 'Date';
-        break;
-    }
+    this.optionParams.field = field;
     if (this.optionParams.orderBy == 0) this.optionParams.orderBy = 1;
     else this.optionParams.orderBy = 0;
     this.rotate();

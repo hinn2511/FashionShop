@@ -1,46 +1,41 @@
 import { Router } from '@angular/router';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { Component, OnInit } from '@angular/core';
-import { fnGetFormControlValue, fnUpdateFormControlStringValue } from 'src/app/_common/function/function';
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 
 @Component({
   selector: 'app-search-bar',
   templateUrl: './search-bar.component.html',
-  styleUrls: ['./search-bar.component.css']
+  styleUrls: ['./search-bar.component.css'],
 })
 export class SearchBarComponent implements OnInit {
-  searchForm: FormGroup;
-  searchBarIcon: string;
 
-  constructor(private fb: FormBuilder, private router: Router) { }
+  searchQuery: string ;
+  icon: string;
+  action: string = 'search';
+  @ViewChild("search") searchTextBox : ElementRef;
+
+  constructor(private router: Router) {}
 
   ngOnInit(): void {
-    this.initializeForm();
+    // Not implement
+    setTimeout(() => {
+      this.searchTextBox.nativeElement.focus();      
+    }, 200);
   }
 
-  initializeForm() {
-    this.searchBarIcon = "fa-search";
-    this.searchForm = this.fb.group({
-      query: [''],
-    });
-    this.searchForm.get('query').valueChanges.subscribe((val) => {
-      let searchQuery = fnGetFormControlValue(this.searchForm, 'query');
-        if (searchQuery.length > 0)
-          this.searchBarIcon = "fa-times";
-        else
-          this.searchBarIcon = "fa-search";
-    });
+  updateAction() {    
+    if (this.searchQuery != "") this.action = 'clear';
+    else this.action = 'search';
   }
 
-
-  clearSearchQuery()
-  {
-    fnUpdateFormControlStringValue(this.searchForm, 'query', '', false);
+  clearSearchQuery() {
+    this.searchQuery = "";
   }
 
-  viewSearchResult() {
+  showSearchResult() {
+    if (this.searchQuery == "" || this.searchQuery == null)
+      return;
     this.router.navigate(['/search'], {
-      queryParams: { q: fnGetFormControlValue(this.searchForm, 'query') },
+      queryParams: { q: this.searchQuery },
     });
   }
 }

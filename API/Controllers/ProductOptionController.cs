@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
@@ -51,7 +52,10 @@ namespace API.Controllers
                     {
                         SizeName = x.SizeName,
                         OptionId = x.Id,
-                        Price = option.CalculatePriceAfterSaleOff()
+                        Price = CalculateAfterSaleOff(option, option.Product.Price),
+                        AdditionalPrice = CalculateAfterSaleOff(option, options
+                                    .FirstOrDefault(o => o.ColorCode == x.ColorCode 
+                                                        && o.SizeName == x.SizeName).AdditionalPrice)
                     }
                 );
                 
@@ -219,6 +223,23 @@ namespace API.Controllers
 
 
         #region private method
+
+        private double CalculateAfterSaleOff(Option option, double value)
+        {
+            if (option.Product.SaleType != ProductSaleOffType.None && option.Product.SaleOffFrom < DateTime.UtcNow && option.Product.SaleOffTo > DateTime.UtcNow)
+            {
+                if (option.Product.SaleType == ProductSaleOffType.SaleOffValue)
+                {
+                    return value - option.Product.SaleOffValue;
+                }
+                else
+                {
+                    return value - ((value * option.Product.SaleOffPercent) / 100);
+                }
+            }
+            return value;
+
+        }
 
         #endregion
     }

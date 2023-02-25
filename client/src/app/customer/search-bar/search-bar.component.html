@@ -1,16 +1,26 @@
-<div class="container-fluid py-2">
-  <h5 class="mt-4 text-uppercase">What are you looking for ?</h5>
-  <form
-    [formGroup]="searchForm"
-    (ngSubmit)="searchForm.valid && viewSearchResult()"
-    autocomplete="off"
-    class="w-100 py-2"
-  >
-    <app-icon-text-input
-      [formControl]="searchForm.controls['query']"
-      [label]="'Search'"
-      [icon]="searchBarIcon"
-      (clearInput)="clearSearchQuery()"
-    ></app-icon-text-input>
-  </form>
+<div class="container-fluid py-3">
+  <h5 class="text-uppercase">What are you looking for ?</h5>
+  <div class="form-group w-100 mb-0 position-relative">
+    <input
+      type="text"
+      class="form-control"
+      [(ngModel)]="searchQuery"
+      (ngModelChange)="updateAction()"
+      (keyup.enter)="showSearchResult()"
+      #search
+    />
+    <p
+      class="text-muted position-absolute my-auto mr-2 py-2 cs-pointer top-0 end-0 "
+      *ngIf="action == 'search'; else clear"
+      aria-hidden="true"
+      (click)="showSearchResult()"
+    > Search </p>
+    <ng-template #clear>
+      <p
+        class="text-muted position-absolute my-auto mr-2 py-2 cs-pointer top-0 end-0 "
+        aria-hidden="true"
+        (click)="clearSearchQuery()"
+      >Clear</p>
+    </ng-template>
+  </div>
 </div>

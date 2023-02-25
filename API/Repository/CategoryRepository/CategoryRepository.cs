@@ -9,9 +9,6 @@ using API.Extensions;
 using API.Helpers;
 using API.Interfaces;
 using API.Repository.GenericRepository;
-using AutoMapper;
-using AutoMapper.Configuration.Conventions;
-using AutoMapper.QueryableExtensions;
 using Microsoft.EntityFrameworkCore;
 
 namespace API.Data
@@ -91,12 +88,12 @@ namespace API.Data
             {
                 query = adminCategoryParams.Field switch
                 {
-                    "PublishedDate" => query.OrderBy(p => p.DateCreated),
-                    "CategoryName" => query.OrderBy(p => p.CategoryName),
-                    "Status" => query.OrderBy(p => p.Status),
-                    "Gender" => query.OrderBy(p => p.Gender),
-                    "Promoted" => query.OrderBy(p => p.IsPromoted),
-                    "ParentCategory" => query.OrderBy(p => p.Parent.CategoryName),
+                    "date" => query.OrderBy(p => p.DateCreated),
+                    "categoryName" => query.OrderBy(p => p.CategoryName),
+                    "status" => query.OrderBy(p => p.Status),
+                    "gender" => query.OrderBy(p => p.Gender),
+                    "promoted" => query.OrderBy(p => p.IsPromoted),
+                    "parentCategory" => query.OrderBy(p => p.Parent.CategoryName),
                     _ => query.OrderBy(p => p.Id)
                 };
             }
@@ -104,12 +101,12 @@ namespace API.Data
             {
                 query = adminCategoryParams.Field switch
                 {
-                    "PublishedDate" => query.OrderByDescending(p => p.DateCreated),
-                    "CategoryName" => query.OrderByDescending(p => p.CategoryName),
-                    "Status" => query.OrderByDescending(p => p.Status),
-                    "Gender" => query.OrderByDescending(p => p.Gender),
-                    "Promoted" => query.OrderByDescending(p => p.IsPromoted),
-                    "ParentCategory" => query.OrderByDescending(p => p.Parent.CategoryName),
+                    "date" => query.OrderByDescending(p => p.DateCreated),
+                    "categoryName" => query.OrderByDescending(p => p.CategoryName),
+                    "status" => query.OrderByDescending(p => p.Status),
+                    "gender" => query.OrderByDescending(p => p.Gender),
+                    "promoted" => query.OrderByDescending(p => p.IsPromoted),
+                    "parentCategory" => query.OrderByDescending(p => p.Parent.CategoryName),
                     _ => query.OrderByDescending(p => p.Id)
                 };
             }

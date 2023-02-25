@@ -46,7 +46,7 @@ namespace API.Repository.ArticleRepository
             {
                 query = articleParams.Field switch
                 {
-                    "PublishedDate" => query.OrderBy(p => p.DateCreated),
+                    "publishedDate" => query.OrderBy(p => p.DateCreated),
                     _ => query.OrderBy(p => p.DateCreated)
                 };
             }
@@ -54,7 +54,7 @@ namespace API.Repository.ArticleRepository
             {
                 query = articleParams.Field switch
                 {
-                     "PublishedDate" => query.OrderByDescending(p => p.DateCreated),
+                     "publishedDate" => query.OrderByDescending(p => p.DateCreated),
                     _ => query.OrderByDescending(p => p.DateCreated)
                 };
             }
@@ -86,13 +86,13 @@ namespace API.Repository.ArticleRepository
             {
                 query = articleParams.Field switch
                 {
-                    "PublishedDate" => query.OrderBy(p => p.DateCreated),
-                    "PublishedBy" => query.OrderBy(p => p.User.FirstName),
-                    "Headline" => query.OrderBy(p => p.Headline),
-                    "HeadlineSlug" => query.OrderBy(p => p.Status),
-                    "Status" => query.OrderBy(p => p.Status),
-                    "View" => query.OrderBy(p => p.View),
-                    "Promoted" => query.OrderBy(p => p.EditorChoice),
+                    "publishedDate" => query.OrderBy(p => p.DateCreated),
+                    "publishedBy" => query.OrderBy(p => p.User.FirstName),
+                    "headline" => query.OrderBy(p => p.Headline),
+                    "headlineSlug" => query.OrderBy(p => p.Status),
+                    "status" => query.OrderBy(p => p.Status),
+                    "view" => query.OrderBy(p => p.View),
+                    "promoted" => query.OrderBy(p => p.EditorChoice),
                     _ => query.OrderBy(p => p.DateCreated)
                 };
             }
@@ -100,13 +100,13 @@ namespace API.Repository.ArticleRepository
             {
                 query = articleParams.Field switch
                 {
-                    "PublishedDate" => query.OrderByDescending(p => p.DateCreated),
-                    "PublishedBy" => query.OrderByDescending(p => p.User.FirstName),
-                    "Headline" => query.OrderByDescending(p => p.Headline),
-                    "HeadlineSlug" => query.OrderByDescending(p => p.Status),
-                    "Status" => query.OrderByDescending(p => p.Status),
-                    "View" => query.OrderByDescending(p => p.View),
-                    "Promoted" => query.OrderByDescending(p => p.EditorChoice),
+                    "publishedDate" => query.OrderByDescending(p => p.DateCreated),
+                    "publishedBy" => query.OrderByDescending(p => p.User.FirstName),
+                    "headline" => query.OrderByDescending(p => p.Headline),
+                    "headlineSlug" => query.OrderByDescending(p => p.Status),
+                    "status" => query.OrderByDescending(p => p.Status),
+                    "view" => query.OrderByDescending(p => p.View),
+                    "promoted" => query.OrderByDescending(p => p.EditorChoice),
                     _ => query.OrderByDescending(p => p.DateCreated)
                 };
             }

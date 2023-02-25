@@ -1,3 +1,4 @@
+import { RotateAnimation } from './../../_common/animation/carousel.animations';
 import { GenericStatus, GenericStatusList } from 'src/app/_models/generic';
 import { AuthenticationService } from 'src/app/_services/authentication.service';
 import { FileService } from 'src/app/_services/file.service';
@@ -6,7 +7,6 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { Pagination } from 'src/app/_models/pagination';
 import { ManagerProduct } from 'src/app/_models/product';
-import { animate, state, style, transition, trigger } from '@angular/animations';
 import {
   ManagerProductParams,
 } from 'src/app/_models/productParams';
@@ -19,14 +19,7 @@ import { fnGetObjectStateString, fnGetObjectStateStyle } from 'src/app/_common/f
   selector: 'app-admin-product',
   templateUrl: './admin-product.component.html',
   styleUrls: ['./admin-product.component.css'],
-  animations: [
-    trigger('rotatedState', [
-        state('default', style({ transform: 'rotate(0)' })),
-        state('rotated', style({ transform: 'rotate(-180deg)' })),
-        transition('rotated => default', animate('500ms ease-out')),
-        transition('default => rotated', animate('500ms ease-in'))
-      ])
-  ]
+  animations: [ RotateAnimation ]
 })
 export class AdminProductComponent implements OnInit {
   products: ManagerProduct[];
@@ -204,29 +197,7 @@ export class AdminProductComponent implements OnInit {
   }
 
   orderBy(field: string) {
-    switch (field) {
-      case 'id':
-        this.productParams.field = 'Id';
-        break;
-      case 'name':
-        this.productParams.field = 'Name';
-        break;
-      case 'sold':
-        this.productParams.field = 'Sold';
-        break;
-      case 'price':
-        this.productParams.field = 'Price';
-        break;
-      case 'status':
-        this.productParams.field = 'Status';
-        break;
-      case 'promoted':
-          this.productParams.field = 'Promoted';
-          break;
-      default:
-        this.productParams.field = 'Date';
-        break;
-    }
+    this.productParams.field = field;
     if (this.productParams.orderBy == 0) this.productParams.orderBy = 1;
     else this.productParams.orderBy = 0;
     this.rotate();

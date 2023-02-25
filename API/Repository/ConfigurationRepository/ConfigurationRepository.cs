@@ -59,10 +59,10 @@ namespace API.Repository.ConfigurationRepository
             {
                 query = carouselParams.Field switch
                 {
-                    "Date" => query.OrderBy(p => p.DateCreated),
-                    "Title" => query.OrderBy(p => p.Title),
-                    "Link" => query.OrderBy(p => p.Link),
-                    "Status" => query.OrderBy(p => p.Status),
+                    "date" => query.OrderBy(p => p.DateCreated),
+                    "title" => query.OrderBy(p => p.Title),
+                    "link" => query.OrderBy(p => p.Link),
+                    "status" => query.OrderBy(p => p.Status),
                     _ => query.OrderBy(p => p.Id)
                 };
             }
@@ -70,10 +70,10 @@ namespace API.Repository.ConfigurationRepository
             {
                 query = carouselParams.Field switch
                 {
-                    "Date" => query.OrderByDescending(p => p.DateCreated),
-                    "Title" => query.OrderByDescending(p => p.Title),
-                    "Link" => query.OrderByDescending(p => p.Link),
-                    "Status" => query.OrderByDescending(p => p.Status),
+                    "date" => query.OrderByDescending(p => p.DateCreated),
+                    "title" => query.OrderByDescending(p => p.Title),
+                    "link" => query.OrderByDescending(p => p.Link),
+                    "status" => query.OrderByDescending(p => p.Status),
                     _ => query.OrderByDescending(p => p.Id)
                 };
             }

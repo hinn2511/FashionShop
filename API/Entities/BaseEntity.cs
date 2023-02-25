@@ -19,27 +19,27 @@ namespace API.Entities
         {
             Status = Status.Active;
             CreatedByUserId = createdByUserId;
-            DateCreated = DateTime.UtcNow.AddMonths(3);
+            DateCreated = DateTime.UtcNow;
         }
 
         public void AddUpdateInformation(int lastUpdatedByUserId) 
         {
             LastUpdatedByUserId = lastUpdatedByUserId;
-            LastUpdated = DateTime.UtcNow.AddMonths(3);
+            LastUpdated = DateTime.UtcNow;
         }
 
         public void AddDeleteInformation(int deletedByUserId) 
         {
             Status = Status.Deleted;
             DeletedByUserId = deletedByUserId;
-            DateDeleted = DateTime.UtcNow.AddMonths(3);
+            DateDeleted = DateTime.UtcNow;
         }
 
         public void AddHiddenInformation(int hiddenByUserId) 
         {
             Status = Status.Hidden;
             HiddenByUserId = hiddenByUserId;
-            DateHidden = DateTime.UtcNow.AddMonths(3);
+            DateHidden = DateTime.UtcNow;
         }
     }
 

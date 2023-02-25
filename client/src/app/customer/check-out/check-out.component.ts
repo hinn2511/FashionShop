@@ -1,3 +1,4 @@
+import { RotateAnimation } from './../../_common/animation/carousel.animations';
 import { concatMap, catchError } from 'rxjs/operators';
 import { DeviceService } from 'src/app/_services/device.service';
 import { Router } from '@angular/router';
@@ -12,13 +13,6 @@ import {
 import { CartItem } from 'src/app/_models/cart';
 import { User } from 'src/app/_models/user';
 import { CartService } from 'src/app/_services/cart.service';
-import {
-  animate,
-  state,
-  style,
-  transition,
-  trigger,
-} from '@angular/animations';
 import { Subscription } from 'rxjs';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import {
@@ -35,14 +29,7 @@ import { OrderService } from 'src/app/_services/order.service';
   selector: 'app-check-out',
   templateUrl: './check-out.component.html',
   styleUrls: ['./check-out.component.css'],
-  animations: [
-    trigger('rotatedState', [
-      state('true', style({ transform: 'rotate(0)' })),
-      state('false', style({ transform: 'rotate(-180deg)' })),
-      transition('false => true', animate('500ms ease-out')),
-      transition('true => false', animate('500ms ease-in')),
-    ]),
-  ],
+  animations: [ RotateAnimation ],
 })
 export class CheckOutComponent implements OnInit {
   @Output() hideCheckout = new EventEmitter<boolean>();

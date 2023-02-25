@@ -119,13 +119,11 @@ export class AdminProductPhotoComponent implements OnInit {
       case 'delete':
         actionTitle = 'Recover photos of ' + product.productName;
         this.multipleSelected = true;
-        break;
-      case 'set-main':
-          actionTitle = 'Choose main photo of ' + product.productName;
+        break;          
+      default:
+        actionTitle = 'Choose main photo of ' + product.productName;
           this.multipleSelected = false;
           break;
-      default:
-        break;
     }
     const config = {
       class: 'modal-dialog-centered',
@@ -246,33 +244,26 @@ export class AdminProductPhotoComponent implements OnInit {
 
     product.productPhotos.forEach((productPhoto) => {
       switch (this.modalAction) {
+        case 'set-main':
         case 'hide':
           if (!productPhoto.isMain && productPhoto.status == 0) {
             productPhoto.checked = false;
-            productPhotos.push(productPhoto);
           }
           break;
         case 'unhide':
           if (!productPhoto.isMain && productPhoto.status == 1) {
             productPhoto.checked = false;
-            productPhotos.push(productPhoto);
           }
           break;
         case 'delete':
           if (!productPhoto.isMain && productPhoto.status != 2) {
             productPhoto.checked = false;
-            productPhotos.push(productPhoto);
           }
-          break;
-          case 'set-main':
-            if (!productPhoto.isMain && productPhoto.status == 0) {
-              productPhoto.checked = false;
-              productPhotos.push(productPhoto);
-            }
-            break;
+          break;            
         default:
           break;
-      }
+        }
+        productPhotos.push(productPhoto);
     });
     return productPhotos;
   }

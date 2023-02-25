@@ -8,20 +8,37 @@
     <a class="text-dark"> on sale </a>
   </div>
 
-  <div class="position-relative product-carousel-container mt-3 p-2 hide-scroll-bar">
-    <ul class="product-carousel d-flex d-inline list-group list-group-horizontal">
-      <li #card class="product-slide list-group-item border-0 p-2" *ngFor="let product of products">
+  <div
+    class="position-relative product-carousel-container mt-3 p-2 hide-scroll-bar"
+  >
+    <ul
+      class="product-carousel d-flex d-inline list-group list-group-horizontal"
+    >
+      <li
+        #card
+        class="product-slide list-group-item border-0 p-2"
+        *ngFor="let product of products"
+      >
         <app-product-card [product]="product"></app-product-card>
       </li>
     </ul>
   </div>
   <div
     class="d-flex flex-wrap justify-content-end text-uppercase ml-1 ml-md-0 p-1"
+    *ngIf="deviceType == 'desktop'"
   >
-    <button class="btn btn-outline-dark mr-2 btn-scroll" [disabled]="currentStep == 0" (click)="scrollLeft()">
+    <button
+      class="btn btn-outline-dark mr-2 btn-scroll"
+      [disabled]="currentStep == 0"
+      (click)="scrollLeft()"
+    >
       <i class="fa fa-arrow-left" aria-hidden="true"></i>
     </button>
-    <button class="btn btn-outline-dark btn-scroll" [disabled]="currentStep == products.length - 1" (click)="scrollRight()">
+    <button
+      class="btn btn-outline-dark btn-scroll"
+      [disabled]="currentStep == products.length - 1"
+      (click)="scrollRight()"
+    >
       <i class="fa fa-arrow-right" aria-hidden="true"></i>
     </button>
   </div>

@@ -15,12 +15,9 @@ import { NavigationStart, Router } from '@angular/router';
 import { AuthenticationService } from 'src/app/_services/authentication.service';
 import { CategoryService } from 'src/app/_services/category.service';
 import { User } from 'src/app/_models/user';
-import { ToastrService } from 'ngx-toastr';
 import { DeviceService } from 'src/app/_services/device.service';
 import { BehaviorSubject, Subscription } from 'rxjs';
 import { CustomerCatalogue, CustomerCategoryCatalogue } from 'src/app/_models/category';
-import { FormGroup, FormBuilder, Validators } from '@angular/forms';
-import { fnGetFormControlValue, fnUpdateFormControlStringValue } from 'src/app/_common/function/function';
 
 export class NavSettings {
   navHeight: string;
@@ -43,10 +40,12 @@ export class NavSettings {
 export class NavigationBarComponent
   implements OnInit, OnDestroy, AfterViewInit
 {
+
   @Output() focus = new EventEmitter<boolean>();
   @ViewChild('nav') navElement: ElementRef;
-  searchForm: FormGroup;
-  searchBarIcon: string;
+  searchQuery: string = '';
+  icon: string;
+  action: string;
   collapseNavbar: boolean = true;
   collapseSearchWindow: boolean = true;
   collapseSearchBar: boolean = true;
@@ -83,8 +82,6 @@ export class NavigationBarComponent
     private categoryService: CategoryService,
     public cartService: CartService,
     private router: Router,
-    private toastr: ToastrService,
-    private fb: FormBuilder,
     public deviceService: DeviceService
   ) {
     router.events.forEach((event) => {
@@ -98,7 +95,6 @@ export class NavigationBarComponent
     this.user = this.authenticationService.userValue;
     this.collapseAll();
     this.loadCategoryGroup();
-    this.initializeForm();
   }
 
   ngAfterViewInit(): void {
@@ -148,28 +144,18 @@ export class NavigationBarComponent
     this.settings.next(new NavSettings(navHeight, navMargin, deviceType));
   }
 
-  initializeForm() {
-    this.searchBarIcon = "fa-search";
-    this.searchForm = this.fb.group({
-      query: [''],
-    });
-    this.searchForm.get('query').valueChanges.subscribe((val) => {
-      let searchQuery = fnGetFormControlValue(this.searchForm, 'query');
-        if (searchQuery.length > 0)
-          this.searchBarIcon = "fa-times";
-        else
-          this.searchBarIcon = "fa-search";
-    });
+  updateSearchAction() {
+    if (this.searchQuery != "") this.action = 'clear';
+    else this.action = 'search';
   }
 
-  clearSearchQuery()
-  {
-    fnUpdateFormControlStringValue(this.searchForm, 'query', '', false);
+  clearSearch() {
+    this.searchQuery = "";
   }
 
-  viewSearchResult() {
+  search() {
     this.router.navigate(['/search'], {
-      queryParams: { q: fnGetFormControlValue(this.searchForm, 'query') },
+      queryParams: { q: this.searchQuery },
     });
   }
 
@@ -288,8 +274,5 @@ export class NavigationBarComponent
   viewAccount(tab: string) {
     this.collapseAll();
     this.router.navigate(['account/'], { queryParams: { tab: tab } });
-  }
-
-  
-  
+  }  
 }

@@ -1,3 +1,4 @@
+import { RotateAnimation } from './../../_common/animation/carousel.animations';
 import { RoleService } from './../../_services/role.service';
 import { SelectOption } from './../../_models/dialog';
 import { DialogService } from './../../_services/dialog.service';
@@ -5,28 +6,18 @@ import { Role } from 'src/app/_models/user';
 import { UserParams, UserResponse, UserStatus, UserStatusList } from './../../_models/user';
 import { Component, OnInit } from '@angular/core';
 import { UserService } from 'src/app/_services/user.service';
-import { trigger, state, style, transition, animate } from '@angular/animations';
 import { Router, ActivatedRoute } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { fnGetObjectStateString, fnGetUserStateStyle } from 'src/app/_common/function/style-class';
 import { IdArray } from 'src/app/_models/adminRequest';
 import { Pagination } from 'src/app/_models/pagination';
-import { AuthenticationService } from 'src/app/_services/authentication.service';
-import { FileService } from 'src/app/_services/file.service';
 import { concatMap } from 'rxjs/operators';
 
 @Component({
   selector: 'app-admin-user',
   templateUrl: './admin-user.component.html',
   styleUrls: ['./admin-user.component.css'],
-  animations: [
-    trigger('rotatedState', [
-        state('default', style({ transform: 'rotate(0)' })),
-        state('rotated', style({ transform: 'rotate(-180deg)' })),
-        transition('rotated => default', animate('500ms ease-out')),
-        transition('default => rotated', animate('500ms ease-in'))
-      ])
-  ]
+  animations: [ RotateAnimation ]
 })
 export class AdminUserComponent implements OnInit {
     users: UserResponse[];

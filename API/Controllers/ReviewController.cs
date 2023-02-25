@@ -60,26 +60,30 @@ namespace API.Controllers
             if (product == null)
                 return NotFound(new BaseResponseMessage(false, HttpStatusCode.NotFound, $"Product not found."));
 
+            var scoreList =  new List<ProductReviewScore>();
+
+            for(int i = 1; i <= 5; i++)            
+                scoreList.Add(new ProductReviewScore(i, 0));                
+
             var options = await _unitOfWork.ProductOptionRepository.GetAllBy(x => x.ProductId == productId);
+
             var optionIds = options.Select(x => x.Id);
 
             var userReviews = await _unitOfWork.UserReviewRepository.GetAllBy(x => optionIds.Contains(x.OptionId));
 
-            var averageScore = userReviews.Select(x => x.Score).Average();
+            var averageScore = 0d;
 
-            averageScore = Math.Round(averageScore, 1);
-
-            var scoreGroup = userReviews.GroupBy(x => x.Score).Select(group => new ProductReviewScore(group.Key, group.Count()));
-
-            var scoreList =  scoreGroup.ToList();
-
-            for(int i = 1; i <= 5; i++)
+            if (userReviews != null && userReviews.Any())
             {
-                if(scoreGroup.FirstOrDefault(x => x.Score == i) == null)
-                    scoreList.Add(new ProductReviewScore(i, 0));
-            }
-
-            var result = new CustomerProductReviewSummary(averageScore, userReviews.Count(), scoreList.OrderByDescending(x => x.Score).ToList());
+                averageScore = Math.Round(userReviews.Select(x => x.Score).Average(), 1);
+                var scoreGroup = userReviews.GroupBy(x => x.Score).Select(group => new ProductReviewScore(group.Key, group.Count()));
+                scoreGroup.ToList().ForEach(x => 
+                    {
+                        scoreList[scoreList.FindIndex(y => y.Score == x.Score)].Count = x.Count;
+                    });                                    
+            }            
+            
+            var result = new CustomerProductReviewSummary(averageScore, userReviews == null ? 0 : userReviews.Count(), scoreList.OrderByDescending(x => x.Score).ToList());
 
             return Ok(result);
         }

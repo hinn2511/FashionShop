@@ -75,15 +75,15 @@ namespace API.Repository.OrderRepository
             {
                 query = orderParams.Field switch
                 {
-                    "DateCreated" => query.OrderBy(o => o.DateCreated),
-                    "TotalPrice" => query.OrderBy(o => o.SubTotal + o.Tax + o.ShippingFee),
-                    "TotalQuantity" => query.OrderBy(o => o.OrderDetails.Count),
-                    "FirstName" => query.OrderBy(o => o.User.FirstName),
-                    "LastName" => query.OrderBy(o => o.User.LastName),
-                    "ExternalId" => query.OrderBy(o => o.ExternalId),
-                    "Status" => query.OrderBy(o => o.CurrentStatus),
-                    "PaymentMethod" => query.OrderBy(o => o.PaymentMethod),
-                    "ShippingMethod" => query.OrderBy(o => o.ShippingMethod),
+                    "dateCreated" => query.OrderBy(o => o.DateCreated),
+                    "totalPrice" => query.OrderBy(o => o.SubTotal + o.Tax + o.ShippingFee),
+                    "totalQuantity" => query.OrderBy(o => o.OrderDetails.Count),
+                    "firstName" => query.OrderBy(o => o.User.FirstName),
+                    "lastName" => query.OrderBy(o => o.User.LastName),
+                    "externalId" => query.OrderBy(o => o.ExternalId),
+                    "status" => query.OrderBy(o => o.CurrentStatus),
+                    "paymentMethod" => query.OrderBy(o => o.PaymentMethod),
+                    "shippingMethod" => query.OrderBy(o => o.ShippingMethod),
                     _ => query.OrderBy(o => o.Id)
                 };
             }
@@ -91,15 +91,15 @@ namespace API.Repository.OrderRepository
             {
                 query = orderParams.Field switch
                 {
-                    "DateCreated" => query.OrderByDescending(o => o.DateCreated),
-                    "TotalPrice" => query.OrderByDescending(o => o.SubTotal + o.Tax + o.ShippingFee),
-                    "TotalQuantity" => query.OrderByDescending(o => o.OrderDetails.Count),
-                    "FirstName" => query.OrderByDescending(o => o.User.FirstName),
-                    "LastName" => query.OrderByDescending(o => o.User.LastName),
-                    "ExternalId" => query.OrderByDescending(o => o.ExternalId),
-                    "Status" => query.OrderByDescending(o => o.CurrentStatus),
-                    "PaymentMethod" => query.OrderByDescending(o => o.PaymentMethod),
-                    "ShippingMethod" => query.OrderByDescending(o => o.ShippingMethod),
+                    "dateCreated" => query.OrderByDescending(o => o.DateCreated),
+                    "totalPrice" => query.OrderByDescending(o => o.SubTotal + o.Tax + o.ShippingFee),
+                    "totalQuantity" => query.OrderByDescending(o => o.OrderDetails.Count),
+                    "firstName" => query.OrderByDescending(o => o.User.FirstName),
+                    "lastName" => query.OrderByDescending(o => o.User.LastName),
+                    "externalId" => query.OrderByDescending(o => o.ExternalId),
+                    "status" => query.OrderByDescending(o => o.CurrentStatus),
+                    "paymentMethod" => query.OrderByDescending(o => o.PaymentMethod),
+                    "shippingMethod" => query.OrderByDescending(o => o.ShippingMethod),
                     _ => query.OrderByDescending(o => o.Id)
                 };
             }
@@ -148,8 +148,8 @@ namespace API.Repository.OrderRepository
             {
                 query = orderParams.Field switch
                 {
-                    "Date" => query.OrderBy(p => p.DateCreated),
-                    "Total" => query.OrderBy(p => p.SubTotal + p.Tax + p.ShippingFee),
+                    "date" => query.OrderBy(p => p.DateCreated),
+                    "total" => query.OrderBy(p => p.SubTotal + p.Tax + p.ShippingFee),
                     _ => query.OrderBy(p => p.ExternalId)
                 };
             }
@@ -157,8 +157,8 @@ namespace API.Repository.OrderRepository
             {
                 query = orderParams.Field switch
                 {
-                    "Date" => query.OrderByDescending(p => p.DateCreated),
-                    "Total" => query.OrderByDescending(p => p.SubTotal + p.Tax + p.ShippingFee),
+                    "date" => query.OrderByDescending(p => p.DateCreated),
+                    "total" => query.OrderByDescending(p => p.SubTotal + p.Tax + p.ShippingFee),
                     _ => query.OrderByDescending(p => p.ExternalId)
                 };
             }
@@ -291,8 +291,8 @@ namespace API.Repository.OrderRepository
             {
                 query = customerReviewParams.Field switch
                 {
-                    "DateCreated" => query.OrderBy(p => p.DateCreated),
-                    "Score" => query.OrderBy(p => p.Score),
+                    "dateCreated" => query.OrderBy(p => p.DateCreated),
+                    "score" => query.OrderBy(p => p.Score),
                     _ => query.OrderBy(p => p.DateCreated)
                 };
             }
@@ -300,8 +300,8 @@ namespace API.Repository.OrderRepository
             {
                 query = customerReviewParams.Field switch
                 {
-                    "DateCreated" => query.OrderByDescending(p => p.DateCreated),
-                    "Score" => query.OrderByDescending(p => p.Score),
+                    "dateCreated" => query.OrderByDescending(p => p.DateCreated),
+                    "score" => query.OrderByDescending(p => p.Score),
                     _ => query.OrderByDescending(p => p.DateCreated)
                 };
             }

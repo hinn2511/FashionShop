@@ -29,8 +29,9 @@ export class HomeInterestingComponent
   currentStep: number = 0;
   slideStyle: string = 'margin-left: 20;';
   deviceSubscription$: Subscription;
-
   scrollSubscription$: Subscription;
+
+  deviceType: string = 'desktop';
 
   @ViewChildren('card') items: QueryList<ElementRef>;
   productCards: ElementRef[] = [];
@@ -58,7 +59,8 @@ export class HomeInterestingComponent
   private deviceSubscribe() {
     this.deviceSubscription$ = this.deviceService.deviceWidth$.subscribe(
       (_) => {
-        switch (this.deviceService.getDeviceType()) {
+        this.deviceType = this.deviceService.getDeviceType();
+        switch (this.deviceType) {
           case 'mobile': {
             this.step = 1;
             break;

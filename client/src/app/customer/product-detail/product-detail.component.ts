@@ -25,7 +25,7 @@ import { fnCalculatePrice } from 'src/app/_common/function/function';
   selector: 'app-product-detail',
   templateUrl: './product-detail.component.html',
   styleUrls: ['./product-detail.component.css'],
-  animations: [GrowAnimation]
+  animations: [GrowAnimation],
 })
 export class ProductDetailComponent implements OnInit {
   product: Product;
@@ -38,6 +38,7 @@ export class ProductDetailComponent implements OnInit {
   selectedColor: CustomerOptionColor;
   user: User;
   expandDescription: string = 'in';
+  price: number = 0;
 
   @ViewChild('descriptionTitle') descriptionTitleRef: ElementRef;
 
@@ -49,14 +50,14 @@ export class ProductDetailComponent implements OnInit {
     private accountService: AccountService,
     private router: Router,
     private route: ActivatedRoute,
-    private toastr: ToastrService,
+    private toastr: ToastrService
   ) {}
 
   ngOnInit(): void {
     this.user = this.authenticationService.userValue;
-    
-    this.loadProduct(this.route.snapshot.queryParams['id']);
-    this.loadOptions(this.route.snapshot.queryParams['id']);
+    let id = this.route.snapshot.queryParams['id'];
+    this.loadProduct(id);
+    this.loadOptions(id);
     this.quantity = 1;
   }
 
@@ -98,21 +99,19 @@ export class ProductDetailComponent implements OnInit {
         route: `/product?category=${this.product.parentCategorySlug}&gender=${this.product.gender}`,
         active: true,
       });
-    } 
-   
+    }
+
     this.breadCrumb.push({
       name: `${this.product.category}`,
       route: `/product?category=${this.product.categorySlug}&gender=${this.product.gender}`,
       active: true,
-    });  
+    });
 
-    
     this.breadCrumb.push({
       name: `${this.product.productName}`,
       route: ``,
       active: false,
-    });  
-    
+    });
   }
 
   chooseColor(color: CustomerOptionColor) {
@@ -121,10 +120,22 @@ export class ProductDetailComponent implements OnInit {
       (x) => x.color.colorCode == color.colorCode
     )[0].sizes;
     this.selectedSize = this.sizes[0];
+    this.updatePrice();
   }
 
-  onSizeChange(size: CustomerOptionSize) {
+  private updatePrice() {
+    let totalPrice = this.product.price + this.selectedSize.additionalPrice;
+    this.price = this.calculatePrice(
+      this.product.saleType,
+      totalPrice,
+      this.product.saleOffPercent,
+      this.product.saleOffValue
+    );
+  }
+
+  onSizeChange(size: any) {
     this.selectedSize = size;
+    this.updatePrice();
   }
 
   loadOptions(productId: number) {
@@ -169,7 +180,7 @@ export class ProductDetailComponent implements OnInit {
         isOnSale: this.product.isOnSale,
         saleOffPercent: this.product.saleOffPercent,
         saleOffValue: this.product.saleOffValue,
-        saleType: this.product.saleType
+        saleType: this.product.saleType,
       };
       this.cartService.updateLocalCart(cartItem);
       this.toastr.success('This item has been added to your cart!', 'Success');
@@ -230,12 +241,12 @@ export class ProductDetailComponent implements OnInit {
     );
   }
 
-  expandDescriptionToggle()
-  {
+  expandDescriptionToggle() {
     this.expandDescription = this.expandDescription === 'in' ? 'out' : 'in';
-    if(this.expandDescription === 'in')
-      this.descriptionTitleRef.nativeElement.scrollIntoView({ behavior: 'smooth'});
-    
+    if (this.expandDescription === 'in')
+      this.descriptionTitleRef.nativeElement.scrollIntoView({
+        behavior: 'smooth',
+      });
   }
 
   calculatePrice(
@@ -244,11 +255,13 @@ export class ProductDetailComponent implements OnInit {
     saleOffPercent: number,
     saleOffValue: number
   ) {
-    return fnCalculatePrice(saleType, price, saleOffPercent, saleOffValue) * this.quantity;
+    return (
+      fnCalculatePrice(saleType, price, saleOffPercent, saleOffValue) *
+      this.quantity
+    );
   }
 
-  calculateOldPrice(price:number
-  ) {
+  calculateOldPrice(price: number) {
     return price * this.quantity;
   }
 }
