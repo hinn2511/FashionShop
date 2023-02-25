@@ -1,24 +1,15 @@
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Net;
-using System.Text.Json;
 using System.Threading.Tasks;
-using API.Data;
-using API.DTOs;
 using API.DTOs.Order;
 using API.DTOs.Params;
-using API.DTOs.Request;
-using API.DTOs.Request.OrderRequest;
 using API.DTOs.Response;
-using API.DTOs.Response.OrderResponse;
 using API.DTOs.Response.ReviewResponse;
-using API.Entities;
 using API.Entities.OrderModel;
 using API.Entities.UserModel;
 using API.Extensions;
-using API.Helpers;
 using API.Interfaces;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
@@ -112,7 +103,7 @@ namespace API.Controllers
         }
 
 
-        [Authorize(Policy = "CustomerOnly")]
+        [Authorize]
         [HttpPost("{externalId}")]
         public async Task<ActionResult> CreateReviewOrder(string externalId, CreateCustomerReviewRequest createCustomerReviewRequest)
         {
@@ -155,7 +146,7 @@ namespace API.Controllers
             return BadRequest(new BaseResponseMessage(false, HttpStatusCode.BadRequest, $"Can not create order review."));
         }
 
-        [Authorize(Policy = "CustomerOnly")]
+        [Authorize]
         [HttpPut("{externalId}")]
         public async Task<ActionResult> EditReviewOrder(string externalId, EditCustomerReviewRequest editCustomerReviewRequest)
         {

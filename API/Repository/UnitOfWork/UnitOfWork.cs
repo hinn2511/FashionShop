@@ -20,6 +20,8 @@ namespace API.Data
             _context = context;
         }
 
+        public IAppRoleRepository AppRoleRepository => new AppRoleRepository(_context, _context.AppRoles);
+        public IAppRolePermissionRepository AppRolePermissionRepository => new AppRolePermissionRepository(_context, _context.RolePermissions);
         public IUserLikeRepository UserLikeRepository => new UserLikeRepository(_context, _context.UserLikes);
         public IUserReviewRepository UserReviewRepository => new UserReviewRepository(_context, _context.UserReviews);
         public ICartRepository CartRepository => new CartRepository(_context, _context.Carts);
@@ -44,7 +46,7 @@ namespace API.Data
             return await _context.SaveChangesAsync() > 0;
         }
 
-        public bool HasChanges()
+        public bool HasChanged()
         {
             return _context.ChangeTracker.HasChanges();
         }

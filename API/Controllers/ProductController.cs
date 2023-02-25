@@ -25,7 +25,7 @@ using static API.Extensions.StringExtensions;
 
 namespace API.Controllers
 {
-    [Authorize(Policy = "ManagerOnly")]
+   
     public class ProductController : BaseApiController
     {
         private readonly IMapper _mapper;
@@ -102,6 +102,7 @@ namespace API.Controllers
         #endregion
 
         #region manager
+        [Authorize(Roles = "ViewProducts")]
         [HttpGet("all")]
         public async Task<ActionResult> GetProductsAsAdmin([FromQuery] AdministratorProductParams productParams)
         {
@@ -111,7 +112,7 @@ namespace API.Controllers
             return Ok(result);
         }
 
-
+        [Authorize(Roles = "ViewProductDetail")]
         [HttpGet("detail/{id}")]
         public async Task<ActionResult> GetProductAsAdmin(int id)
         {
@@ -119,6 +120,7 @@ namespace API.Controllers
             return Ok(_mapper.Map<AdminProductDetailResponse>(product));
         }
 
+        [Authorize(Roles = "ImportProduct")]
         [HttpPost("import")]
         public async Task<ActionResult> ImportProduct(IFormFile file)
         {
@@ -212,7 +214,7 @@ namespace API.Controllers
             return BadRequest("An error occurred while importing products.");
         }
 
-
+        [Authorize(Roles = "CreateProduct")]
         [HttpPost("create")]
         public async Task<ActionResult> AddProduct(CreateProductRequest createProductRequest)
         {
@@ -232,7 +234,7 @@ namespace API.Controllers
             return BadRequest("An error occurred while adding the product.");
         }
 
-
+        [Authorize(Roles = "EditProduct")]
         [HttpPut("edit/{id}")]
         public async Task<ActionResult> UpdateProduct(int id, UpdateProductRequest updateProductRequest)
         {
@@ -256,6 +258,7 @@ namespace API.Controllers
             return BadRequest("An error occurred while updating the product.");
         }
 
+        [Authorize(Roles = "SoftDeleteProducts")]
         [HttpDelete("soft-delete")]
         public async Task<ActionResult> SoftDeleteProduct(DeleteProductsRequest deleteProductsRequest)
         {
@@ -282,6 +285,7 @@ namespace API.Controllers
             return BadRequest("An error occurred while deleting products.");
         }
 
+        [Authorize(Roles = "HardDeleteProducts")]
         [HttpDelete("hard-delete")]
         public async Task<ActionResult> HardDeleteProduct(DeleteProductsRequest deleteProductsRequest)
         {
@@ -299,6 +303,7 @@ namespace API.Controllers
             return BadRequest("An error occurred while deleting products.");
         }
 
+        [Authorize(Roles = "HideProducts")]
         [HttpPut("hide")]
         public async Task<ActionResult> HidingProduct(HideProductsRequest hideProductsRequest)
         {
@@ -325,6 +330,7 @@ namespace API.Controllers
             return BadRequest(new BaseResponseMessage(false, HttpStatusCode.BadRequest, "An error occurred while active product."));
         }
 
+        [Authorize(Roles = "ActivateProducts")]
         [HttpPut("activate")]
         public async Task<ActionResult> ActiveProduct(HideProductsRequest hideProductsRequest)
         {
@@ -351,6 +357,7 @@ namespace API.Controllers
             return BadRequest(new BaseResponseMessage(false, HttpStatusCode.BadRequest, "An error occurred while hiding product."));
         }
 
+        [Authorize(Roles = "DemoteProduct")]
         [HttpPut("demote")]
         public async Task<ActionResult> RemoveEditorChoiceForProduct(BulkDemoteRequest bulkDemoteRequest)
         {
@@ -377,6 +384,7 @@ namespace API.Controllers
             return BadRequest(new BaseResponseMessage(false, HttpStatusCode.BadRequest, "An error occurred while demote for product."));
         }
 
+        [Authorize(Roles = "PromoteProduct")]
         [HttpPut("promote")]
         public async Task<ActionResult> SetEditorChoiceForProduct(BulkPromoteRequest bulkPromoteRequest)
         {
@@ -403,6 +411,7 @@ namespace API.Controllers
             return BadRequest(new BaseResponseMessage(false, HttpStatusCode.BadRequest, "An error occurred while promote for product."));
         }
 
+        [Authorize(Roles = "CreateProductSale")]
         [HttpPut("create-product-sale")]
         public async Task<ActionResult> CreateProductSale(CreateProductSaleRequest createProductSaleRequest)
         {
@@ -458,7 +467,8 @@ namespace API.Controllers
                         new BaseResponseMessage(false, HttpStatusCode.BadRequest, $"An error occurred while creating product sale."));
 
         }
-        
+
+        [Authorize(Roles = "AddProductPhoto")]
         [HttpPost("add-product-photo/{productId}")]
         public async Task<ActionResult> AddProductPhoto(IFormFile file, int productId)
         {
@@ -501,6 +511,7 @@ namespace API.Controllers
             return BadRequest("An error occurred while adding the image.");
         }
 
+        [Authorize(Roles = "AddProductVideo")]
         [HttpPost("add-product-video/{productId}")]
         public async Task<ActionResult> AddProductVideo(IFormFile file, int productId)
         {
@@ -551,6 +562,7 @@ namespace API.Controllers
             return BadRequest("An error occurred while adding the image.");
         }
 
+        [Authorize(Roles = "SetProductMainPhoto")]
         [HttpPut("set-main-product-photo/{productId}/{productPhotoId}")]
         public async Task<ActionResult> SetMainProductPhoto(int productId, int productPhotoId)
         {
@@ -590,7 +602,8 @@ namespace API.Controllers
 
             return BadRequest("An error occurred while setting the main image.");
         }
-
+        
+        [Authorize(Roles = "DeleteProductPhoto")]
         [HttpDelete("delete-product-photo")]
         public async Task<ActionResult> DeleteProductPhoto(DeleteProductPhotosRequest deleteProductPhotosRequest)
         {
@@ -618,6 +631,7 @@ namespace API.Controllers
 
         }
 
+        [Authorize(Roles = "HideProductPhoto")]
         [HttpPut("hide-product-photo")]
         public async Task<ActionResult> HideProductPhoto(HideProductPhotosRequest hideProductPhotosRequest)
         {
@@ -643,6 +657,7 @@ namespace API.Controllers
 
         }
 
+        [Authorize(Roles = "ActivateProductPhoto")]
         [HttpPut("unhide-product-photo")]
         public async Task<ActionResult> UnHideProductPhoto(HideProductPhotosRequest hideProductPhotosRequest)
         {

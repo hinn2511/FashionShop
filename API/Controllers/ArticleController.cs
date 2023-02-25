@@ -16,7 +16,6 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers
 {
-    [Authorize(Policy = "ManagerOnly")]
     public class ArticleController : BaseApiController
     {
         private readonly IMapper _mapper;
@@ -98,7 +97,7 @@ namespace API.Controllers
 
 
         #region manager
-
+        [Authorize(Roles = "ViewArticles")]
         [HttpGet("all")]
         public async Task<ActionResult> GetArticlesAsManager([FromQuery] AdminArticleParams articleParams)
         {
@@ -112,7 +111,8 @@ namespace API.Controllers
             return Ok(result);
 
         }
-
+        
+        [Authorize(Roles = "ViewArticleDetail")]
         [HttpGet("{articleId}/detail")]
         public async Task<ActionResult> GetArticlesAsManager(int articleId)
         {
@@ -128,6 +128,7 @@ namespace API.Controllers
 
         }
 
+        [Authorize(Roles = "CreateArticle")]
         [HttpPost("create")]
         public async Task<ActionResult> AddArticle(CreateArticleRequest createArticleRequest)
         {
@@ -152,6 +153,7 @@ namespace API.Controllers
             return BadRequest(new BaseResponseMessage(false, HttpStatusCode.BadRequest, "An error occurred while adding the article."));
         }
 
+        [Authorize(Roles = "EditArticle")]
         [HttpPut("edit/{id}")]
         public async Task<ActionResult> UpdateArticle(int id, UpdateArticleRequest updateArticleRequest)
         {
@@ -181,6 +183,7 @@ namespace API.Controllers
             return BadRequest(new BaseResponseMessage(false, HttpStatusCode.BadRequest, "An error occurred while updating the article."));
         }
 
+        [Authorize(Roles = "SoftDeleteArticles")]
         [HttpDelete("soft-delete")]
         public async Task<ActionResult> SoftDeleteArticle(DeleteArticlesRequest deleteArticlesRequest)
         {
@@ -207,6 +210,7 @@ namespace API.Controllers
             return BadRequest(new BaseResponseMessage(false, HttpStatusCode.BadRequest, "An error occurred while deleting articles."));
         }
 
+        [Authorize(Roles = "HardDeleteArticles")]
         [HttpDelete("hard-delete")]
         public async Task<ActionResult> HardDeleteArticle(DeleteArticlesRequest deleteArticlesRequest)
         {
@@ -224,6 +228,7 @@ namespace API.Controllers
             return BadRequest(new BaseResponseMessage(false, HttpStatusCode.BadRequest, "An error occurred while deleting articles."));
         }
 
+        [Authorize(Roles = "HideArticles")]
         [HttpPut("hide")]
         public async Task<ActionResult> HidingArticle(HideArticlesRequest hideArticlesRequest)
         {
@@ -247,6 +252,7 @@ namespace API.Controllers
             return BadRequest(new BaseResponseMessage(false, HttpStatusCode.BadRequest, "An error occurred while active articles."));
         }
 
+        [Authorize(Roles = "ActivateArticles")]
         [HttpPut("activate")]
         public async Task<ActionResult> ActiveArticle(HideArticlesRequest hideArticlesRequest)
         {
@@ -270,6 +276,7 @@ namespace API.Controllers
             return BadRequest(new BaseResponseMessage(false, HttpStatusCode.BadRequest, "An error occurred while hiding articles."));
         }
 
+        [Authorize(Roles = "DemoteArticles")]
         [HttpPut("remove-editor-choice")]
         public async Task<ActionResult> RemoveEditorChoiceForArticle(EditorChoiceRequest editorChoiceRequest)
         {
@@ -293,6 +300,7 @@ namespace API.Controllers
             return BadRequest(new BaseResponseMessage(false, HttpStatusCode.BadRequest, "An error occurred while remove editor choice for articles."));
         }
 
+        [Authorize(Roles = "PromoteArticles")]
         [HttpPut("set-editor-choice")]
         public async Task<ActionResult> SetEditorChoiceForArticle(EditorChoiceRequest editorChoiceRequest)
         {

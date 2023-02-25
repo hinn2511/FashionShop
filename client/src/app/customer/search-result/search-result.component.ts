@@ -184,7 +184,6 @@ export class SearchResultComponent implements OnInit, OnDestroy {
   loadCategoryGroup() {
     this.categoryService.getCatalogue().subscribe((result) => {
       this.categoryGroups = result;
-      console.log(result);
       
     });
   }

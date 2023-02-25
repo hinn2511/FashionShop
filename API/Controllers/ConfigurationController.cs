@@ -17,7 +17,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers
 {
-    [Authorize(Policy = "ManagerOnly")]
+    
     public class ConfigurationController : BaseApiController
     {
         private readonly IMapper _mapper;
@@ -28,6 +28,7 @@ namespace API.Controllers
             _mapper = mapper;
         }
 
+        [Authorize(Roles = "ViewCarousels")]
         [HttpGet("carousels")]
         public async Task<ActionResult> GetCarousels([FromQuery] CarouselParams carouselParams)
         {
@@ -40,6 +41,7 @@ namespace API.Controllers
             return Ok(result);
         }
 
+        [Authorize(Roles = "CreateCarousel")]
         [HttpPost("create-carousel")]
         public async Task<ActionResult> AddCarouselImage(AddCarouselRequest addCarouselRequest)
         {
@@ -57,6 +59,7 @@ namespace API.Controllers
             return BadRequest("Can not add new home page.");
         }
 
+        [Authorize(Roles = "EditCarousel")]
         [HttpPut("edit-carousel/{id}")]
         public async Task<ActionResult> UpdateCarousel(int id, UpdateCarouselRequest updateCarouselRequest)
         {
@@ -79,6 +82,7 @@ namespace API.Controllers
             return BadRequest("An error occurred while updating the carousel.");
         }
 
+        [Authorize(Roles = "SoftDeleteCarousel")]
         [HttpDelete("soft-delete-carousel")]
         public async Task<ActionResult> SoftDeleteCarousel(DeleteCarouselsRequest deleteCarouselsRequest)
         {
@@ -105,6 +109,7 @@ namespace API.Controllers
             return BadRequest("An error occurred while deleting carousels.");
         }
 
+        [Authorize(Roles = "HardDeleteCarousel")]
         [HttpDelete("hard-delete-carousel")]
         public async Task<ActionResult> HardDeleteCarousel(DeleteCarouselsRequest deleteCarouselsRequest)
         {
@@ -122,6 +127,7 @@ namespace API.Controllers
             return BadRequest("An error occurred while deleting carousels.");
         }
 
+        [Authorize(Roles = "HideCarousels")]
         [HttpPut("hide-or-unhide-carousel")]
         public async Task<ActionResult> HidingCarousel(HideCarouselsRequest hideCarouselsRequest)
         {
@@ -158,75 +164,5 @@ namespace API.Controllers
             }
             return BadRequest("An error occurred while hiding carousels.");
         }
-
-        
-        // [HttpPost("create-home-page")]
-        // public async Task<ActionResult> CreateHomePage(HomePageRequest homePageRequest)
-        // {
-        //     var homePage = _mapper.Map<HomePage>(homePageRequest);
-
-        //     if(await _unitOfWork.HomePageRepository.GetFirstBy(x => x.IsActive) == null)
-        //         homePage.IsActive = true;
-        //     else
-        //         homePage.IsActive = false;
-        //     homePage.AddCreateInformation(GetUserId());
-
-        //     foreach (var carousel in homePage.Carousels) {
-        //         carousel.AddCreateInformation(GetUserId());
-        //     }
-
-        //     foreach (var category in homePage.FeatureCategories) {
-        //         category.AddCreateInformation(GetUserId());
-        //     }
-
-        //     foreach (var carousel in homePage.FeatureCarousels) {
-        //         carousel.AddCreateInformation(GetUserId());
-        //     }
-
-        //     _unitOfWork.HomePageRepository.Insert(homePage);
-
-        //     if (await _unitOfWork.Complete())
-        //         return Ok();
-
-        //     return BadRequest("Can not add new home page.");
-            
-        // }
-
-        // [AllowAnonymous]
-        // [HttpGet("current-home-page")]
-        // public async Task<ActionResult> GetCurrentHomePage()
-        // {
-        //     var currentActiveHomePage = await _unitOfWork.HomePageRepository.GetFirstBy(x => x.IsActive);
-        //     var result = await _unitOfWork.HomePageRepository.GetHomePageByIdAsync(currentActiveHomePage.Id);
-        //     return Ok(_mapper.Map<CustomerHomePageResponse>(currentActiveHomePage));
-        //     // return Ok(currentActiveHomePage);
-        // }
-
-        // [HttpPut("activating-home-page/{id}")]
-        // public async Task<ActionResult> ActivatingHomePage(int id)
-        // {
-        //     var currentActiveHomePage = await _unitOfWork.HomePageRepository.GetFirstBy(x => x.IsActive);
-
-        //     if (currentActiveHomePage.Id == id)
-        //         return BadRequest("Home page already activated.");
-
-        //     var newActiveHomePage = await _unitOfWork.HomePageRepository.GetById(id);
-
-        //     if (newActiveHomePage == null)
-        //         return BadRequest("Home page not found");
-
-        //     currentActiveHomePage.IsActive = false;
-
-        //     _unitOfWork.HomePageRepository.Update(currentActiveHomePage);
-            
-        //     newActiveHomePage.IsActive = true;
-
-        //     _unitOfWork.HomePageRepository.Update(newActiveHomePage);
-
-        //     if (await _unitOfWork.Complete())
-        //         return Ok();
-
-        //     return BadRequest("Can not activating new home page.");
-        // }
     }
 }

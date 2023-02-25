@@ -34,6 +34,11 @@ import { AdminCategoryAddComponent } from './administrator/admin-category-add/ad
 import { AdminCategoryEditComponent } from './administrator/admin-category-edit/admin-category-edit.component';
 import { AdminProductOptionEditComponent } from './administrator/admin-product-option-edit/admin-product-option-edit.component';
 import { AdminCategoryDetailComponent } from './administrator/admin-category-detail/admin-category-detail.component';
+import { AdminRoleComponent } from './administrator/admin-role/admin-role.component';
+import { AdminRoleAddComponent } from './administrator/admin-role-add/admin-role-add.component';
+import { AdminRoleDetailComponent } from './administrator/admin-role-detail/admin-role-detail.component';
+import { AdminUserComponent } from './administrator/admin-user/admin-user.component';
+import { AdminUserDetailComponent } from './administrator/admin-user-detail/admin-user-detail.component';
 
 const routes: Routes = [
   {path: '', component: HomePageComponent },
@@ -101,6 +106,50 @@ const routes: Routes = [
       {
         path: '',
         component: AdminDashboardComponent,
+        canActivate: [AuthGuard],
+      }
+    ],
+  },
+
+  {
+    path: 'administrator/user-manager',
+    canActivate: [AuthGuard],
+    children: [
+      {
+        path: '',
+        component: AdminUserComponent,
+        canActivate: [AuthGuard],
+      },
+      {
+        path: ':id',
+        component: AdminUserComponent,
+        canActivate: [AuthGuard],
+      },
+      {
+        path: 'detail/:id',
+        component: AdminUserDetailComponent,
+        canActivate: [AuthGuard],
+      },
+    ],
+  },
+
+  {
+    path: 'administrator/role-manager',
+    canActivate: [AuthGuard],
+    children: [
+      {
+        path: '',
+        component: AdminRoleComponent,
+        canActivate: [AuthGuard],
+      },
+      {
+        path: 'detail/:id',
+        component: AdminRoleDetailComponent,
+        canActivate: [AuthGuard],
+      },
+      {
+        path: 'add',
+        component: AdminRoleAddComponent,
         canActivate: [AuthGuard],
       }
     ],

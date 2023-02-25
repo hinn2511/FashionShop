@@ -95,6 +95,16 @@ import { AdminChartOrderRateComponent } from './administrator/dashboard/admin-ch
 import { AdminChartRevenueComponent } from './administrator/dashboard/admin-chart-revenue/admin-chart-revenue.component';
 import { ProductSaleComponent } from './customer/product-sale/product-sale.component';
 import { AdminCategoryDetailComponent } from './administrator/admin-category-detail/admin-category-detail.component';
+import { AdminRoleComponent } from './administrator/admin-role/admin-role.component';
+import { AdminRoleAddComponent } from './administrator/admin-role-add/admin-role-add.component';
+import { AdminRoleDetailComponent } from './administrator/admin-role-detail/admin-role-detail.component';
+import { AdminUserComponent } from './administrator/admin-user/admin-user.component';
+import { SingleOptionDialogComponent } from './_dialog/single-option-dialog/single-option-dialog.component';
+import { MultipleOptionDialogComponent } from './_dialog/multiple-option-dialog/multiple-option-dialog.component';
+import { CreatePermissionDialogComponent } from './_dialog/create-permission-dialog/create-permission-dialog.component';
+import { AdminUserDetailComponent } from './administrator/admin-user-detail/admin-user-detail.component';
+import { AdminUserEditComponent } from './administrator/admin-user-edit/admin-user-edit.component';
+import { ChangePasswordDialogComponent } from './_dialog/change-password-dialog/change-password-dialog.component';
 
 @NgModule({
   declarations: [
@@ -174,7 +184,17 @@ import { AdminCategoryDetailComponent } from './administrator/admin-category-det
     AdminChartOrderRateComponent,
     AdminChartRevenueComponent,
     ProductSaleComponent,
-    AdminCategoryDetailComponent
+    AdminCategoryDetailComponent,
+    AdminRoleComponent,
+    AdminRoleAddComponent,
+    AdminRoleDetailComponent,
+    AdminUserComponent,
+    SingleOptionDialogComponent,
+    MultipleOptionDialogComponent,
+    CreatePermissionDialogComponent,
+    AdminUserDetailComponent,
+    AdminUserEditComponent,
+    ChangePasswordDialogComponent,
     
   ],
   imports: [

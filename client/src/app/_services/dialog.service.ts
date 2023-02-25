@@ -1,10 +1,15 @@
+import { ChangePasswordDialogComponent } from './../_dialog/change-password-dialog/change-password-dialog.component';
+import { CreatePermissionDialogComponent } from './../_dialog/create-permission-dialog/create-permission-dialog.component';
+import { MultipleOptionDialogComponent } from './../_dialog/multiple-option-dialog/multiple-option-dialog.component';
+import { DialogResult, MultipleSelectedResult } from 'src/app/_models/dialog';
+import { SingleOptionDialogComponent } from './../_dialog/single-option-dialog/single-option-dialog.component';
 import { ManagerCatalogue } from './../_models/category';
 import { CategoriesListDialogComponent } from './../_dialog/categories-list-dialog/categories-list-dialog.component';
 import { Injectable } from '@angular/core';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 import { Observable } from 'rxjs';
 import { ConfirmDialogComponent } from '../_dialog/confirm-dialog/confirm-dialog.component';
-import { ConfirmResult, SingleSelectedResult } from '../_models/dialog';
+import { ConfirmResult, SelectOption, SingleSelectedResult } from '../_models/dialog';
 
 @Injectable({
   providedIn: 'root'
@@ -61,13 +66,80 @@ export class DialogService {
         }
       }
     this.bsModalRef = this.modalService.show(CategoriesListDialogComponent, config);
-    return new Observable<SingleSelectedResult>(this.getCategorySingleSelectorResult());
+    return new Observable<SingleSelectedResult>(this.getSelectResult());
   }
 
-  private getCategorySingleSelectorResult() {
+  openSingleSelectDialog(options: SelectOption[], optionTableTitle = '', title = '', message = '',
+    btnYesText = 'OK', btnNoText = 'Cancel'): Observable<SingleSelectedResult> {
+      const config = {
+        initialState: {
+          title,
+          btnYesText,
+          btnNoText,
+          optionTableTitle,
+          message, 
+          options
+        }
+      }
+    this.bsModalRef = this.modalService.show(SingleOptionDialogComponent, config);
+    return new Observable<SingleSelectedResult>(this.getSelectResult());
+  }
+
+  openMultipleSelectDialog(options: SelectOption[], optionTableTitle = '', title = '', message = '',
+    btnYesText = 'OK', btnNoText = 'Cancel'): Observable<MultipleSelectedResult> {
+      const config = {
+        initialState: {
+          title,
+          btnYesText,
+          btnNoText,
+          optionTableTitle,
+          message, 
+          options,
+        }
+      }
+    this.bsModalRef = this.modalService.show(MultipleOptionDialogComponent, config);
+    return new Observable<MultipleSelectedResult>(this.getSelectResult());
+  }
+
+  openChangePasswordDialog(userId: number): Observable<boolean> {
+      const config = {
+        initialState: {
+          userId
+        }
+      }
+    this.bsModalRef = this.modalService.show(ChangePasswordDialogComponent, config);
+    return new Observable<boolean>(this.getFormDialogResult());
+  }
+
+  openCreatePermissionDialog(permissionGroups: string[]): Observable<DialogResult> {
+    const config = {
+      initialState: {
+        permissionGroups
+      }
+    }
+  this.bsModalRef = this.modalService.show(CreatePermissionDialogComponent, config);
+  return new Observable<DialogResult>(this.getFormDialogResult());
+  }
+
+  private getSelectResult() {
     return (observer) => {
       const subscription = this.bsModalRef.onHidden.subscribe(() =>{
-        observer.next(this.bsModalRef.content.selectResult);
+        observer.next(this.bsModalRef.content.selectedResult);
+        observer.complete();
+      });
+      
+      return {
+        unsubscribe() {
+          subscription.unsubscribe();
+        }
+      }
+    }
+  }
+
+  private getFormDialogResult() {
+    return (observer) => {
+      const subscription = this.bsModalRef.onHidden.subscribe(() =>{
+        observer.next(this.bsModalRef.content.result);
         observer.complete();
       });
       

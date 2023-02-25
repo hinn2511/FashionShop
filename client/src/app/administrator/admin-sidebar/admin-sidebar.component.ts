@@ -10,6 +10,8 @@ export class AdminSidebarComponent implements OnInit {
   @Input() currentState: string = "in";
   @Output() newState = new EventEmitter<string>();
 
+  state: string;
+
 
   @HostListener('click', ['$event'])
   clickInside($event) {
@@ -24,7 +26,7 @@ export class AdminSidebarComponent implements OnInit {
   constructor(private router: Router) { }
 
   ngOnInit(): void {
-    //Not implemented
+    this.state = 'in';
   }
 
   hasRoute(route: string) {
@@ -33,8 +35,8 @@ export class AdminSidebarComponent implements OnInit {
 
   toggle()
   {
-    let output = this.currentState === 'in' ? "out" : "in";
-    this.newState.emit(output)
+    this.state = this.state === 'in' ? "out" : "in";
+    this.newState.emit(this.state)
   }
 
   expand()

@@ -48,8 +48,6 @@ export class OrderDetailComponent implements OnInit {
   private showButton() {
     this.allowCancelRequest = isAllowCancelRequest(this.order.currentStatus);
     this.allowReturnRequest = isAllowReturnRequest(this.order.currentStatus);
-    console.log(this.order.currentStatus);
-    console.log(isAllowConfirmDelivered(this.order.currentStatus));
     
     this.allowConfirmDelivered = isAllowConfirmDelivered(this.order.currentStatus);
     this.allowReview = isAllowReview(this.order.currentStatus);

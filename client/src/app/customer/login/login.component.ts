@@ -59,11 +59,14 @@ export class LoginComponent implements OnInit {
     //         }
     //     });
     this.authenticationService
-      .login(this.f.username.value, this.f.password.value, 'client')
+      .login(this.f.username.value, this.f.password.value)
       .pipe(concatMap((_) => this.cartService.getUserCartItems()))
       .subscribe({
         next: () => {
-          this.router.navigate([this.returnUrl]);
+          if (this.authenticationService.userValue.roles.find(x => x === "ClientAccess") == null)
+            this.authenticationService.logout();
+          else
+            this.router.navigate([this.returnUrl]);
         },
         error: (error) => {
           this.error = error;

@@ -35,8 +35,6 @@ export class ProductService {
 
   resetProductParams() {
     this.productParams = new ProductParams();
-    console.log(this.productParams);
-    console.log( new ProductParams());
     return this.productParams;
   }
 

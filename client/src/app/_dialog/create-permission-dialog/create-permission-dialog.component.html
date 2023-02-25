@@ -1,0 +1,52 @@
+<div class="modal-header d-flex justify-content-between align-items-center">
+  <h5 class="modal-title w-100">New permission</h5>
+  <button class="btn btn-transparent" (click)="finish()">
+    <em class="fa fa-times"></em>
+  </button>
+</div>
+<div class="modal-body p-0">
+  <div class="table-responsive w-100">
+    <form
+      [formGroup]="newPermissionForm"
+      (ngSubmit)="newPermissionForm.valid && onSubmit()"
+    >
+      <div class="form-group my-4 px-4">
+        <label for="username">Permission name</label>
+        <app-text-input
+          [formControl]="newPermissionForm.controls['permissionName']"
+          [label]="'Permission name'"
+        ></app-text-input>
+      </div>
+
+      <div class="form-group my-4 px-4">
+        <label for="username">Permission group</label>
+        <app-text-input
+          [formControl]="newPermissionForm.controls['permissionGroup']"
+          [label]="'Permission group'"
+        ></app-text-input>
+
+        <label for="username">Available group</label>
+        <select
+          class="form-select w-100"
+          (change)="selectGroup($event.target.value)"
+        >
+          <option *ngFor="let permissionGroup of permissionGroups"  value="{{permissionGroup}}">{{permissionGroup}}</option>
+        </select>
+      </div>
+
+      <div class="my-4 px-4">
+        <button
+          [disabled]="!newPermissionForm.valid"
+          class="btn btn-dark py-2 mt-2 w-100"
+        >
+          <span
+            *ngIf="loading"
+            class="spinner-border spinner-border-sm mr-1"
+          ></span>
+          <h5 *ngIf="!loading" class="p-0 m-0">Create</h5>
+        </button>
+      </div>
+    </form>
+  </div>
+  
+</div>

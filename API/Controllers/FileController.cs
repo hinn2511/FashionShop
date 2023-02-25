@@ -19,7 +19,7 @@ using System.Threading.Tasks;
 
 namespace API.Controllers
 {
-    [Authorize(Policy = "ManagerOnly")]
+    
     [ApiController]
     [Route("file")]
     public class FileController : BaseApiController
@@ -35,6 +35,7 @@ namespace API.Controllers
             _mapper = mapper;
         }
 
+        [Authorize(Roles = "UploadFile")]
         [HttpPost]
         public async Task<ActionResult> UploadFile(IFormFile file)
         {
@@ -64,6 +65,7 @@ namespace API.Controllers
             return BadRequest("Can not upload file");
         }
 
+        [Authorize(Roles = "UploadImage")]
         [HttpPost("image")]
         public async Task<ActionResult> UploadImageFile(IFormFile file, [FromQuery] int height, [FromQuery] int width, [FromQuery] double ratio, [FromQuery] string cropOption)
         {

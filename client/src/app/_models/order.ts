@@ -54,6 +54,7 @@ export const CustomerStatusFilters = [
   new OrderStatusFilter([5, 7, 8, 9, 10], 'Finished'),
   new OrderStatusFilter([11], 'Returned'),
 ];
+
 export enum OrderStatusEnum {
   Created,
   Checking,
@@ -68,6 +69,7 @@ export enum OrderStatusEnum {
   ReturnRequested,
   Returned,
 }
+
 export const allowVerifyStatus: OrderStatusEnum[] = [
   OrderStatusEnum.Created,
   OrderStatusEnum.Paid,

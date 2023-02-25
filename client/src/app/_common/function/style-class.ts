@@ -52,3 +52,14 @@ export function fnGetObjectStateStyle(state: number): string {
         return 'status default-status';
     }
   }
+
+  export function fnGetUserStateStyle(status: number) {
+    switch (status) {
+      case 0:
+        return 'status active-status';
+      case 1:
+        return 'status hidden-status';
+      default:
+        return 'status default-status';
+    }
+  }

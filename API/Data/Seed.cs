@@ -10,12 +10,13 @@ using Microsoft.EntityFrameworkCore;
 using API.Entities.ProductModel;
 using API.Extensions;
 using System.Linq;
+using API.Entities.UserModel;
 
 namespace API.Entities
 {
     public class Seed
     {
-        public static async Task SeedUsers(UserManager<AppUser> userManager, RoleManager<AppRole> roleManager)
+        public static async Task SeedUsers(UserManager<AppUser> userManager)
         {
             if (await userManager.Users.AnyAsync()) return;
 
@@ -25,26 +26,10 @@ namespace API.Entities
 
             if (users == null) return;
 
-            var roles = new List<AppRole>
-            {
-                new AppRole{Name = "Customer"},
-                new AppRole{Name = "Logistic"},
-                new AppRole{Name = "Sales"},
-                new AppRole{Name = "Purchasing"},
-                new AppRole{Name = "Manager"},
-                new AppRole{Name = "Admin"}
-            };
-
-            foreach (var role in roles)
-            {
-                await roleManager.CreateAsync(role);
-            }
-
             foreach (var user in users)
             {
                 user.UserName = user.UserName.ToLower();
                 await userManager.CreateAsync(user, "Pa$$w0rd");
-                await userManager.AddToRoleAsync(user, "Customer");
             }
 
             var admin = new AppUser
@@ -53,7 +38,6 @@ namespace API.Entities
             };
 
             await userManager.CreateAsync(admin, "Pa$$w0rd");
-            await userManager.AddToRolesAsync(admin, new[] { "Admin" });
 
             var manager = new AppUser
             {
@@ -61,15 +45,40 @@ namespace API.Entities
             };
 
             await userManager.CreateAsync(manager, "Pa$$w0rd");
-            await userManager.AddToRolesAsync(manager, new[] { "Manager" });
 
-            var purchasing = new AppUser
+            var superAdmin = new AppUser
             {
-                UserName = "purchasing"
+                UserName = "sa"
             };
 
-            await userManager.CreateAsync(purchasing, "Pa$$w0rd");
-            await userManager.AddToRolesAsync(purchasing, new[] { "Purchasing" });
+            await userManager.CreateAsync(superAdmin, "Pa$$w0rd");
+
+            var supperAdminPermissions = new List<AppPermission>
+            {
+                new AppPermission{Name = "AdministratorAccess"},
+
+                new AppPermission{PermissionGroup = "Role", Name = "RoleManagerAccess"},
+                new AppPermission{PermissionGroup = "Role", Name = "CreateAccount"},
+                new AppPermission{PermissionGroup = "Role", Name = "ViewRoles"},
+                new AppPermission{PermissionGroup = "Role", Name = "ViewRoleDetail"},
+                new AppPermission{PermissionGroup = "Role", Name = "ViewRolePermissions"},
+                new AppPermission{PermissionGroup = "Role", Name = "CreateRole"},
+                new AppPermission{PermissionGroup = "Role", Name = "DeleteRole"},
+                new AppPermission{PermissionGroup = "Role", Name = "UpdateRolePermissions"},
+                new AppPermission{PermissionGroup = "Role", Name = "ViewPermissions"},
+                new AppPermission{PermissionGroup = "Role", Name = "CreatePermission" },
+
+                new AppPermission{PermissionGroup = "User", Name = "UserManagerAccess"},
+                new AppPermission{PermissionGroup = "User", Name = "ViewUsers"},
+                new AppPermission{PermissionGroup = "User", Name = "SetRole"},
+                new AppPermission{PermissionGroup = "User", Name = "RemoveRole"},
+                new AppPermission{PermissionGroup = "User", Name = "ActivateUsers"},
+                new AppPermission{PermissionGroup = "User", Name = "DeactivateUsers" },
+                new AppPermission{PermissionGroup = "User", Name = "DeleteUsers"},
+
+            };
+
+            await userManager.AddToRolesAsync(superAdmin, supperAdminPermissions.Select(x => x.Name).ToArray());
 
             var sales = new AppUser
             {
@@ -77,15 +86,164 @@ namespace API.Entities
             };
 
             await userManager.CreateAsync(sales, "Pa$$w0rd");
-            await userManager.AddToRolesAsync(sales, new[] { "Sales" });
+        }
 
-            var logistic = new AppUser
+        public static async Task SeedRolePermission(DataContext context, RoleManager<AppPermission> roleManager)
+        {
+            var role = await context.AppRoles.FirstOrDefaultAsync(x => x.RoleName == "Customer");
+
+            var permission = await roleManager.FindByNameAsync("ClientAccess");
+
+            if (role != null && permission != null)
             {
-                UserName = "logistic"
+                var customerPermission = new AppRolePermission(permission.Id, role.Id);
+            }
+            await context.SaveChangesAsync();
+        }
+
+
+        public static async Task SeedPermissions(RoleManager<AppPermission> roleManager)
+        {
+            if (await roleManager.Roles.AnyAsync()) return;
+
+            var permissions = new List<AppPermission>
+            {
+                new AppPermission{Name = "AdministratorAccess"},
+
+                new AppPermission{Name = "ClientAccess"},
+
+                new AppPermission{PermissionGroup = "Role", Name = "RoleManagerAccess"},
+                new AppPermission{PermissionGroup = "Role", Name = "CreateAccount"},
+                new AppPermission{PermissionGroup = "Role", Name = "ViewRoles"},
+                new AppPermission{PermissionGroup = "Role", Name = "ViewRoleDetail"},
+                new AppPermission{PermissionGroup = "Role", Name = "ViewRolePermissions"},
+                new AppPermission{PermissionGroup = "Role", Name = "CreateRole"},
+                new AppPermission{PermissionGroup = "Role", Name = "DeleteRole"},
+                new AppPermission{PermissionGroup = "Role", Name = "UpdateRolePermissions"},
+                new AppPermission{PermissionGroup = "Role", Name = "ViewPermissions"},
+                new AppPermission{PermissionGroup = "Role", Name = "CreatePermission" },
+
+                new AppPermission{PermissionGroup = "User", Name = "UserManagerAccess"},
+                new AppPermission{PermissionGroup = "User", Name = "ViewUsers"},
+                new AppPermission{PermissionGroup = "User", Name = "SetRole"},
+                new AppPermission{PermissionGroup = "User", Name = "RemoveRole"},
+                new AppPermission{PermissionGroup = "User", Name = "ActivateUsers"},
+                new AppPermission{PermissionGroup = "User", Name = "DeactivateUsers" },
+                new AppPermission{PermissionGroup = "User", Name = "DeleteUsers"},
+
+                new AppPermission{PermissionGroup = "Article", Name = "ArticleManagerAccess"},
+                new AppPermission{PermissionGroup = "Article", Name = "ViewArticles"},
+                new AppPermission{PermissionGroup = "Article", Name = "ViewArticleDetail"},
+                new AppPermission{PermissionGroup = "Article", Name = "CreateArticle"},
+                new AppPermission{PermissionGroup = "Article", Name = "EditArticle"},
+                new AppPermission{PermissionGroup = "Article", Name = "SoftDeleteArticles"},
+                new AppPermission{PermissionGroup = "Article", Name = "HardDeleteArticles" },
+                new AppPermission{PermissionGroup = "Article", Name = "HideArticles"},
+                new AppPermission{PermissionGroup = "Article", Name = "ActivateArticles"},
+                new AppPermission{PermissionGroup = "Article", Name = "DemoteArticles" },
+                new AppPermission{PermissionGroup = "Article", Name = "PromoteArticles"},
+
+                new AppPermission{PermissionGroup = "Category", Name = "CategoryManagerAccess"},
+                new AppPermission{PermissionGroup = "Category", Name = "ViewCategories"},
+                new AppPermission{PermissionGroup = "Category", Name = "ViewCategoryDetail"},
+                new AppPermission{PermissionGroup = "Category", Name = "ViewCatalogue"},
+                new AppPermission{PermissionGroup = "Category", Name = "CreateCategory"},
+                new AppPermission{PermissionGroup = "Category", Name = "EditCategory"},
+                new AppPermission{PermissionGroup = "Category", Name = "SoftDeleteCategories"},
+                new AppPermission{PermissionGroup = "Category", Name = "HardDeleteCategories" },
+                new AppPermission{PermissionGroup = "Category", Name = "HideCategories"},
+                new AppPermission{PermissionGroup = "Category", Name = "ActivateCategories"},
+                new AppPermission{PermissionGroup = "Category", Name = "DemoteCategories" },
+                new AppPermission{PermissionGroup = "Category", Name = "PromoteCategories"},
+
+                new AppPermission{PermissionGroup = "Carousel", Name = "CarouselManagerAccess"},
+                new AppPermission{PermissionGroup = "Carousel", Name = "ViewCarousels"},
+                new AppPermission{PermissionGroup = "Carousel", Name = "ViewCarouselDetail"},
+                new AppPermission{PermissionGroup = "Carousel", Name = "CreateCarousel"},
+                new AppPermission{PermissionGroup = "Carousel", Name = "EditCarousel"},
+                new AppPermission{PermissionGroup = "Carousel", Name = "SoftDeleteCarousels"},
+                new AppPermission{PermissionGroup = "Carousel", Name = "HardDeleteCarousels" },
+                new AppPermission{PermissionGroup = "Carousel", Name = "HideCarousels"},
+                new AppPermission{PermissionGroup = "Carousel", Name = "ActivateCarousels"},
+
+                new AppPermission{PermissionGroup = "Order", Name = "OrderManagerAccess"},
+                new AppPermission{PermissionGroup = "Order", Name = "ViewOrders"},
+                new AppPermission{PermissionGroup = "Order", Name = "ViewOrderSummary"},
+                new AppPermission{PermissionGroup = "Order", Name = "ViewOrderDetail"},
+                new AppPermission{PermissionGroup = "Order", Name = "VerifyOrder"},
+                new AppPermission{PermissionGroup = "Order", Name = "ShippingOrder"},
+                new AppPermission{PermissionGroup = "Order", Name = "ConfirmOrderShipped"},
+                new AppPermission{PermissionGroup = "Order", Name = "CancelOrder"},
+                new AppPermission{PermissionGroup = "Order", Name = "AcceptReturnOrder"},
+                new AppPermission{PermissionGroup = "Order", Name = "AcceptCancelOrder"},
+
+                new AppPermission{PermissionGroup = "Product option", Name = "ProductOptionManagerAccess"},
+                new AppPermission{PermissionGroup = "Product option", Name = "ViewProductOptions"},
+                new AppPermission{PermissionGroup = "Product option", Name = "ViewProductOptionDetail"},
+                new AppPermission{PermissionGroup = "Product option", Name = "CreateProductOption"},
+                new AppPermission{PermissionGroup = "Product option", Name = "EditProductOption"},
+                new AppPermission{PermissionGroup = "Product option", Name = "SoftDeleteProductOptions"},
+                new AppPermission{PermissionGroup = "Product option", Name = "HardDeleteProductOptions" },
+                new AppPermission{PermissionGroup = "Product option", Name = "HideProductOptions"},
+                new AppPermission{PermissionGroup = "Product option", Name = "ActivateProductOptions"},
+                new AppPermission{PermissionGroup = "Product option", Name = "DemoteProductOptions" },
+                new AppPermission{PermissionGroup = "Product option", Name = "PromoteProductOptions"},
+
+                new AppPermission{PermissionGroup = "Product", Name = "ProductManagerAccess"},
+                new AppPermission{PermissionGroup = "Product", Name = "ViewProducts"},
+                new AppPermission{PermissionGroup = "Product", Name = "ViewProductDetail"},
+                new AppPermission{PermissionGroup = "Product", Name = "CreateProduct"},
+                new AppPermission{PermissionGroup = "Product", Name = "EditProduct"},
+                new AppPermission{PermissionGroup = "Product", Name = "SoftDeleteProducts"},
+                new AppPermission{PermissionGroup = "Product", Name = "HardDeleteProducts" },
+                new AppPermission{PermissionGroup = "Product", Name = "HideProducts"},
+                new AppPermission{PermissionGroup = "Product", Name = "ActivateProducts"},
+                new AppPermission{PermissionGroup = "Product", Name = "DemoteProducts" },
+                new AppPermission{PermissionGroup = "Product", Name = "PromoteProducts"},
+                new AppPermission{PermissionGroup = "Product", Name = "CreateProductSale" },
+                new AppPermission{PermissionGroup = "Product", Name = "AddProductPhoto"},
+                new AppPermission{PermissionGroup = "Product", Name = "AddProductVideo"},
+                new AppPermission{PermissionGroup = "Product", Name = "SetProductMainPhoto" },
+                new AppPermission{PermissionGroup = "Product", Name = "DeleteProductPhoto"},
+                new AppPermission{PermissionGroup = "Product", Name = "HideProductPhoto" },
+                new AppPermission{PermissionGroup = "Product", Name = "ActivateProductPhoto"},
+
+                new AppPermission{PermissionGroup = "Dashboard", Name = "DashboardAccess"},
+                new AppPermission{PermissionGroup = "Dashboard", Name = "ViewDashboardOrderStatus"},
+                new AppPermission{PermissionGroup = "Dashboard", Name = "ViewDashboardPopularProduct" },
+                new AppPermission{PermissionGroup = "Dashboard", Name = "ViewDashboardOrderRate"},
+                new AppPermission{PermissionGroup = "Dashboard", Name = "ViewDashboardRevenue" },
+
+                new AppPermission{PermissionGroup = "File", Name = "UploadFile"},
+                new AppPermission{PermissionGroup = "File", Name = "UploadImage"},
+            
             };
 
-            await userManager.CreateAsync(logistic, "Pa$$w0rd");
-            await userManager.AddToRolesAsync(logistic, new[] { "Logistic" });
+            foreach (var permission in permissions)
+            {
+                await roleManager.CreateAsync(permission);
+            }
+        }
+
+        
+        public static async Task SeedRoles(DataContext context)
+        {
+            if (await context.AppRoles.AnyAsync()) return;
+
+            var roles = new List<AppRole>
+            {
+                new AppRole { RoleName = "Administrator" },
+                new AppRole { RoleName = "Manager" },
+                new AppRole { RoleName = "Sales" },
+                new AppRole { RoleName = "Customer" },
+            };
+
+            foreach (var role in roles)
+            {
+                context.AppRoles.Add(role);
+            }
+
+            await context.SaveChangesAsync();
         }
 
         public static async Task SeedProducts(DataContext context)

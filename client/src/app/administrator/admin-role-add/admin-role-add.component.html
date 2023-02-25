@@ -1,0 +1,153 @@
+<div class="container-fluid px-3">
+  <h3>Add new role</h3>
+  <form
+    [formGroup]="newRoleForm"
+    (ngSubmit)="newRoleForm.valid && addNewRole($event)"
+    autocomplete="off"
+  >
+    <div class="row">
+      <div class="col-12 col-lg-6">
+        <label for="roleName">Role name</label>
+        <app-text-input
+          [formControl]="newRoleForm.controls['roleName']"
+          [label]="'Role name'"
+        >
+        </app-text-input>
+
+        <div
+          class="d-flex d-inline flex-wrap align-items-center justify-content-between my-2"
+        >
+          <h5 class="m-0 p-0">Permissions</h5>
+          <div>
+            <button
+              class="btn btn-success mr-2"
+              (click)="openCreatePermissionDialog()"
+            >
+              <em class="fa fa-plus mr-2"></em>
+              Create new permission
+            </button>
+
+            <button class="btn btn-light" (click)="expandTableToggle()">
+              
+              <span *ngIf="isExpandTable; else expand">Collapse&nbsp;&nbsp;<em class="fa fa-caret-up"></em></span>
+              <ng-template #expand>
+                <span>Expand&nbsp;&nbsp;<em class="fa fa-caret-down"></em></span>
+              </ng-template>
+                        
+            </button>
+          </div>
+        </div>
+
+        <!-- Role table -->
+        <div class="table-responsive w-100" *ngIf="permissions">
+          <table
+            class="table table-striped table-borderless"
+            aria-describedby="role-table"
+          >
+            <thead class="bg-light">
+              <tr>
+                <th scope="col">
+                  <input
+                    type="checkbox"
+                    [checked]="selectAll"
+                    (click)="selectAllPermissions()"
+                  />
+                </th>
+                <th scope="col cs-pointer" class="text-center">Group</th>
+                <th scope="col cs-pointer" class="text-center">Name</th>
+              </tr>
+            </thead>
+            <tbody *ngIf="isExpandTable">
+              <tr
+                class="role-item"
+                *ngFor="let permission of permissions"
+                (click)="selectPermission(permission)"
+              >
+                <td>
+                  <input
+                    type="checkbox"
+                    [value]="permission.id"
+                    [checked]="isPermissionSelected(permission)"
+                  />
+                </td>
+                <td class="text-center">
+                  {{ permission.permissionGroup }}
+                </td>
+                <td class="text-center">
+                  {{ permission.permissionName }}
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div *ngIf="permissions" class="w-100 mt-2">
+          Total: {{ permissions.length }} role(s)
+        </div>
+      </div>
+      <div class="col-12 col-lg-6">
+        <hr class="d-lg-none" />
+
+        <label for="rolePermission mt-5 mt-lg-0">Selected permission</label>
+        <div class="table-responsive w-100">
+          <table
+            class="table table-striped table-borderless"
+            aria-describedby="role-table"
+          >
+            <thead class="bg-light">
+              <tr>
+                <th scope="col cs-pointer" class="text-center">Group</th>
+                <th scope="col cs-pointer" class="text-center">Name</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr
+                class="role-item"
+                *ngFor="let selectedPermission of selectedPermissions"
+                (click)="selectPermission(selectedPermission)"
+              >
+                <td class="text-center">
+                  {{ selectedPermission.permissionGroup }}
+                </td>
+                <td class="text-center">
+                  {{ selectedPermission.permissionName }}
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="w-100 mt-2">
+          Total: {{ selectedPermissions.length }} role(s)
+        </div>
+
+        <div class="form-group text-right mt-3">
+          <button
+            (click)="backToList()"
+            class="btn btn-danger mr-2"
+            name="save"
+            type="button"
+          >
+            Back
+          </button>
+          <button
+            [disabled]="!newRoleForm.valid || selectedPermissions.length == 0"
+            class="btn btn-success mr-2"
+            name="save"
+            type="submit"
+          >
+            Save
+          </button>
+          <button
+            [disabled]="!newRoleForm.valid || selectedPermissions.length == 0"
+            class="btn btn-primary"
+            name="saveAndContinue"
+            type="submit"
+          >
+            Save and continue
+          </button>
+        </div>
+      </div>
+    </div>
+  </form>
+</div>
