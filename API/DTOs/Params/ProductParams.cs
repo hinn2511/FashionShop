@@ -8,13 +8,14 @@ namespace API.DTOs.Params
     {
         public string Category { get; set; }
         public Gender? Gender { get; set; }
+        public double MinPrice { get; set; }
+        public double MaxPrice { get; set; }
         
     }
 
     public class CustomerProductParams : BaseProductParams
     {
-        public double MinPrice { get; set; }
-        public double MaxPrice { get; set; }
+        
         public string Size { get; set; }
         public string ColorCode { get; set; }
     }

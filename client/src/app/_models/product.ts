@@ -64,6 +64,7 @@ export interface ManagerProduct {
     url: string;
     id: number;
     description: string;
+    isPromoted: boolean;
 }
 
 

@@ -16,6 +16,7 @@ namespace API.DTOs.Response.ProductResponse
         public string Description { get; set; }
         public string Url { get; set; }
         public Gender Gender { get; set; }
+        public bool IsPromoted { get; set; }
     }
 
     #endregion

@@ -21,6 +21,7 @@ namespace API.Entities.ProductModel
         [JsonIgnore]
         public ICollection<Option> Options { get; set; }
         public ICollection<ProductPhoto> ProductPhotos { get; set; }
+        public bool IsPromoted { get; set; }
     }
 
 }

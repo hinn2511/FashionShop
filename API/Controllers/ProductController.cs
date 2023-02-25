@@ -6,10 +6,12 @@ using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
 using API.Data;
 using API.DTOs;
 using API.DTOs.Params;
+using API.DTOs.Request;
 using API.DTOs.Request.ProductRequest;
 using API.DTOs.Response;
 using API.DTOs.Response.OptionResponse;
@@ -142,7 +144,7 @@ namespace API.Controllers
                 {
                     string[] cols = csvParser.ReadFields();
 
-                    int categoryId = 0, brandId = 0;
+                    int productId = 0, brandId = 0;
                     double price = 0;
                     string name;
 
@@ -156,10 +158,10 @@ namespace API.Controllers
                     if (!string.IsNullOrEmpty(cols[1]))
                     {
 
-                        bool success = int.TryParse(cols[1], out categoryId);
+                        bool success = int.TryParse(cols[1], out productId);
                         if (!success)
                             continue;
-                        if (_unitOfWork.CategoryRepository.GetFirstBy(x => x.Id == categoryId) == null)
+                        if (_unitOfWork.ProductRepository.GetFirstBy(x => x.Id == productId) == null)
                             continue;
                     }
                     else
@@ -191,7 +193,7 @@ namespace API.Controllers
                     {
                         Slug = cols[0].GenerateSlug(),
                         ProductName = cols[0],
-                        CategoryId = categoryId,
+                        CategoryId = productId,
                         BrandId = brandId,
                         Price = price,
                     };
@@ -300,41 +302,108 @@ namespace API.Controllers
             return BadRequest("An error occurred while deleting products.");
         }
 
-        [HttpPut("hide-or-unhide")]
+        [HttpPut("hide")]
         public async Task<ActionResult> HidingProduct(HideProductsRequest hideProductsRequest)
         {
-            var products = await _unitOfWork.ProductRepository.GetAllBy(x => hideProductsRequest.Ids.Contains(x.Id));
+            var products = await _unitOfWork.ProductRepository.GetAllBy(x => hideProductsRequest.Ids.Contains(x.Id) && x.Status == Status.Active);
 
             if (products == null)
-                return BadRequest("Product not found");
+                return BadRequest(new BaseResponseMessage(false, HttpStatusCode.NotFound, "Product not found"));
+
+            if (products.Count() == 0)
+                return BadRequest(new BaseResponseMessage(false, HttpStatusCode.BadRequest, "No active product found"));
 
             foreach (var product in products)
             {
-                if(product.Status == Status.Active)
-                {
-                    product.AddHiddenInformation(GetUserId());
-                    continue;
-                }
-                    
-                if(product.Status == Status.Hidden)
-                {
-                    product.Status = Status.Active;
-                    continue;
-                }
+                product.AddHiddenInformation(GetUserId());
 
-                if(product.Status == Status.Deleted)
-                {
-                    continue;
-                }
             }
 
             _unitOfWork.ProductRepository.Update(products);
 
             if (await _unitOfWork.Complete())
             {
-                return Ok();
+                return Ok(new BaseResponseMessage(false, HttpStatusCode.BadRequest, $"Successfully hide {products.Count()} product(s)."));
             }
-            return BadRequest("An error occurred while hiding products.");
+            return BadRequest(new BaseResponseMessage(false, HttpStatusCode.BadRequest, "An error occurred while active product."));
+        }
+
+        [HttpPut("activate")]
+        public async Task<ActionResult> ActiveProduct(HideProductsRequest hideProductsRequest)
+        {
+            var products = await _unitOfWork.ProductRepository.GetAllBy(x => hideProductsRequest.Ids.Contains(x.Id) && x.Status == Status.Hidden);
+
+            if (products == null)
+                return BadRequest(new BaseResponseMessage(false, HttpStatusCode.NotFound, "Product not found"));
+
+            if (products.Count() == 0)
+                return BadRequest(new BaseResponseMessage(false, HttpStatusCode.BadRequest, "No hidden product found"));
+
+            foreach (var product in products)
+            {
+                product.Status = Status.Active;
+                product.AddUpdateInformation(GetUserId());
+            }
+
+            _unitOfWork.ProductRepository.Update(products);
+
+            if (await _unitOfWork.Complete())
+            {
+                return Ok(new BaseResponseMessage(false, HttpStatusCode.BadRequest, $"Successfully unhide {products.Count()} product(s)."));
+            }
+            return BadRequest(new BaseResponseMessage(false, HttpStatusCode.BadRequest, "An error occurred while hiding product."));
+        }
+
+        [HttpPut("demote")]
+        public async Task<ActionResult> RemoveEditorChoiceForProduct(BulkDemoteRequest bulkDemoteRequest)
+        {
+            var products = await _unitOfWork.ProductRepository.GetAllBy(x => bulkDemoteRequest.Ids.Contains(x.Id));
+
+            if (products == null)
+                return BadRequest(new BaseResponseMessage(false, HttpStatusCode.NotFound, "Product not found"));
+
+            if (products.Count() == 0)
+                return BadRequest(new BaseResponseMessage(false, HttpStatusCode.BadRequest, "No promoted product found"));
+                
+            foreach (var product in products)
+            {
+                if (product.IsPromoted)
+                    product.IsPromoted = false;
+            }
+
+            _unitOfWork.ProductRepository.Update(products);
+
+            if (await _unitOfWork.Complete())
+            {
+                return Ok(new BaseResponseMessage(true, HttpStatusCode.OK, $"Successfully demote for {products.Count()} product(s)."));
+            }
+            return BadRequest(new BaseResponseMessage(false, HttpStatusCode.BadRequest, "An error occurred while demote for product."));
+        }
+
+        [HttpPut("promote")]
+        public async Task<ActionResult> SetEditorChoiceForProduct(BulkPromoteRequest bulkPromoteRequest)
+        {
+            var products = await _unitOfWork.ProductRepository.GetAllBy(x => bulkPromoteRequest.Ids.Contains(x.Id));
+
+            if (products == null)
+                return BadRequest(new BaseResponseMessage(false, HttpStatusCode.NotFound, "Product not found"));
+
+            if (products.Count() == 0)
+                return BadRequest(new BaseResponseMessage(false, HttpStatusCode.BadRequest, "No demoted product found"));
+             
+            foreach (var product in products)
+            {
+                if (!product.IsPromoted)
+                    product.IsPromoted = true;
+            }
+
+            _unitOfWork.ProductRepository.Update(products);
+
+            if (await _unitOfWork.Complete())
+            {
+                return Ok(new BaseResponseMessage(true, HttpStatusCode.OK, $"Successfully promote for {products.Count()} product(s)."));
+            }
+            return BadRequest(new BaseResponseMessage(false, HttpStatusCode.BadRequest, "An error occurred while promote for product."));
         }
 
         [HttpPost("add-product-photo/{productId}")]
