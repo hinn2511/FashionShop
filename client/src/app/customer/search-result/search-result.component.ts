@@ -1,6 +1,7 @@
+import { SlideLeftToRight } from 'src/app/_common/animation/common.animation';
 import { DeviceService } from 'src/app/_services/device.service';
-import { ProductFilterComponent } from './../product-filter/product-filter.component';
-import { CustomerSizeFilter } from './../../_models/productParams';
+import { ProductFilterComponent } from 'src/app/customer/product-filter/product-filter.component';
+import { CustomerSizeFilter } from 'src/app/_models/productParams';
 import { CategoryService } from 'src/app/_services/category.service';
 import {
   ActivatedRoute,
@@ -18,14 +19,15 @@ import {
 } from 'src/app/_models/productParams';
 import { ProductService } from 'src/app/_services/product.service';
 import { BehaviorSubject, Subscription } from 'rxjs';
-import { fnGetGenderName, Category, CustomerCatalogue } from 'src/app/_models/category';
-import { ProductFilter } from '../product-filter/product-filter.component';
+import { CustomerCatalogue } from 'src/app/_models/category';
+import { ProductFilter } from 'src/app/customer/product-filter/product-filter.component';
 
 
 @Component({
   selector: 'app-search-result',
   templateUrl: './search-result.component.html',
-  styleUrls: ['./search-result.component.css']
+  styleUrls: ['./search-result.component.css'],
+  animations: [SlideLeftToRight]
 })
 export class SearchResultComponent implements OnInit, OnDestroy {
   @ViewChild('filterComponent') filterComponent: ProductFilterComponent;

@@ -1,3 +1,4 @@
+import { SlideLeftToRight } from 'src/app/_common/animation/common.animation';
 import { DeviceService } from 'src/app/_services/device.service';
 import { ProductFilterComponent } from './../product-filter/product-filter.component';
 import { CustomerSizeFilter } from './../../_models/productParams';
@@ -5,7 +6,7 @@ import { CategoryService } from 'src/app/_services/category.service';
 import {
   ActivatedRoute,
 } from '@angular/router';
-import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewChild, AfterViewInit, ChangeDetectorRef } from '@angular/core';
 
 import { BreadCrumb } from 'src/app/_models/breadcrumb';
 import { Pagination } from 'src/app/_models/pagination';
@@ -25,6 +26,7 @@ import { ProductFilter } from '../product-filter/product-filter.component';
   selector: 'app-product-list',
   templateUrl: './product-list.component.html',
   styleUrls: ['./product-list.component.css'],
+  animations: [ SlideLeftToRight ]
 })
 export class ProductListComponent implements OnInit, OnDestroy {
   @ViewChild('filterComponent') filterComponent: ProductFilterComponent;
@@ -73,6 +75,7 @@ export class ProductListComponent implements OnInit, OnDestroy {
   ) {
     this.productParams = this.productService.getProductParams();
   }
+
   ngOnDestroy(): void {
     this.querySubscribe$.unsubscribe();
     this.deviceSubscription$.unsubscribe();
@@ -196,6 +199,8 @@ export class ProductListComponent implements OnInit, OnDestroy {
   }
 
   resetColor() {
+    console.log(this.filterComponent);
+    
     this.filterComponent.resetColor();
   }
 
@@ -209,5 +214,12 @@ export class ProductListComponent implements OnInit, OnDestroy {
 
   mobileFilterToggle() {
     this.showFilterMobile = !this.showFilterMobile;
+  }
+
+  filterState()
+  {
+    if (this.showFilterMobile)
+      return 'out';
+    return 'in'
   }
 }

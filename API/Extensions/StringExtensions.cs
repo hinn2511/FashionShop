@@ -174,5 +174,15 @@ namespace API.Extensions
         {
             return System.Text.RegularExpressions.Regex.Replace(input, "(?<=[a-z])([A-Z])", " $1", System.Text.RegularExpressions.RegexOptions.Compiled).Trim();
         }
+
+        public static string HmacSha256Digest(this string message, string secret)
+        {
+            ASCIIEncoding encoding = new ASCIIEncoding();
+            byte[] keyBytes = encoding.GetBytes(secret);
+            byte[] messageBytes = encoding.GetBytes(message);
+            System.Security.Cryptography.HMACSHA256 cryptographer = new System.Security.Cryptography.HMACSHA256(keyBytes);
+            byte[] bytes = cryptographer.ComputeHash(messageBytes);
+            return BitConverter.ToString(bytes).Replace("-", "").ToLower();
+        }
     }
 }

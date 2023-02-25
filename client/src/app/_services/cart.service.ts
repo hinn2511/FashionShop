@@ -160,7 +160,6 @@ export class CartService {
 
     // update cart
     this.cartSubject.next(cartItemList);
-    console.log(cartItemList);    
     localStorage.setItem('userCart', JSON.stringify(cartItemList));
 
     return true;

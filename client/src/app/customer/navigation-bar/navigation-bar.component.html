@@ -48,7 +48,7 @@
       </button>
     </div>
 
-    <div class="navbar-collapse bg-white" [class.collapse]="collapseNavbar">
+    <div class="navbar-collapse bg-white" [@slideTopToBottom2]="convertToString(collapseNavbar)" [class.collapse]="collapseNavbar">
       <!-- Desktop navigation -->
       <ul class="navbar-nav" [class.d-none]="setting.deviceType != 'desktop'">
         <li
@@ -118,7 +118,11 @@
           (click)="hideCategoryGroupDetailToggle()"
         >
           <a class="nav-link p-2 text-uppercase">{{ item.genderTitle }}</a>
-          <img class="nav-icon icon" src="../../../assets/arrow-right.svg" alt="user" />
+          <img
+            class="nav-icon icon"
+            src="../../../assets/arrow-right.svg"
+            alt="user"
+          />
         </li>
 
         <li class="nav-item my-2">
@@ -202,12 +206,17 @@
         [class.d-none]="setting.deviceType == 'desktop'"
         class="mt-3"
         *ngIf="selectedCategoryGroup && !hideCategoryGroupDetail"
+        [@slideRightToLeft]
       >
         <button
           class="btn btn-transparent d-flex d-inline-block align-items-center"
           (click)="hideCategoryGroupDetailToggle()"
         >
-          <img class="nav-icon icon" src="../../../assets/arrow-left.svg" alt="user" />
+          <img
+            class="nav-icon icon"
+            src="../../../assets/arrow-left.svg"
+            alt="user"
+          />
           &nbsp;&nbsp;
           <h5 class="text-capitalize p-0 m-0">
             {{ selectedCategoryGroup.genderTitle }}
@@ -275,28 +284,30 @@
           <div
             class="mr-2 desktop-search-bar-container"
             *ngIf="!collapseSearchBar && setting.deviceType == 'desktop'"
+            [@fadeInAndOut]
           >
-            <div class="form-group mb-0 position-relative">
+            <div class="form-group w-100 mb-0 position-relative">
               <input
                 type="text"
                 class="form-control"
                 [(ngModel)]="searchQuery"
-                (change)="updateSearchAction()"
-                (keyup.enter)="search()"
+                (ngModelChange)="updateAction()"
+                (keyup.enter)="showSearchResult()"
+                #search
               />
               <p
-                class="fa fa-search text-muted p-1 m-0 position-absolute cs-pointer top-0 end-0"
+                class="text-muted position-absolute my-auto mr-2 py-2 cs-pointer top-0 end-0"
                 *ngIf="action == 'search'; else clear"
                 aria-hidden="true"
-                (click)="search()"
+                (click)="showSearchResult()"
               >
                 Search
               </p>
               <ng-template #clear>
                 <p
-                  class="fa fa-times text-muted p-1 m-0 position-absolute cs-pointer top-0 end-0"
+                  class="text-muted position-absolute my-auto mr-2 py-2 cs-pointer top-0 end-0"
                   aria-hidden="true"
-                  (click)="clearSearch()"
+                  (click)="clearSearchQuery()"
                 >
                   Clear
                 </p>
@@ -375,55 +386,52 @@
   </div>
 
   <!-- Search bar -->
-  <ng-container *ngIf="!collapseSearchWindow">
-    <div
-      [style]="setting.navMargin"
-      class="bg-white search-bar position-absolute shadow-sm sticky-top"
-    >
-      <app-search-bar></app-search-bar>
-    </div>
-  </ng-container>
-
+  <div
+    *ngIf="!collapseSearchWindow"
+    [style]="setting.navMargin"
+    [@slideTopToBottom]
+    class="bg-white search-bar position-absolute shadow-sm sticky-top"
+  >
+    <app-search-bar></app-search-bar>
+  </div>
   <!-- Cart -->
-  <div *ngIf="!collapseCartWindow">
-    <div
-      [style]="setting.navMargin"
-      
-      class="bg-transparent position-absolute cart shadow-sm sticky-top"
-    >
-      <app-cart
-        (hideCart)="cartWindowToggle()"
-        (goToCheckout)="cartCheckoutToggle()"
-      ></app-cart>
-    </div>
+  <div
+    [style]="setting.navMargin"
+    *ngIf="!collapseCartWindow"
+    [@slideRightToLeft]
+    class="bg-transparent position-absolute cart shadow-sm sticky-top"
+  >
+    <app-cart
+      (hideCart)="cartWindowToggle()"
+      (goToCheckout)="cartCheckoutToggle()"
+    ></app-cart>
   </div>
 
   <!-- Checkout -->
-  <div *ngIf="!collapseCheckoutWindow">
-    <div
-      [style]="setting.navMargin"
-      class="bg-transparent position-absolute checkout shadow-sm sticky-top"
-    >
-      <app-check-out
-        (hideCheckout)="checkOutWindowToggle()"
-        (backToCart)="cartCheckoutToggle()"
-      ></app-check-out>
-    </div>
+  <div
+    [style]="setting.navMargin"
+    *ngIf="!collapseCheckoutWindow"
+    [@slideRightToLeft]
+    class="bg-transparent position-absolute checkout shadow-sm sticky-top"
+  >
+    <app-check-out
+      (hideCheckout)="checkOutWindowToggle()"
+      (backToCart)="cartCheckoutToggle()"
+    ></app-check-out>
   </div>
 
   <!-- Desktop category  -->
-  <ng-container
-    *ngIf="
-      selectedCategoryGroup &&
-      selectedCategoryGroup.gender >= 0 &&
-      !collapseCategory
-    "
-    class="d-md-none d-lg-block"
-  >
+  <div class="d-md-none d-lg-block">
     <div
       [style]="setting.navMargin"
       (mouseleave)="setCollapseCategory(true)"
       class="bg-white position-absolute shadow-sm sticky-top category-window"
+      *ngIf="
+        !collapseCategory &&
+        selectedCategoryGroup &&
+        selectedCategoryGroup.gender >= 0
+      "
+      [@slideTopToBottom]
     >
       <div class="p-2">
         <div class="row category-list-container">
@@ -448,7 +456,7 @@
             <hr />
             <ul class="list-group my-1">
               <li
-                class="list-group-item border-0 cs-pointer sub-category-name"
+                class="list-group-item bg-transparent border-0 cs-pointer sub-category-name"
                 *ngFor="let subCategory of category.subCategories"
                 (click)="
                   viewCategory(
@@ -465,5 +473,5 @@
         </div>
       </div>
     </div>
-  </ng-container>
+  </div>
 </nav>

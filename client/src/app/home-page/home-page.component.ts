@@ -1,38 +1,49 @@
-import { Carousel } from './../_models/carousel';
+import { RouteService } from 'src/app/_services/route.service';
+import { Carousel } from 'src/app/_models/carousel';
 import { ContentService } from 'src/app/_services/content.service';
-import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
-import { AnimationType } from '../_common/animation/carousel.animations';
+import { Component, OnInit, OnDestroy } from '@angular/core';
+import { AnimationType } from 'src/app/_common/animation/carousel.animations';
+import { Subscription } from 'rxjs';
+import { AuthenticationService } from 'src/app/_services/authentication.service';
 
 @Component({
   selector: 'app-home-page',
   templateUrl: './home-page.component.html',
-  styleUrls: ['./home-page.component.css']
+  styleUrls: ['./home-page.component.css'],
 })
-export class HomePageComponent implements OnInit {
+export class HomePageComponent implements OnInit, OnDestroy {
   animationType: AnimationType.Fade;
   carousels: Carousel[] = [];
+  routeSubscription$: Subscription;
+  currentRoute: string = '';
 
-  constructor(private contentService: ContentService, private router: Router) { }
+  constructor(
+    private contentService: ContentService,
+    private routeService: RouteService,
+    public authenticationService: AuthenticationService
+  ) {}
 
-  ngOnInit(): void {  
+  ngOnDestroy(): void {
+    this.routeSubscription$.unsubscribe();
+  }
+
+  ngOnInit(): void {
     this.loadCarousels();
+    this.currentRouteSubscribe();
   }
 
-  loadCarousels()
-  {
-    this.contentService.getCustomerCarousels().subscribe(result => 
-      {
-        this.carousels = result;
-        for(const carousel of this.carousels)
-        {
-          new Image().src = carousel.imageUrl; 
-        }
-      });
+  loadCarousels() {
+    this.contentService.getCustomerCarousels().subscribe((result) => {
+      this.carousels = result;
+      for (const carousel of this.carousels) {
+        new Image().src = carousel.imageUrl;
+      }
+    });
   }
 
-  hasRoute(route: string) {
-    return this.router.url.includes(route);
+  currentRouteSubscribe() {
+    this.routeSubscription$ = this.routeService.route$.subscribe(() => {
+      this.currentRoute = this.routeService.currentRoute;
+    });
   }
-
 }

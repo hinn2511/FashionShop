@@ -1,5 +1,5 @@
-import { Carousel } from './../../_models/carousel';
-import { Component, Input, OnChanges, OnDestroy, OnInit, SimpleChanges } from '@angular/core';
+import { Carousel } from 'src/app/_models/carousel';
+import { Component, Input, OnInit, SimpleChanges } from '@angular/core';
 import { slide } from 'src/app/_common/animation/carousel.animations';
 
 @Component({
@@ -17,7 +17,6 @@ export class HomeCarouselComponent implements OnInit {
   startPos: string = "-100";
   endPos: string = "-100";
   currentSlide: Carousel;
-
   action: string = "next";
 
   interval;

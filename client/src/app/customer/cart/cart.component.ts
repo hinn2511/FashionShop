@@ -1,4 +1,4 @@
-import { RotateAnimation } from './../../_common/animation/carousel.animations';
+import { RotateAnimation } from 'src/app/_common/animation/carousel.animations';
 import { DeviceService } from 'src/app/_services/device.service';
 import { AccountService } from 'src/app/_services/account.service';
 import { Router } from '@angular/router';
@@ -16,20 +16,19 @@ import { User } from 'src/app/_models/user';
 import { CartService } from 'src/app/_services/cart.service';
 import { ProductService } from 'src/app/_services/product.service';
 import { Subscription } from 'rxjs';
-import { fnCalculatePrice } from 'src/app/_common/function/function';
+import { fnCalculatePrice, fnHasValue } from 'src/app/_common/function/function';
 
 @Component({
   selector: 'app-cart',
   templateUrl: './cart.component.html',
   styleUrls: ['./cart.component.css'],
-  animations: [ RotateAnimation ],
+  animations: [ RotateAnimation ]
 })
 export class CartComponent implements OnInit, OnDestroy {
   @Output() hideCart = new EventEmitter<boolean>();
   @Output() goToCheckout = new EventEmitter<boolean>();
   user: User;
-
-  state: string = '';
+  state: string = 'in';
   discountAmount: number = 0;
   promoCode: string = '';
   promoCodeApplied: boolean = false;
@@ -52,8 +51,12 @@ export class CartComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.state = 'out';
-    
+    this.state = 'out';    
+    this.deviceSubscribe();
+    this.user = this.authenticationService.userValue;
+  }
+
+  private deviceSubscribe() {
     this.deviceSubscription$ = this.deviceService.deviceWidth$.subscribe(
       (_) => {
         this.deviceType = this.deviceService.getDeviceType();
@@ -62,7 +65,6 @@ export class CartComponent implements OnInit, OnDestroy {
         }
       }
     );
-    this.user = this.authenticationService.userValue;
   }
 
   applyDiscountCode() {
@@ -103,7 +105,7 @@ export class CartComponent implements OnInit, OnDestroy {
 
   deleteCartItem(cartItem: CartItem) {
     let success = true;
-    if (this.userIsNotLoggedIn()) {
+    if (!fnHasValue(this.user)) {
       this.cartService.deleteLocalCartItem(cartItem.optionId);
       success = true;
     } else
@@ -124,7 +126,7 @@ export class CartComponent implements OnInit, OnDestroy {
   updateCart(cartItem: CartItem) {
     if (cartItem.quantity < 0 && cartItem.quantity > 99) return;
 
-    if (this.userIsNotLoggedIn()) {
+    if (!fnHasValue(this.user)) {
       this.cartService.updateLocalCart(cartItem);
       return;
     }
@@ -137,10 +139,6 @@ export class CartComponent implements OnInit, OnDestroy {
     this.cartService.updateCart(updatedCart).subscribe((_) => {});
   }
 
-  private userIsNotLoggedIn() {
-    return this.user == null || this.user == undefined;
-  }
-
   viewProduct(cartItem: CartItem) {
     this.router.navigate(['product/' + cartItem.slug], {
       queryParams: { id: cartItem.productId },
@@ -149,7 +147,7 @@ export class CartComponent implements OnInit, OnDestroy {
   }
 
   likeProduct(cartItem: CartItem) {
-    if (this.userIsNotLoggedIn()) {
+    if (!fnHasValue(this.user)) {
       this.closeCart();
       this.router.navigateByUrl('/login');
       return;
@@ -175,7 +173,7 @@ export class CartComponent implements OnInit, OnDestroy {
 
   goToCheckoutWindow()
   {
-    if (this.userIsNotLoggedIn()) {
+    if (!fnHasValue(this.user)) {
       this.router.navigateByUrl('login');
     };
     this.goToCheckout.emit(true);

@@ -1,3 +1,4 @@
+import { SlideRightToLeft, SlideTopToBottom, SlideLeftToRight, FadeInAndOut, SlideTopToBottom2 } from './../../_common/animation/common.animation';
 import { CartService } from 'src/app/_services/cart.service';
 import {
   Component,
@@ -35,7 +36,8 @@ export class NavSettings {
 @Component({
   selector: 'app-navigation-bar',
   templateUrl: './navigation-bar.component.html',
-  styleUrls: ['./navigation-bar.component.css']
+  styleUrls: ['./navigation-bar.component.css'],
+  animations: [ SlideRightToLeft, SlideTopToBottom, SlideTopToBottom2, SlideLeftToRight, FadeInAndOut ]
 })
 export class NavigationBarComponent
   implements OnInit, OnDestroy, AfterViewInit
@@ -144,16 +146,16 @@ export class NavigationBarComponent
     this.settings.next(new NavSettings(navHeight, navMargin, deviceType));
   }
 
-  updateSearchAction() {
+  updateAction() {
     if (this.searchQuery != "") this.action = 'clear';
     else this.action = 'search';
   }
 
-  clearSearch() {
+  clearSearchQuery() {
     this.searchQuery = "";
   }
 
-  search() {
+  showSearchResult() {
     this.router.navigate(['/search'], {
       queryParams: { q: this.searchQuery },
     });
@@ -275,4 +277,11 @@ export class NavigationBarComponent
     this.collapseAll();
     this.router.navigate(['account/'], { queryParams: { tab: tab } });
   }  
+
+  convertToString(bool: boolean)
+  {
+    if (bool)
+      return 'in';
+    return 'out';
+  }
 }

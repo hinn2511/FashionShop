@@ -1,4 +1,4 @@
-import { Product } from './../../_models/product';
+import { Product } from 'src/app/_models/product';
 import { Component, OnInit } from '@angular/core';
 import { Pagination } from 'src/app/_models/pagination';
 import { CustomerFilterOrder, ProductParams } from 'src/app/_models/productParams';
@@ -35,7 +35,6 @@ export class FavoritesComponent implements OnInit {
 
   loadProducts() {
     this.accountService.setProductParams(this.productParams);
-
     this.accountService.getFavorites(this.productParams).subscribe(response => {
       this.products = response.result;
       this.pagination = response.pagination;

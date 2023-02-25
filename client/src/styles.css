@@ -22,6 +22,17 @@ body {
   }
 }
 
+@media screen and (max-width: 992px) and (min-width: 768px) {
+  .mobile-filter
+  {
+    padding-top: 50px;
+    max-height: 100vh;
+    overflow-y: scroll;
+  }
+}
+
+
+
 @media (max-width: 768px) {
   .container {
     padding-left: 0;
@@ -81,6 +92,11 @@ body {
     word-wrap: break-word;
     min-width: 150px;
     text-align: center;
+  }
+
+  .mobile-filter
+  {
+    padding-top: 50px;
   }
 }
 
@@ -146,7 +162,7 @@ button:focus {
 
 /* Position */
 .top-0 {
-  left: 0;
+  top: 0;
 }
 
 .top-50 {
@@ -577,3 +593,4 @@ sketch-picker, chrome-picker
   max-height: 17px;
   object-position: center;
 }
+

@@ -1,4 +1,4 @@
-<div *ngIf="!hasRoute('administrator/login')">
+<div *ngIf="currentRoute != 'administratorLogin'">
     <div *appHasRole='["Anonymous", "ClientAccess"]'>
         <div class="w-100 customer-home-page">
             <app-home-carousel *ngIf="carousels.length > 0" [carousels]="carousels"></app-home-carousel>

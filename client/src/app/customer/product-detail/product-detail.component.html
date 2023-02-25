@@ -119,6 +119,7 @@
               class="btn btn-transparent fw-smaller text-muted text-center w-100"
               (click)="likeProduct()"
               *ngIf="!product.likedByUser; else unLiked"
+              [@fadeInAndOut]
             >
               <i class="fa fa-heart-o"></i>&nbsp;&nbsp;Add to favorite
             </button>
@@ -126,6 +127,7 @@
               <button
                 class="btn btn-transparent fw-smaller text-center w-100"
                 (click)="unlikeProduct()"
+                [@fadeInAndOut]
               >
                 <i class="fa fa-heart text-danger"></i>&nbsp;&nbsp;Remove from
                 favorite

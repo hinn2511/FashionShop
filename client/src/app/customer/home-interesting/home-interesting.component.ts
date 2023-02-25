@@ -1,9 +1,8 @@
-import { ProductService } from './../../_services/product.service';
+import { ProductService } from 'src/app/_services/product.service';
 import {
   Component,
   OnInit,
   OnDestroy,
-  ViewChild,
   ElementRef,
   AfterViewInit,
   ViewChildren,
@@ -53,7 +52,6 @@ export class HomeInterestingComponent
 
   @ViewChildren('card') items: QueryList<ElementRef>;
   productCards: ElementRef[] = [];
-
   filter: string = 'featured';
 
   constructor(
@@ -103,10 +101,8 @@ export class HomeInterestingComponent
       .getProducts(this.productParams)
       .subscribe((response) => {
         this.products = response.result;
-
-        // this.maxValue = this.cardWidth * this.products.length;
       });
-  }
+  };
 
   scrollLeft() {
     if (this.currentStep == 0) return;
@@ -114,14 +110,12 @@ export class HomeInterestingComponent
       if (this.productCards.length != 0) {
         this.currentStep -= this.step;
         if (this.currentStep < 0) this.currentStep = 0;
-        this.productCards[this.currentStep].nativeElement.scrollIntoView({
-          behavior: 'smooth',
-          block: 'nearest',
-          inline: 'center',
-        });
+        this.scrollToView();
       }
     }, 100);
   }
+
+ 
 
   scrollRight() {
     if (this.currentStep >= this.products.length - 1) return;
@@ -130,13 +124,17 @@ export class HomeInterestingComponent
         this.currentStep += this.step;
         if (this.currentStep > this.products.length - 1)
           this.currentStep = this.products.length - 1;
-        this.productCards[this.currentStep].nativeElement.scrollIntoView({
-          behavior: 'smooth',
-          block: 'nearest',
-          inline: 'center',
-        });
+        this.scrollToView();
       }
     }, 100);
+  }
+
+  private scrollToView() {
+    this.productCards[this.currentStep].nativeElement.scrollIntoView({
+      behavior: 'smooth',
+      block: 'nearest',
+      inline: 'center',
+    });
   }
 
   applyFilter(filter: string) {

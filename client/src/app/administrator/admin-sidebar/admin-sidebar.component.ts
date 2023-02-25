@@ -1,4 +1,6 @@
-import { Component, Input, OnInit, Output, EventEmitter, HostListener } from '@angular/core';
+import { Subscription } from 'rxjs';
+import { RouteService } from 'src/app/_services/route.service';
+import { Component, Input, OnInit, Output, EventEmitter, HostListener, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
 
 @Component({
@@ -6,11 +8,14 @@ import { Router } from '@angular/router';
   templateUrl: './admin-sidebar.component.html',
   styleUrls: ['./admin-sidebar.component.css']
 })
-export class AdminSidebarComponent implements OnInit {
+export class AdminSidebarComponent implements OnInit, OnDestroy {
   @Input() currentState: string = "in";
   @Output() newState = new EventEmitter<string>();
 
   state: string;
+
+  routeSubscription$: Subscription;
+  currentRoute: string = "";
 
 
   @HostListener('click', ['$event'])
@@ -23,14 +28,21 @@ export class AdminSidebarComponent implements OnInit {
     this.collapse();
   }
 
-  constructor(private router: Router) { }
+  constructor(private routeService: RouteService) { }
+
+  ngOnDestroy(): void {
+    this.routeSubscription$.unsubscribe();
+  }
 
   ngOnInit(): void {
     this.state = 'in';
+    this.routeSubscribe();
   }
 
-  hasRoute(route: string) {
-    return this.router.url.includes(route);
+  private routeSubscribe() {
+    this.routeSubscription$ = this.routeService.route$.subscribe((result) => {
+      this.currentRoute = result;
+    });
   }
 
   toggle()

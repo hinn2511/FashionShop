@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using API.Entities.User;
 using API.Entities.UserModel;
+using API.Extensions;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
@@ -92,7 +93,7 @@ namespace API.Helpers.Authorization
         {
             var refreshToken = new RefreshToken
             {
-                Token = Guid.NewGuid().ToString(),
+                Token = Guid.NewGuid().ToString().HmacSha256Digest(_appSettings.Secret),
                 Expires = DateTime.UtcNow.AddDays(7),
                 Created = DateTime.UtcNow,
                 CreatedByIp = ipAddress
