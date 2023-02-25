@@ -7,6 +7,7 @@ import { IdArray } from 'src/app/_models/adminRequest';
 import { AddProduct, Brand, UpdateProduct, Product, ManagerProduct } from 'src/app/_models/product';
 import { CustomerColorFilter, ManagerProductParams, ProductParams } from 'src/app/_models/productParams';
 import { getPaginatedResult, getPaginationHeaders } from '../_helpers/paginationHelper';
+import { ResponseMessage } from '../_models/generic';
 
 @Injectable({
   providedIn: 'root'
@@ -156,7 +157,28 @@ export class ProductService {
   }
 
   hideProducts(ids: IdArray) {
-    return this.http.put(this.baseUrl + 'product/hide-or-unhide', ids);
+    return this.http.put<ResponseMessage>(this.baseUrl + 'product/hide', ids);
+  }
+
+  activateProducts(ids: IdArray) {
+    return this.http.put<ResponseMessage>(
+      this.baseUrl + 'product/activate',
+      ids
+    );
+  }
+
+  promoteProducts(ids: IdArray) {
+    return this.http.put<ResponseMessage>(
+      this.baseUrl + 'product/promote',
+      ids
+    );
+  }
+
+  demoteProducts(ids: IdArray) {
+    return this.http.put<ResponseMessage>(
+      this.baseUrl + 'product/demote',
+      ids
+    );
   }
 
   deleteProduct(ids: number[]) {

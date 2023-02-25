@@ -117,6 +117,12 @@ namespace API.Data
             if (productParams.Category != null)
                 query = query.Where(p => p.Category.CategoryName == productParams.Category);
 
+            if (productParams.MinPrice > 0)
+                query = query.Where(p => p.Price >= productParams.MinPrice);
+
+            if (productParams.MaxPrice > 0)
+                query = query.Where(p => p.Price <= productParams.MaxPrice);
+
             if (!string.IsNullOrEmpty(productParams.Query))
             {
                 var words = productParams.Query.RemoveSpecialCharacters().ToUpper().Split(" ").Distinct();
@@ -135,6 +141,7 @@ namespace API.Data
                     "Sold" => query.OrderBy(p => p.Sold),
                     "Price" => query.OrderBy(p => p.Price),
                     "Name" => query.OrderBy(p => p.ProductName),
+                    "Promoted" => query.OrderBy(p => p.IsPromoted),
                     _ => query.OrderBy(p => p.Id)
                 };
             }
@@ -147,6 +154,7 @@ namespace API.Data
                     "Sold" => query.OrderByDescending(p => p.Sold),
                     "Price" => query.OrderByDescending(p => p.Price),
                     "Name" => query.OrderByDescending(p => p.ProductName),
+                    "Promoted" => query.OrderByDescending(p => p.IsPromoted),
                     _ => query.OrderByDescending(p => p.Id)
                 };
             }

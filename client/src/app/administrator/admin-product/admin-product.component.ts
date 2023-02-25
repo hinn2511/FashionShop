@@ -1,3 +1,4 @@
+import { GenericStatus, GenericStatusList } from 'src/app/_models/generic';
 import { AuthenticationService } from 'src/app/_services/authentication.service';
 import { FileService } from 'src/app/_services/file.service';
 import { IdArray } from 'src/app/_models/adminRequest';
@@ -39,6 +40,8 @@ export class AdminProductComponent implements OnInit {
   selectedIds: number[] = [];
   query: string;
   baseUrl = environment.apiUrl;
+
+  genericStatus: GenericStatus[] = GenericStatusList;
 
   constructor(
     private productService: ProductService,
@@ -102,11 +105,65 @@ export class AdminProductComponent implements OnInit {
     this.productService.hideProducts(ids).subscribe((result) => {
       this.loadProducts();
       this.resetSelectedIds();
-      this.toastr.success('Products have been hidden or unhidden', 'Success');
+      this.toastr.success(result.message, 'Success');
     }, 
     error => 
     {
-      this.toastr.error("Something wrong happen!", 'Error');
+      this.toastr.error(error, 'Error');
+    });
+  }
+
+  activateProducts()
+  {
+    if (!this.isMultipleSelected()) return;
+    let ids: IdArray = {
+      ids: this.selectedIds,
+    };
+
+    this.productService.activateProducts(ids).subscribe((result) => {
+      this.loadProducts();
+      this.resetSelectedIds();
+      this.toastr.success(result.message, 'Success');
+    }, 
+    error => 
+    {
+      this.toastr.error(error, 'Error');
+    });
+  }
+
+  promoteProduct()
+  {
+    if (!this.isMultipleSelected()) return;
+    let ids: IdArray = {
+      ids: this.selectedIds,
+    };
+
+    this.productService.promoteProducts(ids).subscribe((result) => {
+      this.loadProducts();
+      this.resetSelectedIds();
+      this.toastr.success(result.message, 'Success');
+    }, 
+    error => 
+    {
+      this.toastr.error(error, 'Error');
+    });
+  }
+
+  demoteProduct()
+  {
+    if (!this.isMultipleSelected()) return;
+    let ids: IdArray = {
+      ids: this.selectedIds,
+    };
+
+    this.productService.demoteProducts(ids).subscribe((result) => {
+      this.loadProducts();
+      this.resetSelectedIds();
+      this.toastr.success(result.message, 'Success');
+    }, 
+    error => 
+    {
+      this.toastr.error(error, 'Error');
     });
   }
 
@@ -119,7 +176,7 @@ export class AdminProductComponent implements OnInit {
     }, 
     error => 
     {
-      this.toastr.error("Something wrong happen!", 'Error');
+      this.toastr.error(error, 'Error');
     });
   }
 
@@ -163,6 +220,9 @@ export class AdminProductComponent implements OnInit {
       case 'status':
         this.productParams.field = 'Status';
         break;
+      case 'promoted':
+          this.productParams.field = 'Promoted';
+          break;
       default:
         this.productParams.field = 'Date';
         break;
@@ -201,6 +261,12 @@ export class AdminProductComponent implements OnInit {
 
   getStateStyle(product: ManagerProduct) {
     return fnGetObjectStateStyle(product.status);
+  }
+
+  isAllStatusIncluded() {
+    return (
+      this.productParams.productStatus.length == this.genericStatus.length
+    );
   }
 
   isStatusIncluded(status: number) {
@@ -245,7 +311,7 @@ export class AdminProductComponent implements OnInit {
       }, 
       error => 
       {
-        this.toastr.error("Something wrong happen!", 'Error');
+        this.toastr.error(error.error.message, 'Error');
       });
     }
   }

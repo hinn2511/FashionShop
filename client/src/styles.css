@@ -20,7 +20,6 @@ body {
   .nav-tabs {
     overflow: hidden;
   }
-  
 }
 
 @media (max-width: 768px) {
@@ -79,7 +78,7 @@ body {
   }
 
   .nav-tabs > .nav-item {
-    word-wrap:break-word;
+    word-wrap: break-word;
     min-width: 150px;
     text-align: center;
   }
@@ -128,6 +127,31 @@ body {
   color: #ffffff;
 }
 /* Pagination */
+
+/* Table */
+.table-responsive {
+  max-height: 70vh;
+  overflow: scroll;
+}
+
+thead tr:nth-child(1) th {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  background-color: #f8f9fa;
+}
+
+
+tr:hover > td {
+  background-color: rgb(226, 226, 226) !important;
+}
+
+/* Table */
+
+.dropdown
+{
+  z-index: 100;
+}
 
 /* Input */
 textarea:focus,
@@ -498,7 +522,6 @@ figure > img {
   top: 0;
 }
 
-
 /* Default status */
 .status {
   width: 170px;
@@ -551,14 +574,12 @@ figure > img {
   color: rgb(145, 37, 29);
 }
 
-.return-requested-status
-{
+.return-requested-status {
   background-color: rgba(170, 226, 65, 0.3);
   color: rgb(57, 85, 26);
 }
 
-.returned-status
-{
+.returned-status {
   background-color: rgba(226, 129, 65, 0.3);
   color: rgb(85, 50, 26);
 }
@@ -607,15 +628,13 @@ accordion-group > .panel {
   border-radius: 0;
 }
 
-
 accordion-group > .card > .card-header {
-  border: 1px solid #dee2e6!important;
+  border: 1px solid #dee2e6 !important;
   margin-top: 0.5rem;
   background-color: #fff;
-  border-radius: .25rem!important;
+  border-radius: 0.25rem !important;
   padding: 0;
 }
-
 
 accordion-group.active > .card > .card-header {
   color: #212529;
@@ -634,14 +653,14 @@ accordion-group > .panel > .panel-heading {
 accordion-group > .panel > .panel-collapse > .panel-body {
   padding-right: 0;
   margin-left: 0.5rem;
-  border-left: 1px solid #dee2e6!important;
-  padding-left:  0.5rem;
+  border-left: 1px solid #dee2e6 !important;
+  padding-left: 0.5rem;
 }
 
-.panel-collapse:empty, .panel-body:empty {
+.panel-collapse:empty,
+.panel-body:empty {
   display: none;
 }
-
 
 .nav-tabs {
   background-color: #f8f9fa;
@@ -664,11 +683,9 @@ accordion-group > .panel > .panel-collapse > .panel-body {
 .nav-tabs > .nav-item {
   border-top-left-radius: 3px;
   border-top-right-radius: 3px;
-  
 }
 
-.nav-tabs > .nav-item > a
-{
+.nav-tabs > .nav-item > a {
   height: 100%;
   display: flex;
   align-items: center;
@@ -689,16 +706,17 @@ accordion-group > .panel > .panel-collapse > .panel-body {
   width: 100%;
 }
 
-.nav-tabs > .nav-item.active > a, .nav-tabs > .nav-item > a {
+.nav-tabs > .nav-item.active > a,
+.nav-tabs > .nav-item > a {
   border: none;
-
 }
 
 .bg-bottom-light {
-  background: linear-gradient(180deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0) 50%, rgb(248, 249, 250, 1) 100%, rgba(248, 249, 250, 1) 100%);
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0) 0%,
+    rgba(255, 255, 255, 0) 50%,
+    rgb(248, 249, 250, 1) 100%,
+    rgba(248, 249, 250, 1) 100%
+  );
 }
-
-
-
-
-
