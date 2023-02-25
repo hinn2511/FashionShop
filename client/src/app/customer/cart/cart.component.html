@@ -78,17 +78,12 @@
                     </p>
                     <ng-template #onSale>
                       <p class="mr-1 my-0 py-0 text-danger">
-                        {{
-                          calculatePrice(
-                            cartItem.saleType,
-                            cartItem.price,
-                            cartItem.saleOffPercent,
-                            cartItem.saleOffValue
-                          ) | currency
-                        }}
+                        {{ calculatePrice(cartItem) | currency }}
                       </p>
                       <p class="my-0 py-0 old-price fw-smaller">
-                        {{ cartItem.price | currency }}
+                        {{
+                          (cartItem.price + cartItem.additionalPrice) | currency
+                        }}
                       </p>
                     </ng-template>
                   </td>
@@ -129,12 +124,7 @@
                   <td class="text-center">
                     <p class="m-0 p-0">
                       {{
-                        calculatePrice(
-                          cartItem.saleType,
-                          cartItem.price,
-                          cartItem.saleOffPercent,
-                          cartItem.saleOffValue
-                        ) * cartItem.quantity | currency
+                        calculatePrice(cartItem) * cartItem.quantity | currency
                       }}
                     </p>
                   </td>
@@ -192,17 +182,13 @@
                   </p>
                   <ng-template #onSale>
                     <p class="mr-1 my-0 py-0 text-danger">
-                      {{
-                        calculatePrice(
-                          cartItem.saleType,
-                          cartItem.price,
-                          cartItem.saleOffPercent,
-                          cartItem.saleOffValue
-                        ) | currency
-                      }}
+                      {{ calculateTotalPrice(cartItem) | currency }}
                     </p>
                     <p class="my-0 py-0 old-price fw-smaller">
-                      {{ cartItem.price | currency }}
+                      {{
+                        (cartItem.price + cartItem.additionalPrice) *
+                          cartItem.quantity | currency
+                      }}
                     </p>
                   </ng-template>
                 </div>

@@ -87,6 +87,7 @@ export class AdminProductAddComponent implements OnInit {
       query: '',
       categoryStatus: [0],
       genders: [],
+      parentId: 0
     };
     this.categoryService
       .getManagerCategories(categoryParams)

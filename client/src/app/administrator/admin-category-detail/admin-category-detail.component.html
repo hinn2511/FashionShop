@@ -1,0 +1,112 @@
+<div class="container-fluid py-3" *ngIf="category">
+  <div class="d-flex w-100 py-1">
+    <button class="btn btn-light" routerLink="/administrator/category-manager">
+      <i class="fa fa-arrow-left"></i>&nbsp;&nbsp;Back
+    </button>
+  </div>
+
+  <div class="d-flex d-inline-block align-items-center w-100 py-1">
+    <div>
+      <div class="rect-img-container mr-3">
+        <img class="rect-img" src="{{ category.categoryImageUrl }}" alt="" />
+      </div>
+    </div>
+
+    <div>
+      <div class="category-title">
+        <h3 class="text-uppercase">{{ category.categoryName }}</h3>
+      </div>
+
+      <div class="btn px-3 py-1" [class]="getCategoryStateStyle()">
+        <h5 class="m-0">{{ getCategoryState() }}</h5>
+      </div>
+
+      <div class="d-flex d-inline-block flex-wrap mt-3">
+        <button class="btn btn-warning mr-2 my-2" (click)="editCategory()">
+          <span><i class="fa fa-pencil"></i></span>&nbsp;Edit
+        </button>
+
+        <button
+          class="btn btn-dark mr-2 my-2"
+          *ngIf="category.status == 0; else unhide"
+          (click)="hideCategory()"
+        >
+          <span><i class="fa fa-eye-slash"></i></span>&nbsp;Hide
+        </button>
+        <ng-template #unhide>
+          <button class="btn btn-light mr-2 my-2" (click)="hideCategory()">
+            <span><i class="fa fa-eye"></i></span>&nbsp;Unhide
+          </button>
+        </ng-template>
+
+        <button class="btn btn-danger mr-2 my-2" (click)="deleteCategory()">
+          <span><i class="fa fa-trash"></i></span>&nbsp;Delete
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <h5 class="text-muted">Category information</h5>
+  <hr />
+  <div class="row">
+    <div class="col-12 col-md-6">
+      <label for="basic-url">Category ID</label>
+      <div class="input-group mb-3">
+        <input
+          type="text"
+          class="form-control"
+          [disabled]="true"
+          [value]="category.id"
+        />
+      </div>
+
+      <label for="basic-url">Category name</label>
+      <div class="input-group mb-3">
+        <input
+          type="text"
+          class="form-control"
+          [disabled]="true"
+          [value]="category.categoryName"
+        />
+      </div>
+    </div>
+    <div class="col-12 col-md-6">
+      <label for="basic-url">Gender</label>
+      <div class="input-group mb-3">
+        <input
+          type="text"
+          class="form-control"
+          [disabled]="true"
+          [value]="category.genderName"
+        />
+      </div>
+
+      <label for="basic-url">Parent category</label>
+      <div class="input-group mb-3">
+        <input
+          type="text"
+          class="form-control"
+          *ngIf="category.parentId == 0; else hasParent"
+          [disabled]="true"
+          [value]="'None'"
+        />
+        <ng-template #hasParent>
+          <input
+            type="text"
+            class="form-control"
+            [disabled]="true"
+            [value]="category.parentCategory"
+          />
+        </ng-template>
+      </div>
+    </div>
+  </div>
+
+  <h5 class="text-muted mt-2">Sub categories</h5>
+  <hr />
+  <app-admin-category
+    [minimize]="true"
+    [parentId]="category.parentId"
+    #categoryList
+  ></app-admin-category>
+</div>

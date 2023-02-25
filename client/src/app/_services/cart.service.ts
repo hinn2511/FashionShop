@@ -4,13 +4,11 @@ import {
   UpdateCartItem,
   UpdateCartItemAfterLogin,
 } from 'src/app/_models/cart';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable, of, ReplaySubject } from 'rxjs';
-import { map, take } from 'rxjs/operators';
+import { BehaviorSubject } from 'rxjs';
+import { map } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
-import { IdArray } from 'src/app/_models/adminRequest';
-import { getPaginatedResult, getPaginationHeaders } from '../_helpers/paginationHelper';
 import { NewCartItem } from 'src/app/_models/cart';
 
 @Injectable({

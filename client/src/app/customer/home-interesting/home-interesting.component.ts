@@ -90,6 +90,7 @@ export class HomeInterestingComponent
       query: '',
       minPrice: 0,
       maxPrice: 0,
+      isOnSale: false
     };
     this.productService.getProducts(productParams).subscribe((response) => {
       this.products = response.result;

@@ -1,3 +1,4 @@
+import { ProductSaleComponent } from './customer/product-sale/product-sale.component';
 import { AdminDashboardComponent } from './administrator/dashboard/admin-dashboard/admin-dashboard.component';
 import { OrderReviewComponent } from './customer/order-review/order-review.component';
 import { RegisterComponent } from './customer/register/register.component';
@@ -32,6 +33,7 @@ import { AdminCategoryComponent } from './administrator/admin-category/admin-cat
 import { AdminCategoryAddComponent } from './administrator/admin-category-add/admin-category-add.component';
 import { AdminCategoryEditComponent } from './administrator/admin-category-edit/admin-category-edit.component';
 import { AdminProductOptionEditComponent } from './administrator/admin-product-option-edit/admin-product-option-edit.component';
+import { AdminCategoryDetailComponent } from './administrator/admin-category-detail/admin-category-detail.component';
 
 const routes: Routes = [
   {path: '', component: HomePageComponent },
@@ -51,11 +53,13 @@ const routes: Routes = [
       {
         path: ':slug',
         component: ProductDetailComponent,
-      },
+      }     
     ],
   },
 
   { path: 'search', component: SearchResultComponent },
+
+  { path: 'sale-off', component: ProductSaleComponent },
 
   {
     path: 'news',
@@ -141,6 +145,11 @@ const routes: Routes = [
       {
         path: '',
         component: AdminCategoryComponent,
+        canActivate: [AuthGuard],
+      },
+      {
+        path: 'detail/:id',
+        component: AdminCategoryDetailComponent,
         canActivate: [AuthGuard],
       },
       {

@@ -183,12 +183,15 @@ export class CartComponent implements OnInit, OnDestroy {
     this.goToCheckout.emit(true);
   }
 
-  calculatePrice(
-    saleType: number,
-    price: number,
-    saleOffPercent: number,
-    saleOffValue: number
+  calculateTotalPrice(
+    cartItem: CartItem
   ) {
-    return fnCalculatePrice(saleType, price, saleOffPercent, saleOffValue);
+    return fnCalculatePrice(cartItem.saleType, (cartItem.price + cartItem.additionalPrice) * cartItem.quantity, cartItem.saleOffPercent, cartItem.saleOffValue);
+  }
+
+  calculatePrice(
+    cartItem: CartItem
+  ) {
+    return fnCalculatePrice(cartItem.saleType, (cartItem.price + cartItem.additionalPrice), cartItem.saleOffPercent, cartItem.saleOffValue);
   }
 }

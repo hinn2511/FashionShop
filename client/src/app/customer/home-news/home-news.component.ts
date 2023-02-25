@@ -26,7 +26,8 @@ export class HomeNewsComponent implements OnInit {
       pageNumber: 1,
       pageSize: 4,
       orderBy: 1,
-      field: 'PublishedDate'
+      field: 'PublishedDate',
+      contentTypes: []
     };
 
     this.articleService.getCustomerArticles(newsParams).subscribe(response => 

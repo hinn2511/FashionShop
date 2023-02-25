@@ -35,6 +35,8 @@ export class ProductService {
 
   resetProductParams() {
     this.productParams = new ProductParams();
+    console.log(this.productParams);
+    console.log( new ProductParams());
     return this.productParams;
   }
 
@@ -62,6 +64,7 @@ export class ProductService {
     params = params.append('query', productParams.query);
     params = params.append('minPrice', productParams.minPrice);
     params = params.append('maxPrice', productParams.maxPrice);
+    params = params.append('isOnSale', productParams.isOnSale);
 
     return this.http.get<CustomerColorFilter[]>(this.baseUrl + 'filter/color', { params: params})
   }
@@ -96,6 +99,7 @@ export class ProductService {
     params = params.append('query', productParams.query);
     params = params.append('minPrice', productParams.minPrice);
     params = params.append('maxPrice', productParams.maxPrice);
+    params = params.append('isOnSale', productParams.isOnSale);
     return getPaginatedResult<Product[]>(this.baseUrl + 'product', params, this.http).pipe(
       map(response => {
         this.productCache.set(Object.values(productParams).join('-'), response);

@@ -24,8 +24,8 @@ import { ColorPickerControl } from '@iplab/ngx-color-picker';
 })
 export class AdminProductOptionAddComponent implements OnInit {
   newOptionForm: FormGroup;
-  @ViewChild('productOptionList')
-  productOptionList: AdminProductOptionComponent;
+
+  @ViewChild('productOptionList')  productOptionList: AdminProductOptionComponent;
   colors: ManagerOptionColor[] = [];
   sizes: ManagerOptionSize[] = [];
   products: ManagerProduct[] = [];

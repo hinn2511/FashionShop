@@ -122,8 +122,7 @@ export class NewsComponent implements OnInit {
   }
 
   resetFilter() {
-    this.customerArticleParams =
-      this.articleService.resetCustomerArticleParams();
+    this.customerArticleParams = this.articleService.resetCustomerArticleParams();
     this.loadCustomerArticles();
   }
 
