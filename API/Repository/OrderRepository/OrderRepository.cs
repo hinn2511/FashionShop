@@ -6,6 +6,7 @@ using API.Data;
 using API.DTOs.Params;
 using API.Entities;
 using API.Entities.OrderModel;
+using API.Entities.UserModel;
 using API.Extensions;
 using API.Helpers;
 using API.Interfaces;
@@ -263,6 +264,62 @@ namespace API.Repository.OrderRepository
     {
         public OrderHistoryRepository(DataContext context, DbSet<OrderHistory> set) : base(context, set)
         {
+        }
+    }
+
+    public class UserReviewRepository : GenericRepository<UserReview>, IUserReviewRepository
+    {
+        private readonly DataContext _context;
+
+        public UserReviewRepository(DataContext context, DbSet<UserReview> set) : base(context, set)
+        {
+            _context = context;
+        }
+
+        public async Task<PagedList<UserReview>> GetProductReviewsAsync(int productId, CustomerReviewParams customerReviewParams)
+        {
+            var options = _context.Options.Where(x => x.ProductId == productId).Select(x => x.Id);
+
+            var query = _context.UserReviews.AsQueryable();
+
+            query = query.Where(x => options.Contains(x.OptionId));
+
+            if ( customerReviewParams.Score > 0 && customerReviewParams.Score <= 5)
+            query = query.Where(x => x.Score == customerReviewParams.Score);
+
+            if (customerReviewParams.OrderBy == OrderBy.Ascending)
+            {
+                query = customerReviewParams.Field switch
+                {
+                    "DateCreated" => query.OrderBy(p => p.DateCreated),
+                    "Score" => query.OrderBy(p => p.Score),
+                    _ => query.OrderBy(p => p.DateCreated)
+                };
+            }
+            else
+            {
+                query = customerReviewParams.Field switch
+                {
+                    "DateCreated" => query.OrderByDescending(p => p.DateCreated),
+                    "Score" => query.OrderByDescending(p => p.Score),
+                    _ => query.OrderByDescending(p => p.DateCreated)
+                };
+            }
+
+            query = query.Include(x => x.User).Include(x => x.Option);
+
+            return await PagedList<UserReview>.CreateAsync(query, customerReviewParams.PageNumber, customerReviewParams.PageSize);
+
+        }
+
+        public async Task<IEnumerable<UserReview>> GetReviewedItemAsync(int orderId)
+        {
+            return await _context.UserReviews.Where(x => x.OrderId == orderId)
+                                    .Include(x => x.Option)
+                                    .ThenInclude(x => x.Product)
+                                    .ThenInclude(x => x.ProductPhotos)
+                                    .OrderByDescending(x => x.DateCreated)
+                                    .ToListAsync();
         }
     }
 }

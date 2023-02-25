@@ -1,3 +1,4 @@
+import { OrderReviewComponent } from './customer/order-review/order-review.component';
 import { RegisterComponent } from './customer/register/register.component';
 import { SearchResultComponent } from './customer/search-result/search-result.component';
 import { OrderDetailComponent } from './customer/order-detail/order-detail.component';
@@ -69,7 +70,22 @@ const routes: Routes = [
     ],
   },
 
-  { path: 'order', component: OrderDetailComponent, canActivate: [AuthGuard] },
+  {
+    path: 'order',
+    canActivate: [AuthGuard],
+    children: [
+      {
+        path: '',
+        component: OrderDetailComponent,
+        canActivate: [AuthGuard],
+      },
+      {
+        path: 'review',
+        component: OrderReviewComponent,
+        canActivate: [AuthGuard],
+      }
+    ],
+  },
 
   { path: 'account', component: AccountComponent, canActivate: [AuthGuard] },
 

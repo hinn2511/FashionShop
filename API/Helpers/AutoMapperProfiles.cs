@@ -22,14 +22,13 @@ using API.DTOs.Request.ContentRequest;
 using API.DTOs.Response.ContentResponse;
 using API.DTOs.ProductOptionRequest;
 using API.DTOs.Response.ColorResponse;
-using API.DTOs.Request.ColorRequest;
-using API.DTOs.Response.SizeResponse;
-using API.DTOs.Request.SizeRequest;
 using API.DTOs.Response.AccountResponse;
 using System;
 using API.DTOs.Response.ArticleResponse;
 using API.DTOs.Request.ArticleRequest;
 using static API.Extensions.TreeExtension;
+using API.Entities.UserModel;
+using API.DTOs.Response.ReviewResponse;
 
 namespace API.Helpers
 {
@@ -66,7 +65,7 @@ namespace API.Helpers
                           src => src.Gender.ToString()))
                 .ForMember(dest => dest.ParentCategory, opt => opt.MapFrom(
                           src => src.Parent.CategoryName));
-                          
+
             CreateMap<Category, AdminCategoryDetailResponse>();
 
             CreateMap<Category, CategoryGender>();
@@ -275,6 +274,8 @@ namespace API.Helpers
                           src => src.Option.Product.Id))
                 .ForMember(dest => dest.ProductName, opt => opt.MapFrom(
                           src => src.Option.Product.ProductName))
+                .ForMember(dest => dest.OptionId, opt => opt.MapFrom(
+                          src => src.Option.Id))
                 .ForMember(dest => dest.Url, opt => opt.MapFrom(
                           src => src.Option.Product.ProductPhotos.FirstOrDefault(x => x.IsMain).Url))
                 .ForMember(dest => dest.Price, opt => opt.MapFrom(
@@ -372,6 +373,33 @@ namespace API.Helpers
                 .ForMember(dest => dest.PublishedBy, opt => opt.MapFrom(
                             src => $"{src.User.FirstName} {src.User.FirstName}"));
 
+            CreateMap<CreateCustomerReviewRequest, UserReview>();
+
+            CreateMap<EditCustomerReviewRequest, UserReview>();
+
+            CreateMap<UserReview, CustomerReviewResponse>()
+                .ForMember(dest => dest.ColorCode, opt => opt.MapFrom(
+                            src => src.Option.ColorCode))
+                .ForMember(dest => dest.ColorName, opt => opt.MapFrom(
+                            src => src.Option.ColorName))
+                .ForMember(dest => dest.SizeName, opt => opt.MapFrom(
+                            src => src.Option.SizeName))            
+                .ForMember(dest => dest.UserName, opt => opt.MapFrom(
+                            src => $"{src.User.FirstName} {src.User.LastName}"));
+            
+            CreateMap<UserReview, CustomerReviewedItemResponse>()
+                .ForMember(dest => dest.ProductName, opt => opt.MapFrom(
+                            src => src.Option.Product.ProductName))
+                .ForMember(dest => dest.Url, opt => opt.MapFrom(
+                            src => src.Option.Product.ProductPhotos.FirstOrDefault(x => x.IsMain).Url))            
+                .ForMember(dest => dest.ColorCode, opt => opt.MapFrom(
+                            src => src.Option.ColorCode))
+                .ForMember(dest => dest.ColorName, opt => opt.MapFrom(
+                            src => src.Option.ColorName))
+                .ForMember(dest => dest.SizeName, opt => opt.MapFrom(
+                            src => src.Option.SizeName))            
+                .ForMember(dest => dest.UserName, opt => opt.MapFrom(
+                            src => $"{src.User.FirstName} {src.User.LastName}"));
 
             #endregion
         }
@@ -432,7 +460,7 @@ namespace API.Helpers
             }
         }
 
-        
+
 
         public static string ConvertToString(this PaymentMethod paymentMethod)
         {
@@ -449,7 +477,7 @@ namespace API.Helpers
             }
         }
 
-         public static string ConvertToString(this OrderStatus orderStatus)
+        public static string ConvertToString(this OrderStatus orderStatus)
         {
             switch (orderStatus)
             {

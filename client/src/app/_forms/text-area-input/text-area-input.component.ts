@@ -10,6 +10,7 @@ export class TextAreaInputComponent implements OnInit {
 
   @Input() label: string;
   @Input() rows: number;
+  @Input() maxLength: number;
 
   constructor(@Self() public ngControl: NgControl) {
     this.ngControl.valueAccessor = this;

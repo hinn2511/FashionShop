@@ -2,10 +2,6 @@ div {
   min-height: 100vh;
 }
 
-div:empty {
-  display: none;
-}
-
 .focus-mode {
   top: 0;
   left: 0;

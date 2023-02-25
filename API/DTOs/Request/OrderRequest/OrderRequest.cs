@@ -29,16 +29,35 @@ namespace API.DTOs.Order
         public int CVV { get; set; }
     }
 
-    public class OrderItemRequest {
+    public class OrderItemRequest
+    {
         public int OptionId { get; set; }
         public int Quantity { get; set; }
     }
 
-    public class CancelOrderRequest {
+    public class CancelOrderRequest
+    {
         public string Reason { get; set; }
     }
 
-     public class ReturnOrderRequest {
+    public class ReturnOrderRequest
+    {
         public string Reason { get; set; }
     }
+
+    public class BaseCustomerReviewRequest
+    {
+        public int OptionId { get; set; }
+        public string Comment { get; set; }
+        public int Score { get; set; }
+    }
+
+    public class CreateCustomerReviewRequest : BaseCustomerReviewRequest
+    {
+    }
+
+    public class EditCustomerReviewRequest : BaseCustomerReviewRequest
+    {
+    }
+
 }

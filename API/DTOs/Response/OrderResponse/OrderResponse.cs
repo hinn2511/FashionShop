@@ -54,6 +54,10 @@ namespace API.DTOs.Response.OrderResponse
 
         public string ProductName { get; set; }
 
+        public int OptionId { get; set; }
+        
+        public bool IsReviewed { get; set; }
+
         public double Price { get; set; }
 
         public string Url { get; set; }
@@ -142,7 +146,6 @@ namespace API.DTOs.Response.OrderResponse
     {
         public int Id { get; set; }
         public int StockAvailable { get; set; }
-        public int OptionId { get; set; }
         public int StockAfterDeduction { get; set; }
     }
 

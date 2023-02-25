@@ -1,5 +1,5 @@
 import { ToastrService } from 'ngx-toastr';
-import { CancelOrderRequest, PaymentMethodList, isAllowCancelRequest, isAllowReturnRequest, ReturnOrderRequest, isAllowConfirmDelivered } from './../../_models/order';
+import { PaymentMethodList, isAllowCancelRequest, isAllowReturnRequest, isAllowConfirmDelivered, isAllowReview } from 'src/app/_models/order';
 import { CustomerOrder } from 'src/app/_models/order';
 import { Component, OnInit } from '@angular/core';
 import { OrderService } from 'src/app/_services/order.service';
@@ -18,6 +18,7 @@ export class OrderDetailComponent implements OnInit {
   allowCancelRequest: boolean = false;
   allowReturnRequest: boolean = false;
   allowConfirmDelivered: boolean = false;
+  allowReview: boolean = false;
 
   constructor(private orderService: OrderService, private dialogService: DialogService, private toastr: ToastrService, private route: ActivatedRoute, private router: Router) {}
 
@@ -48,6 +49,7 @@ export class OrderDetailComponent implements OnInit {
     this.allowCancelRequest = isAllowCancelRequest(this.order.currentStatus);
     this.allowReturnRequest = isAllowReturnRequest(this.order.currentStatus);
     this.allowConfirmDelivered = isAllowConfirmDelivered(this.order.currentStatus);
+    this.allowReview = isAllowReview(this.order.currentStatus);
   }
 
   requestCancelOrder()
@@ -138,5 +140,15 @@ export class OrderDetailComponent implements OnInit {
           this.toastr.error(error, 'Error');
       }
     );
+  }
+
+  reviewOrder()
+  {
+    this.orderService.selectedOrderId = this.order.externalId;    
+      this.router.navigate(
+        ['order/review' ],
+        { queryParams: { id: this.order.externalId } }
+      );
+    
   }
 }

@@ -1,28 +1,90 @@
-import { Component, OnInit } from '@angular/core';
+import { ReviewService } from './../../_services/review.service';
+import { Component, Input, OnInit } from '@angular/core';
+import { CustomerReviewParams, ProductReview, ReviewSummary, UserReview } from 'src/app/_models/review';
+import { Pagination } from 'src/app/_models/pagination';
+import { CustomerFilterOrder } from 'src/app/_models/productParams';
 
 @Component({
   selector: 'app-product-rating',
   templateUrl: './product-rating.component.html',
-  styleUrls: ['./product-rating.component.css']
+  styleUrls: ['./product-rating.component.css'],
 })
 export class ProductRatingComponent implements OnInit {
-  reviewPoint: number = 4.5;
-  reviewPoints: number[] = [];
-  comment = "Aliquam porttitor sed augue vel tincidunt. Nunc non bibendum dui, ut semper libero. Proin sed tellus ipsum. Donec ultricies, ex id aliquet interdum, metus sapien mollis est, non maximus urna ligula sed enim."
+  @Input() productId: number;
 
-  constructor() { }
+  reviews: ProductReview[];
+
+  pagination: Pagination;
+  reviewParams: CustomerReviewParams;
+  filterOrders: CustomerFilterOrder[] = [
+    new CustomerFilterOrder(1, 'Score', 0, 'Score (low-high)'),
+    new CustomerFilterOrder(2, 'Score', 1, 'Score (high-low)'),
+    new CustomerFilterOrder(3, 'DateCreated', 0, 'Oldest'),
+    new CustomerFilterOrder(4, 'DateCreated', 1, 'Newest'),
+  ];
+  
+
+  selectedOrder: string;
+
+  selectedScore: number = 0;
+
+  productReviewSummary: ReviewSummary;
+ 
+  constructor(private reviewService: ReviewService) {
+    this.reviewParams = this.reviewService.getReviewParams();
+  }
 
   ngOnInit(): void {
-    this.getReviewStart();
+    this.getOrderReview();
+    this.getOrderReviewSummary();
+  }
+  getOrderReviewSummary() {
+    this.reviewService
+    .getProductReviewSummaries(this.productId)
+    .subscribe((result) => {
+      this.productReviewSummary = result;
+      });
   }
 
-  getReviewStart() {
-    let fullStart = (this.reviewPoint - (this.reviewPoint % 1));
-    for(let i = 0; i < fullStart ; i++) {
-      this.reviewPoints.push(1);
+  getOrderReview() {
+    this.reviewService.setReviewParams(this.reviewParams);
+
+    this.reviewService
+      .getProductReviews(this.productId, this.reviewParams)
+      .subscribe((response) => {
+        this.reviews = response.result;
+        this.pagination = response.pagination;
+      });
+  }
+
+  getReviewStar(score: number) {
+    return Math.floor(score);
+  }
+
+  pageChanged(event: any) {
+    if (this.reviewParams.pageNumber !== event.page) {
+      this.reviewParams.pageNumber = event.page;
+      this.reviewService.setReviewParams(this.reviewParams);
+      this.getOrderReview();
     }
-    if(this.reviewPoint % 1 > 0)
-      this.reviewPoints.push(0);
   }
 
+  sort(type: number) {
+    let filterOrder = this.filterOrders[type];
+    this.selectedOrder = filterOrder.filterName;
+    this.reviewParams.orderBy = filterOrder.orderBy;
+    this.reviewParams.field = filterOrder.field;
+    this.getOrderReview();
+  }
+
+  selectScore(score: number)
+  {
+    if(this.selectedScore == 0 || this.selectedScore != score)
+      this.selectedScore = score;
+    else  
+      this.selectedScore = 0;
+    this.reviewParams.score = this.selectedScore;
+    this.getOrderReview();
+  }
+  
 }

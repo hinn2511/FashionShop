@@ -87,6 +87,7 @@ import { HomeNewsComponent } from './customer/home-news/home-news.component';
 import { SearchResultComponent } from './customer/search-result/search-result.component';
 import { RegisterComponent } from './customer/register/register.component';
 import { AdminProductOptionEditComponent } from './administrator/admin-product-option-edit/admin-product-option-edit.component';
+import { OrderReviewComponent } from './customer/order-review/order-review.component';
 
 @NgModule({
   declarations: [
@@ -158,7 +159,8 @@ import { AdminProductOptionEditComponent } from './administrator/admin-product-o
     HomeNewsComponent,
     SearchResultComponent,
     RegisterComponent,
-    AdminProductOptionEditComponent
+    AdminProductOptionEditComponent,
+    OrderReviewComponent
   ],
   imports: [
     BrowserModule,

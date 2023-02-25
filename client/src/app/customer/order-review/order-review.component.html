@@ -1,0 +1,178 @@
+<div class="container-fluid py-2 py-lg-5" *ngIf="order">
+  <div class="row justify-content-center">
+    <div class="col-12 col-md-10 col-lg-8">
+      <div class="p-3">
+        <a class="text-muted" (click)="backToOrderDetail()">
+          <i class="fa fa-arrow-left"></i>&nbsp;&nbsp;Back to order detail
+        </a>
+
+        <div class="p-lg-2">
+          <h4 class="p-0 m-0">Order #{{ order.externalId }}</h4>
+          <p>Date: {{ order.dateCreated | date }}</p>
+          <div class="mt-3" *ngIf="reviewItems.controls.length > 0">
+            <h6 class="my-2 text-muted">Waiting for review</h6>
+            <div class="my-2">
+              <div [formGroup]="reviewForm">
+                <ng-container formArrayName="reviewItems">
+                  <ng-container
+                    *ngFor="
+                      let reviewItem of reviewItems.controls;
+                      let i = index
+                    "
+                  >
+                    <div
+                      class="card border-0 p-3 mb-2"
+                      [formGroup]="reviewItem"
+                    >
+                      <div class="row">
+                        <div class="col-12 col-md-6 col-lg-5">
+                          <div
+                            class="d-flex d-inline-block flex-wrap align-items-center"
+                          >
+                            <div class="rect-img-container">
+                              <img
+                                src="{{ order.orderDetails[i].url }}"
+                                class="rect-img"
+                                alt=""
+                              />
+                            </div>
+                            <div class="product-information">
+                              <p class="m-0 p-0">
+                                {{ order.orderDetails[i].productName }}
+                              </p>
+                              <p class="m-0 p-0">
+                                Size: &nbsp;{{ order.orderDetails[i].sizeName }}
+                              </p>
+                              <p class="m-0 p-0">
+                                Color:&nbsp;{{
+                                  order.orderDetails[i].colorName
+                                }}
+                              </p>
+                            </div>
+                          </div>
+
+                          <hr />
+
+                          <p class="mt-2 mb-0 pl-lg-2">
+                            Your rating: {{ getReviewRating(i) }}
+                          </p>
+                          <div>
+                            <ul class="list-group list-group-horizontal mt-2">
+                              <li
+                                class="list-group-item border-0 cs-pointer"
+                                [class]="{
+                                'text-muted': getStar(i) < j + 1,
+                                'text-warning': getStar(i) >= j + 1
+                                }"
+                                (click)="selectStar(j, i)"
+                                *ngFor="let star of stars; let j = index"
+                              >
+                                <i class="fa fa-star"></i>
+                              </li>
+                            </ul>
+                          </div>
+                        </div>
+
+                        <div class="col-12 col-md-6 col-lg-7">
+                          <p class="mt-2">Comment</p>
+                          <app-text-area-input
+                            [formControl]="reviewItem.controls['comment']"
+                            [maxLength]="200"
+                            [rows]="5"
+                          ></app-text-area-input>
+                          <div class="text-right">
+                            <p class="text-muted fw-smaller ">{{getReviewFormGroupLength(i)}}&nbsp;/&nbsp;200</p>
+                            <button
+                              class="btn btn-light"
+                              (click)="createReview(i)"
+                              [disabled]="!reviewItem.valid"
+                            >
+                              Submit
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </ng-container>
+                </ng-container>
+              </div>
+            </div>
+          </div>
+
+          <div class="mt-3" *ngIf="reviewedOrderItems.length > 0">
+            <h6 class="my-2 text-muted">Your review</h6>
+            <div *ngFor="let reviewedOrderItem of reviewedOrderItems">
+              <div class="card border-0 p-3 mb-2">
+                <div class="row">
+                  <div class="col-12 col-md-6 col-lg-5">
+                    <div
+                      class="d-flex d-inline-block flex-wrap align-items-center"
+                    >
+                      <div class="rect-img-container">
+                        <img
+                          src="{{ reviewedOrderItem.url }}"
+                          class="rect-img"
+                          alt=""
+                        />
+                      </div>
+                      <div class="product-information">
+                        <p class="m-0 p-0">
+                          {{ reviewedOrderItem.productName }}
+                        </p>
+                        <p class="m-0 p-0">
+                          Size: &nbsp;{{ reviewedOrderItem.sizeName }}
+                        </p>
+                        <p class="m-0 p-0">
+                          Color:&nbsp;{{ reviewedOrderItem.colorName }}
+                        </p>
+                      </div>
+                    </div>
+
+                    <hr />
+
+                    <p class="mt-2 mb-0 pl-lg-2">
+                      Your rating: {{ getRating(reviewedOrderItem.score) }}
+                    </p>
+                    <div>
+                      <ul class="list-group list-group-horizontal mt-2">
+                        <li
+                          class="list-group-item border-0 cs-pointer"
+                          [class]="{
+                          'text-muted': reviewedOrderItem.score < j + 1,
+                          'text-warning': reviewedOrderItem.score >= j + 1
+                          }"
+                          *ngFor="let star of stars; let j = index"
+                        >
+                          <i class="fa fa-star"></i>
+                        </li>
+                      </ul>
+                    </div>
+                  </div>
+
+                  <div class="col-12 col-md-6 col-lg-7">
+                    <div
+                      class="mt-2 d-flex d-inline flex-wrap justify-content-between"
+                    >
+                      <p>Comment</p>
+                      <p>
+                        {{
+                          reviewedOrderItem.dateCreated | date : "dd/MM/yyyy"
+                        }}
+                      </p>
+                    </div>
+                    <textarea
+                      class="form-control"
+                      [disabled]="true"
+                      [rows]="5"
+                      [value]="reviewedOrderItem.comment"
+                    ></textarea>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

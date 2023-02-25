@@ -67,7 +67,6 @@ export class OrderHistoryComponent implements OnInit, AfterViewInit {
 
   ngAfterViewInit() {
     this.statusBarButtons = this.items.toArray();
-    console.log(this.statusBarButtons);
     
   }
 

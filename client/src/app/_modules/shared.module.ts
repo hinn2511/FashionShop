@@ -9,6 +9,7 @@ import { defineLocale } from 'ngx-bootstrap/chronos'
 import { AccordionModule } from 'ngx-bootstrap/accordion';
 import { TabsModule } from 'ngx-bootstrap/tabs';
 import { viLocale } from 'ngx-bootstrap/locale';
+import { RatingModule } from 'ngx-bootstrap/rating'; 
 import { FileUploadModule } from 'ng2-file-upload';
 import { ToastrModule } from 'ngx-toastr';
 import { ColorPickerModule } from '@iplab/ngx-color-picker';
@@ -25,6 +26,7 @@ defineLocale('vi', viLocale);
     PopoverModule.forRoot(),
     AccordionModule.forRoot(),
     TabsModule.forRoot(),
+    RatingModule.forRoot(),
     FileUploadModule,
     ToastrModule.forRoot({
       timeOut: 3000,
@@ -39,6 +41,7 @@ defineLocale('vi', viLocale);
     PopoverModule,
     AccordionModule,
     TabsModule,
+    RatingModule,
     BsDatepickerModule,
     ModalModule,
     FileUploadModule,

@@ -5,6 +5,7 @@ using API.DTOs.Params;
 using API.Repository.GenericRepository;
 using API.Helpers;
 using System;
+using API.Entities.UserModel;
 
 namespace API.Repository.OrderRepository
 {
@@ -25,5 +26,12 @@ namespace API.Repository.OrderRepository
     public interface IOrderHistoryRepository : IGenericRepository<OrderHistory>
     {
 
+    }
+
+    public interface IUserReviewRepository : IGenericRepository<UserReview>
+    {
+        Task<PagedList<UserReview>> GetProductReviewsAsync(int productId, CustomerReviewParams customerReviewParams);
+
+        Task<IEnumerable<UserReview>> GetReviewedItemAsync(int orderId);
     }
 }

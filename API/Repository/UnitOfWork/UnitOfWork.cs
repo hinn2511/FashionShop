@@ -21,6 +21,7 @@ namespace API.Data
         }
 
         public IUserLikeRepository UserLikeRepository => new UserLikeRepository(_context, _context.UserLikes);
+        public IUserReviewRepository UserReviewRepository => new UserReviewRepository(_context, _context.UserReviews);
         public ICartRepository CartRepository => new CartRepository(_context, _context.Carts);
         public IProductRepository ProductRepository => new ProductRepository(_context,  _context.Products);
         public ICategoryRepository CategoryRepository => new CategoryRepository(_context, _context.Categories);
