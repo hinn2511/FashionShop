@@ -1,4 +1,4 @@
-<div class="container-fluid w-100 px-0" *ngIf="product">
+<div class="container-fluid w-100 px-0" *ngIf="product && options">
   <div class="row mx-0">
     <div class="col-12 col-md-8 p-0">
       <div class="product-image">
@@ -16,18 +16,47 @@
           <a class="text-muted p-0 m-0" routerLink="/">
             {{ product.brandName }}
           </a>
-          <p class="text-muted p-0 m-0">&nbsp;&#8901;&nbsp;
-          </p>
+          <p class="text-muted p-0 m-0">&nbsp;&#8901;&nbsp;</p>
           <a class="text-muted p-0 m-0" routerLink="/">
             {{ product.category }}
           </a>
         </div>
-        <h1 class="text-uppercase">
+
+        <h1 class="text-uppercase my-0 py-0">
           {{ product.productName }}
         </h1>
-        <h4>
-          {{ product.productPrice | currency }}
+      
+
+       
+
+        <h4 class="mt-2" *ngIf="product.saleType == 0; else onSale">
+          {{ product.price | currency }}
         </h4>
+
+        <p *ngIf="product.saleType == 1" class="text-danger text-capitalize">
+            -{{ product.saleOffPercent }}% off from {{product.saleOffFrom | date}} to {{product.saleOffTo | date }}
+        </p>
+        <p  *ngIf="product.saleType == 2" class="text-danger text-capitalize">
+          -{{ product.saleOffValue | currency }} off from {{product.saleOffFrom | date}} to {{product.saleOffTo | date}}
+        </p>
+
+        <ng-template #onSale>
+          <div class="d-flex d-inline align-items-center mt-2">
+            <h4 class="mr-1 my-0 py-0 text-danger">
+              {{
+                calculatePrice(
+                  product.saleType,
+                  product.price,
+                  product.saleOffPercent,
+                  product.saleOffValue
+                ) | currency
+              }}
+            </h4>
+            <p class="my-0 py-0 h-100 old-price fw-smaller">
+              {{ calculateOldPrice(product.price) | currency }}
+            </p>
+          </div>
+        </ng-template>
 
         <p class="mt-2 mt-lg-4 pr-md-5 text-muted">
           Nam tellus elit, rutrum at nisi et, suscipit accumsan augue. Donec id
@@ -178,6 +207,4 @@
       </tab>
     </tabset>
   </div>
-
- 
 </div>

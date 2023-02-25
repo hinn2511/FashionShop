@@ -17,6 +17,13 @@ namespace API.DTOs.Response.ProductResponse
         public string Url { get; set; }
         public Gender Gender { get; set; }
         public bool IsPromoted { get; set; }
+        public bool IsNew { get; set; }
+        public bool IsOnSale { get; set; }
+        public ProductSaleOffType SaleType { get; set; }
+        public DateTime SaleOffFrom { get; set; }
+        public DateTime SaleOffTo { get; set; }
+        public int SaleOffPercent { get; set; }
+        public int SaleOffValue { get; set; }
     }
 
     #endregion
@@ -26,6 +33,13 @@ namespace API.DTOs.Response.ProductResponse
     {
         public bool LikedByUser { get; set; }
         public string Category { get; set; }
+        public List<CustomerProductColorsResponse> Options { get; set; }
+    }
+
+    public class CustomerProductColorsResponse
+    {
+        public string ColorCode { get; set; }
+        public string ColorName { get; set; }
     }
 
     public class CustomerProductDetailResponse : ProductResponse

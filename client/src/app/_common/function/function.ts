@@ -77,17 +77,28 @@ export function fnGetArrayDepth(arr) {
 export function fnFlattenArray(array) {
   let result = [];
   array.forEach(function (a) {
-      result.push(a);
-      if (Array.isArray(a.children)) {
-          result = result.concat(fnFlattenArray(a.children));
-      }
+    result.push(a);
+    if (Array.isArray(a.children)) {
+      result = result.concat(fnFlattenArray(a.children));
+    }
   });
   return result;
 }
 
-
 export function fnConvertToSlug(text: string) {
-  return text.toLowerCase()
-             .replace(/ /g, '-')
-             .replace(/[^\w-]+/g, '');
+  return text
+    .toLowerCase()
+    .replace(/ /g, '-')
+    .replace(/[^\w-]+/g, '');
+}
+
+export function fnCalculatePrice(
+  saleType: number,
+  price: number,
+  saleOffPercent: number,
+  saleOffValue: number
+) {
+  if (saleType == 1) {
+    return price - (price * saleOffPercent) / 100;
+  } else return price - saleOffValue;
 }

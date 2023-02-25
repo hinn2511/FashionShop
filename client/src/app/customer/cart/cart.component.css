@@ -8,6 +8,10 @@
     align-items: baseline;
   }
 
+  p {
+    font-size: small;
+  }
+
   .cart-detail {
     overflow: hidden;
     overflow-y: scroll;
@@ -102,4 +106,9 @@
   .rect-img {
     height: 100%;
   }
+}
+
+.old-price 
+{
+  text-decoration: line-through;
 }

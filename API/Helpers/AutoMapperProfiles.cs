@@ -158,6 +158,27 @@ namespace API.Helpers
             CreateMap<AppUser, AccountResponse>();
 
             CreateMap<Product, CustomerProductsResponse>()
+                // .ForMember(dest => dest.Options, opt => opt.MapFrom(
+                //           src => src.Options))
+                .ForMember(dest => dest.IsNew, opt => opt.MapFrom(
+                          src => src.DateCreated.AddDays(7) > DateTime.UtcNow))
+                .ForMember(dest => dest.IsOnSale, opt => opt.MapFrom(
+                          src => src.SaleType != ProductSaleOffType.None 
+                                &&  src.SaleOffFrom < DateTime.UtcNow && src.SaleOffTo > DateTime.UtcNow))
+                .ForMember(dest => dest.SaleOffPercent, opt => opt.MapFrom(
+                          src => src.SaleOffPercent))
+                .ForMember(dest => dest.SaleOffValue, opt => opt.MapFrom(
+                          src => src.SaleOffValue))
+                // .ForMember(dest => dest.SaleType, opt => opt.Condition(
+                //           src => src.SaleOffFrom < DateTime.UtcNow && src.SaleOffTo > DateTime.UtcNow))
+                // .ForMember(dest => dest.SaleOffPercent, opt => opt.Condition(
+                //           src => src.SaleOffFrom < DateTime.UtcNow && src.SaleOffTo > DateTime.UtcNow))
+                // .ForMember(dest => dest.SaleOffValue, opt => opt.Condition(
+                //           src => src.SaleOffFrom < DateTime.UtcNow && src.SaleOffTo > DateTime.UtcNow))
+                //  .ForMember(dest => dest.SaleOffFrom, opt => opt.Condition(
+                //           src => src.SaleOffFrom < DateTime.UtcNow && src.SaleOffTo > DateTime.UtcNow))
+                // .ForMember(dest => dest.SaleOffTo, opt => opt.Condition(
+                //           src => src.SaleOffFrom < DateTime.UtcNow && src.SaleOffTo > DateTime.UtcNow))
                 .ForMember(dest => dest.Url, opt => opt.MapFrom(
                           src => src.ProductPhotos.FirstOrDefault(pp => pp.IsMain).Url))
                 .ForMember(dest => dest.Gender, opt => opt.MapFrom(
@@ -165,7 +186,28 @@ namespace API.Helpers
                 .ForMember(dest => dest.Category, opt => opt.MapFrom(
                           src => src.Category.CategoryName));
 
+            CreateMap<Option, CustomerProductColorsResponse>();
+
             CreateMap<Product, CustomerProductDetailResponse>()
+                .ForMember(dest => dest.IsNew, opt => opt.MapFrom(
+                          src => src.DateCreated.AddDays(7) > DateTime.UtcNow))
+                .ForMember(dest => dest.IsOnSale, opt => opt.MapFrom(
+                          src => src.SaleType != ProductSaleOffType.None 
+                                &&  src.SaleOffFrom < DateTime.UtcNow && src.SaleOffTo > DateTime.UtcNow))
+                .ForMember(dest => dest.SaleOffPercent, opt => opt.MapFrom(
+                          src => src.SaleOffPercent))
+                .ForMember(dest => dest.SaleOffValue, opt => opt.MapFrom(
+                          src => src.SaleOffValue))
+                // .ForMember(dest => dest.SaleType, opt => opt.Condition(
+                //           src => src.SaleOffFrom < DateTime.UtcNow && src.SaleOffTo > DateTime.UtcNow))
+                // .ForMember(dest => dest.SaleOffPercent, opt => opt.Condition(
+                //           src => src.SaleOffFrom < DateTime.UtcNow && src.SaleOffTo > DateTime.UtcNow))
+                // .ForMember(dest => dest.SaleOffValue, opt => opt.Condition(
+                //           src => src.SaleOffFrom < DateTime.UtcNow && src.SaleOffTo > DateTime.UtcNow))
+                //  .ForMember(dest => dest.SaleOffFrom, opt => opt.Condition(
+                //           src => src.SaleOffFrom < DateTime.UtcNow && src.SaleOffTo > DateTime.UtcNow))
+                // .ForMember(dest => dest.SaleOffTo, opt => opt.Condition(
+                //           src => src.SaleOffFrom < DateTime.UtcNow && src.SaleOffTo > DateTime.UtcNow))
                 .ForMember(dest => dest.Url, opt => opt.MapFrom(
                           src => src.ProductPhotos.FirstOrDefault(pp => pp.IsMain).Url))
                 .ForMember(dest => dest.BrandName, opt => opt.MapFrom(
@@ -210,6 +252,21 @@ namespace API.Helpers
             CreateMap<Option, CartItemOption>();
 
             CreateMap<Cart, CartItemResponse>()
+                .ForMember(dest => dest.IsOnSale, opt => opt.MapFrom(
+                          src => src.Option.Product.SaleType != ProductSaleOffType.None 
+                                &&  src.Option.Product.SaleOffFrom < DateTime.UtcNow && src.Option.Product.SaleOffTo > DateTime.UtcNow))
+                .ForMember(dest => dest.SaleOffPercent, opt => opt.MapFrom(
+                          src => src.Option.Product.SaleOffPercent))
+                .ForMember(dest => dest.SaleOffValue, opt => opt.MapFrom(
+                          src => src.Option.Product.SaleOffValue))
+                .ForMember(dest => dest.SaleType, opt => opt.MapFrom(
+                          src => src.Option.Product.SaleType))
+                // .ForMember(dest => dest.SaleType, opt => opt.Condition(
+                //           src => src.Option.Product.SaleOffFrom < DateTime.UtcNow && src.Option.Product.SaleOffTo > DateTime.UtcNow))
+                // .ForMember(dest => dest.SaleOffPercent, opt => opt.Condition(
+                //           src => src.Option.Product.SaleOffFrom < DateTime.UtcNow && src.Option.Product.SaleOffTo > DateTime.UtcNow))
+                // .ForMember(dest => dest.SaleOffValue, opt => opt.Condition(
+                //           src => src.Option.Product.SaleOffFrom < DateTime.UtcNow && src.Option.Product.SaleOffTo > DateTime.UtcNow))
                 .ForMember(dest => dest.OptionId, opt => opt.MapFrom(
                         src => src.Id))
                 .ForMember(dest => dest.ProductId, opt => opt.MapFrom(
@@ -231,7 +288,7 @@ namespace API.Helpers
                           .ForMember(dest => dest.AdditionalPrice, opt => opt.MapFrom(
                           src => src.Option.AdditionalPrice))
                           .ForMember(dest => dest.TotalItemPrice, opt => opt.MapFrom(
-                          src => (src.Option.AdditionalPrice + src.Option.Product.Price) * src.Quantity));
+                          src => (src.Option.CalculatePriceAfterSaleOff()) * src.Quantity));
 
             CreateMap<Option, CartItemOption>();
 
@@ -383,21 +440,21 @@ namespace API.Helpers
                 .ForMember(dest => dest.ColorName, opt => opt.MapFrom(
                             src => src.Option.ColorName))
                 .ForMember(dest => dest.SizeName, opt => opt.MapFrom(
-                            src => src.Option.SizeName))            
+                            src => src.Option.SizeName))
                 .ForMember(dest => dest.UserName, opt => opt.MapFrom(
                             src => $"{src.User.FirstName} {src.User.LastName}"));
-            
+
             CreateMap<UserReview, CustomerReviewedItemResponse>()
                 .ForMember(dest => dest.ProductName, opt => opt.MapFrom(
                             src => src.Option.Product.ProductName))
                 .ForMember(dest => dest.Url, opt => opt.MapFrom(
-                            src => src.Option.Product.ProductPhotos.FirstOrDefault(x => x.IsMain).Url))            
+                            src => src.Option.Product.ProductPhotos.FirstOrDefault(x => x.IsMain).Url))
                 .ForMember(dest => dest.ColorCode, opt => opt.MapFrom(
                             src => src.Option.ColorCode))
                 .ForMember(dest => dest.ColorName, opt => opt.MapFrom(
                             src => src.Option.ColorName))
                 .ForMember(dest => dest.SizeName, opt => opt.MapFrom(
-                            src => src.Option.SizeName))            
+                            src => src.Option.SizeName))
                 .ForMember(dest => dest.UserName, opt => opt.MapFrom(
                             src => $"{src.User.FirstName} {src.User.LastName}"));
 
@@ -490,6 +547,41 @@ namespace API.Helpers
             }
         }
 
+
+        public static double CalculatePriceAfterSaleOff(this Option option)
+        {
+            var optionPrice = option.AdditionalPrice + option.Product.Price;
+            if (option.Product.SaleType != ProductSaleOffType.None && option.Product.SaleOffFrom < DateTime.UtcNow && option.Product.SaleOffTo > DateTime.UtcNow)
+            {
+                if (option.Product.SaleType == ProductSaleOffType.SaleOffValue)
+                {
+                    return optionPrice - option.Product.SaleOffValue;
+                }
+                else
+                {
+                    return optionPrice - ((optionPrice * option.Product.SaleOffPercent) / 100);
+                }
+            }
+            return optionPrice;
+
+        }
+
+        public static double CalculatePriceAfterSaleOff(this Product product)
+        {
+            if (product.SaleType != ProductSaleOffType.None && product.SaleOffFrom < DateTime.UtcNow && product.SaleOffTo > DateTime.UtcNow)
+            {
+                if (product.SaleType == ProductSaleOffType.SaleOffValue)
+                {
+                    return product.Price - product.SaleOffValue;
+                }
+                else
+                {
+                    return product.Price - ((product.Price * product.SaleOffPercent) / 100);
+                }
+            }
+            return product.Price;
+
+        }
 
         public static bool IsOrderFinished(this Order order)
         {

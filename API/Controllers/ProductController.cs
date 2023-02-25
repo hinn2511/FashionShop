@@ -54,20 +54,25 @@ namespace API.Controllers
             {
                 var userLikes = await _unitOfWork.UserLikeRepository.GetAllBy(x => x.UserId == GetUserId());
                 productsLiked = userLikes.ToList();
-                
+
             }
 
             var result = _mapper.Map<List<CustomerProductsResponse>>(products.ToList());
 
 
-            if (GetUserId() != 0)
+            foreach (var item in result)
             {
-                foreach (var item in result)
+                if (GetUserId() != 0)
                 {
                     if (productsLiked.Any(x => x.ProductId == item.Id))
                         item.LikedByUser = true;
                 }
+                item.Options = item.Options.GroupBy(g => g.ColorName)
+                           .Select(g => g.First()).ToList();
+
+
             }
+
 
             return Ok(result);
 
@@ -82,7 +87,7 @@ namespace API.Controllers
                 return BadRequest("Product not found");
 
             product.ProductPhotos = FilterHiddenProductPhoto(product);
-            
+
             var result = _mapper.Map<CustomerProductDetailResponse>(product);
 
             if (GetUserId() != 0)
@@ -261,7 +266,7 @@ namespace API.Controllers
 
             foreach (var product in products)
             {
-                if(product.Status == Status.Deleted)
+                if (product.Status == Status.Deleted)
                 {
                     continue;
                 }
@@ -356,7 +361,7 @@ namespace API.Controllers
 
             if (products.Count() == 0)
                 return BadRequest(new BaseResponseMessage(false, HttpStatusCode.BadRequest, "No promoted product found"));
-                
+
             foreach (var product in products)
             {
                 if (product.IsPromoted)
@@ -382,7 +387,7 @@ namespace API.Controllers
 
             if (products.Count() == 0)
                 return BadRequest(new BaseResponseMessage(false, HttpStatusCode.BadRequest, "No demoted product found"));
-             
+
             foreach (var product in products)
             {
                 if (!product.IsPromoted)
@@ -398,6 +403,62 @@ namespace API.Controllers
             return BadRequest(new BaseResponseMessage(false, HttpStatusCode.BadRequest, "An error occurred while promote for product."));
         }
 
+        [HttpPut("create-product-sale")]
+        public async Task<ActionResult> CreateProductSale(CreateProductSaleRequest createProductSaleRequest)
+        {
+            if (createProductSaleRequest.From > createProductSaleRequest.To)
+                    return BadRequest(
+                        new BaseResponseMessage(false, HttpStatusCode.BadRequest, $"Sale date not valid."));
+            
+            if (createProductSaleRequest.SaleOffType == ProductSaleOffType.None)
+                    return BadRequest(
+                        new BaseResponseMessage(false, HttpStatusCode.BadRequest, $"Sale type not valid."));
+
+            var products = await _unitOfWork.ProductRepository.GetAllBy(x => createProductSaleRequest.Ids.Contains(x.Id));
+
+            if (products == null)
+                return BadRequest("Products not found");
+
+            if (createProductSaleRequest.SaleOffType == ProductSaleOffType.SaleOffPercent)
+            {
+                if (createProductSaleRequest.Percent < 0 || createProductSaleRequest.Percent > 100)
+                    return BadRequest(
+                        new BaseResponseMessage(false, HttpStatusCode.BadRequest, $"Product sale percent not valid. Percent value must between 0 and 100"));
+                foreach (var product in products)
+                {
+                    product.SaleOffPercent = (int)createProductSaleRequest.Percent;
+                    product.SaleOffFrom = createProductSaleRequest.From;
+                    product.SaleOffTo = createProductSaleRequest.To;
+                    product.SaleType = ProductSaleOffType.SaleOffPercent;
+                    product.AddUpdateInformation(GetUserId());
+                }
+            }
+
+            if (createProductSaleRequest.SaleOffType == ProductSaleOffType.SaleOffValue)
+            {
+                if (products.Any(x => x.Price < createProductSaleRequest.Value))
+                    return BadRequest(
+                        new BaseResponseMessage(false, HttpStatusCode.BadRequest, $"Product sale value not valid. Save value must lower than product price."));
+                foreach (var product in products)
+                {
+                    product.SaleOffValue = (int)createProductSaleRequest.Value;
+                    product.SaleOffFrom = createProductSaleRequest.From;
+                    product.SaleOffTo = createProductSaleRequest.To;
+                    product.SaleType = ProductSaleOffType.SaleOffValue;
+                    product.AddUpdateInformation(GetUserId());
+                }
+            }
+
+            _unitOfWork.ProductRepository.Update(products);
+
+            if (await _unitOfWork.Complete())
+                return Ok(new BaseResponseMessage(true, HttpStatusCode.OK, $"Product sale created successfully."));
+
+            return BadRequest(
+                        new BaseResponseMessage(false, HttpStatusCode.BadRequest, $"An error occurred while creating product sale."));
+
+        }
+        
         [HttpPost("add-product-photo/{productId}")]
         public async Task<ActionResult> AddProductPhoto(IFormFile file, int productId)
         {
@@ -411,7 +472,7 @@ namespace API.Controllers
 
             var result = await _photoService.AddPhotoAsync(file, 1000, 1000, "lfill", 1);
 
-            if (result.Error != null) 
+            if (result.Error != null)
                 return BadRequest(new BaseResponseMessage(false, HttpStatusCode.BadRequest, "Can not upload photo"));
 
             bool IsMain = false;
@@ -533,7 +594,7 @@ namespace API.Controllers
         [HttpDelete("delete-product-photo")]
         public async Task<ActionResult> DeleteProductPhoto(DeleteProductPhotosRequest deleteProductPhotosRequest)
         {
-            var productPhotos = await _unitOfWork.ProductPhotoRepository.GetAllBy(x => deleteProductPhotosRequest.Ids.Contains(x.Id));            
+            var productPhotos = await _unitOfWork.ProductPhotoRepository.GetAllBy(x => deleteProductPhotosRequest.Ids.Contains(x.Id));
 
             if (productPhotos == null)
                 return BadRequest("Product photo not found");
@@ -542,11 +603,11 @@ namespace API.Controllers
                 return BadRequest("Can not delete main photo.");
 
             _unitOfWork.ProductPhotoRepository.Delete(x => productPhotos.Select(x => x.Id).Contains(x.Id));
-            
-            foreach(var photo in productPhotos)
+
+            foreach (var photo in productPhotos)
             {
                 var result = await _photoService.DeletePhotoAsync(photo.PublicId);
-                if(result.Error != null)
+                if (result.Error != null)
                     return BadRequest(result.Error.Message);
             }
 

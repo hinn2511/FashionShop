@@ -10,12 +10,12 @@
     ></div>
     <!-- Cart items list -->
     <div class="col-12 col-lg-7 p-0 bg-white">
-      <div class="cart-detail px-4 pt-4 p-md-5">
+      <div class="cart-detail px-2 pt-2 px-lg-4 pt-lg-4 p-md-5">
         <a class="text-muted" (click)="closeCart()">
           <i class="fa fa-arrow-left" aria-hidden="true"></i>&nbsp;&nbsp;Back to
           store
         </a>
-        <div class="mt-4">
+        <div class="mt-4 p-2">
           <h2 class="">My cart</h2>
           <p class="">{{ cartItemList.totalItem }}&nbsp;items</p>
         </div>
@@ -70,9 +70,27 @@
                   </td>
 
                   <td class="text-center">
-                    <p class="m-0 p-0">
+                    <p
+                      class="p-0 m-0"
+                      *ngIf="cartItem.saleType == 0; else onSale"
+                    >
                       {{ cartItem.price | currency }}
                     </p>
+                    <ng-template #onSale>
+                      <p class="mr-1 my-0 py-0 text-danger">
+                        {{
+                          calculatePrice(
+                            cartItem.saleType,
+                            cartItem.price,
+                            cartItem.saleOffPercent,
+                            cartItem.saleOffValue
+                          ) | currency
+                        }}
+                      </p>
+                      <p class="my-0 py-0 old-price fw-smaller">
+                        {{ cartItem.price | currency }}
+                      </p>
+                    </ng-template>
                   </td>
 
                   <!-- Item quantity on desktop -->
@@ -110,7 +128,14 @@
 
                   <td class="text-center">
                     <p class="m-0 p-0">
-                      {{ cartItem.price * cartItem.quantity | currency }}
+                      {{
+                        calculatePrice(
+                          cartItem.saleType,
+                          cartItem.price,
+                          cartItem.saleOffPercent,
+                          cartItem.saleOffValue
+                        ) * cartItem.quantity | currency
+                      }}
                     </p>
                   </td>
 
@@ -142,13 +167,13 @@
               }"
             >
               <!-- Item image on mobile -->
-              <div class="col-3 px-0">
+              <div class="col-4 px-0">
                 <div class="rect-img-container">
                   <img class="rect-img" src="{{ cartItem.imageUrl }}" alt="" />
                 </div>
               </div>
               <!-- Item detail on mobile -->
-              <div class="col-7 my-auto va-middle">
+              <div class="col-7 my-auto px-0 va-middle">
                 <p
                   class="p-0 m-0 text-dark fw-bold"
                   (click)="viewProduct(cartItem)"
@@ -158,6 +183,29 @@
                   }}
                 </p>
                 <p class="m-0 p-0">Size:&nbsp;{{ cartItem.sizeName }}</p>
+                <div class="d-flex d-inline">
+                  <p
+                    class="p-0 m-0"
+                    *ngIf="cartItem.saleType == 0; else onSale"
+                  >
+                    {{ cartItem.price | currency }}
+                  </p>
+                  <ng-template #onSale>
+                    <p class="mr-1 my-0 py-0 text-danger">
+                      {{
+                        calculatePrice(
+                          cartItem.saleType,
+                          cartItem.price,
+                          cartItem.saleOffPercent,
+                          cartItem.saleOffValue
+                        ) | currency
+                      }}
+                    </p>
+                    <p class="my-0 py-0 old-price fw-smaller">
+                      {{ cartItem.price | currency }}
+                    </p>
+                  </ng-template>
+                </div>
                 <!-- Item quantity on mobile -->
                 <div class="d-flex d-inline-block mt-2">
                   <button
@@ -191,10 +239,10 @@
               </div>
               <!-- Item action on mobile -->
               <div
-                class="col-2 my-auto text-center va-middle"
+                class="col-1 p-0 my-auto text-center va-middle"
                 (click)="deleteCartItem(cartItem)"
               >
-                <button class="btn btn-light">
+                <button class="btn btn-transparent p-0">
                   <i class="fa fa-times" aria-hidden="true"></i>
                 </button>
               </div>

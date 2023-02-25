@@ -19,6 +19,7 @@ import { CartItem, NewCartItem } from 'src/app/_models/cart';
 import { User } from 'src/app/_models/user';
 import { ToastrService } from 'ngx-toastr';
 import { GrowAnimation } from 'src/app/_common/animation/common.animation';
+import { fnCalculatePrice } from 'src/app/_common/function/function';
 
 @Component({
   selector: 'app-product-detail',
@@ -165,6 +166,10 @@ export class ProductDetailComponent implements OnInit {
           (this.product.price + this.selectedSize.additionalPrice) *
           this.quantity,
         imageUrl: this.product.url,
+        isOnSale: this.product.isOnSale,
+        saleOffPercent: this.product.saleOffPercent,
+        saleOffValue: this.product.saleOffValue,
+        saleType: this.product.saleType
       };
       this.cartService.updateLocalCart(cartItem);
       this.toastr.success('This item has been added to your cart!', 'Success');
@@ -231,5 +236,19 @@ export class ProductDetailComponent implements OnInit {
     if(this.expandDescription === 'in')
       this.descriptionTitleRef.nativeElement.scrollIntoView({ behavior: 'smooth'});
     
+  }
+
+  calculatePrice(
+    saleType: number,
+    price: number,
+    saleOffPercent: number,
+    saleOffValue: number
+  ) {
+    return fnCalculatePrice(saleType, price, saleOffPercent, saleOffValue) * this.quantity;
+  }
+
+  calculateOldPrice(price:number
+  ) {
+    return price * this.quantity;
   }
 }

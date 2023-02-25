@@ -1,5 +1,7 @@
+using System;
 using System.Collections.Generic;
 using API.Entities;
+using API.Entities.ProductModel;
 
 namespace API.DTOs.Response.CartResponse
 {
@@ -26,6 +28,11 @@ namespace API.DTOs.Response.CartResponse
         public int Quantity { get; set; }
         public double TotalItemPrice { get; set; }
         public Status Status { get; set; }
+
+        public bool IsOnSale { get; set; }
+        public ProductSaleOffType SaleType { get; set; }
+        public int SaleOffPercent { get; set; }
+        public int SaleOffValue { get; set; }
     }
 
     public class CartResponses
