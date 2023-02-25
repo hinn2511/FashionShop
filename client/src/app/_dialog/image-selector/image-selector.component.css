@@ -1,0 +1,12 @@
+input {
+    bottom: 10%;
+    right: 10%;
+}
+
+.form-check-selected > div {
+    padding-top: 1.5rem;
+    padding-bottom: 1.5rem;
+    border: 2px solid rgba(13, 40, 189, 0.836);
+    background-color: #2e99f17c;
+}
+

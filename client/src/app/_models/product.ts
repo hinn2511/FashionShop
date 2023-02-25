@@ -55,6 +55,8 @@ export interface SelectedProductPhoto {
     checked: boolean;
 }
 
+
+
 export interface ManagerProduct {
     categoryId: number;
     categoryName: string;

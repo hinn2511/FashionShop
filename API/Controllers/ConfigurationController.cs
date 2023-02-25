@@ -1,10 +1,13 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
+using API.Data;
 using API.DTOs.Params;
 using API.DTOs.Request.ConfigurationRequest;
 using API.DTOs.Request.ContentRequest;
+using API.DTOs.Response;
 using API.DTOs.Response.ConfigurationResponse;
 using API.DTOs.Response.ContentResponse;
 using API.Entities;
@@ -13,17 +16,20 @@ using API.Extensions;
 using API.Interfaces;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers
 {
-    
+
     public class ConfigurationController : BaseApiController
     {
         private readonly IMapper _mapper;
         private readonly IUnitOfWork _unitOfWork;
-        public ConfigurationController(IUnitOfWork unitOfWork, IMapper mapper)
+        private readonly IPhotoService _photoService;
+        public ConfigurationController(IUnitOfWork unitOfWork, IMapper mapper, IPhotoService photoService)
         {
+            _photoService = photoService;
             _unitOfWork = unitOfWork;
             _mapper = mapper;
         }
@@ -37,7 +43,7 @@ namespace API.Controllers
             Response.AddPaginationHeader(carousels.CurrentPage, carousels.PageSize, carousels.TotalCount, carousels.TotalPages);
 
             var result = _mapper.Map<List<AdminCarouselResponse>>(carousels.ToList());
-            
+
             return Ok(result);
         }
 
@@ -48,14 +54,14 @@ namespace API.Controllers
             var carousel = _mapper.Map<Carousel>(addCarouselRequest);
 
             carousel.AddCreateInformation(GetUserId());
-            
+
             carousel.Status = Status.Hidden;
 
             _unitOfWork.CarouselRepository.Insert(carousel);
 
             if (await _unitOfWork.Complete())
                 return Ok();
-                
+
             return BadRequest("Can not add new home page.");
         }
 
@@ -93,7 +99,7 @@ namespace API.Controllers
 
             foreach (var carousel in carousels)
             {
-                if(carousel.Status == Status.Deleted)
+                if (carousel.Status == Status.Deleted)
                 {
                     continue;
                 }
@@ -138,19 +144,19 @@ namespace API.Controllers
 
             foreach (var carousel in carousels)
             {
-                if(carousel.Status == Status.Active)
+                if (carousel.Status == Status.Active)
                 {
                     carousel.AddHiddenInformation(GetUserId());
                     continue;
                 }
-                    
-                if(carousel.Status == Status.Hidden)
+
+                if (carousel.Status == Status.Hidden)
                 {
                     carousel.Status = Status.Active;
                     continue;
                 }
 
-                if(carousel.Status == Status.Deleted)
+                if (carousel.Status == Status.Deleted)
                 {
                     continue;
                 }
@@ -164,5 +170,58 @@ namespace API.Controllers
             }
             return BadRequest("An error occurred while hiding carousels.");
         }
+
+        [AllowAnonymous]
+        [HttpGet("client-settings")]
+        public async Task<ActionResult> GetSettings()
+        {
+            var settings = await _unitOfWork.SettingsRepository.GetFirst();
+
+            if (settings != null)
+                return Ok(_mapper.Map<ClientSettingsResponse>(settings));
+
+            return BadRequest(new BaseResponseMessage(false, HttpStatusCode.NotFound, $"Settings not found."));
+        }
+
+
+        [Authorize(Roles = "UpdateBackgroundSetting")]
+        [HttpPut("background/{photoId}")]
+        public async Task<ActionResult> UpdateCustomerLoginBackground(int photoId, [FromQuery] string type)
+        {
+            var settings = await _unitOfWork.SettingsRepository.GetFirst();
+
+            if (settings == null)
+                return BadRequest(new BaseResponseMessage(false, HttpStatusCode.NotFound, $"Settings not found."));
+
+            var photo = await _unitOfWork.PhotoRepository.GetFirstBy(x => x.Id == photoId);
+
+            if (photo == null)
+                return BadRequest(new BaseResponseMessage(false, HttpStatusCode.NotFound, $"Photo not found."));
+
+            switch (type)
+            {
+                case "customerLogin":
+                    settings.ClientLoginBackground = photo.Url;
+                    settings.ClientLoginPhotoId = photo.Id;
+                    break;
+                case "customerRegister":
+                    settings.ClientRegisterBackground = photo.Url;
+                    settings.ClientRegisterPhotoId = photo.Id;
+                    break;
+                default:
+                    settings.AdministratorLoginBackground = photo.Url;
+                    settings.AdministratorLoginPhotoId = photo.Id;
+                    break;
+            }           
+
+            _unitOfWork.SettingsRepository.Update(settings);
+
+            if (await _unitOfWork.Complete())
+                return Ok(new BaseResponseMessage(true, HttpStatusCode.OK, $"Settings updated successfully."));
+
+            return BadRequest(new BaseResponseMessage(false, HttpStatusCode.BadRequest, $"Error when updated settings."));
+        }
+
+        
     }
 }

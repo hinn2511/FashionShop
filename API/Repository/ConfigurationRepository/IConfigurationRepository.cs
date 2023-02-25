@@ -25,5 +25,9 @@ namespace API.Repository.ConfigurationRepository
     {
     }
 
+    public interface ISettingsRepository : IGenericRepository<Settings>
+    {
+    }
+
      
 }

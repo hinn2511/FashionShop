@@ -19,7 +19,7 @@ namespace API.Data
             _mapper = mapper;
             _context = context;
         }
-
+        public ISettingsRepository  SettingsRepository => new SettingsRepository(_context, _context.Settings);
         public IAppRoleRepository AppRoleRepository => new AppRoleRepository(_context, _context.AppRoles);
         public IAppRolePermissionRepository AppRolePermissionRepository => new AppRolePermissionRepository(_context, _context.RolePermissions);
         public IUserLikeRepository UserLikeRepository => new UserLikeRepository(_context, _context.UserLikes);

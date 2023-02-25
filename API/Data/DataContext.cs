@@ -43,6 +43,7 @@ namespace API.Data
         public DbSet<Photo> Photos { get; set; }
         public DbSet<AppRole> AppRoles { get; set; }
         public DbSet<AppRolePermission> RolePermissions { get; set; }
+        public DbSet<Settings> Settings { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {

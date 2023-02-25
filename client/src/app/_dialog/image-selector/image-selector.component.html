@@ -1,0 +1,70 @@
+<div class="modal-header" *ngIf="photos">
+  <h5 class="modal-title pull-left">{{ action }}</h5>
+</div>
+<div class="modal-body">
+  <div class="checkbox w-100" (click)="selectAll()" *ngIf="multiple">
+    <label
+      ><input
+        type="checkbox"
+        [checked]="selectAllPhoto"
+      />&nbsp;&nbsp;&nbsp;Select all</label
+    >
+  </div>
+  <form #rolesForm="ngForm" id="rolesForm">
+    <div class="row">
+      <div
+        *ngFor="let photo of photos; let i = index"
+        [class.form-check-selected]="photo.isSelected"
+        class="form-check"
+        class="col-6 col-md-4 col-lg-3"
+      >
+        <div
+          class="p-2 my-2 cs-pointer"
+          (click)="select(i)"
+          *ngIf="
+            i < pagination.currentPage * pagination.itemsPerPage ||
+            i > pagination.currentPage * pagination.itemsPerPage
+          "
+        >
+          <div class="rect-img-container position-relative">
+            <img class="rect-img" src="{{ photo.url }}" alt="" />
+          </div>
+          <input
+            type="checkbox"
+            class="form-check-input position-absolute"
+            [checked]="photo.isSelected"
+            value="photo.id"
+          />
+        </div>
+      </div>
+    </div>
+  </form>
+  <div class="d-flex mt-5 justify-content-center" *ngIf="pagination">
+    <pagination
+      [boundaryLinks]="true"
+      [totalItems]="pagination.totalItems"
+      [itemsPerPage]="pagination.itemsPerPage"
+      [(ngModel)]="pagination.currentPage"
+      (pageChanged)="pageChanged($event)"
+      previousText="Previous"
+      nextText="Next"
+      firstText="First"
+      lastText="Last"
+    >
+    </pagination>
+  </div>
+</div>
+<div class="modal-footer d-flex p-0">
+  <div
+    class="flex-fill my-auto cs-pointer text-danger text-center border-right p-3"
+    (click)="cancel()"
+  >
+    Cancel
+  </div>
+  <div
+    class="flex-fill my-auto cs-pointer text-primary text-center p-3"
+    (click)="confirm()"
+  >
+    Confirm
+  </div>
+</div>

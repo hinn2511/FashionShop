@@ -11,6 +11,7 @@ namespace API.Repository.GenericRepository
         Task<T> GetById(object id);
         Task<IEnumerable<T>> GetAllBy(Expression<Func<T, bool>> expression);
         Task<T> GetFirstBy(Expression<Func<T, bool>> expression);
+        Task<T> GetFirst();
 
         Task<IEnumerable<T>> GetAllAndIncludeAsync(
             Expression<Func<T, bool>> filter,
