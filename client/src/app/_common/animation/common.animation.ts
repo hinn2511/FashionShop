@@ -11,14 +11,15 @@ export const GrowAnimation = trigger('grow', [
   state(
     'in',
     style({
-      height: '700px',
+      height: '{{height}}',
       overflow: 'hidden',
     }),
-    { params: { collapseHeight: '100%' } }
+    { params: { height: '100%' } }
   ),
   transition('out => in', animate('0.5s ease-in-out')),
   transition('in => out', animate('0.5s ease-in-out')),
 ]);
+
 
 const fadeIn = transition(':enter', [
   style({ opacity: 0 }), // start state

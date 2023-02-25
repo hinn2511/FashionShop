@@ -98,6 +98,8 @@ export class ProductService {
     params = params.append('minPrice', productParams.minPrice);
     params = params.append('maxPrice', productParams.maxPrice);
     params = params.append('isOnSale', productParams.isOnSale);
+    params = params.append('isMostInteresting', productParams.isMostInteresting);
+    params = params.append('isFeatured', productParams.isFeatured);
     return getPaginatedResult<Product[]>(this.baseUrl + 'product', params, this.http).pipe(
       map(response => {
         this.productCache.set(Object.values(productParams).join('-'), response);

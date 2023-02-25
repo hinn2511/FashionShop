@@ -52,10 +52,9 @@ namespace API.Controllers
                     {
                         SizeName = x.SizeName,
                         OptionId = x.Id,
-                        Price = CalculateAfterSaleOff(option, option.Product.Price),
-                        AdditionalPrice = CalculateAfterSaleOff(option, options
-                                    .FirstOrDefault(o => o.ColorCode == x.ColorCode 
-                                                        && o.SizeName == x.SizeName).AdditionalPrice)
+                        Price = option.Product.Price,
+                        AdditionalPrice = options.FirstOrDefault(o => o.ColorCode == x.ColorCode 
+                                                        && o.SizeName == x.SizeName).AdditionalPrice
                     }
                 );
                 

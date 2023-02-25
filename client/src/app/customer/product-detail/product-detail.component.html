@@ -1,6 +1,6 @@
-<div class="container-fluid w-100 px-0" *ngIf="product && options">
-  <div class="row mx-0">
-    <div class="col-12 col-md-8 p-0">
+<div class="container-fluid w-100 px-0" *ngIf="product">
+  <div class="row mx-0" *ngIf="options">
+    <div class="col-12 col-md-7 col-lg-8 p-0">
       <div class="product-image">
         <app-breadcrumb [breadCrumbList]="breadCrumb"></app-breadcrumb>
         <app-product-images
@@ -10,7 +10,7 @@
       </div>
     </div>
 
-    <div class="col-12 col-md-4">
+    <div class="col-12 col-md-5 col-lg-4" *ngIf="selectedSize">
       <div class="pl-md-4 mt-3 mt-lg-5">
         <div class="d-inline-block d-flex">
           <a class="text-muted p-0 m-0" routerLink="/">
@@ -22,12 +22,9 @@
           </a>
         </div>
 
-        <h1 class="text-uppercase my-0 py-0">
+        <h2 class="text-uppercase my-0 py-0">
           {{ product.productName }}
-        </h1>
-      
-
-       
+        </h2>      
 
         <h4 class="mt-2" *ngIf="product.saleType == 0; else onSale">
           {{ price | currency }}
@@ -48,17 +45,12 @@
               }}
             </h4>
             <p class="my-0 py-0 h-100 old-price fw-smaller">
-              {{ calculateOldPrice(product.price) | currency }}
+              {{ product.price + selectedSize.additionalPrice| currency }}
             </p>
           </div>
         </ng-template>
 
-        <p class="mt-2 mt-lg-4 pr-md-5 text-muted">
-          Nam tellus elit, rutrum at nisi et, suscipit accumsan augue. Donec id
-          ligula mauris.
-        </p>
-
-        <div class="mt-4 pr-md-5" *ngIf="selectedColor && options">
+        <div class="mt-2" *ngIf="selectedColor">
           <label for="size">Color: {{ selectedColor.colorName }}</label>
 
           <div class="form-group d-flex flex-wrap">
@@ -73,10 +65,10 @@
           </div>
         </div>
 
-        <div class="row mt-4 pr-md-5">
-          <div class="col-6">
+        <div class="row mt-4">
+          <div class="col-12 col-lg-6">
             <label for="size">Size</label>
-            <div class="input-group mb-3" *ngIf="options">
+            <div class="input-group mb-3">
               <select
               [ngModel]="selectedSize" (ngModelChange)="onSizeChange($event)"
                 class="form-select w-100 bg-light border-0 p-2"
@@ -87,7 +79,7 @@
               </select>
             </div>
           </div>
-          <div class="col-6">
+          <div class="col-12 col-lg-6">
             <label for="size">Quantity</label>
             <div class="input-group quantity mb-3">
               <button
@@ -126,11 +118,11 @@
             <button
               class="btn btn-transparent fw-smaller text-muted text-center w-100"
               (click)="likeProduct()"
-              *ngIf="!product.likedByUser; else unliked"
+              *ngIf="!product.likedByUser; else unLiked"
             >
               <i class="fa fa-heart-o"></i>&nbsp;&nbsp;Add to favorite
             </button>
-            <ng-template #unliked>
+            <ng-template #unLiked>
               <button
                 class="btn btn-transparent fw-smaller text-center w-100"
                 (click)="unlikeProduct()"
@@ -156,7 +148,7 @@
             class="description d-flex justify-content-center"
             [@grow]="{
               value: expandDescription,
-              params: { collapseHeight: '500px' }
+              params: { height: '500px' }
             }"
           >
             <div
@@ -189,16 +181,6 @@
         </ng-template>
         <app-product-rating [productId]="product.id"></app-product-rating>
       </tab>
-      <!-- <tab>
-        <ng-template tabHeading>
-          <h5>Size chart</h5>
-        </ng-template>
-      </tab>
-      <tab>
-        <ng-template tabHeading>
-          <h5>Description</h5>
-        </ng-template>
-      </tab> -->
     </tabset>
   </div>
 </div>

@@ -74,7 +74,7 @@
     max-height: 35px;
   }
 
-  .nav-btn > img {
+  .nav-btn > img, .nav-icon {
     min-height: 17px;
     max-height: 17px;
     object-position: center;
@@ -98,6 +98,12 @@
 
   .navbar-collapse::-webkit-scrollbar {
     display: none;
+  }
+
+  .nav-icon {
+    min-height: 17px;
+    max-height: 17px;
+    object-position: center;
   }
 
   .cart-item-list {

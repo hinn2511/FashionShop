@@ -19,6 +19,8 @@ namespace API.DTOs.Params
         public string Size { get; set; }
         public string ColorCode { get; set; }
         public bool IsOnSale { get; set; }
+        public bool IsMostInteresting { get; set; }
+        public bool IsFeatured { get; set; }
     }
 
     public class AdministratorProductParams : BaseProductParams

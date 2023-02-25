@@ -1,12 +1,10 @@
 import { DialogService } from 'src/app/_services/dialog.service';
 import { ToastrService } from 'ngx-toastr';
 import { AuthenticationService } from 'src/app/_services/authentication.service';
-import { FileService } from 'src/app/_services/file.service';
 import { Setting } from './../../_models/setting';
 import { SettingService } from './../../_services/setting.service';
 import { Component, OnInit } from '@angular/core';
 import { FileUploader } from 'ng2-file-upload';
-import { ManagerProductPhoto } from 'src/app/_models/product';
 import { environment } from 'src/environments/environment';
 
 @Component({
@@ -29,7 +27,6 @@ export class AdminSettingComponent implements OnInit {
 
   constructor(
     private settingService: SettingService,
-    private fileService: FileService,
     private authenticationService: AuthenticationService,
     private toastr: ToastrService,
     private dialogService: DialogService

@@ -69,11 +69,7 @@ namespace API.Controllers
                 }
                 item.Options = item.Options.GroupBy(g => g.ColorName)
                            .Select(g => g.First()).ToList();
-
-
             }
-
-
             return Ok(result);
 
         }

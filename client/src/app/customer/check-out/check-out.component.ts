@@ -301,6 +301,12 @@ export class CheckOutComponent implements OnInit {
     this.expandCheckoutSummary = !this.expandCheckoutSummary;
   }
 
+  isRotate() {
+    if (this.expandCheckoutSummary)
+      return 'default';
+    return 'rotated';
+  }
+
   viewProduct(cartItem: CartItem) {
     this.router.navigate(['product/' + cartItem.slug], {
       queryParams: { id: cartItem.productId },

@@ -2,6 +2,9 @@
   .category-cover {
     min-height: 200px;
   }
+}
+
+@media (min-width: 992px) {
 
   .product-list-container {
     justify-content: center;
