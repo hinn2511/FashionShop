@@ -29,7 +29,6 @@ namespace API.Data
         public DbSet<Category> Categories { get; set; }
         public DbSet<Brand> Brands { get; set; }
         public DbSet<Option> Options { get; set; }
-        public DbSet<Stock> Stocks { get; set; }
         public DbSet<Order> Orders { get; set; }
         public DbSet<OrderDetail> OrderDetails { get; set; }
         public DbSet<OrderHistory> OrderHistories { get; set; }

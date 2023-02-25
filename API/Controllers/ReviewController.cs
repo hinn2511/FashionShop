@@ -204,26 +204,7 @@ namespace API.Controllers
         #endregion
 
         #region private method
-        private async Task UpdateStockQuantity(int orderId, Order order, bool isDeduction)
-        {
-            var orderDetails = await _unitOfWork.OrderDetailRepository.GetAllBy(x => x.OrderId == orderId);
-
-            var optionIds = orderDetails.Select(x => x.OptionId);
-
-            var stocks = await _unitOfWork.StockRepository.GetAllBy(x => optionIds.Contains(x.OptionId));
-
-            foreach (var stock in stocks)
-            {
-                var quantity = order.OrderDetails.FirstOrDefault(x => x.OptionId == stock.OptionId).Quantity;
-                if (isDeduction)
-                    stock.Quantity -= quantity;
-                else
-                    stock.Quantity += quantity;
-                stock.AddUpdateInformation(GetUserId());
-            }
-
-            _unitOfWork.StockRepository.Update(stocks);
-        }
+       
 
         #endregion
     }

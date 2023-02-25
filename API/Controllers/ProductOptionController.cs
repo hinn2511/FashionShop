@@ -98,15 +98,9 @@ namespace API.Controllers
 
             option.AddCreateInformation(User.GetUserId());
 
+            option.Stock = 0;
+            
             _unitOfWork.ProductOptionRepository.Insert(option);
-
-            var defaultStock = new Stock()
-            {
-                Option = option,
-                Quantity = 0
-            };
-
-            _unitOfWork.StockRepository.Insert(defaultStock);
 
             if (await _unitOfWork.Complete())
             {

@@ -80,6 +80,8 @@ export class SearchResultComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.querySubscribe$ = this.route.queryParamMap.subscribe((queryParamMap) => {
+        this.productService.productParams = new ProductParams();
+        this.productParams.gender = undefined;
         this.query = queryParamMap.get('q');
         this.productParams.query = this.query;
         this.loadBreadCrumb();

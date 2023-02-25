@@ -13,6 +13,7 @@ import { RatingModule } from 'ngx-bootstrap/rating';
 import { FileUploadModule } from 'ng2-file-upload';
 import { ToastrModule } from 'ngx-toastr';
 import { ColorPickerModule } from '@iplab/ngx-color-picker';
+import { NgxChartsModule } from '@swimlane/ngx-charts';
 defineLocale('vi', viLocale);
 
 @NgModule({
@@ -28,6 +29,7 @@ defineLocale('vi', viLocale);
     TabsModule.forRoot(),
     RatingModule.forRoot(),
     FileUploadModule,
+    NgxChartsModule,
     ToastrModule.forRoot({
       timeOut: 3000,
       positionClass: 'toast-bottom-left',
@@ -44,6 +46,7 @@ defineLocale('vi', viLocale);
     RatingModule,
     BsDatepickerModule,
     ModalModule,
+    NgxChartsModule,
     FileUploadModule,
     ColorPickerModule
   ]

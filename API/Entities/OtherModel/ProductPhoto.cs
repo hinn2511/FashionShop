@@ -14,8 +14,6 @@ namespace API.Entities.Other
         [JsonIgnore]
         public Product Product { get; set; }
         public int ProductId { get; set; }
-        public int FileId { get; set; }
-        public UploadedFile File { get; set; }
         public FileType FileType { get; set; }
     }
 
