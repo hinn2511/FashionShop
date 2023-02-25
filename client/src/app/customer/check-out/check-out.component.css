@@ -13,7 +13,7 @@
       overflow: hidden;
       overflow-y: scroll;
       padding-bottom: 15vh;
-      height: 80vh;
+      height: calc(80vh + 50px);
       -ms-overflow-style: none;
       scrollbar-width: none;
     }

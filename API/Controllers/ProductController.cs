@@ -353,7 +353,7 @@ namespace API.Controllers
             return BadRequest(new BaseResponseMessage(false, HttpStatusCode.BadRequest, "An error occurred while hiding product."));
         }
 
-        [Authorize(Roles = "DemoteProduct")]
+        [Authorize(Roles = "DemoteProducts")]
         [HttpPut("demote")]
         public async Task<ActionResult> RemoveEditorChoiceForProduct(BulkDemoteRequest bulkDemoteRequest)
         {
@@ -380,7 +380,7 @@ namespace API.Controllers
             return BadRequest(new BaseResponseMessage(false, HttpStatusCode.BadRequest, "An error occurred while demote for product."));
         }
 
-        [Authorize(Roles = "PromoteProduct")]
+        [Authorize(Roles = "PromoteProducts")]
         [HttpPut("promote")]
         public async Task<ActionResult> SetEditorChoiceForProduct(BulkPromoteRequest bulkPromoteRequest)
         {

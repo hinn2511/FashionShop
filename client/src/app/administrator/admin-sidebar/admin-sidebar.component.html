@@ -14,16 +14,17 @@
       </li>
       <li class="nav-item" *appHasRole="['DashboardAccess']">
         <a
-          class="nav-link active"
+          class="nav-link"
           aria-current="page"
           routerLink="administrator/dashboard"
+          [class.nav-item-active]="currentRoute == 'Dashboard'"
         >
           Dashboard
         </a>
       </li>
       <li
         class="nav-item"
-        [class.nav-item-active]="hasRoute('/administrator/order-manager')"
+        [class.nav-item-active]="currentRoute == 'Orders'"
       >
         <a class="nav-link" routerLink="administrator/order-manager">
           Orders
@@ -31,7 +32,7 @@
       </li>
       <li
         class="nav-item"
-        [class.nav-item-active]="hasRoute('/administrator/product-manager')"
+        [class.nav-item-active]="currentRoute == 'Products'"
       >
         <a class="nav-link" routerLink="administrator/product-manager">
           Products
@@ -40,7 +41,7 @@
 
       <li
         class="nav-item"
-        [class.nav-item-active]="hasRoute('/administrator/option-manager')"
+        [class.nav-item-active]="currentRoute == 'Product Options'"
       >
         <a class="nav-link" routerLink="administrator/option-manager">
           Product options
@@ -48,7 +49,7 @@
       </li>
       <li
         class="nav-item"
-        [class.nav-item-active]="hasRoute('/administrator/category-manager')"
+        [class.nav-item-active]="currentRoute == 'Categories'"
       >
         <a class="nav-link" routerLink="administrator/category-manager">
           Categories
@@ -69,7 +70,7 @@
     <ul class="nav flex-column mb-2">
       <li
         class="nav-item"
-        [class.nav-item-active]="hasRoute('/administrator/carousel-manager')"
+        [class.nav-item-active]="currentRoute == 'Carousels'"
       >
         <a class="nav-link" routerLink="/administrator/carousel-manager">
           <span data-feather="file-text"></span>
@@ -78,7 +79,7 @@
       </li>
       <li
         class="nav-item"
-        [class.nav-item-active]="hasRoute('/administrator/article-manager')"
+        [class.nav-item-active]="currentRoute == 'Articles'"
       >
         <a class="nav-link" routerLink="/administrator/article-manager">
           <span data-feather="file-text"></span>
@@ -99,14 +100,11 @@
       class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted"
     >
       <span>System management</span>
-      <a class="link-secondary" routerLink="" aria-label="Add a new report">
-        <span data-feather="plus-circle"></span>
-      </a>
     </h6>
     <ul class="nav flex-column mb-2">
       <li
         class="nav-item"
-        [class.nav-item-active]="hasRoute('/administrator/user-manager')"
+        [class.nav-item-active]="currentRoute == 'Users'"
       >
         <a class="nav-link" routerLink="/administrator/user-manager">
           <span data-feather="file-text"></span>
@@ -115,7 +113,7 @@
       </li>
       <li
         class="nav-item"
-        [class.nav-item-active]="hasRoute('/administrator/role-manager')"
+        [class.nav-item-active]="currentRoute == 'Roles'"
       >
         <a class="nav-link" routerLink="/administrator/role-manager">
           <span data-feather="file-text"></span>
@@ -124,7 +122,7 @@
       </li>
       <li
         class="nav-item"
-        [class.nav-item-active]="hasRoute('/administrator/setting-manager')"
+        [class.nav-item-active]="currentRoute == 'Settings'"
       >
         <a class="nav-link" routerLink="/administrator/setting-manager">
           <span data-feather="file-text"></span>

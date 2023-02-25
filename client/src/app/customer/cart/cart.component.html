@@ -1,8 +1,8 @@
 <div class="container-fluid p-0 m-0"  >
   <div
-    class="row g-0 p-0 m-0 w-100 justify-content-lg-end"
+    class="row g-0 p-0 m-0 w-100 h-100 justify-content-lg-end"
     *ngIf="cartService.currentCarts$ | async as cartItemList"
-  >
+    >
     <div
       class="col-lg-2 p-0"
       *ngIf="deviceType == 'desktop'"
@@ -27,7 +27,7 @@
           *ngIf="cartItemList.cartItems.length > 0; else cartEmpty"
         >
           <table class="table table-borderless align-middle">
-            <thead class="border-bottom">
+            <thead>
               <!-- Cart item table header -->
               <tr>
                 <th class="text-muted">Items</th>
@@ -244,7 +244,7 @@
       </div>
     </div>
     <!-- Cart items summary -->
-    <div class="col-12 col-lg-3 p-0">
+    <div class="col-12 col-lg-3 p-0 cart-summary-container">
       <div
         class="cart-summary bg-white d-flex flex-column p-3 p-lg-5"
         [class.shadow-lg]="deviceType != 'desktop'"

@@ -108,3 +108,23 @@ export function fnCalculatePrice(
       return price;
   }
 }
+
+export function fnHasValue<T>(object: T): boolean
+{
+  return object != null && object != undefined;
+}
+
+export function fnIsNullOrEmpty(object: string): boolean
+{
+  return object == '' || !fnHasValue<string>(object);
+}
+
+
+export function fnSwitchValue<T>(object: T, trueValue: T, falseValue: T): T
+{
+  if ( object == trueValue)
+    return falseValue;
+  else
+    return trueValue;
+
+}

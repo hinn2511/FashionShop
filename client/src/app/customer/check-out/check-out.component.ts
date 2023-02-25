@@ -1,4 +1,5 @@
-import { RotateAnimation } from './../../_common/animation/carousel.animations';
+import { fnUpdateFormControlNumberValue } from 'src/app/_common/function/function';
+import { RotateAnimation } from 'src/app/_common/animation/carousel.animations';
 import { concatMap, catchError } from 'rxjs/operators';
 import { DeviceService } from 'src/app/_services/device.service';
 import { Router } from '@angular/router';
@@ -77,6 +78,11 @@ export class CheckOutComponent implements OnInit {
     this.updatePaymentInformation();
     this.order.shippingMethod = this.selectedShippingMethod.id;
     this.order.paymentMethod = this.selectedPaymentMethod.id;
+    this.user = this.authenticationService.userValue;
+    this.deviceSubscribe();
+  }
+
+  private deviceSubscribe() {
     this.deviceSubscription$ = this.deviceService.deviceWidth$.subscribe(
       (_) => {
         this.deviceType = this.deviceService.getDeviceType();
@@ -85,7 +91,6 @@ export class CheckOutComponent implements OnInit {
         }
       }
     );
-    this.user = this.authenticationService.userValue;
   }
 
   initializeForm() {    
@@ -232,41 +237,13 @@ export class CheckOutComponent implements OnInit {
       this.selectedPaymentMethod.id == 0 ||
       this.selectedPaymentMethod.id == 1
     ) {
-      this.orderService
-        .createOrder(this.order)
-        .pipe(
-          concatMap((result) =>
-            this.orderService.payOrderByCard(
-              result,
-              this.paymentInformation
-            )
-          ),
-          catchError(async (error) => this.toastr.error(error, 'Error'))
-        )
-
-        .subscribe(
-          (result) => {
-            this.toastr.success(
-              'Your order has been created successfully!',
-              'Success'
-            );
-              this.closeCheckout();
-          this.router.navigate(['order'], {
-            queryParams: { id: result },
-          });
-          this.cartService.clearCart();
-            this.checkingOrder = false;
-          },
-          (error) => {
-            this.toastr.error('An error has occurred when we validate your card information. Please check your payment information and try again later in order histories page.', 'Error');
-            this.closeCheckout();
-            this.cartService.clearCart();
-            this.checkingOrder = false;
-          }
-        );
-      return;
+      return this.createOrderAndPaid();
     }
+    else
+      this.createOrder();
+  }
 
+  private createOrder() {
     this.orderService.createOrder(this.order).subscribe(
       (result) => {
         this.toastr.success(
@@ -287,14 +264,48 @@ export class CheckOutComponent implements OnInit {
     );
   }
 
+  private createOrderAndPaid() {
+    this.orderService
+      .createOrder(this.order)
+      .pipe(
+        concatMap((result) => this.orderService.payOrderByCard(
+          result,
+          this.paymentInformation
+        )
+        ),
+        catchError(async (error) => this.toastr.error(error, 'Error'))
+      )
+
+      .subscribe(
+        (result) => {
+          this.toastr.success(
+            'Your order has been created successfully!',
+            'Success'
+          );
+          this.closeCheckout();
+          this.router.navigate(['order'], {
+            queryParams: { id: result },
+          });
+          this.cartService.clearCart();
+          this.checkingOrder = false;
+        },
+        (error) => {
+          this.toastr.error('An error has occurred when we validate your card information. Please check your payment information and try again later in order histories page.', 'Error');
+          this.closeCheckout();
+          this.cartService.clearCart();
+          this.checkingOrder = false;
+        }
+      );
+  }
+
   selectShippingMethod(shippingMethod: ShippingMethod) {
     this.selectedShippingMethod = shippingMethod;
-    this.orderDetailForm.controls['shippingMethod'].setValue(shippingMethod.id);
+    fnUpdateFormControlNumberValue(this.orderDetailForm, 'shippingMethod', shippingMethod.id, false);
   }
 
   selectPaymentMethod(paymentMethod: PaymentMethod) {
     this.selectedPaymentMethod = paymentMethod;
-    this.orderDetailForm.controls['paymentMethod'].setValue(paymentMethod.id);
+    fnUpdateFormControlNumberValue(this.orderDetailForm, 'paymentMethod', paymentMethod.id, false);
   }
 
   expandCheckoutSummaryToggle() {
@@ -334,7 +345,6 @@ export class CheckOutComponent implements OnInit {
     for (let i = 0; i < trimmed.length; i += partLength) {
       temp.push(trimmed.substring(i, i + partLength));
     }
-
     return temp.join(separator);
   }
 }

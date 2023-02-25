@@ -12,12 +12,11 @@ import { AccountService } from 'src/app/_services/account.service';
 export class AccountInformationComponent implements OnInit {
   @Input() account: Account;
   accountInformationForm: FormGroup;
-  isEditMode: boolean;
+  isEditMode: boolean = false;
 
   constructor(private fb: FormBuilder, private accountService: AccountService, private toastr: ToastrService) { }
 
   ngOnInit(): void {
-    this.isEditMode = false;
     this.initializeForm();
     this.accountInformationForm.disable();
     this.loadAccountInformation();
@@ -78,9 +77,5 @@ export class AccountInformationComponent implements OnInit {
       error => {
         this.toastr.error('Something wrong happen!', 'Error');
       });
-  }
-
-  getDefaultDate(date: Date) {
-    return new Date(date.getFullYear(), date.getMonth(), date.getDate());
   }
 }

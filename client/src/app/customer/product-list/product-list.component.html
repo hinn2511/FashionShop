@@ -21,8 +21,10 @@
         'mobile-filter': deviceType != 'desktop',
         'fixed-top': deviceType != 'desktop',
         'd-none': deviceType != 'desktop' && !showFilterMobile
-      }"
-    >
+      }"      
+      [@slideLeftToRight]
+      >
+      <!-- [@slideRightLeft] -->
       <app-product-filter
         #filterComponent
         [productParams]="productParams"
@@ -34,7 +36,7 @@
       ></app-product-filter>
     </div>
     <div class="col-12 col-md-12 col-xl-9 px-0 px-lg-auto">
-      <div class="mt-lg-5">
+      <div>
         <app-breadcrumb
           *ngIf="category"
           [breadCrumbList]="breadCrumb"
@@ -79,7 +81,10 @@
               (click)="mobileFilterToggle()"
               *ngIf="deviceType != 'desktop'"
             >
-              <i class="fa fa-filter" aria-hidden="true"></i>&nbsp;Filter
+            <div class="d-flex d-inline align-items-center">
+              <img class="icon mr-2" src="../../../assets/filter.svg" alt="filter-icon">
+              Filter
+            </div>
             </button>
 
             <!-- Order by filter  -->

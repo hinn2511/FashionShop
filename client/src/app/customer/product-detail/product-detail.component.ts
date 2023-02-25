@@ -1,3 +1,4 @@
+import { FadeInAndOut } from './../../_common/animation/common.animation';
 import { concatMap } from 'rxjs/operators';
 import { fnGetGenderName, Category } from 'src/app/_models/category';
 import { CategoryService } from 'src/app/_services/category.service';
@@ -26,7 +27,7 @@ import { fnCalculatePrice } from 'src/app/_common/function/function';
   selector: 'app-product-detail',
   templateUrl: './product-detail.component.html',
   styleUrls: ['./product-detail.component.css'],
-  animations: [GrowAnimation],
+  animations: [GrowAnimation, FadeInAndOut],
 })
 export class ProductDetailComponent implements OnInit {
   product: Product;

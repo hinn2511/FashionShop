@@ -1,6 +1,6 @@
 <div class="container-fluid py-3" *ngIf="products">
   <h3 class="text-uppercase">Top interesting</h3>
-  <div class="d-flex flex-wrap justify-content-md-end text-uppercase p-1">
+  <div class="d-flex flex-wrap text-uppercase p-1">
     <a class="text-uppercase cs-pointer" [class]="{
       'text-dark': filter == 'featured',
       'fw-bold': filter == 'featured',
@@ -47,18 +47,18 @@
     *ngIf="deviceType == 'desktop'"
   >
     <button
-      class="btn btn-outline-dark mr-2 btn-scroll"
+      class="btn btn-outline-dark mr-2 btn-scroll rounded-circle"
       [disabled]="currentStep == 0"
       (click)="scrollLeft()"
       >
-      <img class="icon mr-2" src="../../../assets/arrow-left.svg" alt="cart" />
+      <img class="icon" src="../../../assets/arrow-left.svg" alt="cart" />
     </button>
     <button
-      class="btn btn-outline-dark btn-scroll"
+      class="btn btn-outline-dark btn-scroll rounded-circle"
       [disabled]="currentStep == products.length - 1"
       (click)="scrollRight()"
     >
-    <img class="icon mr-2" src="../../../assets/arrow-right.svg" alt="cart" />
+    <img class="icon" src="../../../assets/arrow-right.svg" alt="cart" />
     </button>
   </div>
 </div>

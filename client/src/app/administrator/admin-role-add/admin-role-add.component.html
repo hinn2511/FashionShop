@@ -21,6 +21,7 @@
           <div>
             <button
               class="btn btn-success mr-2"
+              type="button"
               (click)="openCreatePermissionDialog()"
             >
               <em class="fa fa-plus mr-2"></em>
@@ -28,12 +29,12 @@
             </button>
 
             <button class="btn btn-light" (click)="expandTableToggle()">
-              
+
               <span *ngIf="isExpandTable; else expand">Collapse&nbsp;&nbsp;<em class="fa fa-caret-up"></em></span>
               <ng-template #expand>
                 <span>Expand&nbsp;&nbsp;<em class="fa fa-caret-down"></em></span>
               </ng-template>
-                        
+
             </button>
           </div>
         </div>
