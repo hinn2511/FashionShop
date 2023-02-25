@@ -93,12 +93,17 @@ namespace API.Controllers
                     var orderDetail = new OrderDetail
                     {
                         OptionId = item.OptionId,
-                        Quantity = item.Quantity,
-                        Price = option.Product.Price + option.AdditionalPrice,
-                        Total = item.Quantity * ( option.Product.Price + option.AdditionalPrice)
+                        Quantity = item.Quantity
                     };
+                    if(SaleExtensions.IsProductOnSale(option.Product))
+                        orderDetail.Price = SaleExtensions.CalculatePriceAfterSaleOff(option);
+                    else
+                        orderDetail.Price = option.Product.Price + option.AdditionalPrice;                    
+                    orderDetail.Total = orderDetail.Price * orderDetail.Quantity;
+
                     orderDetail.AddCreateInformation(GetUserId());
                     orderDetails.Add(orderDetail);
+                    
                     _unitOfWork.CartRepository.Delete(item.Id);
                 }
             }

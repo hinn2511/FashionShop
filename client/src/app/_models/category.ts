@@ -76,9 +76,14 @@ export class UpdateSubCategory extends Category {
   gender: number;
 }
 
-export class ManagerCategoryDetail extends Category {
+
+export interface SubCategory {
+  id: number;
+  categoryName: string;
   status: number;
-  isPromoted: boolean;
+}
+
+export interface ManagerCategoryDetail extends Category {
   dateCreated: Date;
   createdByUserId: number;
   lastUpdated: Date;
@@ -87,14 +92,24 @@ export class ManagerCategoryDetail extends Category {
   deletedByUserId: number;
   dateHidden: Date;
   hiddenByUserId: number;
-  subCategories: ManagerSubCategory[];
+  subCategories: SubCategory[];
+  genderName: string;
+  status: number;
+  id: number;
+  isPromoted: boolean;
+  slug: string;
+  categoryName: string;
+  parentId: number;
   gender: number;
+  categoryImageUrl: string;
+  parentCategory: string;
 }
+
 
 export class ManagerCategoryParams extends Params {
   categoryStatus: number[];
   genders: number[];
-
+  parentId: number;
  
 }
 

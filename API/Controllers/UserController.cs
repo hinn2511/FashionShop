@@ -10,6 +10,7 @@ using API.DTOs.Response.AccountResponse;
 using API.DTOs.Response.CartResponse;
 using API.DTOs.Response.ProductResponse;
 using API.Entities;
+using API.Entities.ProductModel;
 using API.Entities.User;
 using API.Entities.UserModel;
 using API.Extensions;
@@ -147,7 +148,11 @@ namespace API.Controllers
             {
                 var additionalPrice = cartItem.Option.AdditionalPrice;
                 var productPrice = cartItem.Option.Product.Price;
-                var totalItemPrice = (productPrice + additionalPrice) * cartItem.Quantity;
+                var totalItemPrice = 0d;
+                if (SaleExtensions.IsProductOnSale(cartItem.Option.Product))
+                    totalItemPrice = SaleExtensions.CalculatePriceAfterSaleOff(cartItem.Option) * cartItem.Quantity;
+                else
+                    totalItemPrice = (productPrice + additionalPrice) * cartItem.Quantity;
                 totalItem += cartItem.Quantity;
                 totalPrice += totalItemPrice;
             }
@@ -289,6 +294,12 @@ namespace API.Controllers
             }
             return BadRequest("Can not unlike this product!");
         }
+
+        #endregion
+
+        #region private method
+        
+
 
         #endregion
 

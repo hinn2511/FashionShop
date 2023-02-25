@@ -54,7 +54,7 @@ export class FileService {
   uploadImage(image: File, width: number, height: number, ratio:number, cropOption: string, accessToken: string) {
     let uploadForm = new FormData();
     uploadForm.append('file', image, image.name);
-    this.addToken(accessToken);
+    // this.addToken(accessToken);
     return this.http.post<FileUploadedResponse>(
       this.fileUrl + `/image?width=${width}&height=${height}&ratio=${ratio}&cropOption=${cropOption}`,
       uploadForm,

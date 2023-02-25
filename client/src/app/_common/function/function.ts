@@ -98,7 +98,13 @@ export function fnCalculatePrice(
   saleOffPercent: number,
   saleOffValue: number
 ) {
-  if (saleType == 1) {
-    return price - (price * saleOffPercent) / 100;
-  } else return price - saleOffValue;
+  switch (saleType)
+  {
+    case 1:
+      return price - (price * saleOffPercent) / 100;
+    case 2:
+      return price - saleOffValue
+    default:
+      return price;
+  }
 }

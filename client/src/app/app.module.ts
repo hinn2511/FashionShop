@@ -93,6 +93,8 @@ import { AdminChartOrderStatusComponent } from './administrator/dashboard/admin-
 import { AdminChartPopularProductComponent } from './administrator/dashboard/admin-chart-popular-product/admin-chart-popular-product.component';
 import { AdminChartOrderRateComponent } from './administrator/dashboard/admin-chart-order-rate/admin-chart-order-rate.component';
 import { AdminChartRevenueComponent } from './administrator/dashboard/admin-chart-revenue/admin-chart-revenue.component';
+import { ProductSaleComponent } from './customer/product-sale/product-sale.component';
+import { AdminCategoryDetailComponent } from './administrator/admin-category-detail/admin-category-detail.component';
 
 @NgModule({
   declarations: [
@@ -170,7 +172,10 @@ import { AdminChartRevenueComponent } from './administrator/dashboard/admin-char
     AdminChartOrderStatusComponent,
     AdminChartPopularProductComponent,
     AdminChartOrderRateComponent,
-    AdminChartRevenueComponent
+    AdminChartRevenueComponent,
+    ProductSaleComponent,
+    AdminCategoryDetailComponent
+    
   ],
   imports: [
     BrowserModule,

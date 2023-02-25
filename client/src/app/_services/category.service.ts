@@ -13,6 +13,7 @@ import {
   fnGetGenderName,
   ManagerCatalogue,
   ManagerCategory,
+  ManagerCategoryDetail,
   ManagerCategoryParams,
   UpdateCategory,
 } from '../_models/category';
@@ -71,9 +72,12 @@ export class CategoryService {
       categoryParams.pageNumber,
       categoryParams.pageSize
     );
+    
     params = params.append('orderBy', categoryParams.orderBy);
     params = params.append('field', categoryParams.field);
     params = params.append('query', categoryParams.query);
+    params = params.append('parentId', categoryParams.parentId);
+
     categoryParams.categoryStatus.forEach((element) => {
       params = params.append('categoryStatus', element);
     });
@@ -90,7 +94,7 @@ export class CategoryService {
   }
 
   getManagerCategory(id: number) {
-    return this.http.get<ManagerCategory>(
+    return this.http.get<ManagerCategoryDetail>(
       this.baseUrl + 'category/detail/' + id
     );
   }

@@ -14,6 +14,7 @@ import {
   GenderList,
   ManagerCatalogue,
   ManagerCategory,
+  ManagerCategoryDetail,
   UpdateCategory,
 } from 'src/app/_models/category';
 import { FileUploadedResponse } from 'src/app/_models/file';
@@ -27,7 +28,7 @@ import { FileService } from 'src/app/_services/file.service';
   styleUrls: ['./admin-category-edit.component.css'],
 })
 export class AdminCategoryEditComponent implements OnInit {
-  category: ManagerCategory;
+  category: ManagerCategoryDetail;
   editCategoryForm: FormGroup;
   image: File;
   imagePreviewUrl: string = '';

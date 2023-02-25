@@ -56,6 +56,7 @@ export class CustomerArticleParams {
   pageSize = 12;
   orderBy = 0;
   field = 'PublishedDate';
+  contentTypes = [];
 }
 
 export class ArticleType extends GenericObject {

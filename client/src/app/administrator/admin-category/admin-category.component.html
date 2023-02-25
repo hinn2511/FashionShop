@@ -1,20 +1,12 @@
 <div class="container-fluid px-3">
   <!-- Section title -->
-  <h4>Categories</h4>
+  <h4 *ngIf="!minimize">Categories</h4>
 
   <!-- Section content -->
   <div class="d-flex flex-wrap w-100 mb-2">
     <!-- Search bar -->
     <div class="mr-auto w-sm-100">
       <div class="input-group mb-1">
-        <button
-          class="btn btn-light btn-search-filter"
-          type="button"
-          id="button-addon2"
-        >
-          Product ID
-          <span><i class="fa fa-caret-down"></i></span>
-        </button>
         <input
           [(ngModel)]="categoryParams.query"
           type="text"
@@ -39,7 +31,7 @@
     </div>
 
     <!-- Gender filter button -->
-    <div class="position-relative mr-2">
+    <div class="position-relative mr-2" *ngIf="!minimize">
       <button
         class="btn btn-light status-button"
         (click)="genderFilterToggle()"
@@ -140,7 +132,10 @@
   </div>
 
   <!-- Action button -->
-  <div class="d-flex d-inline-block flex-wrap justify-content-lg-end mb-2">
+  <div
+    class="d-flex d-inline-block flex-wrap justify-content-lg-end mb-2"
+    *ngIf="!minimize"
+  >
     <!-- Create button -->
     <button
       class="btn btn-success mr-2 mb-2"
@@ -206,7 +201,7 @@
 
   <!-- Category table -->
   <div class="table-responsive w-100" *ngIf="categories">
-    <table class="table table-striped border">
+    <table class="table table-striped table-borderless">
       <thead class="bg-light">
         <tr>
           <th scope="col">
@@ -369,9 +364,12 @@
         </tr>
       </tbody>
     </table>
-    <div *ngIf="pagination" class="w-100">
-      Total: {{ pagination.totalItems }} category(s)
-    </div>
+  </div>
+  
+  <div *ngIf="pagination && !minimize" class="w-100">
+    Total: {{ pagination.totalItems }}
+    <span *ngIf="pagination.totalItems == 1">category</span>
+    <span *ngIf="pagination.totalItems > 1">categories</span>
   </div>
 
   <!-- Pagination -->
@@ -379,7 +377,7 @@
     class="w-100 d-flex d-inline-block justify-content-between mt-5"
     *ngIf="pagination"
   >
-    <div class="d-flex d-inline">
+    <div class="d-flex d-inline" *ngIf="!minimize">
       <div class="input-group pagination-navigation">
         <label class="form-control" for="">Page size</label>
         <input

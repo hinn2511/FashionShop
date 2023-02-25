@@ -46,10 +46,8 @@ namespace API.DTOs.Response.CategoryResponse
         public bool IsPromoted { get; set; }
     }
 
-    public class AdminCategoryDetailResponse : CategoryResponse
+    public class AdminCategoryDetailResponse : AdminCategoryResponse
     {
-        public int Id { get; set; }
-        public Status Status { get; set; }
         public DateTime DateCreated { get; set; }
         public int CreatedByUserId { get; set; }
         public DateTime LastUpdated { get; set; }

@@ -1,6 +1,6 @@
 import { concatMap } from 'rxjs/operators';
 import { DialogService } from 'src/app/_services/dialog.service';
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { RotateAnimation } from 'src/app/_common/animation/carousel.animations';
@@ -23,6 +23,8 @@ import { fnGetObjectStateString, fnGetObjectStateStyle } from 'src/app/_common/f
   animations: [RotateAnimation],
 })
 export class AdminCategoryComponent implements OnInit {
+
+  @Input() minimize: boolean = false;
   categories: ManagerCategory[];
   pagination: Pagination;
   categoryParams: ManagerCategoryParams;
@@ -47,8 +49,8 @@ export class AdminCategoryComponent implements OnInit {
 
   ngOnInit(): void {
     this.categoryParams.field = 'Id';
-
     this.categoryParams.orderBy = 0;
+    this.categoryParams.parentId = 0;
     this.categoryParams.categoryStatus = [0, 1];
     this.categoryParams.genders = [0];
     this.isSelectAllCategory = false;
@@ -60,14 +62,13 @@ export class AdminCategoryComponent implements OnInit {
     this.state = this.state === 'default' ? 'rotated' : 'default';
   }
 
-  loadCategories() {
+  loadCategories() {    
     this.categoryService.setManagerCategoryParams(this.categoryParams);
 
     this.categoryService
       .getManagerCategories(this.categoryParams)
       .subscribe((response) => {
         this.categories = response.result;
-        console.log(response.pagination);
 
         this.pagination = response.pagination;
       });
@@ -75,6 +76,12 @@ export class AdminCategoryComponent implements OnInit {
 
   resetSelectedIds() {
     this.selectedIds = [];
+  }
+
+  
+  filterByParentId(parentId: number) {
+    this.categoryParams.parentId = parentId;
+    this.loadCategories();
   }
 
   viewDetail(categoryId: number) {

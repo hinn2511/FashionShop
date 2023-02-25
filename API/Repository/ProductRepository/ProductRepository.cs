@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -51,6 +52,12 @@ namespace API.Data
                 }
                 else
                     query = query.Where(p => p.Category.Id == category.Id);
+            }
+
+            if(productParams.IsOnSale)
+            {
+                var now = DateTime.UtcNow;
+                query = query.Where(p => p.SaleType != ProductSaleOffType.None && p.SaleOffFrom < now && p.SaleOffTo > now);
             }
 
             if (!string.IsNullOrEmpty(productParams.Size))
@@ -211,6 +218,13 @@ namespace API.Data
                 else
                     query = query.Where(p => p.Category.Id == category.Id);
             }
+
+            if(productParams.IsOnSale)
+            {
+                var now = DateTime.UtcNow;
+                query = query.Where(p => p.SaleType != ProductSaleOffType.None && p.SaleOffFrom < now && p.SaleOffTo > now);
+            }
+
 
             if (!string.IsNullOrEmpty(productParams.Size))
             {

@@ -66,7 +66,13 @@ namespace API.Helpers
                 .ForMember(dest => dest.ParentCategory, opt => opt.MapFrom(
                           src => src.Parent.CategoryName));
 
-            CreateMap<Category, AdminCategoryDetailResponse>();
+            CreateMap<Category, AdminCategoryDetailResponse>()
+                        .ForMember(dest => dest.GenderName, opt => opt.MapFrom(
+                          src => src.Gender.ToString()))
+                        .ForMember(dest => dest.ParentCategory, opt => opt.MapFrom(
+                          src => src.Parent.CategoryName));
+            
+            CreateMap<Category, AdminSubCategoryResponse>();
 
             CreateMap<Category, CategoryGender>();
 
@@ -336,7 +342,7 @@ namespace API.Helpers
                 .ForMember(dest => dest.Url, opt => opt.MapFrom(
                           src => src.Option.Product.ProductPhotos.FirstOrDefault(x => x.IsMain).Url))
                 .ForMember(dest => dest.Price, opt => opt.MapFrom(
-                          src => src.Option.Product.Price + src.Option.AdditionalPrice))
+                          src => src.Price))
                 .ForMember(dest => dest.ColorCode, opt => opt.MapFrom(
                           src => src.Option.ColorCode))
                 .ForMember(dest => dest.ColorName, opt => opt.MapFrom(
@@ -344,7 +350,7 @@ namespace API.Helpers
                 .ForMember(dest => dest.SizeName, opt => opt.MapFrom(
                           src => src.Option.SizeName))
                 .ForMember(dest => dest.Total, opt => opt.MapFrom(
-                          src => (src.Option.AdditionalPrice + src.Option.Product.Price) * src.Quantity));
+                          src => src.Price * src.Quantity));
 
             CreateMap<Tuple<OrderStatus, int>, AdminOrderCountResponse>()
                 .ForMember(dest => dest.OrderStatus, opt => opt.MapFrom(
@@ -394,7 +400,7 @@ namespace API.Helpers
                 .ForMember(dest => dest.Url, opt => opt.MapFrom(
                           src => src.Option.Product.ProductPhotos.FirstOrDefault(x => x.IsMain).Url))
                 .ForMember(dest => dest.Price, opt => opt.MapFrom(
-                          src => src.Option.Product.Price + src.Option.AdditionalPrice))
+                          src => src.Price))
                 .ForMember(dest => dest.ColorCode, opt => opt.MapFrom(
                           src => src.Option.ColorCode))
                 .ForMember(dest => dest.ColorName, opt => opt.MapFrom(
@@ -402,7 +408,7 @@ namespace API.Helpers
                 .ForMember(dest => dest.SizeName, opt => opt.MapFrom(
                           src => src.Option.SizeName))
                 .ForMember(dest => dest.Total, opt => opt.MapFrom(
-                          src => (src.Option.AdditionalPrice + src.Option.Product.Price) * src.Quantity));
+                          src => src.Total));
 
             CreateMap<Carousel, AdminCarouselResponse>();
 
@@ -469,19 +475,7 @@ namespace API.Helpers
 
         public static double CalculateOrderTotalPrice(this Order order)
         {
-            double orderTotalPrice = 0;
-
-            if (order.OrderDetails.Count > 0)
-            {
-                foreach (var orderDetail in order.OrderDetails)
-                {
-                    var additionalPrice = orderDetail.Option.AdditionalPrice;
-                    var productPrice = orderDetail.Option.Product.Price;
-                    var totalItemPrice = (productPrice + additionalPrice) * orderDetail.Quantity;
-                    orderTotalPrice += totalItemPrice;
-                }
-            }
-            return orderTotalPrice + order.Tax + order.ShippingFee;
+            return order.SubTotal + order.Tax + order.ShippingFee;
 
         }
 
@@ -524,13 +518,13 @@ namespace API.Helpers
             switch (paymentMethod)
             {
                 case PaymentMethod.CreditCard:
-                    return "Credit";
+                    return "Credit card";
                 case PaymentMethod.DebitCard:
-                    return "Debit";
+                    return "Debit card";
                 case PaymentMethod.CashOnDelivery:
                     return "COD";
                 default:
-                    return "Mobile";
+                    return "Mobile payment";
             }
         }
 

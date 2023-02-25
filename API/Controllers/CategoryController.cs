@@ -107,9 +107,19 @@ namespace API.Controllers
         [HttpGet("detail/{id}")]
         public async Task<ActionResult> GetCategoryDetailAsAdmin(int id)
         {
-            var category = await _unitOfWork.CategoryRepository.GetFirstBy(x => x.Id == id);
-            return Ok(_mapper.Map<AdminCategoryDetailResponse>(category));
+            var category = await _unitOfWork.CategoryRepository.GetFirstByAndIncludeAsync(x => x.Id == id, "Parent", true);            
+
+            var subCategories = await _unitOfWork.CategoryRepository.GetAllBy(x => x.ParentId == id);
+
+            var result = _mapper.Map<AdminCategoryDetailResponse>(category);
+
+            if(subCategories.Any())
+                result.SubCategories = _mapper.Map<List<AdminSubCategoryResponse>>(subCategories);
+
+            return Ok(result);
         }
+
+
 
         [HttpGet("catalogue")]
         public async Task<ActionResult> GetCatalogueAsAdmin()

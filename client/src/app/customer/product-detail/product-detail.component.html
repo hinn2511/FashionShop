@@ -33,10 +33,10 @@
           {{ product.price | currency }}
         </h4>
 
-        <p *ngIf="product.saleType == 1" class="text-danger text-capitalize">
+        <p *ngIf="product.saleType == 1" class="text-danger my-2">
             -{{ product.saleOffPercent }}% off from {{product.saleOffFrom | date}} to {{product.saleOffTo | date }}
         </p>
-        <p  *ngIf="product.saleType == 2" class="text-danger text-capitalize">
+        <p  *ngIf="product.saleType == 2" class="text-danger my-2">
           -{{ product.saleOffValue | currency }} off from {{product.saleOffFrom | date}} to {{product.saleOffTo | date}}
         </p>
 

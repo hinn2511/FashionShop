@@ -35,7 +35,7 @@ export class AccountService {
   }
 
   getFavorites(productParams: ProductParams) {
-    var response = this.favoriteCache.get(
+    let response = this.favoriteCache.get(
       Object.values(productParams).join('-')
     );
     if (response) {

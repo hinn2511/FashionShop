@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -45,6 +46,12 @@ namespace API.Data
                 }
             }
 
+            if(customerProductParams.IsOnSale)
+            {
+                var now = DateTime.UtcNow;
+                query = query.Where(p => p.SaleType != ProductSaleOffType.None && p.SaleOffFrom < now && p.SaleOffTo > now);
+            }
+
             var categoryIds = await query.Select(x => x.Category.Id).Distinct().ToListAsync();
 
             return await _context.Categories.Where(x => categoryIds.Contains(x.Id)).Include(x => x.SubCategories).AsNoTracking().ToListAsync();
@@ -61,7 +68,14 @@ namespace API.Data
 
             query = query.Where(x => adminCategoryParams.CategoryStatus.Contains(x.Status));
 
-            query = query.Where(x => adminCategoryParams.Genders.Contains(x.Gender));
+            if(adminCategoryParams.ParentId > 0)
+            {
+                query = query.Where(x => x.ParentId == adminCategoryParams.ParentId);
+            }
+            else
+            {
+                query = query.Where(x => adminCategoryParams.Genders.Contains(x.Gender));
+            }
 
             if (!string.IsNullOrEmpty(adminCategoryParams.Query))
             {

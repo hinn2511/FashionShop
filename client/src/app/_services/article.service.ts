@@ -149,6 +149,9 @@ export class ArticleService {
     );
     params = params.append('orderBy', articleParams.orderBy);
     params = params.append('field', articleParams.field);
+    articleParams.contentTypes.forEach(item => {
+      params = params.append('contentTypes', item);
+    })
 
     return getPaginatedResult<CustomerArticle[]>(
       this.baseUrl + 'article',

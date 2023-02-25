@@ -11,6 +11,7 @@ export class ProductParams {
   query = '';
   minPrice = 0;
   maxPrice = 0;
+  isOnSale = false;
 }
 
 export class CustomerFilterOrder {
