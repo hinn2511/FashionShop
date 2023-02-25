@@ -171,7 +171,6 @@ export class ProductFilterComponent implements OnInit {
       this.selectedCategory = category;
     this.productParams.category = fnConvertToSlug(category);
     this.showResetCategoryFilterButton = true;
-    console.log(this.selectedGender);
     
     this.applyFilter();
   }
@@ -182,7 +181,6 @@ export class ProductFilterComponent implements OnInit {
     this.selectedGender = undefined;
     else
     this.selectedGender = gender;
-    console.log(this.selectedGender);
 
   }
 

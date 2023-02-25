@@ -27,7 +27,7 @@ namespace API.Controllers
             _mapper = mapper;
         }
 
-        [Authorize(Policy = "ManagerOnly")]
+        [Authorize(Roles = "ViewDashboardOrderStatus")]
         [HttpGet("order-status")]
         public async Task<ActionResult> GetDashboardOrderStatusSummary([FromQuery] ChartParams chartParams)
         {
@@ -43,7 +43,7 @@ namespace API.Controllers
 
         }
 
-        [Authorize(Policy = "ManagerOnly")]
+        [Authorize(Roles = "ViewDashboardPopularProduct")]
         [HttpGet("popular-product")]
         public async Task<ActionResult> GetPopularProduct([FromQuery] ChartParams chartParams)
         {
@@ -62,7 +62,7 @@ namespace API.Controllers
 
         }
 
-        [Authorize(Policy = "ManagerOnly")]
+        [Authorize(Roles = "ViewDashboardOrderRate")]
         [HttpGet("order-rate")]
         public async Task<ActionResult> GetOrderRate([FromQuery] ChartParams chartParams)
         {
@@ -107,7 +107,7 @@ namespace API.Controllers
 
         }
 
-        [Authorize(Policy = "ManagerOnly")]
+        [Authorize(Roles = "ViewDashboardRevenue")]
         [HttpGet("revenue")]
         public async Task<ActionResult> GetRevenue([FromQuery] ChartParams chartParams)
         {

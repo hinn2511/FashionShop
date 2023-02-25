@@ -1,0 +1,71 @@
+<div class="container-fluid px-3">
+    <!-- Section title -->
+    <h4>Roles</h4>
+  
+   
+    <!-- Action button -->
+    <div class="d-flex d-inline-block flex-wrap justify-content-lg-end mb-2">
+      <!-- Import button -->
+  
+      <!-- Create button -->
+      <button
+        class="btn btn-success mr-2 mb-2"
+        routerLink="/administrator/role-manager/add"
+      >
+        <span><i class="fa fa-plus"></i></span>&nbsp; Create
+      </button>
+      <!-- <button
+        class="btn btn-info mb-2"
+        [class.disabled]="!isMultipleSelected()"
+        (click)="demoteRole()"
+      >
+        <span><i class="fa fa-arrow-down"></i></span>&nbsp; Demote
+      </button> -->
+    </div>
+  
+    <!-- Role table -->
+    <div class="table-responsive w-100" *ngIf="roles">
+      <table class="table table-striped table-borderless" aria-describedby="role-table">
+        <thead class="bg-light">
+          <tr>
+            <th scope="col cs-pointer" class="text-center">Role</th>
+            <th scope="col"  class="text-center">
+              Total user             
+            </th>
+            <th scope="col"  class="text-center">
+              View users             
+            </th>
+            <th scope="col"  class="text-center">
+              Delete             
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr
+            class="role-item"
+            *ngFor="let role of roles"
+          >
+            <td class="text-center" (click)="viewDetail(role.id)">{{ role.roleName }}</td>
+            <td class="text-center" (click)="viewDetail(role.id)">{{ role.totalUser}}</td>
+            <td class="text-center" >
+              <button class="btn btn-light" routerLink="/administrator/user-manager/{{role.id}}">
+                  <em class="fa fa-users"></em>
+              </button>
+            </td>
+            <td class="text-center" >
+              <button class="btn btn-danger" (click)="deleteRole(role.id)">
+                  <em class="fa fa-trash-o"></em>
+              </button>
+            </td>
+
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    
+    <div *ngIf="roles" class="w-100">
+      Total: {{ roles.length }} role(s)
+    </div>
+
+  </div>
+  

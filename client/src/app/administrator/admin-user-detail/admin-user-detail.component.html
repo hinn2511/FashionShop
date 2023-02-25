@@ -1,0 +1,188 @@
+<div class="container-fluid py-3" *ngIf="user">
+  <div class="d-flex w-100 py-1">
+    <button class="btn btn-light" routerLink="/administrator/user-manager">
+      <i class="fa fa-arrow-left"></i>&nbsp;&nbsp;Back
+    </button>
+  </div>
+
+  <div class="d-flex d-inline-block align-items-center w-100 py-1">
+    <div>
+      <div class="user-title d-flex align-items-center">
+        <h3 class="text-uppercase mr-4 my-0">{{ user.userName }}</h3>
+        <div class="btn px-3 py-1" [class]="getUserStateStyle()">
+          <h5 class="m-0">{{ user.statusString }}</h5>
+        </div>
+      </div>
+
+      
+
+      <div class="d-flex d-inline-block flex-wrap mt-3">
+        <button class="btn btn-light mr-2 my-2" (click)="changePassword()">
+          <span><i class="fa fa-id-badge"></i></span>&nbsp;Change password
+        </button>
+
+        <button class="btn btn-light mr-2 my-2" (click)="editRole()">
+          <span><i class="fa fa-users"></i></span>&nbsp;Change role
+        </button>
+
+        <button class="btn btn-warning mr-2 my-2" (click)="editUser()">
+          <span><i class="fa fa-pencil"></i></span>&nbsp;Edit
+        </button>
+
+        <button
+          class="btn btn-dark mr-2 my-2"
+          *ngIf="user.status == 0; else activate"
+          (click)="deactivateUser()"
+        >
+          <span><i class="fa fa-lock"></i></span>&nbsp;Deactivate
+        </button>
+        <ng-template #activate>
+          <button class="btn btn-light mr-2 my-2" (click)="activateUser()">
+            <span><i class="fa fa-unlock-alt"></i></span>&nbsp;Activate
+          </button>
+        </ng-template>
+
+        <button class="btn btn-danger mr-2 my-2" (click)="deleteUser()">
+          <span><i class="fa fa-trash"></i></span>&nbsp;Delete
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <h5 class="text-muted">Account information</h5>
+  <hr />
+
+  <div class="row">
+    <div class="col-12 col-md-6 col-lg-4">
+      <label for="basic-url">ID</label>
+      <div class="input-group mb-3">
+        <input
+          type="text"
+          class="form-control"
+          [disabled]="true"
+          [value]="user.id"
+        />
+      </div>
+    </div>
+    <div class="col-12 col-md-6 col-lg-4">
+      <label for="basic-url">Username</label>
+      <div class="input-group mb-3">
+        <input
+          type="text"
+          class="form-control"
+          [disabled]="true"
+          [value]="user.userName"
+        />
+      </div>
+    </div>
+    <div class="col-12 col-md-6 col-lg-4">
+      <label for="basic-url">Role</label>
+      <div class="input-group mb-3">
+        <input
+          type="text"
+          class="form-control"
+          [disabled]="true"
+          [value]="user.role"
+        />
+      </div>
+    </div>
+  </div>
+
+  <h5 class="text-muted mt-3">Personal information</h5>
+  <hr />
+  <div class="row">
+    <div class="col-12 col-md-6 col-lg-4">
+      <label for="basic-url">First name</label>
+      <div class="input-group mb-3">
+        <input
+          type="text"
+          class="form-control"
+          [disabled]="true"
+          [value]="user.firstName"
+        />
+      </div>
+    </div>
+    <div class="col-12 col-md-6 col-lg-4">
+      <label for="basic-url">Last name</label>
+      <div class="input-group mb-3">
+        <input
+          type="text"
+          class="form-control"
+          [disabled]="true"
+          [value]="user.lastName"
+        />
+      </div>
+    </div>
+    <div class="col-12 col-md-6 col-lg-4">
+      <label for="basic-url">Gender</label>
+      <div class="input-group mb-3">
+        <input
+          type="text"
+          class="form-control"
+          [disabled]="true"
+          [value]="user.gender"
+        />
+      </div>
+    </div>
+    <div class="col-12 col-md-6 col-lg-4">
+      <label for="basic-url">Email</label>
+      <div class="input-group mb-3">
+        <input
+          type="text"
+          class="form-control"
+          [disabled]="true"
+          [value]="user.email"
+        />
+      </div>
+    </div>
+    <div class="col-12 col-md-6 col-lg-4">
+      <label for="basic-url">Phone number</label>
+      <div class="input-group mb-3">
+        <input
+          type="text"
+          class="form-control"
+          [disabled]="true"
+          [value]="user.phoneNumber"
+        />
+      </div>
+    </div>
+    <div class="col-12 col-md-6 col-lg-4">
+      <label for="basic-url">Date of birth</label>
+      <div class="input-group mb-3">
+        <input
+          type="date"
+          class="form-control"
+          [disabled]="true"
+          [value]="user.dateOfBirth | date : 'yyyy-MM-dd'"
+        />
+      </div>
+    </div>
+  </div>
+
+  <h5 class="text-muted mt-3">Order summary</h5>
+  <hr />
+  <div class="row">
+    <div class="col-12 col-md-6 col-lg-4">
+      <label for="basic-url">Total number of orders</label>
+      <div class="input-group mb-3">
+        <input
+          type="text"
+          class="form-control"
+          [disabled]="true"
+          [value]="user.totalOrder"
+        />
+      </div>
+    </div>
+    <div class="col-12 col-md-6 col-lg-4">
+      <label for="basic-url">Total amount of order value</label>
+      <div class="input-group mb-3">
+        <input
+          type="text"
+          class="form-control"
+          [disabled]="true"
+          [value]="user.totalAmount"
+        />
+      </div>
+    </div>
+  </div>
+</div>

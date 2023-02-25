@@ -15,8 +15,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace API.Data
 {
-    public class DataContext : IdentityDbContext<AppUser, AppRole, int,
-        IdentityUserClaim<int>, AppUserRole, IdentityUserLogin<int>,
+    public class DataContext : IdentityDbContext<AppUser, AppPermission, int,
+        IdentityUserClaim<int>, AppUserPermission, IdentityUserLogin<int>,
         IdentityRoleClaim<int>, IdentityUserToken<int>>
     {
         public DataContext(DbContextOptions options) : base(options)
@@ -41,22 +41,39 @@ namespace API.Data
         public DbSet<UserReview> UserReviews { get; set; }
         public DbSet<Article> Articles { get; set; }
         public DbSet<Photo> Photos { get; set; }
+        public DbSet<AppRole> AppRoles { get; set; }
+        public DbSet<AppRolePermission> RolePermissions { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
 
             builder.Entity<AppUser>()
-                .HasMany(ur => ur.UserRoles)
+                .HasMany(ur => ur.UserPermissions)
                 .WithOne(u => u.User)
                 .HasForeignKey(ur => ur.UserId)
                 .IsRequired();
 
-            builder.Entity<AppRole>()
-                .HasMany(ur => ur.UserRoles)
+            builder.Entity<AppPermission>()
+                .HasMany(ur => ur.UserPermissions)
                 .WithOne(u => u.Role)
                 .HasForeignKey(ur => ur.RoleId)
                 .IsRequired();
+            
+            builder.Entity<AppRole>()
+                .HasMany(role => role.RolePermissions)
+                .WithOne(rolePermission => rolePermission.AppRole)
+                .HasForeignKey(rolePermission => rolePermission.RoleId)
+                .IsRequired()
+                .OnDelete(DeleteBehavior.Cascade);
+
+
+            builder.Entity<AppPermission>()
+                .HasMany(permission => permission.RolePermissions)
+                .WithOne(rolePermission => rolePermission.AppPermission)
+                .HasForeignKey(rolePermission => rolePermission.PermissionId)
+                .IsRequired()
+                .OnDelete(DeleteBehavior.Cascade);
 
             builder.Entity<Category>(c =>
             {

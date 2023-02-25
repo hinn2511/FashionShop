@@ -29,7 +29,7 @@ namespace API.Data
         }
 
         public async Task<PagedList<Product>> GetUserFavoriteProductsAsync(int userId, CustomerProductParams productParams)
-        {   
+        {
             var userLikes = await _context.UserLikes.Where(x => x.UserId == userId).OrderByDescending(x => x.DateCreated).ToListAsync();
 
             var query = _context.Products.AsQueryable();
@@ -37,7 +37,7 @@ namespace API.Data
             query = query.Where(x => userLikes.Select(x => x.ProductId).Contains(x.Id));
 
             query = query.Where(x => x.Status != Status.Hidden && x.Status != Status.Deleted);
-            
+
             // if(productParams.Gender >= 0)
             //     query = query.Where(p => p.Category.Gender == productParams.Gender);
 
@@ -75,7 +75,7 @@ namespace API.Data
             }
 
 
-            query = query.Include(x => x.ProductPhotos.Where(x => x.Status == Status.Active));            
+            query = query.Include(x => x.ProductPhotos.Where(x => x.Status == Status.Active));
 
             return await PagedList<Product>.CreateAsync(query, productParams.PageNumber, productParams.PageSize);
         }
@@ -83,7 +83,7 @@ namespace API.Data
 
     #endregion
 
-    #region user like
+    #region user
     public class UserRepository : GenericRepository<AppUser>, IUserRepository
     {
         public UserRepository(DataContext context, DbSet<AppUser> set) : base(context, set)
@@ -91,10 +91,26 @@ namespace API.Data
         }
     }
 
+    public class AppRoleRepository : GenericRepository<AppRole>, IAppRoleRepository
+    {
+        public AppRoleRepository(DataContext context, DbSet<AppRole> set) : base(context, set)
+        {
+        }
+    }
+
+
+    public class AppRolePermissionRepository : GenericRepository<AppRolePermission>, IAppRolePermissionRepository
+    {
+        public AppRolePermissionRepository(DataContext context, DbSet<AppRolePermission> set) : base(context, set)
+        {
+        }
+    }
+
+
     #endregion
 
 
-   #region cart
+    #region cart
     public class CartRepository : GenericRepository<Cart>, ICartRepository
     {
         private readonly DataContext _context;

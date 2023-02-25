@@ -40,13 +40,10 @@ export class AuthenticationService {
     return this.http.post<ResponseMessage>(this.baseUrl + 'account/register', account);
   }
 
-  login(username: string, password: string, type: string) {
-    let url = '';
-    if (type == 'client') url = 'account/authenticate';
-    else url = 'account/business-authenticate';
+  login(username: string, password: string) {
     return this.http
       .post<any>(
-        `${environment.apiUrl}` + url,
+        `${environment.apiUrl}account/authenticate`,
         { username, password },
         { withCredentials: true }
       )
@@ -76,7 +73,7 @@ export class AuthenticationService {
       )
       .subscribe();
 
-    let businessRole: string[] = ['Admin', 'Manager'];
+    let businessRole: string[] = ['AdministratorAccess'];
     let logoutRoute = '/login';
     if (this.userValue?.roles.some((role) => businessRole.includes(role))) {
       logoutRoute = '/administrator/login';

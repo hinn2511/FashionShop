@@ -2,7 +2,7 @@
   <h5 class="modal-title w-100">{{ title }}</h5>
 </div>
 <div class="modal-body p-4">
-  <p>Selected category:&nbsp;{{ selectResult.selectedValue }}</p>
+  <p>Selected category:&nbsp;{{ selectedResult.selectedValue }}</p>
   <!-- 1 -->
   <accordion [isAnimated]="true" [closeOthers]="true">
     <accordion-group *ngFor="let catalogue of catalogues">
@@ -21,7 +21,7 @@
           >
             <input
               type="radio"
-              [checked]="selectResult.selectedId == category.id"
+              [checked]="selectedResult.selectedId == category.id"
               aria-label="Radio button for following text input"
             />
             <p class="px-2 py-0 m-0">
@@ -47,7 +47,7 @@
               >
                 <input
                   type="radio"
-                  [checked]="selectResult.selectedId == subCategory.id"
+                  [checked]="selectedResult.selectedId == subCategory.id"
                   aria-label="Radio button for following text input"
                 />
                 <p class="px-2 py-0 m-0">
@@ -68,7 +68,7 @@
                 >
                   <input
                     type="radio"
-                    [checked]="selectResult.selectedId == subCategory.id"
+                    [checked]="selectedResult.selectedId == subCategory.id"
                     aria-label="Radio button for following text input"
                   />
                   <p class="px-2 py-0 m-0">

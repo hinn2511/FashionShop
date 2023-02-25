@@ -13,8 +13,16 @@ namespace API.Entities.User
         public string Gender { get; set; }
         public DateTime Created { get; set; } = DateTime.UtcNow;
         public DateTime LastActive { get; set; } = DateTime.UtcNow;
-        public ICollection<AppUserRole> UserRoles { get; set; }
+        public ICollection<AppUserPermission> UserPermissions { get; set; }
         public List<RefreshToken> RefreshTokens { get; set; }
+        public int? RoleId { get; set; }
+        public AppRole Role { get; set; }
 
+    }
+
+    public enum UserStatus
+    {
+        Active,
+        Deactivated
     }
 }

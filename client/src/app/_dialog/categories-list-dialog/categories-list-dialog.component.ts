@@ -15,7 +15,7 @@ export class CategoriesListDialogComponent implements OnInit {
   title: string;
   btnYesText: string;
   btnNoText: string;
-  selectResult: SingleSelectedResult = new SingleSelectedResult(false, 0, "");
+  selectedResult: SingleSelectedResult = new SingleSelectedResult(false, 0, "");
   includeGender: string[] = [];
   showNoneOption: boolean;
   selectSubCategory: boolean;
@@ -23,32 +23,31 @@ export class CategoriesListDialogComponent implements OnInit {
   constructor(public bsModalRef: BsModalRef) { }
 
   ngOnInit(): void {
-    console.log(this.showNoneOption);
     
     if(this.includeGender.length > 0)
       this.catalogues = this.catalogues.filter(x => this.includeGender.indexOf(x.genderTitle) > -1);
   }
 
   confirm() {
-    this.selectResult.result = true;
+    this.selectedResult.result = true;
     this.bsModalRef.hide();
   }
 
   decline() {
-    this.selectResult.result = false;
+    this.selectedResult.result = false;
     this.bsModalRef.hide();
   }
 
   select(id: number, name: string, gender: string)
   {
-    this.selectResult.selectedId = id;
-    this.selectResult.selectedValue = gender + " - " + name;
+    this.selectedResult.selectedId = id;
+    this.selectedResult.selectedValue = gender + " - " + name;
   }
 
   removeSelected()
   {
-    this.selectResult.selectedId = 0;
-    this.selectResult.selectedValue = "None";
+    this.selectedResult.selectedId = 0;
+    this.selectedResult.selectedValue = "None";
   }
 
 }

@@ -77,7 +77,6 @@ export class AdminProductOptionEditComponent implements OnInit {
   }
 
   updateOption(event) {
-    console.log(this.updateOptionForm.getRawValue());
     
     this.optionService
       .editOption(this.option.id, this.updateOptionForm.getRawValue())

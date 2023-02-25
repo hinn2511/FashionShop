@@ -166,8 +166,13 @@ namespace API.Extensions
             var result = Regex.Replace(htmlString, tagPattern, string.Empty);
 
             result = Regex.Replace(result, htmlEntityPattern, string.Empty);
-            
+
             return result;
+        }
+
+        public static string SplitCamelCase(this string input)
+        {
+            return System.Text.RegularExpressions.Regex.Replace(input, "(?<=[a-z])([A-Z])", " $1", System.Text.RegularExpressions.RegexOptions.Compiled).Trim();
         }
     }
 }

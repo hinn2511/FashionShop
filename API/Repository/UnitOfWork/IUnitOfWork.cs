@@ -9,6 +9,8 @@ namespace API.Interfaces
 {
     public interface IUnitOfWork
     {
+        IAppRoleRepository AppRoleRepository { get; }
+        IAppRolePermissionRepository  AppRolePermissionRepository { get; }
         IUserLikeRepository UserLikeRepository { get; }
         IUserReviewRepository UserReviewRepository { get; }
         ICartRepository CartRepository { get; }
@@ -28,7 +30,7 @@ namespace API.Interfaces
         IFeatureCategoryRepository FeatureCategoryRepository { get; }
         IArticleRepository ArticleRepository { get; }
         Task<bool> Complete();
-        bool HasChanges();
+        bool HasChanged();
 
     }
 }

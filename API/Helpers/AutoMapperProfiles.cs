@@ -29,6 +29,9 @@ using API.DTOs.Request.ArticleRequest;
 using static API.Extensions.TreeExtension;
 using API.Entities.UserModel;
 using API.DTOs.Response.ReviewResponse;
+using API.DTOs.Request.AdminRequest;
+using API.Extensions;
+using API.DTOs.Response.UserResponse;
 
 namespace API.Helpers
 {
@@ -71,7 +74,7 @@ namespace API.Helpers
                           src => src.Gender.ToString()))
                         .ForMember(dest => dest.ParentCategory, opt => opt.MapFrom(
                           src => src.Parent.CategoryName));
-            
+
             CreateMap<Category, AdminSubCategoryResponse>();
 
             CreateMap<Category, CategoryGender>();
@@ -96,13 +99,46 @@ namespace API.Helpers
 
             CreateMap<Option, AdminOptionResponse>();
 
-            // CreateMap<Color, AdminOptionColorResponse>();
-
-            // CreateMap<Size, AdminOptionSizeResponse>();
-
             CreateMap<AppUser, UserRoleResponse>()
-                .ForMember(dest => dest.Roles, opt => opt.MapFrom(
-                          src => string.Join(", ", src.UserRoles.Select(x => x.Role.Name).ToArray())));
+                .ForMember(dest => dest.Role, opt => opt.MapFrom(
+                        src => src.Role.RoleName))
+                .ForMember(dest => dest.Status, opt => opt.MapFrom(
+                        src => src.GetUserStatus()))
+                .ForMember(dest => dest.StatusString, opt => opt.MapFrom(
+                        src => src.GetUserStatus().ToString()));
+            
+            CreateMap<AppUser, UserResponse>()
+                .ForMember(dest => dest.Status, opt => opt.MapFrom(
+                        src => src.GetUserStatus()))
+                .ForMember(dest => dest.StatusString, opt => opt.MapFrom(
+                        src => src.GetUserStatus().ToString()));
+
+
+            CreateMap<CreateSystemAccountRequest, AppUser>();         
+            
+            CreateMap<Tuple<AppRole, int>, SystemRoleResponse>()
+                .ForMember(dest => dest.RoleName, opt => opt.MapFrom(
+                        src => src.Item1.RoleName))
+                .ForMember(dest => dest.Id, opt => opt.MapFrom(
+                        src => src.Item1.Id))
+                .ForMember(dest => dest.TotalUser, opt => opt.MapFrom(
+                        src => src.Item2));
+
+            CreateMap<AppRole, SystemRoleResponse>()
+                .ForMember(dest => dest.RoleName, opt => opt.MapFrom(
+                        src => src.RoleName))
+                .ForMember(dest => dest.Id, opt => opt.MapFrom(
+                        src => src.Id));
+
+
+            CreateMap<AppRolePermission, SystemPermissionResponse>()
+                .ForMember(dest => dest.PermissionName, opt => opt.MapFrom(
+                          src => src.AppPermission.Name.SplitCamelCase()));
+
+            CreateMap<AppPermission, SystemPermissionResponse>()
+                .ForMember(dest => dest.PermissionName, opt => opt.MapFrom(
+                          src => src.Name.SplitCamelCase()));
+
 
             CreateMap<HomePageRequest, HomePage>();
 
@@ -123,22 +159,6 @@ namespace API.Helpers
             CreateMap<UpdateProductOptionRequest, Option>();
 
             CreateMap<Product, AdminOptionProductResponse>();
-
-            // CreateMap<Color, AdminColorResponse>();
-
-            // CreateMap<Color, AdminColorDetailResponse>();
-
-            // CreateMap<CreateColorRequest, Color>();
-
-            // CreateMap<UpdateColorRequest, Color>();
-
-            // CreateMap<Size, AdminSizeResponse>();
-
-            // CreateMap<Size, AdminSizeDetailResponse>();
-
-            // CreateMap<CreateSizeRequest, Size>();
-
-            // CreateMap<UpdateSizeRequest, Size>();
 
             CreateMap<Article, AdminArticleResponse>()
                 .ForMember(dest => dest.PublishedDate, opt => opt.MapFrom(
@@ -164,27 +184,15 @@ namespace API.Helpers
             CreateMap<AppUser, AccountResponse>();
 
             CreateMap<Product, CustomerProductsResponse>()
-                // .ForMember(dest => dest.Options, opt => opt.MapFrom(
-                //           src => src.Options))
                 .ForMember(dest => dest.IsNew, opt => opt.MapFrom(
                           src => src.DateCreated.AddDays(7) > DateTime.UtcNow))
                 .ForMember(dest => dest.IsOnSale, opt => opt.MapFrom(
-                          src => src.SaleType != ProductSaleOffType.None 
-                                &&  src.SaleOffFrom < DateTime.UtcNow && src.SaleOffTo > DateTime.UtcNow))
+                          src => src.SaleType != ProductSaleOffType.None
+                                && src.SaleOffFrom < DateTime.UtcNow && src.SaleOffTo > DateTime.UtcNow))
                 .ForMember(dest => dest.SaleOffPercent, opt => opt.MapFrom(
                           src => src.SaleOffPercent))
                 .ForMember(dest => dest.SaleOffValue, opt => opt.MapFrom(
                           src => src.SaleOffValue))
-                // .ForMember(dest => dest.SaleType, opt => opt.Condition(
-                //           src => src.SaleOffFrom < DateTime.UtcNow && src.SaleOffTo > DateTime.UtcNow))
-                // .ForMember(dest => dest.SaleOffPercent, opt => opt.Condition(
-                //           src => src.SaleOffFrom < DateTime.UtcNow && src.SaleOffTo > DateTime.UtcNow))
-                // .ForMember(dest => dest.SaleOffValue, opt => opt.Condition(
-                //           src => src.SaleOffFrom < DateTime.UtcNow && src.SaleOffTo > DateTime.UtcNow))
-                //  .ForMember(dest => dest.SaleOffFrom, opt => opt.Condition(
-                //           src => src.SaleOffFrom < DateTime.UtcNow && src.SaleOffTo > DateTime.UtcNow))
-                // .ForMember(dest => dest.SaleOffTo, opt => opt.Condition(
-                //           src => src.SaleOffFrom < DateTime.UtcNow && src.SaleOffTo > DateTime.UtcNow))
                 .ForMember(dest => dest.Url, opt => opt.MapFrom(
                           src => src.ProductPhotos.FirstOrDefault(pp => pp.IsMain).Url))
                 .ForMember(dest => dest.Gender, opt => opt.MapFrom(
@@ -198,22 +206,12 @@ namespace API.Helpers
                 .ForMember(dest => dest.IsNew, opt => opt.MapFrom(
                           src => src.DateCreated.AddDays(7) > DateTime.UtcNow))
                 .ForMember(dest => dest.IsOnSale, opt => opt.MapFrom(
-                          src => src.SaleType != ProductSaleOffType.None 
-                                &&  src.SaleOffFrom < DateTime.UtcNow && src.SaleOffTo > DateTime.UtcNow))
+                          src => src.SaleType != ProductSaleOffType.None
+                                && src.SaleOffFrom < DateTime.UtcNow && src.SaleOffTo > DateTime.UtcNow))
                 .ForMember(dest => dest.SaleOffPercent, opt => opt.MapFrom(
                           src => src.SaleOffPercent))
                 .ForMember(dest => dest.SaleOffValue, opt => opt.MapFrom(
                           src => src.SaleOffValue))
-                // .ForMember(dest => dest.SaleType, opt => opt.Condition(
-                //           src => src.SaleOffFrom < DateTime.UtcNow && src.SaleOffTo > DateTime.UtcNow))
-                // .ForMember(dest => dest.SaleOffPercent, opt => opt.Condition(
-                //           src => src.SaleOffFrom < DateTime.UtcNow && src.SaleOffTo > DateTime.UtcNow))
-                // .ForMember(dest => dest.SaleOffValue, opt => opt.Condition(
-                //           src => src.SaleOffFrom < DateTime.UtcNow && src.SaleOffTo > DateTime.UtcNow))
-                //  .ForMember(dest => dest.SaleOffFrom, opt => opt.Condition(
-                //           src => src.SaleOffFrom < DateTime.UtcNow && src.SaleOffTo > DateTime.UtcNow))
-                // .ForMember(dest => dest.SaleOffTo, opt => opt.Condition(
-                //           src => src.SaleOffFrom < DateTime.UtcNow && src.SaleOffTo > DateTime.UtcNow))
                 .ForMember(dest => dest.Url, opt => opt.MapFrom(
                           src => src.ProductPhotos.FirstOrDefault(pp => pp.IsMain).Url))
                 .ForMember(dest => dest.BrandName, opt => opt.MapFrom(
@@ -231,10 +229,6 @@ namespace API.Helpers
 
             CreateMap<ProductPhoto, CustomerProductPhotoResponse>();
 
-            // CreateMap<Color, CustomerOptionColorResponse>();
-
-            // CreateMap<Size, CustomerOptionSizeResponse>();
-
             CreateMap<Category, CustomerCategoryResponse>();
 
             CreateMap<ITree<Category>, CustomerCategoryResponse>()
@@ -247,11 +241,7 @@ namespace API.Helpers
                 .ForMember(dest => dest.SubCategories, opt => opt.MapFrom(
                           src => src.Children.Flatten(node => node.Children).ToList()));
 
-            // CreateMap<Color, CartItemColor>();
-
             CreateMap<Option, ColorFilterResponse>();
-
-            // CreateMap<Size, CartItemSize>();
 
             CreateMap<Product, CartItemProduct>();
 
@@ -259,20 +249,14 @@ namespace API.Helpers
 
             CreateMap<Cart, CartItemResponse>()
                 .ForMember(dest => dest.IsOnSale, opt => opt.MapFrom(
-                          src => src.Option.Product.SaleType != ProductSaleOffType.None 
-                                &&  src.Option.Product.SaleOffFrom < DateTime.UtcNow && src.Option.Product.SaleOffTo > DateTime.UtcNow))
+                          src => src.Option.Product.SaleType != ProductSaleOffType.None
+                                && src.Option.Product.SaleOffFrom < DateTime.UtcNow && src.Option.Product.SaleOffTo > DateTime.UtcNow))
                 .ForMember(dest => dest.SaleOffPercent, opt => opt.MapFrom(
                           src => src.Option.Product.SaleOffPercent))
                 .ForMember(dest => dest.SaleOffValue, opt => opt.MapFrom(
                           src => src.Option.Product.SaleOffValue))
                 .ForMember(dest => dest.SaleType, opt => opt.MapFrom(
                           src => src.Option.Product.SaleType))
-                // .ForMember(dest => dest.SaleType, opt => opt.Condition(
-                //           src => src.Option.Product.SaleOffFrom < DateTime.UtcNow && src.Option.Product.SaleOffTo > DateTime.UtcNow))
-                // .ForMember(dest => dest.SaleOffPercent, opt => opt.Condition(
-                //           src => src.Option.Product.SaleOffFrom < DateTime.UtcNow && src.Option.Product.SaleOffTo > DateTime.UtcNow))
-                // .ForMember(dest => dest.SaleOffValue, opt => opt.Condition(
-                //           src => src.Option.Product.SaleOffFrom < DateTime.UtcNow && src.Option.Product.SaleOffTo > DateTime.UtcNow))
                 .ForMember(dest => dest.OptionId, opt => opt.MapFrom(
                         src => src.Id))
                 .ForMember(dest => dest.ProductId, opt => opt.MapFrom(
@@ -379,8 +363,6 @@ namespace API.Helpers
                           src => src.User.LastName))
                 .ForMember(dest => dest.ShippingMethod, opt => opt.MapFrom(
                           src => src.ShippingMethod))
-                // .ForMember(dest => dest.OrderDetails, opt => opt.MapFrom(
-                //           src => src.OrderDetails.OrderBy(x => x.Option.Product.ProductName)))
                 .ForMember(dest => dest.TotalItem, opt => opt.MapFrom(
                           src => src.CalculateOrderTotalItem()))
                 .ForMember(dest => dest.TotalPrice, opt => opt.MapFrom(
@@ -580,6 +562,13 @@ namespace API.Helpers
         public static bool IsOrderFinished(this Order order)
         {
             return order.CurrentStatus == OrderStatus.Finished || order.CurrentStatus == OrderStatus.Cancelled || order.CurrentStatus == OrderStatus.Returned;
+        }
+
+        public static UserStatus GetUserStatus(this AppUser appUser)
+        {
+            if (appUser.LockoutEnabled && appUser.LockoutEnd > DateTime.UtcNow)
+                return UserStatus.Deactivated;
+            return UserStatus.Active;
         }
     }
 

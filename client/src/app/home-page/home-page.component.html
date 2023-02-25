@@ -1,5 +1,5 @@
 <div *ngIf="!hasRoute('administrator/login')">
-    <div *appHasRole='["Anonymous", "Customer"]'>
+    <div *appHasRole='["Anonymous"]'>
         <div class="w-100 customer-home-page">
             <app-home-carousel *ngIf="carousels.length > 0" [carousels]="carousels"></app-home-carousel>
             <div class="center mx-auto">
@@ -16,6 +16,6 @@
     </div>
 </div>
 
-<div class="w-100" *appHasRole='["Admin", "Manager"]'>
+<div class="w-100" *appHasRole='["AdministratorAccess"]'>
 
 </div>

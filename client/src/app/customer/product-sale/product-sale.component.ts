@@ -191,7 +191,6 @@ export class ProductSaleComponent implements OnInit, OnDestroy {
   loadCategoryGroup() {
     this.categoryService.getCatalogue().subscribe((result) => {
       this.categoryGroups = result;
-      console.log(result);
     });
   }
 }

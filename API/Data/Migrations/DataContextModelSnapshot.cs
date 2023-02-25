@@ -545,7 +545,7 @@ namespace API.Data.Migrations
                     b.ToTable("Products");
                 });
 
-            modelBuilder.Entity("API.Entities.User.AppRole", b =>
+            modelBuilder.Entity("API.Entities.User.AppPermission", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -561,6 +561,9 @@ namespace API.Data.Migrations
 
                     b.Property<string>("NormalizedName")
                         .HasMaxLength(256)
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("PermissionGroup")
                         .HasColumnType("TEXT");
 
                     b.HasKey("Id");
@@ -633,6 +636,9 @@ namespace API.Data.Migrations
                     b.Property<bool>("PhoneNumberConfirmed")
                         .HasColumnType("INTEGER");
 
+                    b.Property<int?>("RoleId")
+                        .HasColumnType("INTEGER");
+
                     b.Property<string>("SecurityStamp")
                         .HasColumnType("TEXT");
 
@@ -652,10 +658,12 @@ namespace API.Data.Migrations
                         .IsUnique()
                         .HasDatabaseName("UserNameIndex");
 
+                    b.HasIndex("RoleId");
+
                     b.ToTable("AspNetUsers");
                 });
 
-            modelBuilder.Entity("API.Entities.User.AppUserRole", b =>
+            modelBuilder.Entity("API.Entities.User.AppUserPermission", b =>
                 {
                     b.Property<int>("UserId")
                         .HasColumnType("INTEGER");
@@ -719,6 +727,95 @@ namespace API.Data.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("Carts");
+                });
+
+            modelBuilder.Entity("API.Entities.UserModel.AppRole", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("CreatedByUserId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<DateTime>("DateCreated")
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime>("DateDeleted")
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime>("DateHidden")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("DeletedByUserId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("HiddenByUserId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<DateTime>("LastUpdated")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("LastUpdatedByUserId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("RoleName")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("AppRoles");
+                });
+
+            modelBuilder.Entity("API.Entities.UserModel.AppRolePermission", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("CreatedByUserId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<DateTime>("DateCreated")
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime>("DateDeleted")
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime>("DateHidden")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("DeletedByUserId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("HiddenByUserId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<DateTime>("LastUpdated")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("LastUpdatedByUserId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("PermissionId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("RoleId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("PermissionId");
+
+                    b.HasIndex("RoleId");
+
+                    b.ToTable("RolePermissions");
                 });
 
             modelBuilder.Entity("API.Entities.UserModel.UserLike", b =>
@@ -1293,6 +1390,10 @@ namespace API.Data.Migrations
 
             modelBuilder.Entity("API.Entities.User.AppUser", b =>
                 {
+                    b.HasOne("API.Entities.UserModel.AppRole", "Role")
+                        .WithMany("Users")
+                        .HasForeignKey("RoleId");
+
                     b.OwnsMany("API.Entities.UserModel.RefreshToken", "RefreshTokens", b1 =>
                         {
                             b1.Property<int>("Id")
@@ -1337,18 +1438,20 @@ namespace API.Data.Migrations
                         });
 
                     b.Navigation("RefreshTokens");
+
+                    b.Navigation("Role");
                 });
 
-            modelBuilder.Entity("API.Entities.User.AppUserRole", b =>
+            modelBuilder.Entity("API.Entities.User.AppUserPermission", b =>
                 {
-                    b.HasOne("API.Entities.User.AppRole", "Role")
-                        .WithMany("UserRoles")
+                    b.HasOne("API.Entities.User.AppPermission", "Role")
+                        .WithMany("UserPermissions")
                         .HasForeignKey("RoleId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("API.Entities.User.AppUser", "User")
-                        .WithMany("UserRoles")
+                        .WithMany("UserPermissions")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -1375,6 +1478,25 @@ namespace API.Data.Migrations
                     b.Navigation("Option");
 
                     b.Navigation("User");
+                });
+
+            modelBuilder.Entity("API.Entities.UserModel.AppRolePermission", b =>
+                {
+                    b.HasOne("API.Entities.User.AppPermission", "AppPermission")
+                        .WithMany("RolePermissions")
+                        .HasForeignKey("PermissionId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("API.Entities.UserModel.AppRole", "AppRole")
+                        .WithMany("RolePermissions")
+                        .HasForeignKey("RoleId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("AppPermission");
+
+                    b.Navigation("AppRole");
                 });
 
             modelBuilder.Entity("API.Entities.UserModel.UserLike", b =>
@@ -1481,7 +1603,7 @@ namespace API.Data.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<int>", b =>
                 {
-                    b.HasOne("API.Entities.User.AppRole", null)
+                    b.HasOne("API.Entities.User.AppPermission", null)
                         .WithMany()
                         .HasForeignKey("RoleId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -1547,14 +1669,23 @@ namespace API.Data.Migrations
                     b.Navigation("ProductPhotos");
                 });
 
-            modelBuilder.Entity("API.Entities.User.AppRole", b =>
+            modelBuilder.Entity("API.Entities.User.AppPermission", b =>
                 {
-                    b.Navigation("UserRoles");
+                    b.Navigation("RolePermissions");
+
+                    b.Navigation("UserPermissions");
                 });
 
             modelBuilder.Entity("API.Entities.User.AppUser", b =>
                 {
-                    b.Navigation("UserRoles");
+                    b.Navigation("UserPermissions");
+                });
+
+            modelBuilder.Entity("API.Entities.UserModel.AppRole", b =>
+                {
+                    b.Navigation("RolePermissions");
+
+                    b.Navigation("Users");
                 });
 
             modelBuilder.Entity("API.Entities.WebPageModel.HomePage", b =>

@@ -51,11 +51,14 @@ export class AdminLoginComponent implements OnInit {
         }
 
         this.loading = true;
-        this.authenticationService.login(this.f.username.value, this.f.password.value, 'business')
+        this.authenticationService.login(this.f.username.value, this.f.password.value)
             .pipe(first())
             .subscribe({
                 next: () => {
-                    this.router.navigate([this.returnUrl]);
+                    if (this.authenticationService.userValue.roles.find(x => x === "AdministratorAccess") == null)
+                        this.authenticationService.logout();
+                    else
+                        this.router.navigate([this.returnUrl]);
                 },
                 error: error => {
                     this.error = error;

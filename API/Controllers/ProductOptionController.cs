@@ -18,7 +18,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers
 {
-    [Authorize]
+    
     public class ProductOptionController : BaseApiController
     {
         private readonly IMapper _mapper;
@@ -69,6 +69,7 @@ namespace API.Controllers
 
 
         #region manager
+        [Authorize(Roles = "ViewProductOptions")]
         [HttpGet("all")]
         public async Task<ActionResult> GetProductOptionsAsAdmin([FromQuery] AdminProductOptionParams productOptionParams)
         {
@@ -78,6 +79,7 @@ namespace API.Controllers
             return Ok(result);
         }
 
+        [Authorize(Roles = "ViewProductOptionDetail")]
         [HttpGet("{id}/detail")]
         public async Task<ActionResult> GetProductOptionDetailAsAdmin(int id)
         {
@@ -85,7 +87,7 @@ namespace API.Controllers
             return Ok(_mapper.Map<AdminOptionDetailResponse>(productOptions));
         }
 
-
+        [Authorize(Roles = "CreateProductOption")]
         [HttpPost("create")]
         public async Task<ActionResult> AddProductOption(CreateProductOptionRequest createProductOptionRequest)
         {
@@ -114,6 +116,7 @@ namespace API.Controllers
             return BadRequest("An error occurred while adding the product options.");
         }
 
+        [Authorize(Roles = "EditProductOption")]
         [HttpPut("edit/{id}")]
         public async Task<ActionResult> UpdateProductOption(int id, UpdateProductOptionRequest updateProductOptionRequest)
         {
@@ -140,6 +143,7 @@ namespace API.Controllers
             return BadRequest("An error occurred while updating the product option.");
         }
 
+        [Authorize(Roles = "SoftDeleteProductOptions")]
         [HttpDelete("soft-delete")]
         public async Task<ActionResult> SoftDeleteOption(DeleteProductOptionsRequest deleteProductOptionsRequest)
         {
@@ -162,6 +166,7 @@ namespace API.Controllers
             return BadRequest("An error occurred while deleting productOptions.");
         }
 
+        [Authorize(Roles = "HideProductOptions")]
         [HttpPut("hide")]
         public async Task<ActionResult> HidingProductOption(BaseBulkRequest hideProductOptionRequest)
         {
@@ -185,6 +190,7 @@ namespace API.Controllers
             return BadRequest(new BaseResponseMessage(false, HttpStatusCode.BadRequest, "An error occurred while active product option(s)."));
         }
 
+        [Authorize(Roles = "ActivateProductOptions")]
         [HttpPut("activate")]
         public async Task<ActionResult> ActiveProductOption(BaseBulkRequest activateProductOptionRequest)
         {

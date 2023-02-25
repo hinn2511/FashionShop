@@ -19,6 +19,8 @@ namespace API.Controllers
             _mapper = mapper;
         }
 
+
+        [AllowAnonymous]
         [HttpGet("carousels")]
         public async Task<ActionResult> GetCarousels()
         {

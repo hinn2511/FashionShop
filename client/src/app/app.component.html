@@ -3,7 +3,7 @@
 </ng-container>
 <div [class]="{ 'prevent-scroll': focus }">
   <ng-container *ngIf="!hasRoute('administrator/login')">
-    <div *appHasRole="['Anonymous', 'Customer']" class="position-relative">
+    <div *appHasRole="['Anonymous']" class="position-relative">
       <ng-container *ngIf="!hasRoute('/login') && !hasRoute('/register')">
         <app-navigation-bar
           (focus)="focusModeToggle($event)"
@@ -20,7 +20,7 @@
       <div *ngIf="focus" class="position-absolute focus-mode"></div>
     </div>
 
-    <div *appHasRole="['Admin', 'Manager']">
+    <div *appHasRole="['AdministratorAccess']">
       <div class="w-100">
         <div class="container-fluid">
           <app-admin-sidebar [@slideInOut]="menuState" [currentState]="menuState" (newState)="setSidebar($event)"></app-admin-sidebar>

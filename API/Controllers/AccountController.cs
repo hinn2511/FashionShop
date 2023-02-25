@@ -11,6 +11,7 @@ using API.Entities;
 using API.Entities.User;
 using API.Extensions;
 using API.Interfaces;
+using API.Services;
 using API.Services.UserService;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
@@ -27,11 +28,13 @@ namespace API.Controllers
         private readonly ITokenService _tokenService;
         private readonly IMapper _mapper;
         private readonly IUserService _userService;
+        private readonly IRoleService _roleService;
         private readonly UserManager<AppUser> _userManager;
         private readonly SignInManager<AppUser> _signInManager;
-        public AccountController(UserManager<AppUser> userManager, SignInManager<AppUser> signInManager, ITokenService tokenService, IMapper mapper, IUserService userService)
+        public AccountController(IRoleService roleService,UserManager<AppUser> userManager, SignInManager<AppUser> signInManager, ITokenService tokenService, IMapper mapper, IUserService userService)
         {
             _signInManager = signInManager;
+            _roleService = roleService;
             _userManager = userManager;
             _mapper = mapper;
             _userService = userService;
@@ -54,10 +57,10 @@ namespace API.Controllers
             if (!result.Succeeded) 
                 return BadRequest(new BaseResponseMessage(false, HttpStatusCode.BadRequest, "Can not register user."));
 
-            var roleResult = await _userManager.AddToRoleAsync(user, "Customer");
+            var role = await _roleService.GetRoleByRoleNameAsync("Customer");
 
-            if(!roleResult.Succeeded) 
-                return BadRequest(new BaseResponseMessage(false, HttpStatusCode.BadRequest, "Can not register user."));
+            if(role != null)
+                await _roleService.ApplyRoleForUserAsync(user, role);
 
             return Ok(new BaseResponseMessage(true, HttpStatusCode.OK, "Register success."));
         }
@@ -66,19 +69,11 @@ namespace API.Controllers
         [HttpPost("authenticate")]
         public async Task<ActionResult> ClientAuthenticate(AuthenticationRequest authenticationRequest)
         {
-            var response = await _userService.Authenticate(authenticationRequest, AuthenticateType.Client, ipAddress());
+            var response = await _userService.Authenticate(authenticationRequest, ipAddress());
             setTokenCookie(response.RefreshToken);
             return Ok(response);
         }
 
-        [AllowAnonymous]
-        [HttpPost("business-authenticate")]
-        public async Task<ActionResult> AdminAuthenticate(AuthenticationRequest authenticationRequest)
-        {
-            var response = await _userService.Authenticate(authenticationRequest, AuthenticateType.Business, ipAddress());
-            setTokenCookie(response.RefreshToken);
-            return Ok(response);
-        }
 
         [AllowAnonymous]
         [HttpPost("refresh-token")]

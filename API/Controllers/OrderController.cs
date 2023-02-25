@@ -40,7 +40,7 @@ namespace API.Controllers
 
         #region customer
 
-        [Authorize(Policy = "CustomerOnly")]
+        [Authorize]
         [HttpGet]
         public async Task<ActionResult> GetCustomerOrders([FromQuery] CustomerOrderParams customerOrderParams)
         {
@@ -54,7 +54,7 @@ namespace API.Controllers
 
         }
 
-        [Authorize(Policy = "CustomerOnly")]
+        [Authorize]
         [HttpGet("{externalOrderId}")]
         public async Task<ActionResult> GetCustomerOrderDetail(string externalOrderId)
         {
@@ -72,7 +72,7 @@ namespace API.Controllers
 
         }
 
-        [Authorize(Policy = "CustomerOnly")]
+        [Authorize]
         [HttpPost("place-order")]
         public async Task<ActionResult> PlaceOrder(OrderRequest orderRequest)
         {
@@ -175,7 +175,7 @@ namespace API.Controllers
             return BadRequest("Can not create order.");
         }
 
-        [Authorize(Policy = "CustomerOnly")]
+        [Authorize]
         [HttpPost("{externalOrderId}/paid-by-card")]
         public async Task<ActionResult> CustomerPayingOrder(string externalOrderId, PayOrderRequest payOrderRequest)
         {
@@ -251,7 +251,7 @@ namespace API.Controllers
             return BadRequest("Can not process this order.");
         }
 
-        [Authorize(Policy = "CustomerOnly")]
+        [Authorize]
         [HttpPut("{externalId}/cancel-requested")]
         public async Task<ActionResult> RequestCancelOrder(string externalId, CancelOrderRequest cancelOrderRequest)
         {
@@ -296,7 +296,7 @@ namespace API.Controllers
             return BadRequest("Can not verify orders.");
         }
 
-        [Authorize(Policy = "CustomerOnly")]
+        [Authorize]
         [HttpPut("{externalId}/confirm-delivered")]
         public async Task<ActionResult> ConfirmReceiveOrder(string externalId)
         {
@@ -345,7 +345,7 @@ namespace API.Controllers
         }
 
 
-        [Authorize(Policy = "CustomerOnly")]
+        [Authorize]
         [HttpPut("{externalId}/return-requested")]
         public async Task<ActionResult> RequestReturnOrder(string externalId, ReturnOrderRequest returnOrderRequest)
         {
@@ -387,7 +387,7 @@ namespace API.Controllers
 
         #region manager
 
-        [Authorize(Policy = "ManagerOnly")]
+        [Authorize(Roles = "ViewOrders")]
         [HttpGet("all")]
         public async Task<ActionResult> GetAllOrders([FromQuery] AdminOrderParams adminOrderParams)
         {
@@ -401,7 +401,7 @@ namespace API.Controllers
 
         }
 
-        [Authorize(Policy = "ManagerOnly")]
+        [Authorize(Roles = "ViewOrderSummary")]
         [HttpGet("summary")]
         public async Task<ActionResult> GetOrdersSummary([FromQuery] AdminOrderParams adminOrderParams)
         {
@@ -413,7 +413,7 @@ namespace API.Controllers
 
         }
 
-        [Authorize(Policy = "ManagerOnly")]
+        [Authorize(Roles = "ViewOrderDetail")]
         [HttpGet("{orderId}/detail")]
         public async Task<ActionResult> GetOrderDetail(int orderId)
         {
@@ -438,7 +438,7 @@ namespace API.Controllers
             return Ok(result);
         }
 
-        [Authorize(Policy = "ManagerOnly")]
+        [Authorize(Roles = "VerifyOrder")]
         [HttpPut("{orderId}/verify")]
         public async Task<ActionResult> CheckingOrder(int orderId)
         {
@@ -473,7 +473,7 @@ namespace API.Controllers
             return BadRequest("Can not verify orders.");
         }
 
-        [Authorize(Policy = "ManagerOnly")]
+        [Authorize(Roles = "ShippingOrder")]
         [HttpPut("{orderId}/shipping")]
         public async Task<ActionResult> ShippingOrder(int orderId)
         {
@@ -507,8 +507,7 @@ namespace API.Controllers
             return BadRequest("Can not shipping orders.");
         }
 
-        // [Authorize(Policy = "LogisticOnly")]
-        [Authorize(Policy = "ManagerOnly")]
+        [Authorize(Roles = "ConfirmShippedOrder")]
         [HttpPut("{orderId}/shipped")]
         public async Task<ActionResult> OrderShipped(int orderId)
         {
@@ -542,7 +541,7 @@ namespace API.Controllers
             return BadRequest("Can not shipping orders.");
         }
 
-        [Authorize(Policy = "ManagerOnly")]
+        [Authorize(Roles = "CancelOrder")]
         [HttpPut("{orderId}/cancel")]
         public async Task<ActionResult> CancelOrder(int orderId, CancelOrderRequest cancelOrderRequest)
         {
@@ -585,7 +584,7 @@ namespace API.Controllers
             return BadRequest("Can not checking this order.");
         }
 
-        [Authorize(Policy = "ManagerOnly")]
+        [Authorize(Roles = "AcceptReturnOrder")]
         [HttpPut("{orderId}/return-accepted")]
         public async Task<ActionResult> AcceptOrderReturnRequest(int orderId)
         {
@@ -619,7 +618,7 @@ namespace API.Controllers
             return BadRequest("Can not checking this order.");
         }
 
-        [Authorize(Policy = "ManagerOnly")]
+        [Authorize(Roles = "AcceptCancelOrder")]
         [HttpPut("{orderId}/cancel-accepted")]
         public async Task<ActionResult> AcceptOrderCancelRequest(int orderId)
         {

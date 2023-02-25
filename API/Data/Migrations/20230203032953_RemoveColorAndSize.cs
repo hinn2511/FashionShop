@@ -15,8 +15,8 @@ namespace API.Data.Migrations
                 name: "FK_Options_Sizes_SizeId",
                 table: "Options");
 
-            migrationBuilder.DropTable(
-                name: "Colors");
+            // migrationBuilder.DropTable(
+            //     name: "Colors");
 
             migrationBuilder.DropTable(
                 name: "Sizes");

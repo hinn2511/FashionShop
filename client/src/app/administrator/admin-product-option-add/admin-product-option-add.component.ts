@@ -103,7 +103,6 @@ export class AdminProductOptionAddComponent implements OnInit {
   }
 
   updateColorHex() {
-    console.log(this.hex);
     
     fnUpdateFormControlStringValue(
       this.newOptionForm,

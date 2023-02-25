@@ -19,7 +19,6 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers
 {
-    [Authorize]
     public class CategoryController : BaseApiController
     {
         private readonly IMapper _mapper;
@@ -94,6 +93,7 @@ namespace API.Controllers
 
 
         #region manager
+        [Authorize(Roles = "ViewCategories")]
         [HttpGet("all")]
         public async Task<ActionResult> GetCategoriesAsAdmin([FromQuery] AdminCategoryParams adminCategoryParams)
         {
@@ -104,6 +104,7 @@ namespace API.Controllers
             return Ok(_mapper.Map<List<AdminCategoryResponse>>(categories.ToList()));
         }
 
+        [Authorize(Roles = "ViewCategoryDetail")]
         [HttpGet("detail/{id}")]
         public async Task<ActionResult> GetCategoryDetailAsAdmin(int id)
         {
@@ -119,8 +120,7 @@ namespace API.Controllers
             return Ok(result);
         }
 
-
-
+        [Authorize(Roles = "ViewCatalogue")]
         [HttpGet("catalogue")]
         public async Task<ActionResult> GetCatalogueAsAdmin()
         {
@@ -141,7 +141,7 @@ namespace API.Controllers
             return Ok(result);
         }
 
-
+        [Authorize(Roles = "CreateCategory")]
         [HttpPost("create")]
         public async Task<ActionResult> AddCategory(CreateCategoryRequest createCategoryRequest)
         {
@@ -173,6 +173,7 @@ namespace API.Controllers
             return BadRequest("An error occurred while adding the category.");
         }
 
+        [Authorize(Roles = "EditCategory")]
         [HttpPut("edit/{id}")]
         public async Task<ActionResult> UpdateCategory(int id, UpdateCategoryRequest updateCategoryRequest)
         {
@@ -207,6 +208,7 @@ namespace API.Controllers
             return BadRequest("An error occurred while updating the category.");
         }
 
+        [Authorize(Roles = "SoftDeleteCategories")]
         [HttpDelete("soft-delete")]
         public async Task<ActionResult> SoftDeleteCategory(DeleteCategoriesRequest deleteCategoriesRequest)
         {
@@ -242,6 +244,7 @@ namespace API.Controllers
             return BadRequest(new BaseResponseMessage(false, HttpStatusCode.BadRequest, "An error occurred while deleting categories."));
         }
 
+        [Authorize(Roles = "HardDeleteCategories")]
         [HttpDelete("hard-delete")]
         public async Task<ActionResult> HardDeleteCategory(DeleteCategoriesRequest deleteCategoriesRequest)
         {
@@ -259,6 +262,7 @@ namespace API.Controllers
             return BadRequest(new BaseResponseMessage(false, HttpStatusCode.BadRequest, "An error occurred while deleting categories."));
         }
 
+        [Authorize(Roles = "HideCategories")]
         [HttpPut("hide")]
         public async Task<ActionResult> HidingCategory(HideCategoriesRequest hideCategoriesRequest)
         {
@@ -282,6 +286,7 @@ namespace API.Controllers
             return BadRequest(new BaseResponseMessage(false, HttpStatusCode.BadRequest, "An error occurred while active categories."));
         }
 
+        [Authorize(Roles = "ActivateCategories")]
         [HttpPut("activate")]
         public async Task<ActionResult> ActiveCategory(HideCategoriesRequest hideCategoriesRequest)
         {
@@ -305,6 +310,7 @@ namespace API.Controllers
             return BadRequest(new BaseResponseMessage(false, HttpStatusCode.BadRequest, "An error occurred while hiding categories."));
         }
 
+        [Authorize(Roles = "DemoteCategories")]
         [HttpPut("demote")]
         public async Task<ActionResult> RemoveEditorChoiceForCategory(BulkDemoteRequest bulkDemoteRequest)
         {
@@ -328,6 +334,7 @@ namespace API.Controllers
             return BadRequest(new BaseResponseMessage(false, HttpStatusCode.BadRequest, "An error occurred while demote for categories."));
         }
 
+        [Authorize(Roles = "PromoteCategories")]
         [HttpPut("promote")]
         public async Task<ActionResult> SetEditorChoiceForCategory(BulkPromoteRequest bulkPromoteRequest)
         {
