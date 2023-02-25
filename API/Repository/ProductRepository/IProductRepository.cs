@@ -9,12 +9,6 @@ using API.Repository.GenericRepository;
 
 namespace API.Interfaces
 {
-
-    public interface IColorRepository : IGenericRepository<Color>
-    {
-        Task<IEnumerable<Color>> GetColorsByProductFilter(CustomerProductParams productParams);
-    }
-
     public interface IProductPhotoRepository : IGenericRepository<ProductPhoto>
     {
     }
@@ -34,12 +28,10 @@ namespace API.Interfaces
         // Task<Option> GetProductOptionAsync(int productId);
         Task<IEnumerable<Option>> GetProductOptionsAsCustomerAsync(int productId);
         Task<PagedList<Option>> GetProductOptionsAsAdminAsync(AdminProductOptionParams productOptionParams);
+        Task<IEnumerable<Option>> GetOptionsByProductParams(CustomerProductParams productParams);
     }
 
-    public interface ISizeRepository : IGenericRepository<Size>
-    {
-
-    }
+   
 
     public interface IStockRepository : IGenericRepository<Stock>
     {

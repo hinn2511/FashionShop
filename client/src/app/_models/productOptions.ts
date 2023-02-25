@@ -25,6 +25,7 @@ export class ManagerOptionParams {
     field = "Id";
     query = "";
     productOptionStatus = [0, 1];
+    productIds = [];
 }
 
 export interface CreateOption {
@@ -58,8 +59,9 @@ export interface ManagerOptionProduct {
 
 export interface ManagerOption {
     id: number;
-    color: ManagerOptionColor;
-    size: ManagerOptionSize;
+    colorName: string;
+    colorCode: string;
+    sizeName: string;
     product: ManagerOptionProduct;
     status: number;
     dateCreated: Date;

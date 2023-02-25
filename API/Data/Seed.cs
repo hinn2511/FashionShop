@@ -136,37 +136,37 @@ namespace API.Entities
             await context.SaveChangesAsync();
         }
 
-        public static async Task SeedColors(DataContext context)
-        {
-            if (await context.Colors.AnyAsync()) return;
+        // public static async Task SeedColors(DataContext context)
+        // {
+        //     if (await context.Colors.AnyAsync()) return;
 
-            var colorData = await System.IO.File.ReadAllTextAsync("Data/SeedData/ColorSeedData.json");
+        //     var colorData = await System.IO.File.ReadAllTextAsync("Data/SeedData/ColorSeedData.json");
 
-            var colors = JsonSerializer.Deserialize<List<Color>>(colorData);
+        //     var colors = JsonSerializer.Deserialize<List<Color>>(colorData);
 
-            foreach (var color in colors)
-            {
-                await context.Colors.AddAsync(color);
-            }
+        //     foreach (var color in colors)
+        //     {
+        //         await context.Colors.AddAsync(color);
+        //     }
 
-            await context.SaveChangesAsync();
-        }
+        //     await context.SaveChangesAsync();
+        // }
 
-        public static async Task SeedSizes(DataContext context)
-        {
-            if (await context.Sizes.AnyAsync()) return;
+        // public static async Task SeedSizes(DataContext context)
+        // {
+        //     if (await context.Sizes.AnyAsync()) return;
 
-            var sizeData = await System.IO.File.ReadAllTextAsync("Data/SeedData/SizeSeedData.json");
+        //     var sizeData = await System.IO.File.ReadAllTextAsync("Data/SeedData/SizeSeedData.json");
 
-            var sizes = JsonSerializer.Deserialize<List<Size>>(sizeData);
+        //     var sizes = JsonSerializer.Deserialize<List<Size>>(sizeData);
 
-            foreach (var size in sizes)
-            {
-                await context.Sizes.AddAsync(size);
-            }
+        //     foreach (var size in sizes)
+        //     {
+        //         await context.Sizes.AddAsync(size);
+        //     }
 
-            await context.SaveChangesAsync();
-        }
+        //     await context.SaveChangesAsync();
+        // }
 
 
         //     public static async Task SeedSubCategories(DataContext context)

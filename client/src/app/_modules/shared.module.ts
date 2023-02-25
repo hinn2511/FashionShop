@@ -11,6 +11,7 @@ import { TabsModule } from 'ngx-bootstrap/tabs';
 import { viLocale } from 'ngx-bootstrap/locale';
 import { FileUploadModule } from 'ng2-file-upload';
 import { ToastrModule } from 'ngx-toastr';
+import { ColorPickerModule } from '@iplab/ngx-color-picker';
 defineLocale('vi', viLocale);
 
 @NgModule({
@@ -29,7 +30,8 @@ defineLocale('vi', viLocale);
       timeOut: 3000,
       positionClass: 'toast-bottom-left',
       preventDuplicates: false,
-    })
+    }),
+    ColorPickerModule
   ], 
   exports: [
     BsDropdownModule,
@@ -39,7 +41,8 @@ defineLocale('vi', viLocale);
     TabsModule,
     BsDatepickerModule,
     ModalModule,
-    FileUploadModule
+    FileUploadModule,
+    ColorPickerModule
   ]
 })
 

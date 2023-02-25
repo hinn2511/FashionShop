@@ -1,46 +1,39 @@
-<div class="container-fluid">
-  <h3>Add new option</h3>
+<div class="container-fluid" *ngIf="option">
+  <h3>Update option</h3>
   <form
-    [formGroup]="newOptionForm"
-    (ngSubmit)="newOptionForm.valid && addNewOption($event)"
+    [formGroup]="updateOptionForm"
+    (ngSubmit)="updateOptionForm.valid && updateOption($event)"
     autocomplete="off"
   >
     <div class="row">
       <div class="col-12 col-md-6 col-lg-4">
         <label for="productId">Product</label>
         <div class="form-group">
-          <select
-            class="form-control"
-            [formControl]="newOptionForm.controls['productId']"
-          >
-            <option *ngFor="let item of products" [value]="item.id">
-              {{ item.productName }}
-            </option>
-          </select>
+          <input type="text" class="form-control" [disabled]="true" id="exampleFormControlInput1" placeholder="{{option.product.productName}}">
         </div>
 
         <label for="additionalPrice">Additional price</label>
         <app-number-input
-          [formControl]="newOptionForm.controls['additionalPrice']"
+          [formControl]="updateOptionForm.controls['additionalPrice']"
           [label]="'Additional price'"
         >
         </app-number-input>
 
         <label for="sizeId">Size</label>
         <app-text-input
-          [formControl]="newOptionForm.controls['sizeName']"
+          [formControl]="updateOptionForm.controls['sizeName']"
           [label]="'Size'"
         ></app-text-input>
 
         <label for="sizeId">Color name</label>
         <app-text-input
-          [formControl]="newOptionForm.controls['colorName']"
+          [formControl]="updateOptionForm.controls['colorName']"
           [label]="'Color name'"
         ></app-text-input>
 
         <label for="sizeId">Color hex code</label>
         <app-text-input
-          [formControl]="newOptionForm.controls['colorCode']"
+          [formControl]="updateOptionForm.controls['colorCode']"
           [label]="'Color hex code'"
         ></app-text-input>
 
@@ -70,7 +63,7 @@
             Back
           </button>
           <button
-            [disabled]="!newOptionForm.valid"
+            [disabled]="!updateOptionForm.valid"
             class="btn btn-success mr-2"
             name="save"
             type="submit"
@@ -78,7 +71,7 @@
             Save
           </button>
           <button
-            [disabled]="!newOptionForm.valid"
+            [disabled]="!updateOptionForm.valid"
             class="btn btn-primary"
             name="saveAndContinue"
             type="submit"

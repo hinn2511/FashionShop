@@ -109,8 +109,6 @@ namespace API.Data
             return await _context.Carts
                         .Where(x => x.UserId == userId)
                         .Include(x => x.Option).ThenInclude(o => o.Product).ThenInclude(x => x.ProductPhotos)
-                        .Include(x => x.Option).ThenInclude(o => o.Color)
-                        .Include(x => x.Option).ThenInclude(o => o.Size)
                         .OrderByDescending(x => x.DateCreated)
                         .AsNoTracking()
                         .ToListAsync();

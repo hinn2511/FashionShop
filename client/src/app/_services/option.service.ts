@@ -1,12 +1,11 @@
 import { CreateOption, UpdateOption, ManagerOptionColor, ManagerOptionSize, CustomerOption } from 'src/app/_models/productOptions';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { of, ReplaySubject } from 'rxjs';
-import { map, take } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
 import { IdArray } from 'src/app/_models/adminRequest';
 import { ManagerOption, ManagerOptionParams } from 'src/app/_models/productOptions';
 import { getPaginatedResult, getPaginationHeaders } from '../_helpers/paginationHelper';
+import { ResponseMessage } from '../_models/generic';
 
 @Injectable({
   providedIn: 'root'
@@ -54,6 +53,10 @@ export class OptionService {
       params = params.append('productOptionStatus', element);
     });
 
+    optionParams.productIds.forEach(element => {
+      params = params.append('productIds', element);
+    });
+
     return getPaginatedResult<ManagerOption[]>(this.baseUrl + 'productOption/all', params, this.http);
   }
 
@@ -70,7 +73,14 @@ export class OptionService {
   }
 
   hideOptions(ids: IdArray) {
-    return this.http.put(this.baseUrl + 'productOption/hide-or-unhide', ids);
+    return this.http.put<ResponseMessage>(this.baseUrl + 'productOption/hide', ids);
+  }
+
+  activateOptions(ids: IdArray) {
+    return this.http.put<ResponseMessage>(
+      this.baseUrl + 'productOption/activate',
+      ids
+    );
   }
 
   deleteOption(ids: number[]) {
