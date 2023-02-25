@@ -10,6 +10,8 @@ import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 import { Observable } from 'rxjs';
 import { ConfirmDialogComponent } from '../_dialog/confirm-dialog/confirm-dialog.component';
 import { ConfirmResult, SelectOption, SingleSelectedResult } from '../_models/dialog';
+import { ImageSelectorComponent } from '../_dialog/image-selector/image-selector.component';
+import { SelectPhoto } from '../_models/photo';
 
 @Injectable({
   providedIn: 'root'
@@ -121,6 +123,21 @@ export class DialogService {
   return new Observable<DialogResult>(this.getFormDialogResult());
   }
 
+  openPhotoSelectorDialog(action = 'Photo selector',
+    multiple = false,
+    selectedIds: number[] = []): Observable<SelectPhoto[]> {
+      const config = {
+        initialState: {
+          action,
+          multiple,
+          selectedIds
+        }
+      }
+      this.bsModalRef = this.modalService.show(ImageSelectorComponent, config);
+      this.bsModalRef.setClass('modal-lg');    
+    return new Observable<SelectPhoto[]>(this.getPhotoSelectResult());
+  }
+
   private getSelectResult() {
     return (observer) => {
       const subscription = this.bsModalRef.onHidden.subscribe(() =>{
@@ -140,6 +157,21 @@ export class DialogService {
     return (observer) => {
       const subscription = this.bsModalRef.onHidden.subscribe(() =>{
         observer.next(this.bsModalRef.content.result);
+        observer.complete();
+      });
+      
+      return {
+        unsubscribe() {
+          subscription.unsubscribe();
+        }
+      }
+    }
+  }
+
+  private getPhotoSelectResult() {
+    return (observer) => {
+      const subscription = this.bsModalRef.onHidden.subscribe(() =>{
+        observer.next(this.bsModalRef.content.photos);
         observer.complete();
       });
       

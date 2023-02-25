@@ -96,5 +96,12 @@ namespace API.Repository.ConfigurationRepository
         {
         }
     }
+
+     public class SettingsRepository : GenericRepository<Settings>, ISettingsRepository
+    {
+        public SettingsRepository(DataContext context, DbSet<Settings> set) : base(context, set)
+        {
+        }
+    }
 }
 

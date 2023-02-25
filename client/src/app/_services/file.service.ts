@@ -16,12 +16,14 @@ import { IdArray } from '../_models/adminRequest';
 import { map, switchMap } from 'rxjs/operators';
 import { FileUploader } from 'ng2-file-upload';
 import { FileUploadedResponse } from 'src/app/_models/file';
+import { Params } from '@angular/router';
 
 @Injectable({
   providedIn: 'root',
 })
 export class FileService {
   fileUrl = environment.fileUrl;
+
   options = {
     headers: new HttpHeaders({
       authority: 'localhost:5001',

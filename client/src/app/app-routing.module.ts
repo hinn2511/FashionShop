@@ -39,6 +39,7 @@ import { AdminRoleAddComponent } from './administrator/admin-role-add/admin-role
 import { AdminRoleDetailComponent } from './administrator/admin-role-detail/admin-role-detail.component';
 import { AdminUserComponent } from './administrator/admin-user/admin-user.component';
 import { AdminUserDetailComponent } from './administrator/admin-user-detail/admin-user-detail.component';
+import { AdminSettingComponent } from './administrator/admin-setting/admin-setting.component';
 
 const routes: Routes = [
   {path: '', component: HomePageComponent },
@@ -108,6 +109,19 @@ const routes: Routes = [
         component: AdminDashboardComponent,
         canActivate: [AuthGuard],
       }
+    ],
+  },
+
+  
+  {
+    path: 'administrator/setting-manager',
+    canActivate: [AuthGuard],
+    children: [
+      {
+        path: '',
+        component: AdminSettingComponent,
+        canActivate: [AuthGuard],
+      },
     ],
   },
 

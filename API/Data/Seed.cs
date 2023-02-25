@@ -11,6 +11,7 @@ using API.Entities.ProductModel;
 using API.Extensions;
 using System.Linq;
 using API.Entities.UserModel;
+using API.Entities.WebPageModel;
 
 namespace API.Entities
 {
@@ -100,6 +101,26 @@ namespace API.Entities
             }
             await context.SaveChangesAsync();
         }
+
+        public static async Task SeedSetting(DataContext context)
+        {
+            var setting = new Settings();
+
+            if (context.Settings.Any())
+                return;
+
+            setting.AdministratorLoginBackground = "";
+            setting.ClientLoginBackground = "";
+            setting.ClientRegisterBackground = "";
+            setting.ClientLoginPhotoId = 0;
+            setting.ClientRegisterPhotoId = 0;
+            setting.AdministratorLoginPhotoId = 0;
+
+            await context.Settings.AddAsync(setting);
+
+            await context.SaveChangesAsync();
+        }
+
 
 
         public static async Task SeedPermissions(RoleManager<AppPermission> roleManager)

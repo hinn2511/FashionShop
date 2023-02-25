@@ -22,10 +22,8 @@ export class AccountComponent implements OnInit {
 
   tabs: AccountTab[] = [
     new AccountTab('Account information', 'information'),
-    new AccountTab('Shipping address', 'shipping'),
     new AccountTab('My orders', 'orders'),
     new AccountTab('Favorites', 'favorites'),
-    new AccountTab('Payment method', 'payment'),
   ];
 
   constructor(

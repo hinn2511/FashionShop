@@ -1,6 +1,5 @@
 using System.Linq;
 using API.DTOs.Order;
-using API.DTOs.Request.ConfigurationRequest;
 using API.DTOs.Request.ProductRequest;
 using API.DTOs.Request.AuthenticationRequest;
 using API.DTOs.Request.CartRequest;
@@ -32,6 +31,8 @@ using API.DTOs.Response.ReviewResponse;
 using API.DTOs.Request.AdminRequest;
 using API.Extensions;
 using API.DTOs.Response.UserResponse;
+using API.DTOs.Request.ConfigurationRequest;
+using API.DTOs.Response.PhotoResponse;
 
 namespace API.Helpers
 {
@@ -40,6 +41,9 @@ namespace API.Helpers
         public AutoMapperProfiles()
         {
             #region manager dto
+            CreateMap<Settings, ClientSettingsResponse>();
+
+            CreateMap<Photo, AdminImagesResponse>();
 
             CreateMap<Product, AdminProductsResponse>()
                 .ForMember(dest => dest.Url, opt => opt.MapFrom(
@@ -139,18 +143,11 @@ namespace API.Helpers
                 .ForMember(dest => dest.PermissionName, opt => opt.MapFrom(
                           src => src.Name.SplitCamelCase()));
 
-
-            CreateMap<HomePageRequest, HomePage>();
-
             CreateMap<Carousel, AdminCarouselResponse>();
 
             CreateMap<Carousel, AdminCarouselDetailResponse>();
 
             CreateMap<AddCarouselRequest, Carousel>();
-
-            CreateMap<FeatureCategoryRequest, FeatureCategory>();
-
-            CreateMap<FeatureProductRequest, FeatureProduct>();
 
             CreateMap<Option, AdminOptionDetailResponse>();
 

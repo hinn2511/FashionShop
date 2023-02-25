@@ -9,6 +9,7 @@ namespace API.Interfaces
 {
     public interface IUnitOfWork
     {
+        ISettingsRepository SettingsRepository { get; }
         IAppRoleRepository AppRoleRepository { get; }
         IAppRolePermissionRepository  AppRolePermissionRepository { get; }
         IUserLikeRepository UserLikeRepository { get; }

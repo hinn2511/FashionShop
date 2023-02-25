@@ -1,6 +1,8 @@
 ﻿using API.Data;
+using API.DTOs.Params;
 using API.DTOs.Response;
 using API.DTOs.Response.FileResponse;
+using API.DTOs.Response.PhotoResponse;
 using API.Entities.Other;
 using API.Entities.OtherModel;
 using API.Extensions;
@@ -85,9 +87,19 @@ namespace API.Controllers
             _unitOfWork.PhotoRepository.Insert(image);
 
             if (await _unitOfWork.Complete())
-                return Ok(new FileUploadedResponse(image.Url));
+                return Ok(new FileUploadedResponse(image.Id, image.Url));
 
             return BadRequest("Can not upload file");
+        }
+
+        
+        [HttpGet("images")]
+        public async Task<ActionResult> GetImagesAsAdmin([FromQuery] PaginationParams paginationParams)
+        {
+            var images = await _unitOfWork.PhotoRepository.GetImageAsync(paginationParams);
+            Response.AddPaginationHeader(images.CurrentPage, images.PageSize, images.TotalCount, images.TotalPages);
+            var result = _mapper.Map<List<AdminImagesResponse>>(images.ToList());
+            return Ok(result);
         }
 
         [AllowAnonymous]

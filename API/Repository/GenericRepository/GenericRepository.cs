@@ -73,6 +73,11 @@ namespace API.Repository.GenericRepository
             return await table.FirstOrDefaultAsync(expression);
         }
 
+        public async Task<T> GetFirst()
+        {
+            return await table.FirstOrDefaultAsync();
+        }
+
         public async Task<IEnumerable<T>> GetAllAndIncludeAsync(Expression<Func<T, bool>> filter, string includeProperties, bool isNoTracking)
         {
             IQueryable<T> query = table;

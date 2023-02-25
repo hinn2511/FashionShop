@@ -1,3 +1,4 @@
+import { SettingService } from './_services/setting.service';
 import { APP_INITIALIZER, NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
@@ -17,7 +18,7 @@ import { NumberInputComponent } from './_forms/number-input/number-input.compone
 import { IconTextInputComponent } from './_forms/icon-text-input/icon-text-input.component';
 import { TextAreaInputComponent } from './_forms/text-area-input/text-area-input.component';
 
-import { appInitializer } from './_helpers/app.initializer';
+import { appInitializer, settingInitializer } from './_helpers/app.initializer';
 
 import { JwtInterceptor } from './_interceptors/jwt.interceptor';
 import { ErrorInterceptor } from './_interceptors/error.interceptor';
@@ -105,6 +106,8 @@ import { CreatePermissionDialogComponent } from './_dialog/create-permission-dia
 import { AdminUserDetailComponent } from './administrator/admin-user-detail/admin-user-detail.component';
 import { AdminUserEditComponent } from './administrator/admin-user-edit/admin-user-edit.component';
 import { ChangePasswordDialogComponent } from './_dialog/change-password-dialog/change-password-dialog.component';
+import { AdminSettingComponent } from './administrator/admin-setting/admin-setting.component';
+import { ImageSelectorComponent } from './_dialog/image-selector/image-selector.component';
 
 @NgModule({
   declarations: [
@@ -195,6 +198,8 @@ import { ChangePasswordDialogComponent } from './_dialog/change-password-dialog/
     AdminUserDetailComponent,
     AdminUserEditComponent,
     ChangePasswordDialogComponent,
+    AdminSettingComponent,
+    ImageSelectorComponent,
     
   ],
   imports: [
@@ -209,6 +214,7 @@ import { ChangePasswordDialogComponent } from './_dialog/change-password-dialog/
   ],
   providers: [
     { provide: APP_INITIALIZER, useFactory: appInitializer, multi: true, deps: [AuthenticationService] },
+    { provide: APP_INITIALIZER, useFactory: settingInitializer, multi: true, deps: [SettingService] },
     { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true },
     { provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true },
 ],

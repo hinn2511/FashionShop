@@ -1,3 +1,4 @@
+import { SettingService } from './../../_services/setting.service';
 import { CartService } from 'src/app/_services/cart.service';
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
@@ -12,6 +13,8 @@ import { AuthenticationService } from 'src/app/_services/authentication.service'
 })
 export class LoginComponent implements OnInit {
   loginForm: FormGroup;
+
+  customerLoginBackgroundUrl: string = "";
   loading = false;
   submitted = false;
   returnUrl: string;
@@ -21,6 +24,7 @@ export class LoginComponent implements OnInit {
     private formBuilder: FormBuilder,
     private route: ActivatedRoute,
     private cartService: CartService,
+    private settingService: SettingService,
     private router: Router,
     private authenticationService: AuthenticationService
   ) {
@@ -30,7 +34,10 @@ export class LoginComponent implements OnInit {
   }
 
   ngOnInit() {
-    new Image().src = '../../../assets/login-cover.jpg';
+    console.log(this.settingService.settingValue.clientLoginBackground);
+    
+    this.customerLoginBackgroundUrl = this.settingService.settingValue.clientLoginBackground;
+    new Image().src = this.customerLoginBackgroundUrl;
     this.loginForm = this.formBuilder.group({
       username: ['', Validators.required],
       password: ['', Validators.required],

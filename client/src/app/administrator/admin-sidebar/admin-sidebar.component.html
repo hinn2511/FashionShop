@@ -91,6 +91,7 @@
           Others page
         </a>
       </li>
+      
     </ul>
 
     <hr />
@@ -119,6 +120,15 @@
         <a class="nav-link" routerLink="/administrator/role-manager">
           <span data-feather="file-text"></span>
           Roles
+        </a>
+      </li>
+      <li
+        class="nav-item"
+        [class.nav-item-active]="hasRoute('/administrator/setting-manager')"
+      >
+        <a class="nav-link" routerLink="/administrator/setting-manager">
+          <span data-feather="file-text"></span>
+          Setting
         </a>
       </li>
     </ul>

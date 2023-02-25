@@ -1,3 +1,4 @@
+import { SettingService } from './_services/setting.service';
 import { DeviceService } from 'src/app/_services/device.service';
 import { CartService } from 'src/app/_services/cart.service';
 import {
@@ -49,14 +50,23 @@ export class AppComponent implements OnInit, OnDestroy {
   constructor(
     public authenticationService: AuthenticationService,
     private cartService: CartService,
+    private settingService: SettingService,
     private router: Router,
     private deviceService: DeviceService
   ) {}
 
   ngOnInit(): void {
+    // this.updateSetting();
     this.updateCart();
     this.updateDeviceType();
   }
+  // updateSetting() {
+  //   this.settingService.getSettings().subscribe((result) => {
+  //     this.settingService.setSetting(result);
+  //     console.log( this.settingService.settingValue);
+      
+  //   });
+  // }
 
   ngOnDestroy(): void {
     this.windowResizeSubscription$.unsubscribe();
