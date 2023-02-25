@@ -12,6 +12,8 @@ export class ProductParams {
   minPrice = 0;
   maxPrice = 0;
   isOnSale = false;
+  isMostInteresting = false;
+  isFeatured = false;
 }
 
 export class CustomerFilterOrder {

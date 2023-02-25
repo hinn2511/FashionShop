@@ -33,8 +33,28 @@ export class HomeInterestingComponent
 
   deviceType: string = 'desktop';
 
+  productParams: ProductParams = {
+    category: '',
+    colorCode: '',
+    size: '',
+    gender: 0,
+    brand: '',
+    pageNumber: 1,
+    pageSize: 8,
+    orderBy: 1,
+    field: '',
+    query: '',
+    minPrice: 0,
+    maxPrice: 0,
+    isOnSale: false,
+    isFeatured: true,
+    isMostInteresting: false,
+  };
+
   @ViewChildren('card') items: QueryList<ElementRef>;
   productCards: ElementRef[] = [];
+
+  filter: string = 'featured';
 
   constructor(
     private productService: ProductService,
@@ -79,26 +99,13 @@ export class HomeInterestingComponent
   }
 
   loadProducts() {
-    let productParams: ProductParams = {
-      category: 'shoe',
-      colorCode: '',
-      size: '',
-      gender: 0,
-      brand: '',
-      pageNumber: 1,
-      pageSize: 8,
-      orderBy: 1,
-      field: 'Sold',
-      query: '',
-      minPrice: 0,
-      maxPrice: 0,
-      isOnSale: false
-    };
-    this.productService.getProducts(productParams).subscribe((response) => {
-      this.products = response.result;
+    this.productService
+      .getProducts(this.productParams)
+      .subscribe((response) => {
+        this.products = response.result;
 
-      // this.maxValue = this.cardWidth * this.products.length;
-    });
+        // this.maxValue = this.cardWidth * this.products.length;
+      });
   }
 
   scrollLeft() {
@@ -106,8 +113,7 @@ export class HomeInterestingComponent
     setTimeout(() => {
       if (this.productCards.length != 0) {
         this.currentStep -= this.step;
-        if (this.currentStep < 0)
-          this.currentStep = 0;
+        if (this.currentStep < 0) this.currentStep = 0;
         this.productCards[this.currentStep].nativeElement.scrollIntoView({
           behavior: 'smooth',
           block: 'nearest',
@@ -131,5 +137,24 @@ export class HomeInterestingComponent
         });
       }
     }, 100);
+  }
+
+  applyFilter(filter: string) {
+    this.filter = filter;
+    this.productParams.isFeatured = false;
+    this.productParams.isMostInteresting = false;
+    this.productParams.isOnSale = false;
+    switch (filter) {
+      case 'featured':
+        this.productParams.isFeatured = true;
+        break;
+      case 'onSale':
+        this.productParams.isOnSale = true;
+        break;
+      default:
+        this.productParams.isMostInteresting = true;
+        break;
+    }
+    this.loadProducts();
   }
 }

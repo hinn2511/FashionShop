@@ -1,11 +1,30 @@
 <div class="container-fluid py-3" *ngIf="products">
   <h3 class="text-uppercase">Top interesting</h3>
   <div class="d-flex flex-wrap justify-content-md-end text-uppercase p-1">
-    <a class="text-dark"> top selling </a>
-    <span class="mx-2">&#8901;</span>
-    <a class="text-dark"> featured </a>
-    <span class="mx-2">&#8901;</span>
-    <a class="text-dark"> on sale </a>
+    <a class="text-uppercase cs-pointer" [class]="{
+      'text-dark': filter == 'featured',
+      'fw-bold': filter == 'featured',
+      'text-muted': filter != 'featured'
+    }"
+      (click)="applyFilter('featured')"
+    >featured </a><span class="mx-2">&#8901;</span>
+
+    <a class="text-uppercase cs-pointer" [class]="{
+      'text-dark': filter == 'interesting',
+      'fw-bold': filter == 'interesting',
+      'text-muted': filter != 'interesting'
+    }"
+      (click)="applyFilter('interesting')"
+    >most interesting </a><span class="mx-2">&#8901;</span>
+
+    <a class="text-uppercase cs-pointer" [class]="{
+      'text-dark': filter == 'onSale',
+      'fw-bold': filter == 'onSale',
+      'text-muted': filter != 'onSale'
+    }"
+      (click)="applyFilter('onSale')"
+    >on sale</a>
+
   </div>
 
   <div
@@ -31,15 +50,15 @@
       class="btn btn-outline-dark mr-2 btn-scroll"
       [disabled]="currentStep == 0"
       (click)="scrollLeft()"
-    >
-      <i class="fa fa-arrow-left" aria-hidden="true"></i>
+      >
+      <img class="icon mr-2" src="../../../assets/arrow-left.svg" alt="cart" />
     </button>
     <button
       class="btn btn-outline-dark btn-scroll"
       [disabled]="currentStep == products.length - 1"
       (click)="scrollRight()"
     >
-      <i class="fa fa-arrow-right" aria-hidden="true"></i>
+    <img class="icon mr-2" src="../../../assets/arrow-right.svg" alt="cart" />
     </button>
   </div>
 </div>

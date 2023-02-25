@@ -97,7 +97,7 @@ export function fnCalculatePrice(
   price: number,
   saleOffPercent: number,
   saleOffValue: number
-) {
+) {  
   switch (saleType)
   {
     case 1:

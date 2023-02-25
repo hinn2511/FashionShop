@@ -1,5 +1,5 @@
 import { CategoryService } from './../../_services/category.service';
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, HostListener, Input, OnInit, Output } from '@angular/core';
 import { CustomerCatalogue } from 'src/app/_models/category';
 import { CustomerColorFilter, CustomerPriceRange, CustomerSizeFilter, ProductParams } from 'src/app/_models/productParams';
 import { fnConvertToSlug } from 'src/app/_common/function/function';
@@ -61,6 +61,7 @@ export class ProductFilterComponent implements OnInit {
   showResetSizeFilterButton: boolean = false;
   showResetCategoryFilterButton: boolean = false;
   showResetColorFilterButton: boolean = false;
+
   constructor(private categoryService: CategoryService) { }
 
   ngOnInit(): void {

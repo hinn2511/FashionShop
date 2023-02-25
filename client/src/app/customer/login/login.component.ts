@@ -34,7 +34,6 @@ export class LoginComponent implements OnInit {
   }
 
   ngOnInit() {
-    console.log(this.settingService.settingValue.clientLoginBackground);
     
     this.customerLoginBackgroundUrl = this.settingService.settingValue.clientLoginBackground;
     new Image().src = this.customerLoginBackgroundUrl;

@@ -9,54 +9,7 @@
             
         
     </div>
-    <!-- <div class="card-header bg-white d-flex d-inline-block justify-content-between">
-        
-            <p class="m-0 p-0 text-muted">
-                Date
-            </p>
-            <p class="m-0 p-0 text-muted">
-                {{order.dateCreated |  date}}
-            </p>
-        
-    </div> -->
-    <div class="card-body border-0 p-0 p-lg-3">
-        <!-- <div class="row p-0 m-0">
-            <div class="col-12 col-lg-7 py-2">
-                <div class="my-2" *ngFor="let item of order.orderDetails; let i = index">
-                    <div class="d-flex d-inline-block align-items-center" *ngIf="i < 2">
-                        <div class="rect-img-container">
-                            <img src="{{item.url}}" class="rect-img" alt="">
-                        </div>
-                        <div class="flex-fill">
-                            <p class="m-0 p-0">{{item.productName}}</p>
-                            <p class="m-0 p-0">x{{item.quantity}}</p>
-                        </div>
-                    </div>            
-                </div>
-                <div class="text-center text-lg-left text-muted p-2" *ngIf="order.orderDetails.length > 2">
-                    <hr class="d-lg-none">
-                    <p class="p-0 m-0">
-                        and {{order.orderDetails.length - 2}} items
-                    </p>
-                </div>
-            </div> -->
-            <!-- <div class="col-12 col-lg-5 py-2">
-                <div class="h-100 d-flex flex-column">
-                    <button class="btn btn-dark w-100 text-uppercase mt-auto mb-2">
-                        View detail
-                    </button>
-                </div>
-                <button class="btn btn-outline-dark w-100 mb-2">
-                    Proceed to payment
-                </button>
-                <button class="btn btn-outline-dark w-100 mb-2">
-                    Edit
-                </button>
-                <button class="btn btn-outline-danger w-100 mb-2">
-                    Cancel
-                </button>
-            </div> -->
-        <!-- </div> -->
+    <div class="card-body border-0 p-2 p-lg-3">        
         <div class="my-2 rounded card-item-list">
             <div *ngFor="let item of order.orderDetails; let i = index">
                 <div class="d-flex d-inline-block align-items-center">

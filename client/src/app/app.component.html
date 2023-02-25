@@ -1,16 +1,17 @@
 <ng-container *ngIf="hasRoute('administrator/login')">
   <app-admin-login></app-admin-login>
 </ng-container>
+
 <div [class]="{ 'prevent-scroll': focus }">
   <ng-container *ngIf="!hasRoute('administrator/login')">
-    <div *appHasRole="['Anonymous']" class="position-relative">
+    <div *appHasRole="['Anonymous', 'ClientAccess']" class="position-relative">
       <ng-container *ngIf="!hasRoute('/login') && !hasRoute('/register')">
         <app-navigation-bar
           (focus)="focusModeToggle($event)"
         ></app-navigation-bar>
       </ng-container>
 
-      <div class="container-fluid w-100 px-0 mb-3 mb-lg-5">
+      <div class="container-fluid w-100 px-0">
         <router-outlet></router-outlet>
       </div>
 

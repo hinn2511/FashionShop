@@ -195,7 +195,9 @@ namespace API.Helpers
                 .ForMember(dest => dest.Gender, opt => opt.MapFrom(
                           src => (Gender)src.Category.Gender))
                 .ForMember(dest => dest.Category, opt => opt.MapFrom(
-                          src => src.Category.CategoryName));
+                          src => src.Category.CategoryName))
+                .ForMember(dest => dest.Price, opt => opt.MapFrom(
+                          src => src.GetProductPrice()));
 
             CreateMap<Option, CustomerProductColorsResponse>();
 
@@ -566,6 +568,14 @@ namespace API.Helpers
             if (appUser.LockoutEnabled && appUser.LockoutEnd > DateTime.UtcNow)
                 return UserStatus.Deactivated;
             return UserStatus.Active;
+        }
+
+        public static double GetProductPrice(this Product product)
+        {
+            var price = product.Price;
+            if (product.Options != null && product.Options.Any())
+                price += product.Options.OrderBy(x => x.AdditionalPrice).FirstOrDefault().AdditionalPrice;
+            return price;
         }
     }
 

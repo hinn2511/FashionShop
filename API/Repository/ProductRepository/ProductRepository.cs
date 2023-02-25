@@ -38,7 +38,7 @@ namespace API.Data
             if (productParams.MaxPrice > 0)
                 query = query.Where(p => p.Price <= productParams.MaxPrice);
 
-            if(!string.IsNullOrEmpty(productParams.Category))
+            if (!string.IsNullOrEmpty(productParams.Category))
             {
                 var category = await _context.Categories.FirstOrDefaultAsync(x => x.Slug == productParams.Category);
 
@@ -50,11 +50,19 @@ namespace API.Data
                     query = query.Where(p => p.Category.Id == category.Id);
             }
 
-            if(productParams.IsOnSale)
+            if (productParams.IsOnSale)
             {
                 var now = DateTime.UtcNow;
                 query = query.Where(p => p.SaleType != ProductSaleOffType.None && p.SaleOffFrom < now && p.SaleOffTo > now);
             }
+
+            if (productParams.IsFeatured)
+            {
+                query = query.Where(p => p.IsPromoted);
+            }
+
+
+
 
             if (!string.IsNullOrEmpty(productParams.Size))
             {
@@ -77,27 +85,35 @@ namespace API.Data
                 }
             }
 
-
-            if (productParams.OrderBy == OrderBy.Ascending)
+            if (productParams.IsMostInteresting)
             {
-                query = productParams.Field switch
-                {
-                    "dateCreated" => query.OrderBy(p => p.DateCreated),
-                    "price" => query.OrderBy(p => p.Price),
-                    "name" => query.OrderBy(p => p.ProductName),
-                    _ => query.OrderBy(p => p.Sold)
-                };
+                query = query.OrderByDescending(x => x.Sold);
             }
             else
             {
-                query = productParams.Field switch
+                if (productParams.OrderBy == OrderBy.Ascending)
                 {
-                    "dateCreated" => query.OrderByDescending(p => p.DateCreated),
-                    "price" => query.OrderByDescending(p => p.Price),
-                    "name" => query.OrderByDescending(p => p.ProductName),
-                    _ => query.OrderByDescending(p => p.Sold)
-                };
+                    query = productParams.Field switch
+                    {
+                        "dateCreated" => query.OrderBy(p => p.DateCreated),
+                        "price" => query.OrderBy(p => p.Price),
+                        "name" => query.OrderBy(p => p.ProductName),
+                        _ => query.OrderBy(p => p.Sold)
+                    };
+                }
+                else
+                {
+                    query = productParams.Field switch
+                    {
+                        "dateCreated" => query.OrderByDescending(p => p.DateCreated),
+                        "price" => query.OrderByDescending(p => p.Price),
+                        "name" => query.OrderByDescending(p => p.ProductName),
+                        _ => query.OrderByDescending(p => p.Sold)
+                    };
+                }
             }
+
+
 
 
             query = query.Include(x => x.Options).Include(x => x.ProductPhotos.Where(x => x.Status == Status.Active)).Include(x => x.Category);
@@ -203,7 +219,7 @@ namespace API.Data
             if (productParams.MaxPrice > 0)
                 query = query.Where(p => p.Price <= productParams.MaxPrice);
 
-            if(!string.IsNullOrEmpty(productParams.Category))
+            if (!string.IsNullOrEmpty(productParams.Category))
             {
                 var category = await _context.Categories.FirstOrDefaultAsync(x => x.Slug == productParams.Category);
 
@@ -215,7 +231,7 @@ namespace API.Data
                     query = query.Where(p => p.Category.Id == category.Id);
             }
 
-            if(productParams.IsOnSale)
+            if (productParams.IsOnSale)
             {
                 var now = DateTime.UtcNow;
                 query = query.Where(p => p.SaleType != ProductSaleOffType.None && p.SaleOffFrom < now && p.SaleOffTo > now);
@@ -349,7 +365,7 @@ namespace API.Data
         }
     }
 
-   
+
 
     public class ProductPhotoRepository : GenericRepository<ProductPhoto>, IProductPhotoRepository
     {

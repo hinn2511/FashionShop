@@ -28,6 +28,8 @@ export class CartComponent implements OnInit, OnDestroy {
   @Output() hideCart = new EventEmitter<boolean>();
   @Output() goToCheckout = new EventEmitter<boolean>();
   user: User;
+
+  state: string = '';
   discountAmount: number = 0;
   promoCode: string = '';
   promoCodeApplied: boolean = false;
@@ -46,9 +48,12 @@ export class CartComponent implements OnInit, OnDestroy {
   ) {}
   ngOnDestroy(): void {
     this.deviceSubscription$.unsubscribe();
+    this.state = 'in';
   }
 
   ngOnInit(): void {
+    this.state = 'out';
+    
     this.deviceSubscription$ = this.deviceService.deviceWidth$.subscribe(
       (_) => {
         this.deviceType = this.deviceService.getDeviceType();
@@ -61,10 +66,10 @@ export class CartComponent implements OnInit, OnDestroy {
   }
 
   applyDiscountCode() {
-    this.toastr.success('Discount code has been applied', 'Success', {
+    this.toastr.error('Discount code not valid', 'Error', {
       positionClass: 'toast-top-right',
     });
-    this.promoCodeApplied = true;
+    this.promoCodeApplied = false;
   }
 
   removeDiscountCode() {
@@ -185,6 +190,9 @@ export class CartComponent implements OnInit, OnDestroy {
   calculatePrice(
     cartItem: CartItem
   ) {
-    return fnCalculatePrice(cartItem.saleType, (cartItem.price + cartItem.additionalPrice), cartItem.saleOffPercent, cartItem.saleOffValue);
+    let item = cartItem;
+    return fnCalculatePrice(item.saleType, (item.price + item.additionalPrice), item.saleOffPercent, item.saleOffValue);
   }
+
+  
 }

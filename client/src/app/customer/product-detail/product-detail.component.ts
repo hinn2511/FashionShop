@@ -1,3 +1,4 @@
+import { concatMap } from 'rxjs/operators';
 import { fnGetGenderName, Category } from 'src/app/_models/category';
 import { CategoryService } from 'src/app/_services/category.service';
 import { Carousel } from 'src/app/_models/carousel';
@@ -57,18 +58,27 @@ export class ProductDetailComponent implements OnInit {
     this.user = this.authenticationService.userValue;
     let id = this.route.snapshot.queryParams['id'];
     this.loadProduct(id);
-    this.loadOptions(id);
     this.quantity = 1;
   }
 
   loadProduct(id: number) {
-    this.productService.getProduct(id).subscribe((response) => {
-      this.product = response;
-      this.productService.addToRecent(this.product);
-      this.loadProductImageCarousel();
-      this.loadBreadCrumb();
-    });
-    this.loadOptions(id);
+    this.productService.getProduct(id).pipe(
+      concatMap(
+        (result) =>
+        {
+          this.product = result;
+          this.productService.addToRecent(this.product);
+          this.loadProductImageCarousel();
+          this.loadBreadCrumb();
+          return this.optionService.getCustomerProductOption(id);
+        }
+      )
+    ).subscribe(
+      result => {
+        this.options = result;
+        this.chooseColor(this.options[0].color);
+      });
+    
   }
 
   loadProductImageCarousel() {
@@ -123,28 +133,15 @@ export class ProductDetailComponent implements OnInit {
     this.updatePrice();
   }
 
-  private updatePrice() {
-    let totalPrice = this.product.price + this.selectedSize.additionalPrice;
-    this.price = this.calculatePrice(
-      this.product.saleType,
-      totalPrice,
-      this.product.saleOffPercent,
-      this.product.saleOffValue
-    );
+  private updatePrice() {    
+    let totalPrice = this.product.price + this.selectedSize.additionalPrice;    
+    this.price = fnCalculatePrice(this.product.saleType, 
+      totalPrice, this.product.saleOffPercent, this.product.saleOffValue);
   }
 
   onSizeChange(size: any) {
     this.selectedSize = size;
     this.updatePrice();
-  }
-
-  loadOptions(productId: number) {
-    this.optionService
-      .getCustomerProductOption(productId)
-      .subscribe((result) => {
-        this.options = result;
-        this.chooseColor(this.options[0].color);
-      });
   }
 
   increaseQuantity() {
@@ -256,7 +253,7 @@ export class ProductDetailComponent implements OnInit {
     saleOffValue: number
   ) {
     return (
-      fnCalculatePrice(saleType, price, saleOffPercent, saleOffValue) *
+      fnCalculatePrice(saleType, price + this.selectedSize.additionalPrice, saleOffPercent, saleOffValue) *
       this.quantity
     );
   }
