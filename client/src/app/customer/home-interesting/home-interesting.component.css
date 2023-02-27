@@ -11,6 +11,7 @@
 
 .btn-scroll
 {
-  height: 45px;
-  width: 45px;
+  padding: 0;
+  height: 50px;
+  width: 50px;
 }

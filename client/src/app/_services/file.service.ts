@@ -1,32 +1,20 @@
-import { AuthenticationService } from './authentication.service';
-import {
-  ManagerCarousel,
-  ManagerCarouselParams,
-} from 'src/app/_models/carousel';
 import { Injectable } from '@angular/core';
 import { environment } from 'src/environments/environment';
 import {
   HttpClient,
-  HttpErrorResponse,
-  HttpEventType,
   HttpHeaders,
 } from '@angular/common/http';
-import { getPaginatedResult, getPaginationHeaders } from '../_helpers/paginationHelper';
-import { IdArray } from '../_models/adminRequest';
-import { map, switchMap } from 'rxjs/operators';
-import { FileUploader } from 'ng2-file-upload';
 import { FileUploadedResponse } from 'src/app/_models/file';
-import { Params } from '@angular/router';
 
 @Injectable({
   providedIn: 'root',
 })
 export class FileService {
-  fileUrl = environment.fileUrl;
+  baseUrl = environment.apiUrl;
 
   options = {
     headers: new HttpHeaders({
-      authority: 'localhost:5001',
+      authority: '/',
       method: 'POST',
       scheme: 'https',
       Accept: '*/*',
@@ -58,7 +46,7 @@ export class FileService {
     uploadForm.append('file', image, image.name);
     this.addToken(accessToken);
     return this.http.post<FileUploadedResponse>(
-      this.fileUrl + `/image?width=${width}&height=${height}&ratio=${ratio}&cropOption=${cropOption}`,
+      this.baseUrl + `/image?width=${width}&height=${height}&ratio=${ratio}&cropOption=${cropOption}`,
       uploadForm,
       this.options
     );

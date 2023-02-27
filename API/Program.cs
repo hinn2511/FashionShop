@@ -14,6 +14,7 @@ namespace API
 {
     public class Program
     {
+
         public static async Task Main(string[] args)
         {
             var host = CreateHostBuilder(args).Build();
@@ -25,14 +26,12 @@ namespace API
                 var userManager = services.GetRequiredService<UserManager<AppUser>>();
                 var roleManager = services.GetRequiredService<RoleManager<AppPermission>>();
                 await context.Database.MigrateAsync();
+                await Seed.SeedSetting(context);
                 await Seed.SeedCategories(context);
                 await Seed.SeedBrands(context);
-                await Seed.SeedRoles(context);
-                await Seed.SeedPermissions(roleManager);
-                await Seed.SeedRolePermission(context, roleManager);
-                await Seed.SeedUsers(userManager);
                 await Seed.SeedProducts(context);
-                await Seed.SeedSetting(context);
+                await Seed.SeedRoles(context, roleManager);
+                await Seed.SeedUsers(userManager);
             }
             catch(Exception ex)
             {

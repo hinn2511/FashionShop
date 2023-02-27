@@ -22,15 +22,6 @@ namespace API
         {
             services.AddApplicationServices(_config);
             services.AddControllers().AddJsonOptions(x => x.JsonSerializerOptions.IgnoreNullValues = true);
-            // services.AddCors(options =>
-            // {
-            //     options.AddPolicy("OpenCORSPolicy",
-            //     policy =>
-            //     {
-            //         policy.AllowAnyHeader().AllowAnyMethod().WithOrigins("https://localhost:4200").SetIsOriginAllowed(origin => true);
-            //     });
-                
-            // }); 
             services.AddCors();
             services.AddIdentityServices(_config);
         }
@@ -48,8 +39,6 @@ namespace API
 
             app.UseRouting();
 
-            // app.UseCors("OpenCORSPolicy");
-
             app.UseCors(x => x
                 .SetIsOriginAllowed(x => x == "https://localhost:4200")
                 .AllowAnyMethod()
@@ -64,9 +53,14 @@ namespace API
 
             app.UseAuthorization();
 
+            app.UseDefaultFiles();
+
+            app.UseStaticFiles();
+
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
+                endpoints.MapFallbackToController("Index", "Fallback");
             });
         }
     }

@@ -15,10 +15,10 @@ import { environment } from 'src/environments/environment';
 export class AdminSettingComponent implements OnInit {
   setting: Setting;
   editType: string = '';
-  showUploader: boolean = false;  
+  showUploader: boolean = false;
   uploader: FileUploader;
   hasBaseDropzoneOver = false;
-  fileUrl = environment.fileUrl;
+  baseUrl = environment.apiUrl;
 
   width = 1600;
   height = 900;
@@ -95,7 +95,7 @@ export class AdminSettingComponent implements OnInit {
 
   initializeUploader() {
     let uploadUrl =
-    this.fileUrl + `/image?width=${this.width}&height=${this.height}&ratio=${this.ratio}&cropOption=${this.cropOption}`;
+    this.baseUrl + `/image?width=${this.width}&height=${this.height}&ratio=${this.ratio}&cropOption=${this.cropOption}`;
     this.uploader = new FileUploader({
       url: uploadUrl,
       authToken: 'Bearer ' + this.authenticationService.userValue.jwtToken,

@@ -23,14 +23,14 @@ import { CustomerCatalogue, CustomerCategoryCatalogue } from 'src/app/_models/ca
 export class NavSettings {
   navHeight: string;
   navMargin: string;
-  deviceType: string;  
+  deviceType: string;
 
   constructor(navHeight: string, navMargin: string, deviceType: string) {
     this.navHeight = navHeight;
     this.navMargin = navMargin;
     this.deviceType = deviceType;
   }
-  
+
 }
 
 @Component({
@@ -66,6 +66,7 @@ export class NavigationBarComponent
     new NavSettings('', '', '')
   );
   settingValue$ = this.settings.asObservable();
+  @ViewChild("search") searchTextBox : ElementRef;
 
   @HostListener('click', ['$event'])
   clickInside($event) {
@@ -172,6 +173,12 @@ export class NavigationBarComponent
     if(this.settings.getValue().deviceType == 'desktop')
     {
       this.collapseSearchBar = !this.collapseSearchBar;
+      if (!this.collapseSearchBar)
+      {
+        setTimeout(() => {
+          this.searchTextBox.nativeElement.focus();
+        }, 200);
+      }
       this.collapseAll();
       return;
     }
@@ -193,7 +200,7 @@ export class NavigationBarComponent
     this.collapseAll();
     this.collapseCartWindow = !state;
     this.focus.emit(state);
-    
+
   }
 
   checkOutWindowToggle() {
@@ -223,8 +230,8 @@ export class NavigationBarComponent
 
   logout() {
     this.authenticationService.logout();
-    this.cartService.clearCart();
-    this.cartService.clearLocalCart();
+      this.cartService.clearCart();
+      this.cartService.clearLocalCart();
   }
 
   loadCategoryGroup() {
@@ -276,7 +283,7 @@ export class NavigationBarComponent
   viewAccount(tab: string) {
     this.collapseAll();
     this.router.navigate(['account/'], { queryParams: { tab: tab } });
-  }  
+  }
 
   convertToString(bool: boolean)
   {

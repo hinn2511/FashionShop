@@ -66,14 +66,14 @@ export class RegisterComponent implements OnInit, OnDestroy {
 
   onSubmit() {
     this.submitted = true;
-    this.loading = true;    
-    this.authenticationService.register(this.registerForm.value).subscribe(result => 
+    this.loading = true;
+    this.authenticationService.register(this.registerForm.value).subscribe(result =>
       {
         this.toastr.success("Success", result.message);
         this.loading = false;
         this.router.navigateByUrl('/login');
       },
-      error => 
+      error =>
       {
         this.toastr.success("Error", error.message);
         this.loading = false;

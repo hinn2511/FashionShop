@@ -21,9 +21,6 @@ using System.Threading.Tasks;
 
 namespace API.Controllers
 {
-    
-    [ApiController]
-    [Route("file")]
     public class FileController : BaseApiController
     {
         private readonly IMapper _mapper;
@@ -62,7 +59,7 @@ namespace API.Controllers
             _unitOfWork.FileRepository.Insert(uploadedFile);
 
             if (await _unitOfWork.Complete())
-                return Ok($"{Constant.DownloadFileUrl}{uploadedFile.Name}");
+                return Ok($"{Constant.DownloadapiUrl}{uploadedFile.Name}");
 
             return BadRequest("Can not upload file");
         }

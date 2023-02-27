@@ -10,9 +10,8 @@ import { Photo } from '../_models/photo';
 })
 export class PhotoService {
   baseUrl = environment.apiUrl;
-  fileUrl = environment.fileUrl;
   photoParams: Params;
-  
+
   constructor(private http: HttpClient) {
     this.photoParams = new Params();
    }
@@ -41,7 +40,7 @@ export class PhotoService {
   getManagerPhotos(photoParams: Params) {
     let params = getPaginationHeaders(photoParams.pageNumber, photoParams.pageSize);
     params = params.append('orderBy', photoParams.orderBy);
-    params = params.append('field', photoParams.field);        
-    return getPaginatedResult<Photo[]>(this.fileUrl + '/images', params, this.http);
+    params = params.append('field', photoParams.field);
+    return getPaginatedResult<Photo[]>(this.baseUrl + '/images', params, this.http);
   }
 }

@@ -539,7 +539,7 @@ namespace API.Controllers
 
             var photo = new ProductPhoto
             {
-                Url = Constant.DownloadFileUrl + fileName,
+                Url = Constant.DownloadapiUrl + fileName,
                 PublicId = "",
                 IsMain = IsMain,
                 Product = product,

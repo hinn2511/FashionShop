@@ -22,7 +22,7 @@ namespace API.Services.UserService
         Task<AuthenticateResponse> Authenticate(AuthenticationRequest model, string ipAddress);
         Task<AuthenticateResponse> RefreshToken(string token, string ipAddress);
         Task RevokeToken(string token, string ipAddress);
-        Task<AppUser> GetById(int id);
+        Task<AppUser> GetByIdAsync(int id);
     }
 
     public class UserService : IUserService
@@ -63,7 +63,7 @@ namespace API.Services.UserService
             if (!result.Succeeded) 
                 throw new AppException("Invalid username or password");
             // authentication successful so generate jwt and refresh tokens
-            var jwtToken = await _jwtUtils.GenerateJwtToken(user);
+            var jwtToken = await _jwtUtils.GenerateJwtTokenAsync(user);
             var refreshToken = _jwtUtils.GenerateRefreshToken(ipAddress);
             user.RefreshTokens.Add(refreshToken);
 
@@ -102,7 +102,7 @@ namespace API.Services.UserService
             await _userManager.UpdateAsync(user);
 
             // generate new jwt
-            var jwtToken = await _jwtUtils.GenerateJwtToken(user);
+            var jwtToken = await _jwtUtils.GenerateJwtTokenAsync(user);
 
             return new AuthenticateResponse(user, jwtToken, newRefreshToken.Token);
         }
@@ -121,7 +121,7 @@ namespace API.Services.UserService
             await _userManager.UpdateAsync(user);
         }
 
-        public async Task<AppUser> GetById(int id)
+        public async Task<AppUser> GetByIdAsync(int id)
         {
             var user = await _userManager.FindByIdAsync(id.ToString());
             if (user == null) throw new KeyNotFoundException("User not found");

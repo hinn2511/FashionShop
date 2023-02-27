@@ -40,11 +40,11 @@ import { fnIsNullOrEmpty, fnSwitchValue } from './_common/function/function';
       transition('out => in', animate('400ms ease-in-out')),
     ]),
     FadeInAndOut
-  
+
   ],
 })
 export class AppComponent implements OnInit, OnDestroy {
-  title = 'Test';
+  title = 'Thyme';
   user: User;
   focus: boolean = false;
   sidebarState: string = 'in';
@@ -68,7 +68,7 @@ export class AppComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.updateCart();
-    this.updateDeviceType();    
+    this.updateDeviceType();
     this.currentRouteSubscribe();
   }
 
@@ -120,7 +120,7 @@ export class AppComponent implements OnInit, OnDestroy {
     this.authenticationService.logout();
   }
 
- 
+
 
   toggleSidebar() {
     fnSwitchValue<string>(this.sidebarState, 'out', 'in');

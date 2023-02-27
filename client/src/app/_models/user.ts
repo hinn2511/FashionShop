@@ -9,6 +9,15 @@ export class User {
   lastName: string;
   jwtToken?: string;
   roles: string[];
+  constructor()
+  {
+    this.id = 0,
+    this.username = '',
+    this.password = '',
+    this.firstName = '',
+    this.lastName = '',
+    this.roles = []
+  }
 }
 
 export class Account {
@@ -25,7 +34,7 @@ export class RegisterAccount extends Account {
   password: string;
 }
 
-export class ChangeUserPasswordRequest { 
+export class ChangeUserPasswordRequest {
   password: string;
   constructor(password: string)
   {

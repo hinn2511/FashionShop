@@ -27,9 +27,9 @@ export const CKEditorFullConfiguration = {
       'mediaEmbed',
       '|',
       'blockQuote',
-      'link',     
-      
-      
+      'link',
+
+
     ],
   },
   language: 'en',
@@ -70,7 +70,7 @@ export const CKEditorFullConfiguration = {
 export class CkEditorUploadAdapter {
   xhr = new XMLHttpRequest();
   jwtToken: string;
-  fileUrl = environment.fileUrl;
+  baseUrl = environment.apiUrl;
   loader: any;
 
   constructor(private fileLoader: any, private token: any) {
@@ -95,7 +95,7 @@ export class CkEditorUploadAdapter {
   }
   _initRequest() {
     const xhr = (this.xhr = new XMLHttpRequest());
-    xhr.open('POST', this.fileUrl + '/image?width=0&height=0', true);
+    xhr.open('POST', this.baseUrl + '/image?width=0&height=0', true);
     xhr.responseType = 'json';
     xhr.setRequestHeader('Accept-Language', 'vi,en-US;q=0.9,en;q=0.8');
     xhr.setRequestHeader('Accept', '*/*');

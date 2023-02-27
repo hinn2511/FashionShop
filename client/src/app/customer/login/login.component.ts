@@ -34,7 +34,7 @@ export class LoginComponent implements OnInit {
   }
 
   ngOnInit() {
-    
+
     this.customerLoginBackgroundUrl = this.settingService.settingValue.clientLoginBackground;
     new Image().src = this.customerLoginBackgroundUrl;
     this.loginForm = this.formBuilder.group({

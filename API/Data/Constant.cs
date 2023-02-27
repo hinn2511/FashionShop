@@ -32,7 +32,7 @@ namespace API.Data
             { "mp4", "video/mp4" },
         };
 
-        public static string DownloadFileUrl = "https://localhost:5001/file/";
+        public static string DownloadapiUrl = "https://localhost:5001/api/file/";
 
         public static readonly string UploadFolderPath = Path.Combine(Environment.CurrentDirectory, "UploadedFiles");
         public static readonly int DefaultBufferSize = 4096;

@@ -14,7 +14,6 @@ using API.DTOs.Response.ColorResponse;
 
 namespace API.Controllers
 {
-    [Authorize(Policy = "ManagerOnly")]
     public class FilterController : BaseApiController
     {
         private readonly IMapper _mapper;

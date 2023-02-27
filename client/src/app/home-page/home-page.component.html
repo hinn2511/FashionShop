@@ -1,17 +1,13 @@
 <div class="mb-lg-4" *ngIf="currentRoute != 'administratorLogin'">
     <div *appHasRole='["Anonymous", "ClientAccess"]'>
-        <div class="w-100 customer-home-page">
+  <div class="w-100 customer-home-page">
             <app-home-carousel *ngIf="carousels.length > 0" [carousels]="carousels"></app-home-carousel>
-            <div class="center mx-auto">
-                <app-home-categories></app-home-categories>
-                <div class="mt-3 mt-lg-5">
-                    <app-home-interesting></app-home-interesting>
-                </div>
-                <div class="mt-3 mt-lg-5">
-                    <app-home-best-seller></app-home-best-seller>
-                </div>
-                <app-home-news></app-home-news>
-            </div>
-        </div>
+    <div class="center mx-auto">
+      <app-home-categories></app-home-categories>
+      <div class="mt-3 mt-lg-5">
+        <app-home-interesting></app-home-interesting>
+      </div>
+      <app-home-news></app-home-news>
     </div>
+  </div>
 </div>

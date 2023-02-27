@@ -27,27 +27,6 @@ export class ContentService {
     this.managerCarouselParams = new ManagerCarouselParams();
   }
 
-  // uploadImage(file: File, accessToken: string) {
-  //   let height = 600;
-  //   let width = 1200;
-  //   let uploadForm = new FormData();
-  //   uploadForm.append('file', file, file.name);
-  //   const options = {
-  //     headers: new HttpHeaders({
-  //       authority: 'localhost:5001',
-  //       method: 'POST',
-  //       scheme: 'https',
-  //       Accept: '*/*',
-  //       'Accept-Language': 'vi,en-US;q=0.9,en;q=0.8',
-  //       Authorization: 'Bearer ' + accessToken,
-  //     }),
-  //   };
-  //   return this.http.post<FileUploadedResponse>(
-  //     this.fileUrl + '/image?width=1200&height=600',
-  //     uploadForm,
-  //     options
-  //   );
-  // }
 
   getManagerCarouselParams() {
     return this.managerCarouselParams;

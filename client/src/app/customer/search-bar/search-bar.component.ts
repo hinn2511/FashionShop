@@ -16,13 +16,12 @@ export class SearchBarComponent implements OnInit {
   constructor(private router: Router) {}
 
   ngOnInit(): void {
-    // Not implement
     setTimeout(() => {
-      this.searchTextBox.nativeElement.focus();      
+      this.searchTextBox.nativeElement.focus();
     }, 200);
   }
 
-  updateAction() {    
+  updateAction() {
     if (this.searchQuery != "") this.action = 'clear';
     else this.action = 'search';
   }

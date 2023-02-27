@@ -334,13 +334,13 @@ namespace API.Controllers
                 var userRole = await _unitOfWork.AppRoleRepository.GetFirstBy(x => x.Id == user.RoleId);
                 result.Role = userRole.RoleName;
             }
-            else    
+            else
                 result.Role = "None";
 
-            var userOrders = await _unitOfWork.OrderRepository.GetAllBy(x => x.UserId == userId);  
+            var userOrders = await _unitOfWork.OrderRepository.GetAllBy(x => x.UserId == userId);
             result.TotalOrder = userOrders.Count();
             result.TotalAmount = userOrders.Sum(x => x.SubTotal + x.ShippingFee + x.Tax);
-            
+
             return Ok(result);
         }
 
@@ -371,9 +371,9 @@ namespace API.Controllers
                 return NotFound(new BaseResponseMessage(false, HttpStatusCode.NotFound, $"Role not found."));
 
             int success = 0, skip = 0;
-            foreach (var userId in setUsersRoleRequest.Ids)
+            await setUsersRoleRequest.Ids.ForEachAsync(async id =>
             {
-                var user = await _userManager.FindByIdAsync(userId.ToString());
+                var user = await _userManager.FindByIdAsync(id.ToString());
 
                 if (user != null)
                 {
@@ -382,7 +382,7 @@ namespace API.Controllers
                     else
                         skip++;
                 }
-            }
+            });
 
             return Ok(new BaseResponseMessage(true, HttpStatusCode.OK, $"Successfully add {success} users to role {role.RoleName}. Skip {skip} users"));
         }
@@ -393,23 +393,26 @@ namespace API.Controllers
         public async Task<ActionResult> UpdateUserRoles(RemoveUsersRoleRequest removeUsersRoleRequest)
         {
             int success = 0, skip = 0;
-            foreach (var userId in removeUsersRoleRequest.Ids)
-            {
-                var user = await _userManager.FindByIdAsync(userId.ToString());
+            await removeUsersRoleRequest.Ids.ForEachAsync(async id =>
+           {
+               var user = await _userManager.FindByIdAsync(id.ToString());
 
-                if (user != null)
-                {
-                    if (user.RoleId != null)
-                    {
-                        skip++;
-                        continue;
-                    }
-                    if (await _roleService.RemoveRoleForUserAsync(user))
-                        success++;
-                    else
-                        skip++;
-                }
-            }
+               if (user != null)
+               {
+                   if (user.RoleId != null)
+                   {
+                       skip++;
+                   }
+                   else
+                   {
+                       if (await _roleService.RemoveRoleForUserAsync(user))
+                           success++;
+                       else
+                           skip++;
+                   }
+
+               }
+           });
 
             return Ok(new BaseResponseMessage(true, HttpStatusCode.OK, $"Successfully remove role for {success} users. Skip {skip} users"));
         }
@@ -420,23 +423,28 @@ namespace API.Controllers
         public async Task<ActionResult> ActivateUser(ActivateUsersRequest activateUsersRequest)
         {
             int success = 0, skip = 0;
-            foreach (var userId in activateUsersRequest.Ids)
-            {
-                var user = await _userManager.FindByIdAsync(userId.ToString());
-                if (user == null)
-                {
-                    skip++;
-                    continue;
-                }
-                user.LockoutEnabled = false;
-                user.LockoutEnd = DateTimeOffset.UtcNow;
-                var result = await _userManager.UpdateAsync(user);
+            await activateUsersRequest.Ids.ForEachAsync(async id =>
+           {
 
-                if (result.Succeeded)
-                    success++;
-                else
-                    skip++;
-            }
+               var user = await _userManager.FindByIdAsync(id.ToString());
+               if (user == null)
+               {
+                   skip++;
+               }
+               else
+
+               {
+                   user.LockoutEnabled = false;
+                   user.LockoutEnd = DateTimeOffset.UtcNow;
+                   var result = await _userManager.UpdateAsync(user);
+
+                   if (result.Succeeded)
+                       success++;
+                   else
+                       skip++;
+               }
+
+           });
             return Ok(new BaseResponseMessage(true, HttpStatusCode.OK, $"Successfully activate {success} users. Skip {skip} users"));
         }
 
@@ -446,23 +454,28 @@ namespace API.Controllers
         public async Task<ActionResult> DeactivateUser(DeactivateUsersRequest deactivateUsersRequest)
         {
             int success = 0, skip = 0;
-            foreach (var userId in deactivateUsersRequest.Ids)
-            {
-                var user = await _userManager.FindByIdAsync(userId.ToString());
-                if (user == null || user.Id == GetUserId())
-                {
-                    skip++;
-                    continue;
-                }
-                user.LockoutEnabled = true;
-                user.LockoutEnd = DateTimeOffset.UtcNow.AddYears(200);
-                var result = await _userManager.UpdateAsync(user);
+            await deactivateUsersRequest.Ids.ForEachAsync(async id =>
+          {
 
-                if (result.Succeeded)
-                    success++;
-                else
-                    skip++;
-            }
+              var user = await _userManager.FindByIdAsync(id.ToString());
+              if (user == null || user.Id == GetUserId())
+              {
+                  skip++;
+              }
+              else
+              {
+                  user.LockoutEnabled = true;
+                  user.LockoutEnd = DateTimeOffset.UtcNow.AddYears(200);
+                  var result = await _userManager.UpdateAsync(user);
+
+                  if (result.Succeeded)
+                      success++;
+                  else
+                      skip++;
+              }
+
+
+          });
 
 
             return Ok(new BaseResponseMessage(true, HttpStatusCode.OK, $"Successfully deactivate {success} users. Skip {skip} users"));
@@ -473,14 +486,17 @@ namespace API.Controllers
         public async Task<ActionResult> DeleteUser(DeleteUsersRequest deleteUsersRequest)
         {
             int success = 0, skip = 0;
-            foreach (var userId in deleteUsersRequest.Ids)
+            await deleteUsersRequest.Ids.ForEachAsync(async id =>
+        {
+
+            var user = await _userManager.FindByIdAsync(id.ToString());
+            if (user == null || user.Id == GetUserId())
             {
-                var user = await _userManager.FindByIdAsync(userId.ToString());
-                if (user == null || user.Id == GetUserId())
-                {
-                    skip++;
-                    continue;
-                }
+                skip++;
+
+            }
+            else
+            {
                 var result = await _userManager.DeleteAsync(user);
 
                 if (result.Succeeded)
@@ -488,6 +504,7 @@ namespace API.Controllers
                 else
                     skip++;
             }
+        });
 
 
             return Ok(new BaseResponseMessage(true, HttpStatusCode.OK, $"Successfully delete {success} users. Skip {skip} users"));

@@ -9,7 +9,7 @@
     <ul class="nav flex-column">
       <li class="nav-item">
         <a class="nav-link active" aria-current="page" routerLink="">
-          <h2 class="text-uppercase">Test</h2>
+          <h2 class="text-uppercase">Thyme</h2>
         </a>
       </li>
       <li class="nav-item" *appHasRole="['DashboardAccess']">
@@ -24,6 +24,7 @@
       </li>
       <li
         class="nav-item"
+        *appHasRole="['OrderManagerAccess']"
         [class.nav-item-active]="currentRoute == 'Orders'"
       >
         <a class="nav-link" routerLink="administrator/order-manager">
@@ -92,7 +93,7 @@
           Others page
         </a>
       </li>
-      
+
     </ul>
 
     <hr />
@@ -131,7 +132,7 @@
       </li>
     </ul>
   </div>
-  
+
   <div class="position-absolute toggle-btn-container">
     <button class="btn btn-light p-0" (click)="toggle()">
       <i

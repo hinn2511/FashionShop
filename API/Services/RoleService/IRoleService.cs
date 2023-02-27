@@ -28,7 +28,7 @@ namespace API.Services
 
         Task<List<Tuple<AppRole, int>>> GetRolesSummaryAsync(bool showNoRole);
 
-        Tuple<AppRole, int> GetRoleSummary(AppRole role);
+        Task<Tuple<AppRole, int>> GetRoleSummary(AppRole role);
 
         Task<AppRole> GetRoleByRoleNameAsync(string roleName);
 

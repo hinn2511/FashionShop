@@ -70,7 +70,7 @@ export class AuthenticationService {
         `${environment.apiUrl}account/revoke-token`,
         {},
         { withCredentials: true }
-      )
+        )
       .subscribe();
 
     let businessRole: string[] = ['AdministratorAccess'];

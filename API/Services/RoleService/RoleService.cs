@@ -35,11 +35,11 @@ namespace API.Services
         {
             var result = new List<AppPermission>();
 
-            foreach (var permissionId in permissionIds)
+            await permissionIds.ForEachAsync(async i =>
             {
-                var permission = await _roleManager.FindByIdAsync(permissionId.ToString());
+                var permission = await _roleManager.FindByIdAsync(i.ToString());
                 result.Add(permission);
-            }
+            });
 
             return result;
         }
@@ -62,11 +62,11 @@ namespace API.Services
 
             var result = new List<AppPermission>();
 
-            foreach (var permissionId in permissionIds)
+            await permissionIds.ForEachAsync(async i =>
             {
-                var permission = await _roleManager.FindByIdAsync(permissionId.ToString());
+                var permission = await _roleManager.FindByIdAsync(i.ToString());
                 result.Add(permission);
-            }
+            });
 
             return result;
 
@@ -139,33 +139,29 @@ namespace API.Services
         public async Task<List<Tuple<AppRole, int>>> GetRolesSummaryAsync(bool showNoRole)
         {
             var result = new List<Tuple<AppRole, int>>();
+
+            var roleIds = await _context.Users.Select(x => x.RoleId).ToListAsync();
+
+            var roles = await _context.AppRoles.ToListAsync();
+
+            foreach(var role in roles)
+            {
+                result.Add(Tuple.Create(role, roleIds.Where(x => x == role.Id).Count()));
+            }
+
             if (showNoRole)
             {
                 var noRole = new AppRole();
                 noRole.RoleName = "No role available";
-
-                result = _context.Users.Include(x => x.Role).AsEnumerable().GroupBy(x => x.Role ?? noRole)
-                .Select(g => Tuple.Create(g.Key, g.Count())).ToList();
+                var noRoleCount = await _context.Users.Where(x => x.RoleId == 0 || x.RoleId == null).CountAsync();
+                result.Add(Tuple.Create(noRole, noRoleCount));
             }
-            else
-            {
-                result = _context.Users.Include(x => x.Role).AsEnumerable().Where(x => x.RoleId != null).GroupBy(x => x.Role)
-                .Select(g => Tuple.Create(g.Key, g.Count())).ToList();
-            }
-
-            var roles = await _unitOfWork.AppRoleRepository.GetAllBy(x => !result.Select(y => y.Item1.RoleName).Contains(x.RoleName));
-
-            foreach (var role in roles)
-            {
-                result.Add(Tuple.Create(role, 0));
-            }
-
             return result;
         }
 
-        public Tuple<AppRole, int> GetRoleSummary(AppRole role)
+        public async Task<Tuple<AppRole, int>> GetRoleSummary(AppRole role)
         {
-            var count = _context.Users.Where(x => x.RoleId == role.Id).Count();
+            var count = await _context.Users.Where(x => x.RoleId == role.Id).CountAsync();
             return Tuple.Create(role, count);
         }
 
@@ -235,12 +231,12 @@ namespace API.Services
 
             var usersHaveRole = await _context.Users.Where(x => x.RoleId == role.Id).ToListAsync();
 
-            foreach (var user in usersHaveRole)
+            await usersHaveRole.ForEachAsync(async u =>
             {
-                await _userManager.RemoveFromRolesAsync(user, permissions.Select(x => x.Name));
-                user.RoleId = null;
-                await _userManager.UpdateAsync(user);
-            }
+                await _userManager.RemoveFromRolesAsync(u, permissions.Select(x => x.Name));
+                u.RoleId = null;
+                await _userManager.UpdateAsync(u);
+            });
         }
 
         public async Task RemovePermissionsForUsersAsync(int roleId, List<AppPermission> permissions)
@@ -251,13 +247,13 @@ namespace API.Services
             {
                 if (permissions != null && permissions.Any())
                 {
-                    foreach (var user in usersInRole)
+                    await usersInRole.ForEachAsync(async u =>
                     {
-                        foreach (var permission in permissions)
+                        await permissions.ForEachAsync(async p =>
                         {
-                            await _userManager.RemoveFromRoleAsync(user, permission.Name);
-                        }
-                    }
+                            await _userManager.RemoveFromRoleAsync(u, p.Name);
+                        });
+                    });
                 }
 
             }
@@ -271,13 +267,13 @@ namespace API.Services
             {
                 if (permissions != null && permissions.Any())
                 {
-                    foreach (var user in usersInRole)
-                    {
-                        foreach (var permission in permissions)
-                        {
-                            await _userManager.AddToRoleAsync(user, permission.Name);
-                        }
-                    }
+                    await usersInRole.ForEachAsync(async u =>
+                   {
+                       await permissions.ForEachAsync(async p =>
+                       {
+                           await _userManager.AddToRoleAsync(u, p.Name);
+                       });
+                   });
                 }
 
             }

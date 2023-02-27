@@ -27,11 +27,11 @@ namespace API.Entities
 
             if (users == null) return;
 
-            foreach (var user in users)
+            await users.ForEachAsync(async user =>
             {
                 user.UserName = user.UserName.ToLower();
                 await userManager.CreateAsync(user, "Pa$$w0rd");
-            }
+            });
 
             var admin = new AppUser
             {
@@ -87,19 +87,6 @@ namespace API.Entities
             };
 
             await userManager.CreateAsync(sales, "Pa$$w0rd");
-        }
-
-        public static async Task SeedRolePermission(DataContext context, RoleManager<AppPermission> roleManager)
-        {
-            var role = await context.AppRoles.FirstOrDefaultAsync(x => x.RoleName == "Customer");
-
-            var permission = await roleManager.FindByNameAsync("ClientAccess");
-
-            if (role != null && permission != null)
-            {
-                var customerPermission = new AppRolePermission(permission.Id, role.Id);
-            }
-            await context.SaveChangesAsync();
         }
 
         public static async Task SeedSetting(DataContext context)
@@ -237,17 +224,17 @@ namespace API.Entities
 
                 new AppPermission{PermissionGroup = "File", Name = "UploadFile"},
                 new AppPermission{PermissionGroup = "File", Name = "UploadImage"},
-            
+
             };
 
-            foreach (var permission in permissions)
+            await permissions.ForEachAsync(async permission =>
             {
                 await roleManager.CreateAsync(permission);
-            }
+            });
         }
 
-        
-        public static async Task SeedRoles(DataContext context)
+
+        public static async Task SeedRoles(DataContext context, RoleManager<AppPermission> roleManager)
         {
             if (await context.AppRoles.AnyAsync()) return;
 
@@ -259,10 +246,12 @@ namespace API.Entities
                 new AppRole { RoleName = "Customer" },
             };
 
-            foreach (var role in roles)
+            await roles.ForEachAsync(async role =>
             {
-                context.AppRoles.Add(role);
-            }
+                await context.AppRoles.AddAsync(role);
+            });
+
+            await SeedPermissions(roleManager);
 
             await context.SaveChangesAsync();
         }
@@ -275,10 +264,10 @@ namespace API.Entities
 
             var products = JsonSerializer.Deserialize<List<Product>>(productData);
 
-            foreach (var product in products)
+            await products.ForEachAsync(async product =>
             {
-                context.Products.Add(product);
-            }
+                await context.Products.AddAsync(product);
+            });
 
             await context.SaveChangesAsync();
         }
@@ -291,11 +280,13 @@ namespace API.Entities
 
             var categories = JsonSerializer.Deserialize<List<Category>>(categoryData);
 
-            foreach (var category in categories)
-            {
-                category.Slug = category.CategoryName.GenerateSlug();
-                await context.Categories.AddAsync(category);
-            }
+            await categories.ForEachAsync(async category =>
+           {
+               category.Slug = category.CategoryName.GenerateSlug();
+               await context.Categories.AddAsync(category);
+           });
+
+
             await context.SaveChangesAsync();
         }
 
@@ -307,10 +298,10 @@ namespace API.Entities
 
             var brands = JsonSerializer.Deserialize<List<Brand>>(brandData);
 
-            foreach (var brand in brands)
-            {
-                await context.Brands.AddAsync(brand);
-            }
+            await brands.ForEachAsync(async brand =>
+           {
+               await context.Brands.AddAsync(brand);
+           });
 
             await context.SaveChangesAsync();
         }
@@ -415,7 +406,7 @@ namespace API.Entities
         //             collection.CollectionName = collection.CollectionName.ToLower();
 
         //             await context.Collections.AddAsync(collection);
-        //         }
+        //         }()
 
         //         await context.SaveChangesAsync();
         //     }

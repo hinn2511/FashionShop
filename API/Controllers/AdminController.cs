@@ -103,7 +103,7 @@ namespace API.Controllers
             if (role == null)
                 return NotFound(new BaseResponseMessage(false, HttpStatusCode.NotFound, "Role not exist"));
 
-            var roles = _roleService.GetRoleSummary(role);
+            var roles = await _roleService.GetRoleSummary(role);
 
             var result = _mapper.Map<SystemRoleResponse>(roles);
 
