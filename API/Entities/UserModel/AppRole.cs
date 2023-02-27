@@ -1,10 +1,14 @@
 using System.Collections.Generic;
-using Microsoft.AspNetCore.Identity;
+using API.Entities.User;
 
-namespace API.Entities.User
+namespace API.Entities.UserModel
 {
-    public class AppRole : IdentityRole<int>
+    public class AppRole : BaseEntity
     {
-        public ICollection<AppUserRole> UserRoles { get; set; }
+
+        public string RoleName { get; set; }
+        public ICollection<AppRolePermission> RolePermissions { get; set; }
+
+        public ICollection<AppUser> Users { get; set; }
     }
 }

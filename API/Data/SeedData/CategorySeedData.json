@@ -1,22 +1,106 @@
 [
-    {
-        "CategoryName": "Men shoe",
-        "Gender": 1
-    },
-    {
-        "CategoryName": "Shirt",
-        "Gender": 1
-    },
-    {
-        "CategoryName": "Dress",
-        "Gender": 2
-    },
-    {
-        "CategoryName": "T-shirt",
-        "Gender": 2
-    },
-    {
-        "CategoryName": "Shirt",
-        "Gender": 4
-    }
+  {
+    "CategoryName": "Shoe",
+    "Slug": "shoe",
+    "Gender": 0
+  },
+  {
+    "CategoryName": "Shoe",
+    "Slug": "shoe",
+    "Gender": 1
+  },
+  {
+    "CategoryName": "Shoe",
+    "Slug": "shoe",
+    "Gender": 2
+  },
+  {
+    "CategoryName": "Shoe",
+    "Slug": "hat",
+    "Gender": 3
+  },
+  {
+    "CategoryName": "Hat",
+    "Slug": "hat",
+    "Gender": 0
+  },
+  {
+    "CategoryName": "Hat",
+    "Slug": "hat",
+    "Gender": 1
+  },
+  {
+    "CategoryName": "Hat",
+    "Slug": "hat",
+    "Gender": 2
+  },
+  {
+    "CategoryName": "Hat",
+    "Slug": "hat",
+    "Gender": 3
+  },
+  {
+    "CategoryName": "T-shirt",
+    "Slug": "t-shirt",
+    "Gender": 0
+  },
+  {
+    "CategoryName": "T-shirt",
+    "Slug": "t-shirt",
+    "Gender": 1
+  },
+  {
+    "CategoryName": "T-shirt",
+    "Slug": "t-shirt",
+    "Gender": 2
+  },
+  {
+    "CategoryName": "T-shirt",
+    "Slug": "t-shirt",
+    "Gender": 3
+  },
+  {
+    "CategoryName": "Coat",
+    "Slug": "coat",
+    "Gender": 0
+  },
+  {
+    "CategoryName": "Coat",
+    "Slug": "coat",
+    "Gender": 1
+  },
+  {
+    "CategoryName": "Coat",
+    "Slug": "coat",
+    "Gender": 2
+  },
+  {
+    "CategoryName": "Coat",
+    "Slug": "coat",
+    "Gender": 3
+  },
+  {
+    "CategoryName": "Sneaker",
+    "Slug": "sneaker",
+    "Gender": 0,
+    "ParentId": 1
+  },
+  {
+    "CategoryName": "Sandal",
+    "Slug": "sandal",
+    "Gender": 0,
+    "ParentId": 1
+  },
+  {
+    "CategoryName": "Leather",
+    "Slug": "leather",
+    "Gender": 0,
+    "ParentId": 1
+  },
+  {
+    "CategoryName": "Crocs",
+    "Slug": "crocs",
+    "Gender": 0,
+    "ParentId": 1
+  }
 ]

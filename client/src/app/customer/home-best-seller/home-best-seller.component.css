@@ -1,8 +1,0 @@
-
-.container {
-    min-width: 100%;
-}
-
-:host ::ng-deep .slide {
-    padding: 0 2vw;
-}

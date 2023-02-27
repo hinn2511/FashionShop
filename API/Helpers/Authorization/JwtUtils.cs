@@ -7,15 +7,17 @@ using System.Text;
 using System.Threading.Tasks;
 using API.Entities.User;
 using API.Entities.UserModel;
+using API.Extensions;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
+using System.Security.Cryptography;
 
 namespace API.Helpers.Authorization
 {
     public interface IJwtUtils
     {
-        public Task<string> GenerateJwtToken(AppUser user);
+        public Task<string> GenerateJwtTokenAsync(AppUser user);
         public int? ValidateJwtToken(string token);
         public RefreshToken GenerateRefreshToken(string ipAddress);
     }
@@ -31,7 +33,7 @@ namespace API.Helpers.Authorization
             _appSettings = appSettings.Value;
         }
 
-        public async Task<string> GenerateJwtToken(AppUser user)
+        public async Task<string> GenerateJwtTokenAsync(AppUser user)
         {
             var claims = new List<Claim>
             {
@@ -88,17 +90,44 @@ namespace API.Helpers.Authorization
             }
         }
 
-        public RefreshToken GenerateRefreshToken(string ipAddress)
+         public RefreshToken GenerateRefreshToken(string ipAddress)
         {
-            var refreshToken = new RefreshToken
-            {
-                Token = Guid.NewGuid().ToString(),
-                Expires = DateTime.UtcNow.AddDays(7),
-                Created = DateTime.UtcNow,
-                CreatedByIp = ipAddress
-            };
 
+            var refreshToken = new RefreshToken
+
+            {
+
+                Token = GenerateToken(),
+
+                Expires = DateTime.UtcNow.AddDays(3),
+
+                Created = DateTime.UtcNow,
+
+                CreatedByIp = ipAddress
+
+            };
             return refreshToken;
+
+        }
+
+
+
+        private static string GenerateToken()
+
+        {
+
+            using (RNGCryptoServiceProvider rng = new RNGCryptoServiceProvider())
+
+            {
+
+                byte[] randomNumber = new byte[64];
+
+                rng.GetBytes(randomNumber);
+
+                return Convert.ToBase64String(randomNumber);
+
+            }
+
         }
     }
 }

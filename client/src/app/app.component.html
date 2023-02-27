@@ -1,46 +1,60 @@
-<ng-container *ngIf="hasRoute('administrator/login')">
+<ng-container *ngIf="currentRoute == 'Administrator Login'">
   <app-admin-login></app-admin-login>
 </ng-container>
 
-<ng-container *ngIf="!hasRoute('administrator/login')">
-  <div *appHasRole="['Anonymous', 'Customer']">
-      <ng-container *ngIf="!hasRoute('/login')">
-        <app-navigation-bar></app-navigation-bar>
+<div [class]="{ 'prevent-scroll': focus }">
+  <ng-container *ngIf="currentRoute != 'Administrator Login'">
+    <div *appHasRole="['Anonymous', 'ClientAccess']" class="position-relative">
+      <ng-container *ngIf="currentRoute != 'Client Login' && currentRoute != 'Client Register'">
+        <app-navigation-bar (focus)="setFocus($event)"></app-navigation-bar>
       </ng-container>
 
       <div class="container-fluid w-100 px-0">
         <router-outlet></router-outlet>
       </div>
 
-      <ng-container *ngIf="!hasRoute('/login')">
+      <ng-container *ngIf="currentRoute != 'Client Login' && currentRoute != 'Client Register'">
         <app-footer></app-footer>
       </ng-container>
-  </div>
+      <div *ngIf="focus" [@fadeInAndOut] class="position-absolute focus-mode"></div>
+    </div>
 
-  <div *appHasRole="['Admin', 'Manager']">
-    <!-- <div> -->
-    <div class="w-100">
-      <div class="container-fluid">
-        <app-admin-sidebar
-          (mouseenter)="toggleMenu()"
-          (mouseleave)="toggleMenu()"
-          [@slideInOut]="menuState"
-        ></app-admin-sidebar>
+    <div *appHasRole="['AdministratorAccess']">
+      <div class="w-100">
+        <div class="container-fluid pr-md-0">
+          <app-admin-sidebar
+            [@slideInOut]="sidebarState"
+            [currentState]="sidebarState"
+            (newState)="setSidebar($event)"
+          ></app-admin-sidebar>
 
-        <main class="ms-sm-auto pl-0 p position-relative">
-          <div class="w-100 py-1 d-flex justify-content-end">
-            <button class="btn btn-transparent">Hi, {{ user.username }}</button>
+          <main class="ms-sm-auto px-0 position-relative">
+            <nav
+              class="w-100 py-2 d-flex d-inline justify-content-between align-items-center sticky-top bg-white border-bottom"
+            >
+            <h5 class="py-0 my-0 ml-5">
+              {{currentRoute}}
+            </h5>
+            <span>
+              <button
+              class="btn btn-transparent"
+              *ngIf="authenticationService.currentUser$ | async as user"
+            >
+              Hi, {{ user.username }}
+            </button>
             <button class="btn btn-transparent" (click)="logout()">
               Log out
             </button>
-          </div>
+            </span>
 
-          <div class="ml-5">
-            <router-outlet></router-outlet>
-          </div>
-        </main>
-        <!-- </div> -->
+            </nav>
+
+            <div class="ml-4 ml-lg-5 mt-4">
+              <router-outlet></router-outlet>
+            </div>
+          </main>
+        </div>
       </div>
     </div>
-  </div>
-</ng-container>
+  </ng-container>
+</div>

@@ -1,4 +1,9 @@
 ﻿using API.Data;
+using API.DTOs.Params;
+using API.DTOs.Response;
+using API.DTOs.Response.FileResponse;
+using API.DTOs.Response.PhotoResponse;
+using API.Entities.Other;
 using API.Entities.OtherModel;
 using API.Extensions;
 using API.Interfaces;
@@ -11,24 +16,25 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
 
 namespace API.Controllers
 {
-    [Authorize(Policy = "ManagerOnly")]
-    [ApiController]
-    [Route("file")]
     public class FileController : BaseApiController
     {
         private readonly IMapper _mapper;
         private readonly IUnitOfWork _unitOfWork;
+        private readonly IPhotoService _photoService;
 
-        public FileController(IMapper mapper, IUnitOfWork unitOfWork)
+        public FileController(IMapper mapper, IUnitOfWork unitOfWork, IPhotoService photoService)
         {
+            _photoService = photoService;
             _unitOfWork = unitOfWork;
             _mapper = mapper;
         }
 
+        [Authorize(Roles = "UploadFile")]
         [HttpPost]
         public async Task<ActionResult> UploadFile(IFormFile file)
         {
@@ -52,10 +58,45 @@ namespace API.Controllers
 
             _unitOfWork.FileRepository.Insert(uploadedFile);
 
-            if(await _unitOfWork.Complete())
-                return Ok($"{Constant.DownloadFileUrl}{uploadedFile.Name}");
-        
+            if (await _unitOfWork.Complete())
+                return Ok($"{Constant.DownloadapiUrl}{uploadedFile.Name}");
+
             return BadRequest("Can not upload file");
+        }
+
+        [Authorize(Roles = "UploadImage")]
+        [HttpPost("image")]
+        public async Task<ActionResult> UploadImageFile(IFormFile file, [FromQuery] int height, [FromQuery] int width, [FromQuery] double ratio, [FromQuery] string cropOption)
+        {
+            if (!FileExtensions.ValidateFile(file, Constant.ImageContentType, 10000))
+                return BadRequest("File not valid");
+
+            var result = await _photoService.AddPhotoAsync(file, height, width, cropOption, ratio);
+
+            if (result.Error != null) 
+                return BadRequest(new BaseResponseMessage(false, HttpStatusCode.BadRequest, "Can not upload photo"));
+            
+            var image = new Photo();
+
+            image.PublicId = result.PublicId;
+            image.Url = result.SecureUrl.AbsoluteUri;
+
+            _unitOfWork.PhotoRepository.Insert(image);
+
+            if (await _unitOfWork.Complete())
+                return Ok(new FileUploadedResponse(image.Id, image.Url));
+
+            return BadRequest("Can not upload file");
+        }
+
+        
+        [HttpGet("images")]
+        public async Task<ActionResult> GetImagesAsAdmin([FromQuery] PaginationParams paginationParams)
+        {
+            var images = await _unitOfWork.PhotoRepository.GetImageAsync(paginationParams);
+            Response.AddPaginationHeader(images.CurrentPage, images.PageSize, images.TotalCount, images.TotalPages);
+            var result = _mapper.Map<List<AdminImagesResponse>>(images.ToList());
+            return Ok(result);
         }
 
         [AllowAnonymous]
@@ -83,7 +124,7 @@ namespace API.Controllers
             ////  for video file
             if (file.Extension == ".mp4")
                 return File(content, file.ContentType, file.Name);
-            
+
             return new FileContentResult(content, file.ContentType);
 
             //// download from stream and viewable in browser
@@ -108,7 +149,7 @@ namespace API.Controllers
                 throw new KeyNotFoundException("File not found");
             return uploadedFile;
         }
-        
+
     }
 }
 

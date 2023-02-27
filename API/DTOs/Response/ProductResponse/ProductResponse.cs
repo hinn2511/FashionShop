@@ -11,10 +11,19 @@ namespace API.DTOs.Response.ProductResponse
     public class ProductResponse : BaseResponse
     {
         public string ProductName { get; set; }
-        public string Slug { get; set; }        
+        public string Slug { get; set; }
         public double Price { get; set; }
         public string Description { get; set; }
         public string Url { get; set; }
+        public Gender Gender { get; set; }
+        public bool IsPromoted { get; set; }
+        public bool IsNew { get; set; }
+        public bool IsOnSale { get; set; }
+        public ProductSaleOffType SaleType { get; set; }
+        public DateTime SaleOffFrom { get; set; }
+        public DateTime SaleOffTo { get; set; }
+        public int SaleOffPercent { get; set; }
+        public int SaleOffValue { get; set; }
     }
 
     #endregion
@@ -23,14 +32,22 @@ namespace API.DTOs.Response.ProductResponse
     public class CustomerProductsResponse : ProductResponse
     {
         public bool LikedByUser { get; set; }
+        public string Category { get; set; }
+        public List<CustomerProductColorsResponse> Options { get; set; }
+    }
+
+    public class CustomerProductColorsResponse
+    {
+        public string ColorCode { get; set; }
+        public string ColorName { get; set; }
     }
 
     public class CustomerProductDetailResponse : ProductResponse
     {
-        public int CategoryId { get; set; }
-        public string CategoryName { get; set; }
-        public int? SubCategoryId { get; set; }
-        public string SubCategoryName { get; set; }
+        public string Category { get; set; }
+        public string CategorySlug { get; set; }
+        public string ParentCategory { get; set; }
+        public string ParentCategorySlug { get; set; }
         public int BrandId { get; set; }
         public string BrandName { get; set; }
         public bool LikedByUser { get; set; }
@@ -51,13 +68,12 @@ namespace API.DTOs.Response.ProductResponse
         public int Sold { get; set; }
         public Status Status { get; set; }
     }
-    
+
     public class AdminProductDetailResponse : ProductResponse
     {
         public int CategoryId { get; set; }
         public string CategoryName { get; set; }
-        public int? SubCategoryId { get; set; }
-        public string SubCategoryName { get; set; }
+        public string CategoryGender { get; set; }
         public int BrandId { get; set; }
         public string BrandName { get; set; }
         public IList<AdminProductPhotoResponse> ProductPhotos { get; set; }
@@ -82,5 +98,5 @@ namespace API.DTOs.Response.ProductResponse
     }
 
     #endregion
-    
+
 }

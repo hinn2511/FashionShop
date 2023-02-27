@@ -1,0 +1,24 @@
+@media (min-width: 768px) {
+  .article {
+    max-width: 900px;
+  }
+  
+  .article-cover {
+    min-height: 300px;
+  }
+}
+
+@media (max-width: 768px) {
+    
+    .article-cover {
+      min-height: 200px;
+    }
+  }
+  
+
+.article-cover {
+  background-attachment: fixed;
+  background-position: 80% 50%;
+  background-repeat: no-repeat;
+  background-size: cover;
+}

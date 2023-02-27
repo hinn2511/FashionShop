@@ -15,8 +15,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace API.Data
 {
-    public class DataContext : IdentityDbContext<AppUser, AppRole, int,
-        IdentityUserClaim<int>, AppUserRole, IdentityUserLogin<int>,
+    public class DataContext : IdentityDbContext<AppUser, AppPermission, int,
+        IdentityUserClaim<int>, AppUserPermission, IdentityUserLogin<int>,
         IdentityRoleClaim<int>, IdentityUserToken<int>>
     {
         public DataContext(DbContextOptions options) : base(options)
@@ -26,13 +26,9 @@ namespace API.Data
         public DbSet<Product> Products { get; set; }
         public DbSet<ProductPhoto> ProductPhotos { get; set; }
         public DbSet<UploadedFile> Files { get; set; }
-        public DbSet<Color> Colors { get; set; }
         public DbSet<Category> Categories { get; set; }
-        public DbSet<SubCategory> SubCategories { get; set; }
         public DbSet<Brand> Brands { get; set; }
-        public DbSet<Size> Sizes { get; set; }
         public DbSet<Option> Options { get; set; }
-        public DbSet<Stock> Stocks { get; set; }
         public DbSet<Order> Orders { get; set; }
         public DbSet<OrderDetail> OrderDetails { get; set; }
         public DbSet<OrderHistory> OrderHistories { get; set; }
@@ -42,22 +38,56 @@ namespace API.Data
         public DbSet<FeatureProduct> FeatureProducts { get; set; }
         public DbSet<Cart> Carts { get; set; }
         public DbSet<UserLike> UserLikes { get; set; }
+        public DbSet<UserReview> UserReviews { get; set; }
+        public DbSet<Article> Articles { get; set; }
+        public DbSet<Photo> Photos { get; set; }
+        public DbSet<AppRole> AppRoles { get; set; }
+        public DbSet<AppRolePermission> RolePermissions { get; set; }
+        public DbSet<Settings> Settings { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
 
             builder.Entity<AppUser>()
-                .HasMany(ur => ur.UserRoles)
+                .HasMany(ur => ur.UserPermissions)
                 .WithOne(u => u.User)
                 .HasForeignKey(ur => ur.UserId)
                 .IsRequired();
 
-            builder.Entity<AppRole>()
-                .HasMany(ur => ur.UserRoles)
+            builder.Entity<AppPermission>()
+                .HasMany(ur => ur.UserPermissions)
                 .WithOne(u => u.Role)
                 .HasForeignKey(ur => ur.RoleId)
                 .IsRequired();
+            
+            builder.Entity<AppRole>()
+                .HasMany(role => role.RolePermissions)
+                .WithOne(rolePermission => rolePermission.AppRole)
+                .HasForeignKey(rolePermission => rolePermission.RoleId)
+                .IsRequired()
+                .OnDelete(DeleteBehavior.Cascade);
+
+
+            builder.Entity<AppPermission>()
+                .HasMany(permission => permission.RolePermissions)
+                .WithOne(rolePermission => rolePermission.AppPermission)
+                .HasForeignKey(rolePermission => rolePermission.PermissionId)
+                .IsRequired()
+                .OnDelete(DeleteBehavior.Cascade);
+
+            builder.Entity<Category>(c =>
+            {
+                c.HasKey(x => x.Id);
+                c.Property(x => x.Gender);
+                c.Property(x => x.CategoryName);
+                c.Property(x => x.Slug);
+                c.HasOne(x => x.Parent)
+                    .WithMany(x => x.SubCategories)
+                    .HasForeignKey(x => x.ParentId)
+                    .IsRequired(false)
+                    .OnDelete(DeleteBehavior.Cascade);
+            });
 
             // builder.Entity<Product>()
             //     .HasOne(p => p.SubCategory)

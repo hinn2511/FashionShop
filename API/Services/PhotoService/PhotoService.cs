@@ -29,16 +29,30 @@ namespace API.Services
             }
         }
 
-        public async Task<ImageUploadResult> AddPhotoAsync(IFormFile file, int height, int width)
+        public async Task<ImageUploadResult> AddPhotoAsync(IFormFile file, int height = 0, int width = 0, string cropOption = "", double aspectRatio = 0)
         {
             var uploadResult = new ImageUploadResult();
+            var transformation = new Transformation();
+
+            if(height > 0)
+                transformation.Height(height);
+
+            if(width > 0)
+                transformation.Height(width);
+
+            if(!string.IsNullOrEmpty(cropOption))
+                transformation.Crop(cropOption);
+
+            if(aspectRatio > 0)
+                transformation.AspectRatio(aspectRatio);
+
             if (file.Length > 0)
             {
                 using var stream = file.OpenReadStream();
                 var uploadParams = new ImageUploadParams
                 {
                     File = new FileDescription(file.FileName, stream),
-                    Transformation = new Transformation().Height(height).Width(width).Crop("fill")
+                    Transformation = transformation
                 };
                 uploadResult = await _cloudinary.UploadAsync(uploadParams);
             }

@@ -16,6 +16,14 @@ namespace API.Interfaces
     {
     }
 
+    public interface IAppRoleRepository : IGenericRepository<AppRole>
+    {
+    }
+
+    public interface IAppRolePermissionRepository : IGenericRepository<AppRolePermission>
+    {
+    }
+
     #endregion
 
     #region user like

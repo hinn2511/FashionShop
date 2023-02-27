@@ -3,12 +3,17 @@ import { CommonModule } from '@angular/common';
 import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
 import { BsDatepickerModule } from 'ngx-bootstrap/datepicker';
 import { PaginationModule } from 'ngx-bootstrap/pagination';
-import { ProgressbarModule } from 'ngx-bootstrap/progressbar';
-import { CarouselModule } from 'ngx-bootstrap/carousel';
-import { viLocale } from 'ngx-bootstrap/locale';
-import { defineLocale } from 'ngx-bootstrap/chronos';
-import { FileUploadModule } from 'ng2-file-upload';
 import { ModalModule } from 'ngx-bootstrap/modal';
+import { PopoverModule } from 'ngx-bootstrap/popover';
+import { defineLocale } from 'ngx-bootstrap/chronos'
+import { AccordionModule } from 'ngx-bootstrap/accordion';
+import { TabsModule } from 'ngx-bootstrap/tabs';
+import { viLocale } from 'ngx-bootstrap/locale';
+import { RatingModule } from 'ngx-bootstrap/rating'; 
+import { FileUploadModule } from 'ng2-file-upload';
+import { ToastrModule } from 'ngx-toastr';
+import { ColorPickerModule } from '@iplab/ngx-color-picker';
+import { NgxChartsModule } from '@swimlane/ngx-charts';
 defineLocale('vi', viLocale);
 
 @NgModule({
@@ -18,19 +23,32 @@ defineLocale('vi', viLocale);
     BsDropdownModule.forRoot(),
     BsDatepickerModule.forRoot(),
     PaginationModule.forRoot(),
-    ProgressbarModule.forRoot(),
-    CarouselModule.forRoot(),
     ModalModule.forRoot(),
-    FileUploadModule
+    PopoverModule.forRoot(),
+    AccordionModule.forRoot(),
+    TabsModule.forRoot(),
+    RatingModule.forRoot(),
+    FileUploadModule,
+    NgxChartsModule,
+    ToastrModule.forRoot({
+      timeOut: 3000,
+      positionClass: 'toast-bottom-left',
+      preventDuplicates: false,
+    }),
+    ColorPickerModule
   ], 
   exports: [
     BsDropdownModule,
     PaginationModule,
+    PopoverModule,
+    AccordionModule,
+    TabsModule,
+    RatingModule,
     BsDatepickerModule,
-    ProgressbarModule,
-    CarouselModule,
     ModalModule,
-    FileUploadModule
+    NgxChartsModule,
+    FileUploadModule,
+    ColorPickerModule
   ]
 })
 

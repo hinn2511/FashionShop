@@ -9,6 +9,8 @@ namespace API.DTOs.Request.CategoryRequest
     {
         public string CategoryName { get; set; }
         public Gender Gender { get; set; }
+        public string CategoryImageUrl { get; set; }
+        public int ParentId { get; set; }
     }
 
     #region manager

@@ -1,0 +1,8 @@
+
+
+.form-group > i
+{
+    margin-right: 10px;
+    top: 50%;
+    transform: translate(-50%,-50%);
+}

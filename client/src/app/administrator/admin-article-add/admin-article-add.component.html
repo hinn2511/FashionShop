@@ -1,0 +1,96 @@
+<div class="container-fluid px-3">
+  <h3>Add new article</h3>
+  <form
+    [formGroup]="newArticleForm"
+    (ngSubmit)="newArticleForm.valid && addNewArticle($event)"
+    autocomplete="off"
+  >
+    <div class="row">
+      <div class="col-12 col-lg-4 col-xl-3">
+        <label for="Headline">Headline</label>
+        <app-text-input
+          [formControl]="newArticleForm.controls['headline']"
+          [label]="'Headline'"
+        >
+        </app-text-input>
+
+        <label for="Foreword">Foreword</label>
+        <app-text-area-input
+          [formControl]="newArticleForm.controls['foreword']"
+          [label]="'Foreword'"
+        >
+        </app-text-area-input>
+
+        <label for="Content type">Content type</label>
+        <div class="form-group">
+            <select
+              class="form-control"
+              [formControl]="newArticleForm.controls['contentType']"
+            >
+              <option *ngFor="let type of articleTypes" [value]="type.id">
+                {{ type.name }}
+              </option>
+            </select>
+        </div>
+
+        <label for="link">Thumbnail</label>
+        <input
+          class="form-control p-2 h-auto"
+          type="file"
+          (change)="previewImage($event)"
+        />
+        <div class="rect-img-container mt-2">
+          <img class="rect-img bg-light" src="{{ imagePreviewUrl }}" alt="" />
+        </div>
+      </div>
+
+      <div class="col-12 col-lg-8 col-xl-9">
+        <div class="my-2">
+          <label for="">Content</label>
+          <app-editor [initialContent]="''"
+          (outputContent)="updateContent($event)" ></app-editor>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-group text-right">
+      <button
+        [disabled]="isUploadingFile"
+        routerLink="/administrator/article-manager"
+        class="btn btn-danger mr-2"
+        name="save"
+        type="button"
+      >
+        <span
+          *ngIf="isUploadingFile"
+          class="spinner-border spinner-border-sm mr-1"
+        ></span>
+        <h6 *ngIf="!isUploadingFile" class="p-0 m-0">Back</h6>
+      </button>
+      <button
+        [disabled]="!newArticleForm.valid || isUploadingFile"
+        class="btn btn-success mr-2"
+        name="save"
+        type="submit"
+      >
+        <span
+          *ngIf="isUploadingFile"
+          class="spinner-border spinner-border-sm mr-1"
+        ></span>
+        <h6 *ngIf="!isUploadingFile" class="p-0 m-0">Save</h6>
+      </button>
+      <button
+        [disabled]="!newArticleForm.valid || isUploadingFile"
+        class="btn btn-primary"
+        name="saveAndContinue"
+        type="submit"
+      >
+        <span
+          *ngIf="isUploadingFile"
+          class="spinner-border spinner-border-sm mr-1"
+        ></span>
+        <h6 *ngIf="!isUploadingFile" class="p-0 m-0">Save and continue</h6>
+      </button>
+    </div>
+  </form>
+</div>

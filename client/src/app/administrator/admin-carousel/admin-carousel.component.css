@@ -1,0 +1,42 @@
+.table-item:hover {
+    background-color: rgb(226, 226, 226);
+}
+
+.table-item {
+    z-index: 1;
+}
+
+input[type="checkbox"] {
+    z-index: 100;
+}
+
+.pagination-navigation > label {
+    max-width: fit-content;
+    min-width: fit-content;
+}
+
+.pagination-navigation > input {
+    max-width: 100px;
+}
+
+.status-dropdown {
+    top: 70%;
+    left: 4%;
+}
+
+.status-dropdown, .status-button {
+    width: max(10vw, fit-content);
+    min-width: 10vw;
+}
+
+
+td
+{
+  vertical-align: middle;
+}
+
+.rect-img-container
+{
+  max-height: 5vh;
+  overflow: hidden;
+}

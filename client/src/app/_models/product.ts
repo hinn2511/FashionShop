@@ -1,4 +1,3 @@
-
 export interface ProductPhoto {
     id: number;
     url: string;
@@ -7,10 +6,18 @@ export interface ProductPhoto {
 }
 
 export interface Product {
-    categoryId: number;
-    categoryName: string;
-    subCategoryName?: string;
-    subCategoryId?: number;
+    isPromoted: boolean;
+    isNew: boolean;
+    isOnSale: boolean;
+    saleType: number;
+    saleOffPercent:number;
+    saleOffValue: number;
+    saleOffFrom: Date;
+    saleOffTo: Date;
+    category: string;
+    categorySlug: string;
+    parentCategory: string;
+    parentCategorySlug: string;
     brandId: number;
     brandName: string;
     likedByUser: boolean;
@@ -18,9 +25,17 @@ export interface Product {
     productName: string;
     slug: string;
     price: number;
-    url: string;
-    id: number;
     description: string;
+    url: string;
+    gender: number;
+    id: number;
+    options: ProductColorOption[];
+    
+}
+
+export class ProductColorOption {
+    colorName: string;
+    colorCode: string;
 }
 
 export interface ManagerProductPhoto {
@@ -40,9 +55,12 @@ export interface SelectedProductPhoto {
     checked: boolean;
 }
 
+
+
 export interface ManagerProduct {
     categoryId: number;
     categoryName: string;
+    categoryGender: number;
     brandId: number;
     brandName: string;
     productPhotos: ManagerProductPhoto[];
@@ -63,14 +81,10 @@ export interface ManagerProduct {
     url: string;
     id: number;
     description: string;
+    isPromoted: boolean;
 }
 
 
-export interface Category {
-    categoryName: string;
-    gender: number;
-    id: number;
-}
 
 export interface SubCategory {
     categoryName: string;

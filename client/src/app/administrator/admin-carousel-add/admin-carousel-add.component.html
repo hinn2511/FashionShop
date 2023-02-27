@@ -1,0 +1,99 @@
+<div class="container-fluid px-3">
+  <h3>Add new carousel</h3>
+  <form
+    [formGroup]="newCarouselForm"
+    (ngSubmit)="newCarouselForm.valid && addNewCarousel($event)"
+    autocomplete="off"
+  >
+    <div class="row">
+      <div class="col-12 col-lg-8 col-xl-9">
+        <div class="my-2 carousel-preview">
+          <label for="">Carousel preview</label>
+          <app-image-carousel #carouselComponent
+            [carousels]="previewCarousels"
+          ></app-image-carousel>
+        </div>
+      </div>
+
+      <div class="col-12 col-lg-4 col-xl-3">
+        <label for="title">Title</label>
+        <app-text-input
+          [formControl]="newCarouselForm.controls['title']"
+          (change)="reload()"
+          [label]="'Title'"
+        >
+        </app-text-input>
+
+        <label for="description">Description</label>
+        <app-text-input
+          [formControl]="newCarouselForm.controls['description']"
+          [label]="'Description'"
+        >
+        </app-text-input>
+
+        <label for="link">Link</label>
+        <app-text-input
+          [formControl]="newCarouselForm.controls['link']"
+          [label]="'Link'"
+        >
+        </app-text-input>
+
+        <label for="link">File</label>
+        <input
+          class="form-control"
+          type="file"
+          (change)="previewImage($event)"
+        />
+        <hr />
+      </div>
+    </div>
+
+    <div class="row" *ngIf="validationErrors.length > 0">
+      <ul class="text-danger">
+        <li *ngFor="let error of validationErrors">
+          {{ error }}
+        </li>
+      </ul>
+    </div>
+
+    <div class="form-group text-right">
+      <button
+        [disabled]="isUploadingFile"
+        routerLink="/administrator/carousel-manager"
+        class="btn btn-danger mr-2"
+        name="save"
+        type="button"
+      >
+        <span
+          *ngIf="isUploadingFile"
+          class="spinner-border spinner-border-sm mr-1"
+        ></span>
+        <h6 *ngIf="!isUploadingFile" class="p-0 m-0">Back</h6>
+      </button>
+      <button
+        [disabled]="!newCarouselForm.valid && isUploadingFile"
+        class="btn btn-success mr-2"
+        name="save"
+        type="submit"
+      >
+        <span
+          *ngIf="isUploadingFile"
+          class="spinner-border spinner-border-sm mr-1"
+        ></span>
+        <h6 *ngIf="!isUploadingFile" class="p-0 m-0">Save</h6>
+      </button>
+      <button
+        [disabled]="!newCarouselForm.valid && isUploadingFile"
+        class="btn btn-primary"
+        name="saveAndContinue"
+        type="submit"
+      >
+        <span
+          *ngIf="isUploadingFile"
+          class="spinner-border spinner-border-sm mr-1"
+        ></span>
+        <h6 *ngIf="!isUploadingFile" class="p-0 m-0">Save and continue</h6>
+      </button>
+    </div>
+  </form>
+</div>

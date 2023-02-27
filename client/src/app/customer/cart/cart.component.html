@@ -1,3 +1,353 @@
-<div class="container my-2 my-lg-4">
-    <h3>My cart</h3>
+<div class="container-fluid p-0 m-0"  >
+  <div
+    class="row g-0 p-0 m-0 w-100 h-100 justify-content-lg-end"
+    *ngIf="cartService.currentCarts$ | async as cartItemList"
+    >
+    <div
+      class="col-lg-2 p-0"
+      *ngIf="deviceType == 'desktop'"
+      (click)="closeCart()"
+    ></div>
+    <!-- Cart items list -->
+    <div class="col-12 col-lg-7 p-0 bg-white">
+      <div class="cart-detail px-2 pt-2 px-lg-4 pt-lg-4 p-md-5">
+        <div class="d-flex d-inline align-items-center">
+          <img class="icon mr-2" src="../../../assets/arrow-left.svg" alt="cart" />
+          <a class="text-muted" (click)="closeCart()">
+            Back to store
+          </a>
+        </div>
+        <div class="mt-4 p-2">
+          <h2 class="">My cart</h2>
+          <p class="">{{ cartItemList.totalItem }}&nbsp;items</p>
+        </div>
+        <!-- Cart item table for desktop device -->
+        <div
+          class="table-responsive d-none d-md-block mt-3"
+          *ngIf="cartItemList.cartItems.length > 0; else cartEmpty"
+        >
+          <table class="table table-borderless align-middle">
+            <thead>
+              <!-- Cart item table header -->
+              <tr>
+                <th class="text-muted">Items</th>
+                <th class="text-muted text-center">Price</th>
+                <th class="text-muted text-center">Quantity</th>
+                <th class="text-muted text-center">Total</th>
+                <th class="text-muted text-center">Delete</th>
+              </tr>
+            </thead>
+            <tbody>
+              <ng-container
+                *ngFor="let cartItem of cartItemList.cartItems; let i = index"
+              >
+                <tr class="cart-item-row">
+                  <td class="cart-item-detail">
+                    <div class="row">
+                      <!-- Item image on desktop -->
+                      <div class="col-6 col-md-4 pl-0">
+                        <div class="rect-img-container pr-lg-3">
+                          <img
+                            class="rect-img"
+                            src="{{ cartItem.imageUrl }}"
+                            alt=""
+                          />
+                        </div>
+                      </div>
+                      <!-- Item detail (name, size, color) on desktop -->
+                      <div class="col-6 col-md-8 pl-0 my-auto va-middle">
+                        <h6
+                          class="p-0 m-0 text-dark fw-bold cs-pointer"
+                          (click)="viewProduct(cartItem)"
+                        >
+                          {{ cartItem.productName }}
+                        </h6>
+                        <p class="m-0 p-0 fw-smaller">
+                          {{ cartItem.colorName }},&nbsp;Size:&nbsp;{{
+                            cartItem.sizeName
+                          }}
+                        </p>
+                      </div>
+                    </div>
+                  </td>
+
+                  <td class="text-center">
+                    <p
+                      class="p-0 m-0"
+                    >
+                      {{ calculatePrice(cartItem) | currency }}
+                    </p>                   
+                  </td>
+
+                  <!-- Item quantity on desktop -->
+                  <td class="text-center cart-item-quantity">
+                    <div class="d-flex d-inline-block justify-content-center">
+                      <button
+                        #decreaseButton
+                        class="btn btn-light border-top-right-0 border-bottom-right-0"
+                        (click)="decreaseQuantity(cartItem)"
+                        appDebounceClick
+                        (debounceClick)="updateCart(cartItem)"
+                        type="button"
+                        id="button-addon1"
+                      >
+                        -
+                      </button>
+                      <input
+                        type="number"
+                        [value]="cartItem.quantity"
+                        class="form-control rounded-0 text-center quantity bg-light border-0"
+                      />
+                      <button
+                        #increaseButton
+                        class="btn btn-light border-top-left-0 border-bottom-left-0"
+                        (click)="increaseQuantity(cartItem)"
+                        appDebounceClick
+                        (debounceClick)="updateCart(cartItem)"
+                        type="button"
+                        id="button-addon2"
+                      >
+                        +
+                      </button>
+                    </div>
+                  </td>
+
+                  <td class="text-center">
+                    <p
+                      class="m-0 p-0"
+                      *ngIf="cartItem.saleType == 0; else onSale"
+                    >
+                      {{
+                        (cartItem.price + cartItem.additionalPrice) *
+                          cartItem.quantity | currency
+                      }}
+                    </p>
+                    <ng-template #onSale>
+                      <p class="m-0 p-0">
+                        {{
+                          calculatePrice(cartItem) * cartItem.quantity
+                            | currency
+                        }}
+                      </p>
+                    </ng-template>
+                  </td>
+
+                  <td>
+                    <div class="d-flex flex-column text-center mx-auto">
+                      <button
+                        class="btn btn-light"
+                        (click)="deleteCartItem(cartItem)"
+                      >
+                        <i class="fa fa-trash-o"></i>
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              </ng-container>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Cart item list for mobile device -->
+        <div class="p-3 d-md-none" *ngIf="cartItemList.cartItems.length > 0">
+          <ng-container
+            *ngFor="let cartItem of cartItemList.cartItems; let i = index"
+          >
+            <div
+              class="row py-3"
+              [class]="{
+                'border-bottom': i < cartItemList.cartItems.length - 1
+              }"
+            >
+              <div class="col-4 px-2">
+                <div class="rect-img-container">
+                  <img class="rect-img" src="{{ cartItem.imageUrl }}" alt="" />
+                </div>
+              </div>
+              <div class="col-7 my-auto px-0 va-middle">
+                <p
+                  class="p-0 m-0 text-dark fw-bold"
+                  (click)="viewProduct(cartItem)"
+                >
+                  {{ cartItem.productName }}&nbsp;-&nbsp;{{
+                    cartItem.colorName
+                  }}
+                </p>
+                <p class="m-0 p-0">Size:&nbsp;{{ cartItem.sizeName }}</p>
+                <div class="d-flex d-inline">
+                  <p
+                    class="p-0 m-0"
+                    *ngIf="cartItem.saleType == 0; else onSale"
+                  >
+                    {{ cartItem.price | currency }}
+                  </p>
+                  <ng-template #onSale>
+                    <p class="mr-1 my-0 py-0 text-danger">
+                      {{ calculateTotalPrice(cartItem) | currency }}
+                    </p>
+                    <p class="my-0 py-0 old-price fw-smaller">
+                      {{
+                        cartItem.price + cartItem.additionalPrice | currency
+                      }}
+                    </p>
+                  </ng-template>
+                </div>
+                <div class="d-flex d-inline-block mt-2">
+                  <button
+                    #decreaseButton
+                    class="btn btn-light border-top-right-0 border-bottom-right-0"
+                    (click)="decreaseQuantity(cartItem)"
+                    appDebounceClick
+                    (debounceClick)="updateCart(cartItem)"
+                    type="button"
+                    id="button-addon1"
+                  >
+                    -
+                  </button>
+                  <input
+                    type="number"
+                    [value]="cartItem.quantity"
+                    class="form-control rounded-0 text-center quantity bg-light border-0"
+                  />
+                  <button
+                    #increaseButton
+                    class="btn btn-light border-top-left-0 border-bottom-left-0"
+                    (click)="increaseQuantity(cartItem)"
+                    appDebounceClick
+                    (debounceClick)="updateCart(cartItem)"
+                    type="button"
+                    id="button-addon2"
+                  >
+                    +
+                  </button>
+                </div>
+              </div>
+              <div
+                class="col-1 p-0 my-auto text-center va-middle"
+                (click)="deleteCartItem(cartItem)"
+              >
+                <button class="btn btn-transparent p-0">
+                  <i class="fa fa-times" aria-hidden="true"></i>
+                </button>
+              </div>
+            </div>
+          </ng-container>
+        </div>
+        <!-- Display if client's cart is empty -->
+        <ng-template #cartEmpty>
+          <div class="p-5 h-100 w-100 text-center">
+            <h5 class="text-muted mt-5">
+              You have not added any item to your cart yet
+            </h5>
+          </div>
+        </ng-template>
+      </div>
+    </div>
+    <!-- Cart items summary -->
+    <div class="col-12 col-lg-3 p-0 cart-summary-container">
+      <div
+        class="cart-summary bg-white d-flex flex-column p-3 p-lg-5"
+        [class.shadow-lg]="deviceType != 'desktop'"
+      >
+        <div
+          class="d-lg-none mx-auto py-2 w-100 text-center"
+          (click)="expandCartSummaryToggle()"
+        >
+          <div class="expand-summary-button">
+            <img
+              src="../../../assets/arrow-down.svg"
+              alt=""
+              [@rotatedState]="isRotate()"
+            />
+          </div>
+        </div>
+        <h4 class="mt-2 mt-lg-5">Summary</h4>
+
+        <!-- Display summary -->
+        <div class="d-flex mt-4" *ngIf="expandCartSummary">
+          <div class="bd-highlight">Subtotal</div>
+          <div class="flex-fill text-right fw-bold">
+            {{ cartItemList.totalPrice | currency }}
+          </div>
+        </div>
+        <div class="d-flex mt-2" *ngIf="expandCartSummary">
+          <div class="bd-highlight">Discount</div>
+          <div class="flex-fill text-right fw-bold">
+            {{ discountAmount | currency }}
+          </div>
+        </div>
+        <div class="d-flex mt-2" *ngIf="expandCartSummary">
+          <div class="bd-highlight">Tax</div>
+          <div class="flex-fill text-right fw-bold">
+            {{
+              ((cartItemList.totalPrice - discountAmount) * 10) / 100 | currency
+            }}
+          </div>
+        </div>
+        <!-- Promo code input -->
+        <div class="mt-4" *ngIf="expandCartSummary">
+          <p class="text-uppercase">enter promote code</p>
+          <div
+            class="input-group mb-3"
+            *ngIf="!promoCodeApplied; else applyCode"
+          >
+            <input
+              type="text"
+              class="form-control promo-code"
+              placeholder="Promote code"
+              (keydown.enter)="applyDiscountCode()"
+              [(ngModel)]="promoCode"
+              aria-describedby="button-addon2"
+            />
+            <button
+              class="btn btn-light border-top-left-0 border-bottom-left-0"
+              type="button"
+              (click)="applyDiscountCode()"
+            >
+              Apply
+            </button>
+          </div>
+          <!-- Promo code apply successfully -->
+          <ng-template #applyCode>
+            <div class="input-group mb-3">
+              <input
+                type="text"
+                class="form-control"
+                placeholder="{{ promoCode }}"
+                disabled
+              />
+              <button
+                class="btn btn-dark border-top-left-0 border-bottom-left-0"
+                type="button"
+                (click)="removeDiscountCode()"
+              >
+                Remove
+              </button>
+            </div>
+          </ng-template>
+        </div>
+        <!-- Cart total -->
+        <div class="mt-auto">
+          <div class="d-flex">
+            <div class="bd-highlight">Estimated total</div>
+            <div class="flex-fill text-right fw-bold">
+              {{
+                cartItemList.totalPrice -
+                  discountAmount +
+                  ((cartItemList.totalPrice - discountAmount) * 10) / 100
+                  | currency
+              }}
+            </div>
+          </div>
+          <button
+            class="btn btn-dark w-100 mt-3 text-uppercase"
+            (click)="goToCheckoutWindow()"
+            [disabled]="cartItemList.cartItems.length <= 0"
+          >
+            Checkout
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>

@@ -1,0 +1,64 @@
+<div class="container-fluid py-3" *ngIf="products">
+  <h3 class="text-uppercase">Top interesting</h3>
+  <div class="d-flex flex-wrap text-uppercase p-1">
+    <a class="text-uppercase cs-pointer" [class]="{
+      'text-dark': filter == 'featured',
+      'fw-bold': filter == 'featured',
+      'text-muted': filter != 'featured'
+    }"
+      (click)="applyFilter('featured')"
+    >featured </a><span class="mx-2">&#8901;</span>
+
+    <a class="text-uppercase cs-pointer" [class]="{
+      'text-dark': filter == 'interesting',
+      'fw-bold': filter == 'interesting',
+      'text-muted': filter != 'interesting'
+    }"
+      (click)="applyFilter('interesting')"
+    >most interesting </a><span class="mx-2">&#8901;</span>
+
+    <a class="text-uppercase cs-pointer" [class]="{
+      'text-dark': filter == 'onSale',
+      'fw-bold': filter == 'onSale',
+      'text-muted': filter != 'onSale'
+    }"
+      (click)="applyFilter('onSale')"
+    >on sale</a>
+
+  </div>
+
+  <div
+    class="position-relative product-carousel-container mt-3 p-2 hide-scroll-bar"
+  >
+    <ul
+      class="product-carousel d-flex d-inline list-group list-group-horizontal"
+    >
+      <li
+        #card
+        class="product-slide list-group-item border-0 p-2"
+        *ngFor="let product of products"
+      >
+        <app-product-card [product]="product"></app-product-card>
+      </li>
+    </ul>
+  </div>
+  <div
+    class="d-flex flex-wrap justify-content-end text-uppercase ml-1 ml-md-0 p-1"
+    *ngIf="deviceType == 'desktop'"
+  >
+    <button
+      class="btn btn-outline-dark mr-2 btn-scroll rounded-circle"
+      [disabled]="currentStep == 0"
+      (click)="scrollLeft()"
+      >
+      <img class="icon" src="../../../assets/arrow-left.svg" alt="cart" />
+    </button>
+    <button
+      class="btn btn-outline-dark btn-scroll rounded-circle"
+      [disabled]="currentStep == products.length - 1"
+      (click)="scrollRight()"
+    >
+    <img class="icon" src="../../../assets/arrow-right.svg" alt="cart" />
+    </button>
+  </div>
+</div>

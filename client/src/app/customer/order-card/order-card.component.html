@@ -1,0 +1,39 @@
+<div class="card border-0" *ngIf="order">
+    <div class="card-header bg-white p-3">
+            <p class="m-0 p-0">
+                Order ID #{{ order.externalId }}
+            </p>
+            <p class="m-0 p-0 text-muted fw-smaller">
+                Date: {{order.dateCreated |  date}}
+            </p>
+            
+        
+    </div>
+    <div class="card-body border-0 p-2 p-lg-3">        
+        <div class="my-2 rounded card-item-list">
+            <div *ngFor="let item of order.orderDetails; let i = index">
+                <div class="d-flex d-inline-block align-items-center">
+                    <div class="rect-img-container">
+                        <img src="{{item.url}}" class="rect-img" alt="">
+                    </div>
+                    <div class="flex-fill pl-2">
+                        <p class="m-0 p-0">{{item.productName}}</p>
+                        <p class="m-0 p-0">x{{item.quantity}}</p>
+                    </div>
+                </div>            
+            </div>
+        </div>
+        
+        
+    </div>
+    <div class="card-footer border-0 p-3 bg-white">
+        <div class="d-flex d-inline-block align-items-center">
+            <p class="p-0 m-0 flex-fill">
+                Total:&nbsp;{{order.totalPrice | currency}}
+            </p>
+            <button class="btn btn-dark" (click)="viewDetail()">
+                View detail
+            </button>
+        </div>
+    </div>
+</div>

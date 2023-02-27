@@ -1,0 +1,53 @@
+<div class="card border-0 container-fluid p-3">
+    <div class="card-header border-0 d-flex d-inline justify-content-between align-items-center">
+      <h6 class="m-0">Order status</h6>
+      <div class="position-relative" *ngIf="selectedTimeFilter">
+          <button class="btn btn-outline-dark filter-button" (click)="timeFilterToggle()">
+            {{ selectedTimeFilter.name }}
+            &nbsp;&nbsp;<span><i class="fa fa-caret-down"></i></span>
+          </button>
+      
+          <div
+            class="position-absolute mt-3 dropdown filter-dropdown"
+            *ngIf="showTimeFilter"
+          >
+            <ul class="list-group" *ngIf="timeFilters">
+              <li class="list-group-item" *ngFor="let filter of timeFilters">
+                <div class="custom-control custom-checkbox">
+                  <input
+                    type="checkbox"
+                    class="custom-control-input cs-pointer"
+                    id="{{ filter.name }}"
+                    (click)="selectTimeFilter(filter)"
+                    [checked]="filter.name == selectedTimeFilter.name"
+                  />
+                  <label class="custom-control-label" for="{{ filter.name }}">{{
+                    filter.name
+                  }}</label>
+                </div>
+              </li>
+            </ul>
+          </div>
+        </div>
+    </div>
+    <div class="card-body">
+      
+        <div class="chart" *ngIf="data">
+          <ngx-charts-pie-chart
+            [scheme]="colorScheme"
+            [results]="data"
+            [legend]="showLegend"
+            [legendPosition]="legendPosition"
+            [legendTitle]="legendTitle"
+            [labels]="showLabels"
+            [doughnut]="isDoughnut"
+          >
+          </ngx-charts-pie-chart>
+          <div class="w-100 text-center mt-3">
+            {{selectedTimeFilter.description}}
+          </div>
+        </div>
+    </div>
+   
+  </div>
+  

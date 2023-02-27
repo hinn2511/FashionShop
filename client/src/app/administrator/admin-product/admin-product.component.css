@@ -1,6 +1,4 @@
-.product-item:hover {
-    background-color: rgb(226, 226, 226);
-}
+
 
 .product-item {
     z-index: 1;
@@ -27,4 +25,11 @@ input[type="checkbox"] {
 .status-dropdown, .status-button {
     width: max(10vw, fit-content);
     min-width: 10vw;
+}
+
+
+.rect-img-container
+{
+  max-height: 40px;
+  overflow: hidden;
 }

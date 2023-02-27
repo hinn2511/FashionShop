@@ -1,0 +1,112 @@
+<div
+  class="container-fluid py-5 position-relative"
+  [ngStyle]="{
+    'background-image': 'url(' + customerRegisterBackgroundUrl + ')'
+  }"
+>
+  <div
+    class="col-12 col-md-8 col-lg-6 col-xl-4 card-container py-4 mt-lg-3 py-lg-0"
+  >
+    <div class="card p-2 border-0 shadow">
+      <div class="card-body">
+        <form
+          [formGroup]="registerForm"
+          (ngSubmit)="registerForm.valid && onSubmit()"
+        >
+          <h3 class="card-header pt-4 text-uppercase text-center">Sign in</h3>
+          <div class="form-group mb-4 px-4 text-center">
+            <span class="text-muted"> Already have an account? </span>
+            <a class="text-dark" routerLink="/login">Log in</a>
+          </div>
+
+          <div class="form-group my-4 px-4">
+            <label for="username">Username</label>
+            <app-text-input
+              [formControl]="registerForm.controls['username']"
+              [label]="'Username'"
+            ></app-text-input>
+          </div>
+          <div class="form-group my-4 px-4">
+            <label for="password">Password</label>
+            <app-text-input
+              [formControl]="registerForm.controls['password']"
+              [label]="'Password'"
+              [type]="'password'"
+            ></app-text-input>
+          </div>
+          <div class="form-group my-4 px-4">
+            <label for="password">Confirm password</label>
+            <app-text-input
+              [formControl]="registerForm.controls['confirmPassword']"
+              [label]="'Confirm password'"
+              [type]="'password'"
+            ></app-text-input>
+          </div>
+
+          <div class="form-group my-4 px-4">
+            <label for="username">First name</label>
+            <app-text-input
+              [formControl]="registerForm.controls['firstName']"
+              [label]="'First name'"
+            ></app-text-input>
+          </div>
+          <div class="form-group my-4 px-4">
+            <label for="username">Last name</label>
+            <app-text-input
+              [formControl]="registerForm.controls['lastName']"
+              [label]="'Last name'"
+            ></app-text-input>
+          </div>
+          <div class="form-group my-4 px-4">
+            <label for="username">Phone number</label>
+            <app-text-input
+              [formControl]="registerForm.controls['phoneNumber']"
+              [label]="'Phone number'"
+            ></app-text-input>
+          </div>
+          <div class="form-group my-4 px-4">
+            <label for="username">Email</label>
+            <app-text-input
+              [formControl]="registerForm.controls['email']"
+              [label]="'Email'"
+            ></app-text-input>
+          </div>
+          <div class="form-group my-4 px-4">
+            <label for="username">Gender</label>
+            <select
+              class="form-select w-100"
+              [formControl]="registerForm.controls['gender']"
+            >
+              <option [value]="'male'">Male</option>
+              <option [value]="'female'">Female</option>
+              <option [value]="'other'">Other</option>
+            </select>
+          </div>
+          <div class="form-group my-4 px-4">
+            <label for="username">Date of birth</label>
+            <app-date-input
+              [formControl]="registerForm.controls['dateOfBirth']"
+              [label]="'Date of birth'"
+            >
+            </app-date-input>
+          </div>
+          <div class="my-4 px-4">
+            <button
+              [disabled]="loading && !registerForm.valid"
+              class="btn btn-dark py-2 mt-2 w-100"
+            >
+              <span
+                *ngIf="loading"
+                class="spinner-border spinner-border-sm mr-1"
+              ></span>
+              <h5 *ngIf="!loading" class="p-0 m-0">Sign in</h5>
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+  <div class="position-absolute ml-4 mt-2 logo">
+    <h1 class="text-dark font-brand text-uppercase cs-pointer" routerLink="/">Thyme</h1>
+  </div>
+</div>

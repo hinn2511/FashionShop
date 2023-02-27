@@ -1,0 +1,167 @@
+<div class="container-fluid px-0">
+  <div
+    class="row mx-auto w-100 product-list-container"
+    *ngIf="deviceTypeValue$ | async as deviceType"
+  >
+    <div
+      class="col-12 col-md-4 col-xl-3"
+      [class]="{
+        'mobile-filter': deviceType != 'desktop',
+        'fixed-top': deviceType != 'desktop',
+        'd-none': deviceType != 'desktop' && !showFilterMobile
+      }"
+      [@slideLeftToRight]
+    >
+      <!-- [@slideRightLeft] -->
+      <app-product-filter
+        #filterComponent
+        [productParams]="productParams"
+        [colorFilters]="colorFilters"
+        [selectedGender]="selectedGender"
+        [selectedCategory]="selectedCategory"
+        (apply)="filter($event)"
+        (close)="mobileFilterToggle()"
+      ></app-product-filter>
+    </div>
+    <div class="col-12 col-md-12 col-xl-9 px-0 px-lg-auto">
+      <div>
+        <app-breadcrumb
+          [breadCrumbList]="breadCrumb"
+          [showBackground]="true"
+        ></app-breadcrumb>
+
+        <div
+          class="d-flex flex-wrap p-1 justify-content-between align-items-center w-100"
+        >
+          <!-- Filter applied list -->
+          <div>
+            <button
+              class="btn btn-light mr-2 mb-2 mb-lg-0"
+              (click)="resetPriceRange()"
+              *ngIf="selectedPriceRange != null"
+            >
+              Price:&nbsp;{{ selectedPriceRange.priceRangeString }}
+              <i class="fa fa-times p-1"></i>
+            </button>
+            <button
+              class="btn btn-light mr-2 mb-2 mb-lg-0"
+              (click)="resetSize()"
+              *ngIf="selectedSize != null"
+            >
+              Size:&nbsp;{{ selectedSize.sizeName }}
+              <i class="fa fa-times p-1"></i>
+            </button>
+            <button
+              class="btn btn-light mb-2 mb-lg-0"
+              (click)="resetColor()"
+              *ngIf="selectedColor != null"
+            >
+              Color:&nbsp;&nbsp;
+              {{ selectedColor.colorName }}
+              <i class="fa fa-times p-1"></i>
+            </button>
+          </div>
+
+          <div class="w-100 text-right">
+            <button
+              class="btn btn-light mr-2"
+              (click)="mobileFilterToggle()"
+              *ngIf="deviceType != 'desktop'"
+            >
+              <div class="d-flex d-inline align-items-center">
+                <img
+                  class="icon mr-2"
+                  src="../../../assets/filter.svg"
+                  alt="filter-icon"
+                />
+                Filter
+              </div>
+            </button>
+
+            <!-- Order by filter  -->
+            <div class="btn-group text-right ml-auto filter-dropdown" dropdown>
+              <button
+                dropdownToggle
+                type="button"
+                class="btn btn-light dropdown-toggle"
+                aria-controls="dropdown-basic"
+              >
+                {{ selectedOrder }}
+              </button>
+              <ul
+                id="dropdown-basic"
+                *dropdownMenu
+                class="dropdown-menu dropdown-menu-right"
+                role="menu"
+                aria-labelledby="button-basic"
+              >
+                <li
+                  class="dropdown-item"
+                  *ngFor="let filterOrder of filterOrders"
+                >
+                  <a class="text-dark" (click)="sort(filterOrder.id)">{{
+                    filterOrder.filterName
+                  }}</a>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <!-- Skeleton loading -->
+        <div class="skeleton mt-2" *ngIf="skeletonLoading">
+          <div class="row w-100 mx-auto">
+            <div
+              *ngFor="let key of skeletonItems"
+              class="col-6 col-md-4 col-xl-3"
+            >
+              <div class="card card-img-wrapper border-0 mb-3 shadow-sm">
+                <div class="rect-img-container">
+                  <div class="rect-img skeleton-loading-container"></div>
+                </div>
+
+                <div class="card-body mt-3">
+                  <div
+                    class="skeleton-text skeleton-long-text skeleton-loading-container"
+                  ></div>
+                  <div
+                    class="mt-1 skeleton-text skeleton-short-text skeleton-loading-container"
+                  ></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Product card list -->
+        <div
+          class="row w-100 px-0 mx-0 mt-2 product-list"
+          *ngIf="!skeletonLoading"
+        >
+          <div
+            *ngFor="let product of products"
+            class="col-6 col-md-4 col-xl-3 px-2"
+          >
+            <app-product-card [product]="product"></app-product-card>
+          </div>
+        </div>
+
+        <!-- Pagination -->
+        <div class="d-flex justify-content-center mt-4" *ngIf="pagination">
+          <pagination
+            [boundaryLinks]="true"
+            [totalItems]="pagination.totalItems"
+            [itemsPerPage]="pagination.itemsPerPage"
+            [(ngModel)]="pagination.currentPage"
+            (pageChanged)="pageChanged($event)"
+            previousText="&#8249;"
+            nextText="&#8250;"
+            firstText="&#171;"
+            lastText="&#187;"
+          >
+          </pagination>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

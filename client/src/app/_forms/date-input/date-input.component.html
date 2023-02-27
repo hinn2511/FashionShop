@@ -8,8 +8,9 @@
         placeholder="{{label}}"
         bsDatepicker
         [bsConfig]='bsConfig'
-        [maxDate]='maxDate'>
+        [maxDate]='maxDate'
+        [minDate]='minDate'>
     <div *ngIf="ngControl.control.errors?.required" class="invalid-feedback">
-        {{label}} là bắt buộc
+        This field is required
     </div>
 </div>

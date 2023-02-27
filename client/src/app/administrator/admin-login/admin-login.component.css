@@ -3,7 +3,7 @@
   height: 100vh;
   display: flex;
   justify-content: center;
-  background: url(../../../assets/admin-login-cover.jpg) no-repeat center;
+  /* background: url(../../../assets/admin-login-cover.jpg) no-repeat center; */
   -webkit-background-size: cover;
   -moz-background-size: cover;
   -o-background-size: cover;

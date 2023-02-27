@@ -11,11 +11,11 @@
         </div>
         <div *ngIf="ngControl.control.errors?.minlength"
             class="invalid-feedback">
-            This field must have atleast {{ngControl.control.errors.minlength['requiredLength']}} characters
+            This field must have at least {{ngControl.control.errors.minlength['requiredLength'] - separatorCount}} characters
         </div>
         <div *ngIf="ngControl.control.errors?.maxlength"
             class="invalid-feedback">
-            This field can not have more than {{ngControl.control.errors.maxlength['requiredLength']}} characters
+            This field can not have more than {{ngControl.control.errors.maxlength['requiredLength' - separatorCount]}} characters
         </div>
         <div *ngIf="ngControl.control.errors?.pattern"
             class="invalid-feedback">

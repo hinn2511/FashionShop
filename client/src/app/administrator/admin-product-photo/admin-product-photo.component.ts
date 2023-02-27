@@ -1,6 +1,5 @@
-import { PhotoViewerItem } from './../../_models/product';
 import { ImageViewerModalComponent } from './../../_modals/image-viewer-modal/image-viewer-modal.component';
-import { Component, OnChanges, OnInit, SimpleChanges } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FileUploader } from 'ng2-file-upload';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 import { ProductImageModalComponent } from 'src/app/_modals/product-image-modal/product-image-modal.component';
@@ -8,13 +7,13 @@ import { IdArray } from 'src/app/_models/adminRequest';
 import {
   ManagerProduct,
   ManagerProductPhoto,
-  Product,
-  ProductPhoto,
 } from 'src/app/_models/product';
 import { AuthenticationService } from 'src/app/_services/authentication.service';
 import { ProductService } from 'src/app/_services/product.service';
 import { environment } from 'src/environments/environment';
-import { calculatePreviewOffset } from 'src/app/_common/function/global';
+import { ToastrService } from 'ngx-toastr';
+import { fnGetObjectStateString, fnGetObjectStateStyle } from 'src/app/_common/function/style-class';
+import { fnCalculatePreviewOffset } from 'src/app/_common/function/function';
 
 @Component({
   selector: 'app-admin-product-photo',
@@ -40,7 +39,8 @@ export class AdminProductPhotoComponent implements OnInit {
   constructor(
     private productService: ProductService,
     private authenticationService: AuthenticationService,
-    private modalService: BsModalService
+    private modalService: BsModalService,
+    private toastr: ToastrService
   ) {}
 
   ngOnInit(): void {
@@ -86,6 +86,7 @@ export class AdminProductPhotoComponent implements OnInit {
     };
     this.uploader.onSuccessItem = (item, response, status, headers) => {
       if (response) {
+        this.toastr.success("Product photos have been added", "Success");
         const photo: ManagerProductPhoto = JSON.parse(response);
         this.productPhotos.push(photo);
 
@@ -94,6 +95,9 @@ export class AdminProductPhotoComponent implements OnInit {
         //
       }
     };
+    this.uploader.onErrorItem  = (item, response, status, headers) => {
+      this.toastr.error("Something wrong happen!", "Error")
+    }
   }
 
   fileOverBase(e: any) {
@@ -115,11 +119,11 @@ export class AdminProductPhotoComponent implements OnInit {
       case 'delete':
         actionTitle = 'Recover photos of ' + product.productName;
         this.multipleSelected = true;
-        break;
+        break;          
       default:
         actionTitle = 'Choose main photo of ' + product.productName;
-        this.multipleSelected = false;
-        break;
+          this.multipleSelected = false;
+          break;
     }
     const config = {
       class: 'modal-dialog-centered',
@@ -151,6 +155,11 @@ export class AdminProductPhotoComponent implements OnInit {
               this.loadProductDetail(
                 this.productService.getSelectedProductId()
               );
+              this.toastr.success('Product photos have been hidden or unhidden', 'Success');
+            }, 
+            error => 
+            {
+              this.toastr.error("Something wrong happen!", 'Error');
             });
             break;
           case 'unhide':
@@ -160,6 +169,11 @@ export class AdminProductPhotoComponent implements OnInit {
                 this.loadProductDetail(
                   this.productService.getSelectedProductId()
                 );
+                this.toastr.success('Product photos have been hidden or unhidden', 'Success');
+              }, 
+              error => 
+              {
+                this.toastr.error("Something wrong happen!", 'Error');
               });
             break;
           case 'delete':
@@ -169,6 +183,11 @@ export class AdminProductPhotoComponent implements OnInit {
                 this.loadProductDetail(
                   this.productService.getSelectedProductId()
                 );
+                this.toastr.success('Product photos have been deleted', 'Success');
+              }, 
+              error => 
+              {
+                this.toastr.error("Something wrong happen!", 'Error');
               });
             break;
           default:
@@ -178,6 +197,11 @@ export class AdminProductPhotoComponent implements OnInit {
                 this.loadProductDetail(
                   this.productService.getSelectedProductId()
                 );
+                this.toastr.success('Product photo have been set to main', 'Success');
+              }, 
+              error => 
+              {
+                this.toastr.error("Something wrong happen!", 'Error');
               });
             break;
         }
@@ -189,7 +213,7 @@ export class AdminProductPhotoComponent implements OnInit {
     let index = this.productPhotos
       .map((el) => el.url)
       .indexOf(productPhoto.url);
-    var previewOffset = calculatePreviewOffset(
+    let previewOffset = fnCalculatePreviewOffset(
       this.productPhotos.length,
       this.maxPreviewItem,
       index
@@ -220,86 +244,36 @@ export class AdminProductPhotoComponent implements OnInit {
 
     product.productPhotos.forEach((productPhoto) => {
       switch (this.modalAction) {
+        case 'set-main':
         case 'hide':
           if (!productPhoto.isMain && productPhoto.status == 0) {
             productPhoto.checked = false;
-            productPhotos.push(productPhoto);
           }
           break;
         case 'unhide':
           if (!productPhoto.isMain && productPhoto.status == 1) {
             productPhoto.checked = false;
-            productPhotos.push(productPhoto);
           }
           break;
         case 'delete':
           if (!productPhoto.isMain && productPhoto.status != 2) {
             productPhoto.checked = false;
-            productPhotos.push(productPhoto);
           }
-          break;
+          break;            
         default:
-          if (!productPhoto.isMain && productPhoto.status == 0) {
-            productPhoto.checked = false;
-            productPhotos.push(productPhoto);
-          }
           break;
-      }
+        }
+        productPhotos.push(productPhoto);
     });
     return productPhotos;
   }
 
   getStateStyle() {
-    switch (this.product.status) {
-      case 0:
-        return 'width: 100px ;background-color: rgb(51, 155, 51)';
-      case 1:
-        return 'width: 100px ;background-color: rgb(124, 124, 124)';
-      default:
-        return 'width: 100px ;background-color: rgb(155, 51, 51)';
-    }
+    return fnGetObjectStateStyle(this.product.status);
   }
 
   getProductState() {
-    switch (this.product.status) {
-      case 0:
-        return 'Active';
-      case 1:
-        return 'Hidden';
-      default:
-        return 'Deleted';
-    }
+    return fnGetObjectStateString(this.product.status);
   }
 
-  // private calculatePreviewThumbnail(index: number) {
-  //   this.leftOffset = 0;
-  //   this.rightOffset = 0;
-  //   index++;
-
-  //   if (this.productPhotos.length < this.maxPreviewItem) {
-  //     this.leftOffset = 0;
-  //     this.rightOffset = this.maxPreviewItem;
-  //     return;
-  //   }
-
-  //   if (index <= this.maxPreviewItem) {
-  //     this.leftOffset = 0;
-  //     this.rightOffset = this.maxPreviewItem;
-  //     return;
-  //   }
-
-  //   if (index > this.productPhotos.length - this.maxPreviewItem) {
-  //     this.leftOffset = this.productPhotos.length - this.maxPreviewItem;
-  //     this.rightOffset = this.productPhotos.length;
-  //     return;
-  //   }
-
-  //   if (this.maxPreviewItem % 2 == 0) {
-  //     this.leftOffset = index - this.maxPreviewItem / 2;
-  //     this.rightOffset = this.leftOffset + this.maxPreviewItem + 1;
-  //   } else {
-  //     this.leftOffset = index - this.maxPreviewItem / 2;
-  //     this.rightOffset = this.leftOffset + this.maxPreviewItem;
-  //   }
-  // }
 }

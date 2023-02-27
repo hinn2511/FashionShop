@@ -1,0 +1,17 @@
+.product-slide {
+  min-width: 250px;
+  max-width: 250px;
+}
+
+.product-carousel-container {
+  overflow-x: scroll;
+  max-width: 100%;
+}
+
+
+.btn-scroll
+{
+  padding: 0;
+  height: 50px;
+  width: 50px;
+}

@@ -1,0 +1,322 @@
+<div class="container-fluid py-3" *ngIf="order">
+  <div class="py-1">
+    <button class="btn btn-light" routerLink="/administrator/order-manager">
+      <em class="fa fa-arrow-left"></em>&nbsp;&nbsp;Back
+    </button>
+  </div>
+  <div
+    class="my-2 d-flex d-inline-block flex-wrap justify-content-between align-items-center"
+  >
+    <div>
+      <div class="my-2 d-flex d-inline-block flex-wrap align-items-center">
+        <h5 class="p-0 my-0 mr-2">Order:&nbsp;#{{ order.externalId }}</h5>
+        <div
+          class="btn my-auto p-1 mr-lg-2"
+          [class]="getOrderStateStyle(order.currentStatus)"
+        >
+          <h6 class="m-0 p-0">
+            {{ getOrderStateString(order.currentStatus) }}
+          </h6>
+        </div>
+      </div>
+      <p class="m-0 p-0">
+        Date created:&nbsp;{{ order.dateCreated | date : "medium" }}
+      </p>
+    </div>
+    <div>
+      <button
+        class="btn btn-light mr-2"
+        *ngIf="showVerifyButton"
+        (click)="verifyingOrder()"
+      >
+        Verify
+      </button>
+
+      <button
+        class="btn btn-light mr-2"
+        *ngIf="showShippingButton"
+        (click)="deliveringOrder()"
+      >
+        Delivering
+      </button>
+
+      <button
+        class="btn btn-light mr-2"
+        *ngIf="showShippedButton"
+        (click)="orderDelivered()"
+      >
+        Delivered
+      </button>
+
+      <button
+        class="btn btn-light mr-2"
+        *ngIf="showAcceptReturnButton"
+        (click)="acceptReturn()"
+      >
+        Return accepted
+      </button>
+
+      <button
+        class="btn btn-danger mr-2"
+        *ngIf="showAcceptCancelButton"
+        (click)="acceptCancel()"
+      >
+        Cancel accepted
+      </button>
+
+      <button
+        class="btn btn-danger"
+        *ngIf="showCancelButton"
+        (click)="cancelOrder()"
+      >
+        Cancel
+      </button>
+    </div>
+  </div>
+
+  <div class="row my-2">
+    <div class="col-12 col-lg-8">
+      <div class="card border-0 p-3 p-lg-4">
+        <div class="d-flex d-inline-block align-items-center my-4">
+          <h6 class="text-muted p-0 my-auto mr-2">Items</h6>
+          <hr class="flex-fill my-auto" style="height: 2px" />
+        </div>
+        <div class="table-responsive w-100">
+          <table
+            class="table table-striped table-hover border"
+            aria-label="order-table"
+          >
+            <thead class="bg-light">
+              <tr>
+                <th class="text-center">Id</th>
+                <th>Product</th>
+                <th class="text-center">Price</th>
+                <th class="text-center">Quantity</th>
+                <th class="text-center">Total price</th>
+                <th class="text-center" *ngIf="order.currentStatus == 1">
+                  Quantity available
+                </th>
+                <th class="text-center" *ngIf="order.currentStatus == 1">
+                  Quantity after deduction
+                </th>
+              </tr>
+            </thead>
+
+            <tbody>
+              <tr
+                class="order-item"
+                *ngFor="let orderDetail of order.orderDetails"
+              >
+                <td class="text-center">
+                  {{ orderDetail.id }}
+                </td>
+                <td class="cart-item-detail">
+                  <div class="row">
+                    <!-- Item image on desktop -->
+                    <div class="col-6 col-md-4 pl-0">
+                      <div class="rect-img-container pr-lg-3">
+                        <img
+                          class="rect-img"
+                          src="{{ orderDetail.url }}"
+                          alt=""
+                        />
+                      </div>
+                    </div>
+                    <!-- Item detail (name, size, color) on desktop -->
+                    <div class="col-6 col-md-8 pl-0 my-auto va-middle">
+                      <h6 class="p-0 m-0 text-dark fw-bold cs-pointer">
+                        {{ orderDetail.productName }}
+                      </h6>
+                      <p class="m-0 p-0 fw-smaller">
+                        Color:&nbsp;{{ orderDetail.colorName }}
+                      </p>
+                      <p class="m-0 p-0 fw-smaller">
+                        Size:&nbsp;{{ orderDetail.sizeName }}
+                      </p>
+                    </div>
+                  </div>
+                </td>
+                <td class="text-center">
+                  {{ orderDetail.price | currency }}
+                </td>
+                <td class="text-center">
+                  {{ orderDetail.quantity }}
+                </td>
+                <td class="text-center">
+                  {{ orderDetail.total | currency }}
+                </td>
+                <td class="text-center" *ngIf="order.currentStatus == 1">
+                  {{ orderDetail.stockAvailable }}
+                </td>
+                <td
+                  *ngIf="order.currentStatus == 1"
+                  class="text-center"
+                  [class]="{
+                    'text-danger': orderDetail.stockAfterDeduction <= 0,
+                    'text-success': orderDetail.stockAfterDeduction > 0
+                  }"
+                >
+                  {{ orderDetail.stockAfterDeduction }}
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="row mt-2">
+          <div class="col-6">
+            <div class="d-flex">
+              <div class="bd-highlight">Subtotal</div>
+              <div class="flex-fill text-right">
+                {{ order.subTotal | currency }}
+              </div>
+            </div>
+            <div class="d-flex mt-2">
+              <div class="bd-highlight">Discount</div>
+              <div class="flex-fill text-right">
+                {{ 0 | currency }}
+              </div>
+            </div>
+            <div class="d-flex mt-2">
+              <div class="bd-highlight text-muted fw-smaller">
+                Promotion applied
+              </div>
+              <div
+                class="flex-fill text-right text-muted fw-smaller text-uppercase"
+              >
+                PROMOTIONS2022
+              </div>
+            </div>
+            <div class="d-flex mt-2">
+              <div class="bd-highlight">Tax</div>
+              <div class="flex-fill text-right">
+                {{ order.tax | currency }}
+              </div>
+            </div>
+            <div class="d-flex mt-2">
+              <div class="bd-highlight">Shipping fee</div>
+              <div class="flex-fill text-right">
+                {{ order.shippingFee | currency }}
+              </div>
+            </div>
+          </div>
+          <div class="col-6">
+            <div class="d-flex">
+              <div class="bd-highlight fw-bold">Total item</div>
+              <div class="flex-fill text-right fw-bold">
+                {{ order.totalItem }}&nbsp;item(s)
+              </div>
+            </div>
+            <div class="d-flex mt-2">
+              <div class="bd-highlight fw-bold">Total price</div>
+              <div class="flex-fill text-right fw-bold">
+                {{ order.totalPrice | currency }}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="card border-0 p-3 p-lg-4 mt-2">
+        <div class="d-flex d-inline-block align-items-center my-4">
+          <h6 class="text-muted p-0 my-auto mr-2">History</h6>
+          <hr class="flex-fill my-auto" style="height: 2px" />
+        </div>
+
+        <div class="mb-3" *ngFor="let item of order.orderHistories">
+          <div class="d-flex d-inline-block align-items-center">
+            <div class="flex-shrink mr-2">
+              <div
+                class="btn my-auto p-1"
+                [class]="getOrderStateStyle(item.orderStatus)"
+              >
+                <h6 class="m-0 p-0">
+                  {{ getOrderStateString(item.orderStatus) }}
+                </h6>
+              </div>
+            </div>
+            <div class="flex-fill">
+              <p class="m-0 p-0">
+                {{ item.historyDescription }}
+              </p>
+              <p class="m-0 p-0 text-muted fw-smaller">
+                {{ item.dateCreated | date : "medium" }}
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-12 col-lg-4 mt-2 mt-lg-0">
+      <div class="card border-0 p-3 p-lg-4">
+        <div class="d-flex d-inline-block align-items-center my-4">
+          <h6 class="text-muted p-0 my-auto mr-2">User information</h6>
+          <hr class="flex-fill my-auto" style="height: 2px" />
+        </div>
+        <p class="m-0 p-0">
+          Full name:&nbsp;{{ order.firstName }}&nbsp;{{ order.lastName }}
+        </p>
+        <div class="d-flex d-inline-block align-items-center my-4">
+          <h6 class="text-muted p-0 my-auto mr-2">Order information</h6>
+          <hr class="flex-fill my-auto" style="height: 2px" />
+        </div>
+        <label for="receiverName">Receiver name</label>
+        <input
+          class="form-control"
+          type="text"
+          [value]="order.receiverName"
+          [readOnly]="true"
+        />
+
+        <label for="receiverName">Address</label>
+        <input
+          class="form-control"
+          type="text"
+          [value]="order.address"
+          [readOnly]="true"
+        />
+
+        <label for="receiverName">Phone number</label>
+        <input
+          class="form-control"
+          type="text"
+          [value]="order.phoneNumber"
+          [readOnly]="true"
+        />
+
+        <label for="receiverName">Email</label>
+        <input
+          class="form-control"
+          type="text"
+          [value]="order.email"
+          [readOnly]="true"
+        />
+
+        <div class="d-flex d-inline-block align-items-center my-4">
+          <h6 class="text-muted p-0 my-auto mr-2">Delivery</h6>
+          <hr class="flex-fill my-auto" style="height: 2px" />
+        </div>
+
+        <label for="receiverName">Shipping method</label>
+        <input
+          class="form-control"
+          type="text"
+          [value]="order.shippingMethod"
+          [readOnly]="true"
+        />
+
+        <div class="d-flex d-inline-block align-items-center my-4">
+          <h6 class="text-muted p-0 my-auto mr-2">Payment</h6>
+          <hr class="flex-fill my-auto" style="height: 2px" />
+        </div>
+
+        <label for="receiverName">Payment method</label>
+        <input
+          class="form-control"
+          type="text"
+          [value]="order.paymentMethodString"
+          [readOnly]="true"
+        />
+      </div>
+    </div>
+  </div>
+</div>

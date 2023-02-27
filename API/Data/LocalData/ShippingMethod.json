@@ -1,0 +1,23 @@
+[
+    {
+        "Id": 0,
+        "Name": "Fast delivery",
+        "MinDate": 1,
+        "MaxDate": 3,
+        "Fee": 30
+      },
+      {
+        "Id": 1,
+        "Name": "Normal delivery",
+        "MinDate": 3,
+        "MaxDate": 5,
+        "Fee": 20
+      },
+      {
+        "Id": 2,
+        "Name": "Economic delivery",
+        "MinDate": 5,
+        "MaxDate": 7,
+        "Fee": 10
+      }
+]

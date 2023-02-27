@@ -1,0 +1,83 @@
+<!-- carousel -->
+<div class="w-100 px-0 mx-0" *ngIf="carousels">
+  <div class="carousel position-relative">
+    <ng-container *ngFor="let slide of carousels; let i = index">
+      <div
+        class="cs-pointer carousel-image-container"
+        *ngIf="i === currentSlideIndex"
+      >
+        <img
+          [src]="slide.imageUrl"
+          class="carousel-content carousel-image"
+          [@slide]="{
+            value: '',
+            params: { startPos: startPos, endPos: endPos }
+          }"
+          alt="editor-choice"
+        />
+
+        <img
+          [src]="currentUrl"
+          class="carousel-content"
+          [class]="{
+            'carousel-image-next': action == 'next',
+            'carousel-image-prev': action == 'prev'
+          }"
+          [@slide]="{
+            value: '',
+            params: { startPos: startPos, endPos: endPos }
+          }"
+          alt="editor-choice"
+        />
+        <div
+          class="carousel-content carousel-text text-dark"
+          [@slide]="{
+            value: '',
+            params: { startPos: startPos, endPos: endPos }
+          }"
+        >
+          <h1 class="carousel-title bg-light p-2 p-lg-3 mb-0">
+            {{ slide.title }}
+          </h1>
+          <p class="carousel-description bg-light p-2 p-lg-3">
+            {{ slide.description }}
+          </p>
+        </div>
+      </div>
+    </ng-container>
+    <button class="carousel-control carousel-prev">
+      <span
+        class="carousel-arrow carousel-arrow-left carousel-arrow-light"
+      ></span>
+    </button>
+    <button class="carousel-control carousel-next">
+      <span
+        class="carousel-arrow carousel-arrow-right carousel-arrow-light"
+      ></span>
+    </button>
+
+    <button class="carousel-control carousel-prev" (click)="onPreviousClick()">
+      <span
+        class="carousel-arrow carousel-arrow-left carousel-arrow-light"
+      ></span>
+    </button>
+    <button class="carousel-control carousel-next" (click)="onNextClick()">
+      <span
+        class="carousel-arrow carousel-arrow-right carousel-arrow-light"
+      ></span>
+    </button>
+  </div>
+  <div
+    class="carousel-indicator-container w-100 mt-2 px-2 d-flex d-inline-block align-items-center justify-content-center"
+  >
+    <div
+      (click)="viewSlide(i)"
+      class="cs-pointer carousel-indicator"
+      [class]="{
+        'carousel-indicator-inactive': i != currentSlideIndex,
+        'carousel-indicator-active': i == currentSlideIndex
+      }"
+      *ngFor="let slide of carousels; let i = index"
+    ></div>
+  </div>
+</div>

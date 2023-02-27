@@ -10,3 +10,8 @@ div > ul {
 div > input {
     background-color: rgb(235, 235, 235);
 }
+
+.bg-light-1
+{
+    background-color: #c3c5c73d;
+}

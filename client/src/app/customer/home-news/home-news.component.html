@@ -1,0 +1,57 @@
+<div class="container-fluid" *ngIf="news && expandedNew">
+  <h3 class="text-uppercase">What's new in this week</h3>
+  <div class="row mt-3 mt-lg-5">
+    <div class="col-12 col-lg-8 px-lg-0 bg-light">
+      <div *ngFor="let item of news">
+        <div
+          class="top-new cs-pointer w-100 position-relative"
+          *ngIf="expandedNew.id === item.id"
+          [@fadeIn]="{ value: '', params: { time: '500ms' } }"
+          [ngStyle]="{
+            'background-image': 'url(' + expandedNew.thumbnailUrl + ')'
+          }"
+          (click)="viewDetail(expandedNew)"
+        >
+          <div class="position-absolute top-new-text bg-light">
+            <h3 class="top-new-title text-cursive p-2 p-lg-3 mb-0">
+              {{ expandedNew.headline }}
+            </h3>
+            <p class="top-new-description p-2 p-lg-3 mb-0">
+              {{ expandedNew.foreword }}
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-12 col-lg-4 px-lg-0 bg-light">
+      <div class="new-list d-flex flex-column justify-content-between">
+        <div>
+          <div
+            [class]="{
+              'bg-selected': expandedNew.id == item.id
+            }"
+            class="w-100 cs-pointer p-3 pb-lg-4"
+            routerLink=""
+            *ngFor="let item of news"
+            (click)="viewDetail(item)"
+            (mouseenter)="expand(item)"
+          >
+            <p class="fw-smaller text-muted p-0 m-0">
+              {{ getContentType(item.contentType) }}
+            </p>
+            <h5>
+              {{ item.headline }}
+            </h5>
+            <p>
+              By {{ item.publishedBy }} at
+              {{ item.publishedDate | date : "medium" }}
+            </p>
+          </div>
+        </div>
+        <div class="text-right p-3">
+          <a class="text-muted" routerLink="/news">View all</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

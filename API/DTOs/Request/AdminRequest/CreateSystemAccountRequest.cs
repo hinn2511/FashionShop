@@ -25,6 +25,6 @@ namespace API.DTOs.Request.AdminRequest
         public string Email { get; set; }
 
         [Required]
-        public string Roles { get; set; }
+        public string RoleName { get; set; }
     }
 }

@@ -4,8 +4,11 @@ namespace API.DTOs.ProductOptionRequest
 {
     public class ProductOptionRequest
     {
-        public int SizeId { get; set; }
-        public int ColorId { get; set; }
+        public int ProductId { get; set; }
+        public string SizeName { get; set; }
+        public string ColorCode { get; set; }
+        public string ColorName { get; set; }
+        public double AdditionalPrice { get; set; }
     }
 
     public class CreateProductOptionRequest : ProductOptionRequest

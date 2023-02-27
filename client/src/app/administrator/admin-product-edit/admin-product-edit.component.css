@@ -1,0 +1,8 @@
+@media (max-width: 768px) {
+}
+
+@media (min-width: 992px) {
+  .editor {
+    max-width: 1400px;
+  }
+}

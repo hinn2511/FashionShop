@@ -1,0 +1,42 @@
+<div
+  class="color-option-container rounded-circle d-flex d-inline-block cs-pointer"
+  [ngStyle]="{ 'background-color': colorCode }"
+  [class]="{
+    'color-option-selected': isSelected,
+    'shadow-sm': isSelected,
+    'color-option-unselected': !isSelected,
+    disabled: isDisabled
+  }"
+  (click)="selectColor()"
+>
+  <div class="color-option-check-container rounded-circle position-relative">
+    <div class="color-option-check rounded-circle position-absolute" *ngIf="isSelected">
+      <i class="fa fa-check"></i>
+    </div>
+  </div>
+</div>
+
+
+<!-- <div
+  class="color-option-container d-flex d-inline-block cs-pointer"
+  [ngStyle]="{ 'background-color': colorCode }"
+  [class]="{
+    'color-option-selected': isSelected,
+    'shadow-sm': isSelected,
+    'color-option-unselected': !isSelected,
+    disabled: isDisabled
+  }"
+  (click)="selectColor()"
+>
+  <div
+    *ngIf="!isShowColorOnly"
+    class="color-option-name d-flex align-items-center justify-content-center px-2 py-1"
+  >
+    <p class="p-0 m-0">{{ colorName }}</p>
+  </div>
+  <div class="color-option-check-container position-relative">
+    <div class="color-option-check position-absolute" *ngIf="isSelected">
+      <i class="fa fa-check"></i>
+    </div>
+  </div>
+</div> -->

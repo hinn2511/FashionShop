@@ -1,0 +1,47 @@
+<div class="container-fluid p-0">
+  <div *ngIf="editorChoiceSlides.length > 0">
+    <app-news-carousel [carousels]="editorChoiceSlides"></app-news-carousel>
+  </div>
+  <div class="content d-flex justify-content-center">
+    <div class="row w-100 p-0">
+      <div class="col-12 col-lg-9 p-lg-5">
+        <h4 class="fw-bolder mb-3 pl-2">What's new</h4>
+        <div class="row p-0 m-0 w-100" *ngIf="articles">
+          <div class="col-12 col-md-4 mb-5" *ngFor="let article of articles">
+            <app-news-card [article]="article"></app-news-card>
+          </div>
+        </div>
+        <div class="d-flex justify-content-center mt-4" *ngIf="pagination">
+          <pagination
+            [boundaryLinks]="true"
+            [totalItems]="pagination.totalItems"
+            [itemsPerPage]="pagination.itemsPerPage"
+            [(ngModel)]="pagination.currentPage"
+            (pageChanged)="pageChanged($event)"
+            previousText="&#8249;"
+            nextText="&#8250;"
+            firstText="&#171;"
+            lastText="&#187;"
+          >
+          </pagination>
+        </div>
+      </div>
+      <div class="col-12 col-lg-3 p-3 p-lg-0">
+        <h4 class="fw-bolder mb-5 border-danger border-bottom">Trending now</h4>
+
+        <div class="mb-5 px-2" *ngFor="let article of trendingArticles" (click)="viewDetail(article)">
+          <p class="fw-smaller text-muted p-2 m-0 bg-light">
+            {{ getContentTypeString(article) }}
+          </p>
+          <div class="cs-pointer">
+            <h5 class="fw-bolder mt-2 ml-1">{{ article.headline }}</h5>
+            <p class="text-muted mt-3 ml-1 mb-1">{{ article.publishedBy }}</p>
+            <p class="fw-smaller text-muted ml-1">
+              {{ article.publishedDate | date : "medium" }}
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

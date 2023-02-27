@@ -24,10 +24,10 @@ namespace API.Extensions
                 opt.Password.RequireNonAlphanumeric = false;
             })
                 .AddDefaultTokenProviders()
-                .AddRoles<AppRole>()
-                .AddRoleManager<RoleManager<AppRole>>()
+                .AddRoles<AppPermission>()
+                .AddRoleManager<RoleManager<AppPermission>>()
                 .AddSignInManager<SignInManager<AppUser>>()
-                .AddRoleValidator<RoleValidator<AppRole>>()
+                .AddRoleValidator<RoleValidator<AppPermission>>()
                 .AddEntityFrameworkStores<DataContext>();
 
             services
@@ -78,14 +78,6 @@ namespace API.Extensions
                 //     };
                 // })
                 ;
-
-            services.AddAuthorization(opt =>
-           {
-               opt.AddPolicy("BusinessOnly", policy => policy.RequireAuthenticatedUser().RequireRole("Admin", "Manager"));
-               opt.AddPolicy("AdminOnly", policy => policy.RequireAuthenticatedUser().RequireRole("Admin"));
-               opt.AddPolicy("ManagerOnly", policy => policy.RequireAuthenticatedUser().RequireRole("Manager"));
-               opt.AddPolicy("CustomerOnly", policy => policy.RequireAuthenticatedUser().RequireRole("Customer"));
-           });
 
             return services;
         }

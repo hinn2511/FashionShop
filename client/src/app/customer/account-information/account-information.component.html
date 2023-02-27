@@ -1,0 +1,85 @@
+<div class="container-fluid">
+  <h4 class="card-title">My information</h4>
+  <form
+    [formGroup]="accountInformationForm"
+    (ngSubmit)="accountInformationForm.valid && updateAccountInformation()"
+    autocomplete="off"
+  >
+    <label for="firstName">First name</label>
+    <app-text-input
+      [formControl]="accountInformationForm.controls['firstName']"
+      [label]="'First name'"
+    >
+    </app-text-input>
+
+    <label for="lastName">Last name</label>
+    <app-text-input
+      [formControl]="accountInformationForm.controls['lastName']"
+      [label]="'Last name'"
+    >
+    </app-text-input>
+
+    <label for="email">Email</label>
+    <app-text-input
+      [formControl]="accountInformationForm.controls['email']"
+      [label]="'Email'"
+    >
+    </app-text-input>
+
+    <label for="phoneNumber">Phone number</label>
+    <app-text-input
+      [formControl]="accountInformationForm.controls['phoneNumber']"
+      [label]="'Phone number'"
+    >
+    </app-text-input>
+
+    <label for="gender">Gender</label>
+
+    <div class="form-group">
+      <select
+        class="form-select w-100"
+        [formControl]="accountInformationForm.controls['gender']"
+      >
+        <option [value]="'male'">Male</option>
+        <option [value]="'female'">Female</option>
+        <option [value]="'other'">Other</option>
+      </select>
+    </div>
+
+    <label for="dateOfBirth">Date of birth</label>
+    <app-date-input
+      [formControl]="accountInformationForm.controls['dateOfBirth']"
+      [label]="'Date of birth'"
+    >
+    </app-date-input>
+
+    <div class="form-group text-right">
+      <button
+        *ngIf="isEditMode"
+        (click)="cancelEdit()"
+        class="btn btn-danger mr-2"
+        name="cancel"
+        type="button"
+      >
+        <span><i class="fa fa-times"></i></span>&nbsp;Cancel
+      </button>
+      <button
+        *ngIf="isEditMode"
+        class="btn btn-success mr-2"
+        name="save"
+        type="submit"
+      >
+        <span><i class="fa fa-check"></i></span>&nbsp;Save
+      </button>
+      <button
+        *ngIf="!isEditMode"
+        (click)="editModeToggle()"
+        class="btn btn-primary"
+        name="edit"
+        type="button"
+      >
+        <span><i class="fa fa-pencil"></i></span>&nbsp;Edit
+      </button>
+    </div>
+  </form>
+</div>

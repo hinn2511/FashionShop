@@ -7,34 +7,47 @@ namespace API.DTOs.Response.CategoryResponse
 {
     public class CategoryResponse
     {
+        public string Slug { get; set; }
         public string CategoryName { get; set; }
+        public int ParentId { get; set; }
         public Gender Gender { get; set; }
+        public string CategoryImageUrl { get; set; }
     }
 
     #region customer
 
-    public class CustomerCategoryResponse : CategoryResponse
+      public class CustomerCategoryByGenderResponse
     {
-        public List<CustomerSubCategoryResponse> SubCategories { get; set; }
+        public Gender Gender { get; set; }
+        public string GenderTitle { get; set; }
+        public List<CustomerCategoryResponse> Categories { get; set; }
     }
 
-    public class CustomerSubCategoryResponse
+    public class CustomerCategoryResponse : CategoryResponse
     {
-        public string CategoryName { get; set; }
+        public List<CustomerCategoryResponse> SubCategories { get; set; }
     }
+
+    public class CustomerSingleCategoryResponse : CategoryResponse
+    {
+        public CustomerSingleCategoryResponse Parent { get; set; }
+    }
+
+
     #endregion
 
     #region manager
     public class AdminCategoryResponse : CategoryResponse
     {
+        public string GenderName { get; set; }
         public Status Status { get; set; }
         public int Id { get; set; }
+        public string ParentCategory { get; set; }
+        public bool IsPromoted { get; set; }
     }
 
-    public class AdminCategoryDetailResponse : CategoryResponse
+    public class AdminCategoryDetailResponse : AdminCategoryResponse
     {
-        public int Id { get; set; }
-        public Status Status { get; set; }
         public DateTime DateCreated { get; set; }
         public int CreatedByUserId { get; set; }
         public DateTime LastUpdated { get; set; }
@@ -52,5 +65,20 @@ namespace API.DTOs.Response.CategoryResponse
         public string CategoryName { get; set; }
         public Status Status { get; set; }
     }
+
+    public class AdminCatalogueResponse
+    {
+        public Gender Gender { get; set; }
+        public string GenderTitle { get; set; }
+        public List<AdminCatalogueCategoryResponse> Categories { get; set; }
+    }
+
+
+    public class AdminCatalogueCategoryResponse : CategoryResponse
+    {
+        public int Id { get; set; }
+        public List<AdminCatalogueCategoryResponse> SubCategories { get; set; }
+    }
+
     #endregion
 }

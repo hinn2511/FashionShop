@@ -29,52 +29,38 @@ namespace API.Data
         }
 
         public async Task<PagedList<Product>> GetUserFavoriteProductsAsync(int userId, CustomerProductParams productParams)
-        {   
-            var userLikes = await _context.UserLikes.Where(x => x.UserId == userId).ToListAsync();
+        {
+            var userLikes = await _context.UserLikes.Where(x => x.UserId == userId).OrderByDescending(x => x.DateCreated).ToListAsync();
 
             var query = _context.Products.AsQueryable();
 
             query = query.Where(x => userLikes.Select(x => x.ProductId).Contains(x.Id));
 
             query = query.Where(x => x.Status != Status.Hidden && x.Status != Status.Deleted);
-            
-            if(productParams.Gender != null)
-                query = query.Where(p => p.Category.Gender == productParams.Gender);
 
-            if(productParams.Category != null)
-                query = query.Where(p => p.Category.CategoryName == productParams.Category);
-
-            if(!string.IsNullOrEmpty(productParams.Query))
-            {   
-                var words = productParams.Query.RemoveSpecialCharacters().ToUpper().Split(" ").Distinct();
-                foreach(var word in words)
-                {
-                    query = query.Where(x => x.ProductName.ToUpper().Contains(word));
-                }
-            }
-
-            if (productParams.OrderBy == OrderBy.Ascending) 
+            if (productParams.OrderBy == OrderBy.Ascending)
             {
                 query = productParams.Field switch
                 {
-                    "DateCreated" => query.OrderBy(p => p.DateCreated),
-                    "Price" => query.OrderBy(p => p.Price),
-                    "Name" => query.OrderBy(p => p.ProductName),
-                    _ => query.OrderBy(p => p.Sold)
+                    "dateCreated" => query.OrderBy(p => p.DateCreated),
+                    "price" => query.OrderBy(p => p.Price),
+                    "name" => query.OrderBy(p => p.ProductName),
+                    _ => query
                 };
             }
             else
             {
                 query = productParams.Field switch
                 {
-                    "DateCreated" => query.OrderByDescending(p => p.DateCreated),
-                    "Price" => query.OrderByDescending(p => p.Price),
-                    "Name" => query.OrderByDescending(p => p.ProductName),
-                    _ => query.OrderByDescending(p => p.Sold)
+                    "dateCreated" => query.OrderByDescending(p => p.DateCreated),
+                    "price" => query.OrderByDescending(p => p.Price),
+                    "name" => query.OrderByDescending(p => p.ProductName),
+                    _ => query
                 };
             }
 
-            query = query.Include(x => x.ProductPhotos.Where(x => x.Status == Status.Active));            
+
+            query = query.Include(x => x.ProductPhotos.Where(x => x.Status == Status.Active));
 
             return await PagedList<Product>.CreateAsync(query, productParams.PageNumber, productParams.PageSize);
         }
@@ -82,7 +68,7 @@ namespace API.Data
 
     #endregion
 
-    #region user like
+    #region user
     public class UserRepository : GenericRepository<AppUser>, IUserRepository
     {
         public UserRepository(DataContext context, DbSet<AppUser> set) : base(context, set)
@@ -90,10 +76,26 @@ namespace API.Data
         }
     }
 
+    public class AppRoleRepository : GenericRepository<AppRole>, IAppRoleRepository
+    {
+        public AppRoleRepository(DataContext context, DbSet<AppRole> set) : base(context, set)
+        {
+        }
+    }
+
+
+    public class AppRolePermissionRepository : GenericRepository<AppRolePermission>, IAppRolePermissionRepository
+    {
+        public AppRolePermissionRepository(DataContext context, DbSet<AppRolePermission> set) : base(context, set)
+        {
+        }
+    }
+
+
     #endregion
 
 
-   #region cart
+    #region cart
     public class CartRepository : GenericRepository<Cart>, ICartRepository
     {
         private readonly DataContext _context;
@@ -107,9 +109,7 @@ namespace API.Data
         {
             return await _context.Carts
                         .Where(x => x.UserId == userId)
-                        .Include(x => x.Option).ThenInclude(o => o.Product)
-                        .Include(x => x.Option).ThenInclude(o => o.Color)
-                        .Include(x => x.Option).ThenInclude(o => o.Size)
+                        .Include(x => x.Option).ThenInclude(o => o.Product).ThenInclude(x => x.ProductPhotos)
                         .OrderByDescending(x => x.DateCreated)
                         .AsNoTracking()
                         .ToListAsync();

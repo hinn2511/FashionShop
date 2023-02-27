@@ -1,0 +1,448 @@
+<div class="container-fluid px-3">
+  <!-- Section content -->
+  <div class="d-flex flex-wrap w-100 mb-2">
+    <!-- Search bar -->
+    <div class="mr-auto w-sm-100">
+      <div class="input-group mb-1">
+        <button
+          class="btn btn-light btn-search-filter"
+          type="button"
+          id="button-addon2"
+        >
+          Product ID
+          <span><i class="fa fa-caret-down"></i></span>
+        </button>
+        <input
+          [(ngModel)]="articleParams.query"
+          type="text"
+          (ngModelChange)="loadArticles()"
+          class="form-control"
+          placeholder="Article..."
+          aria-describedby="button-addon2"
+          (keydown.enter)="loadArticles()"
+        />
+
+        <div class="input-group-append">
+          <button
+            class="btn btn-primary"
+            type="button"
+            id="button-addon2"
+            (click)="loadArticles()"
+          >
+            <span><i class="fa fa-search"></i></span>&nbsp; Search
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Content type filter button -->
+    <div class="position-relative mr-2">
+      <button
+        class="btn btn-light status-button"
+        (click)="contentTypeFilterToggle()"
+      >
+        Type:&nbsp;&nbsp;<span class="badge text-light bg-primary">{{
+          articleParams.contentTypes.length
+        }}</span
+        >&nbsp;&nbsp;<span><i class="fa fa-caret-down"></i></span>
+      </button>
+
+      <div
+        class="position-absolute mt-3 status-dropdown"
+        *ngIf="showContentTypeFilter"
+      >
+        <ul class="list-group">
+          <li class="list-group-item">
+            <div class="custom-control custom-checkbox">
+              <input
+                type="checkbox"
+                class="custom-control-input cs-pointer"
+                id="allContentType"
+                (click)="selectAllArticleContentType()"
+                [checked]="isAllContentTypeIncluded()"
+              />
+              <label class="custom-control-label" for="allContentType"
+                >Select all</label
+              >
+            </div>
+          </li>
+
+          <li class="list-group-item" *ngFor="let type of articleTypes">
+            <div class="custom-control custom-checkbox">
+              <input
+                type="checkbox"
+                class="custom-control-input cs-pointer"
+                id="{{ type.name }}"
+                (click)="selectContentType(type.id)"
+                [checked]="isContentTypeIncluded(type.id)"
+              />
+              <label class="custom-control-label" for="{{ type.name }}">{{
+                type.name
+              }}</label>
+            </div>
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Status filter button -->
+    <div class="position-relative">
+      <button
+        class="btn btn-light status-button"
+        (click)="statusFilterToggle()"
+      >
+        Status&nbsp;&nbsp;<span class="badge text-light bg-primary">{{
+          articleParams.articleStatus.length
+        }}</span
+        >&nbsp;&nbsp;<span><i class="fa fa-caret-down"></i></span>
+      </button>
+
+      <div
+        class="position-absolute mt-3 status-dropdown"
+        *ngIf="showStatusFilter"
+      >
+        <ul class="list-group">
+          <li class="list-group-item">
+            <div class="custom-control custom-checkbox">
+              <input
+                type="checkbox"
+                class="custom-control-input cs-pointer"
+                id="customCheck1"
+                (click)="selectAllArticleStatus()"
+                [checked]="isAllStatusIncluded()"
+              />
+              <label class="custom-control-label" for="customCheck1"
+                >Select all</label
+              >
+            </div>
+          </li>
+
+          <li class="list-group-item" *ngFor="let status of genericStatus">
+            <div class="custom-control custom-checkbox">
+              <input
+                type="checkbox"
+                class="custom-control-input cs-pointer"
+                id="{{ status.name }}"
+                (click)="selectStatus(status.id)"
+                [checked]="isStatusIncluded(status.id)"
+              />
+              <label class="custom-control-label" for="{{ status.name }}">{{
+                status.name
+              }}</label>
+            </div>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- Action button -->
+  <div class="d-flex d-inline-block flex-wrap justify-content-lg-end mb-2">
+    <!-- Create button -->
+    <button
+      class="btn btn-success mr-2"
+      routerLink="/administrator/article-manager/add"
+    >
+      <span><i class="fa fa-plus"></i></span>&nbsp; Create
+    </button>
+
+    <!-- Edit button -->
+    <button
+      class="btn btn-warning mr-2"
+      [class.disabled]="!isSingleSelected()"
+      (click)="editArticle()"
+    >
+      <span><i class="fa fa-pencil"></i></span>&nbsp; Edit
+    </button>
+
+    <!-- Hide button -->
+    <button
+      class="btn btn-dark mr-2"
+      (click)="hideArticles()"
+      [class.disabled]="!isMultipleSelected()"
+    >
+      <span><i class="fa fa-eye-slash"></i></span>&nbsp;Hide
+    </button>
+
+    <!-- Hide/Unhide button -->
+    <button
+      class="btn btn-light mr-2"
+      (click)="activateArticles()"
+      [class.disabled]="!isMultipleSelected()"
+    >
+      <span><i class="fa fa-eye"></i></span>&nbsp;Unhide
+    </button>
+
+    <!-- Delete button -->
+    <button
+      class="btn btn-danger mr-2"
+      (click)="deleteArticles()"
+      [class.disabled]="!isMultipleSelected()"
+    >
+      <span><i class="fa fa-trash"></i></span>&nbsp; Delete
+    </button>
+
+    <!-- Set editor choice button -->
+    <button
+      class="btn btn-outline-info mr-2"
+      [class.disabled]="!isSingleSelected()"
+      (click)="setEditorChoice()"
+    >
+      <span><i class="fa fa-arrow-up"></i></span>&nbsp; Promote
+    </button>
+
+    <!-- Remove editor choice button -->
+    <button
+      class="btn btn-info mr-2"
+      [class.disabled]="!isSingleSelected()"
+      (click)="removeEditorChoice()"
+    >
+      <span><i class="fa fa-arrow-down"></i></span>&nbsp; Demote
+    </button>
+  </div>
+
+  <!-- Article table -->
+  <div class="table-responsive w-100" *ngIf="articles">
+    <table class="table table-striped border">
+      <thead class="bg-light">
+        <tr>
+          <th scope="col">
+            <input
+              type="checkbox"
+              [checked]="selectAll"
+              (click)="selectAllArticles()"
+            />
+          </th>
+          <!-- Id column -->
+          <th
+            scope="col"
+            class="cs-pointer text-center"
+            (click)="orderBy('id')"
+          >
+            Article ID&nbsp;
+            <span
+              ><i
+                *ngIf="articleParams.field == 'id'"
+                [@rotatedState]="state"
+                class="fa fa-arrow-up"
+              ></i
+            ></span>
+          </th>
+          <!-- Headline column -->
+          <th
+            scope="col"
+            class="cs-pointer text-center"
+            (click)="orderBy('headline')"
+          >
+            Headline&nbsp;
+            <span
+              ><i
+                *ngIf="articleParams.field == 'productId'"
+                [@rotatedState]="state"
+                class="fa fa-arrow-up"
+              ></i
+            ></span>
+          </th>
+          <!-- Slug column -->
+          <th
+            scope="col"
+            class="cs-pointer text-center"
+            (click)="orderBy('headlineSlug')"
+          >
+            Slug&nbsp;
+            <span
+              ><i
+                *ngIf="articleParams.field == 'headlineSlug'"
+                [@rotatedState]="state"
+                class="fa fa-arrow-up"
+              ></i
+            ></span>
+          </th>
+          <!-- Published by column -->
+          <th
+            scope="col"
+            class="cs-pointer text-center"
+            (click)="orderBy('publishedBy')"
+          >
+            Published by&nbsp;
+            <span
+              ><i
+                *ngIf="articleParams.field == 'publishedBy'"
+                [@rotatedState]="state"
+                class="fa fa-arrow-up"
+              ></i
+            ></span>
+          </th>
+          <!-- Published date column -->
+          <th
+            scope="col"
+            (click)="orderBy('publishedDate')"
+            class="cs-pointer text-center"
+          >
+            Published date&nbsp;
+            <span
+              ><i
+                *ngIf="articleParams.field == 'publishedDate'"
+                [@rotatedState]="state"
+                class="fa fa-arrow-up"
+              ></i
+            ></span>
+          </th>
+
+          <!-- View column -->
+          <th
+            scope="col"
+            class="cs-pointer text-center"
+            (click)="orderBy('view')"
+          >
+            View&nbsp;
+            <span
+              ><i
+                *ngIf="articleParams.field == 'view'"
+                [@rotatedState]="state"
+                class="fa fa-arrow-up"
+              ></i
+            ></span>
+          </th>
+
+          <!-- Editor choice column -->
+          <th
+            scope="col"
+            class="cs-pointer text-center"
+            (click)="orderBy('promoted')"
+          >
+            Promoted&nbsp;
+            <span
+              ><i
+                *ngIf="articleParams.field == 'promoted'"
+                [@rotatedState]="state"
+                class="fa fa-arrow-up"
+              ></i
+            ></span>
+          </th>
+
+          <!-- Thumbnail column -->
+          <th scope="col" class="text-center">Thumbnail</th>
+
+          <!-- Status column -->
+          <th
+            scope="col"
+            class="cs-pointer text-center"
+            (click)="orderBy('status')"
+          >
+            Status&nbsp;
+            <span
+              ><i
+                *ngIf="articleParams.field == 'status'"
+                [@rotatedState]="state"
+                class="fa fa-arrow-up"
+              ></i
+            ></span>
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr
+          class="article-item"
+          *ngFor="let article of articles"
+          (click)="selectArticle(article.id)"
+        >
+          <td>
+            <input
+              type="checkbox"
+              [value]="article.Id"
+              [checked]="isArticleSelected(article.id)"
+            />
+          </td>
+          <td class="text-center cs-pointer" (click)="viewDetail(article.id)">
+            {{ article.id }}
+          </td>
+          <td class="text-center cs-pointer" style="max-width: 150px;" (click)="viewDetail(article.id)">
+            {{ article.headline }}
+          </td>
+          <td class="text-center cs-pointer">
+            <button
+              type="button"
+              class="btn btn-transparent"
+              popover="{{article.headlineSlug}}"
+              placement="top"
+              triggers="focus" 
+            >
+              <i class="fa fa-link"> </i>
+            </button>
+          </td>
+          <td class="text-center cs-pointer" (click)="viewDetail(article.id)">
+            {{ article.publishedBy }}
+          </td>
+          <td class="text-center cs-pointer" (click)="viewDetail(article.id)">
+            {{ article.publishedDate | date : "medium" }}
+          </td>
+          <td class="text-center cs-pointer" (click)="viewDetail(article.id)">
+            {{ article.view }}
+          </td>
+          <td class="text-center cs-pointer" (click)="viewDetail(article.id)">
+            <i class="fa fa-check text-info" *ngIf="article.editorChoice"></i>
+          </td>
+          <td (click)="viewDetail(article.id)">
+            <div class="rect-img-container">
+              <img class="rect-img" src="{{ article.thumbnailUrl }}" alt="" />
+            </div>
+          </td>
+          <td class="text-center cs-pointer" (click)="viewDetail(article.id)">
+            <div class="btn px-3 py-1" [class]="getStateStyle(article)">
+              <h6 class="m-0">{{ getArticleState(article) }}</h6>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <div *ngIf="pagination" class="w-100">
+      Total: {{ pagination.totalItems }} article(s)
+    </div>
+  </div>
+
+  <!-- Pagination -->
+  <div
+    class="w-100 d-flex d-inline-block justify-content-between mt-5"
+    *ngIf="pagination"
+  >
+    <div class="d-flex d-inline">
+      <div class="input-group pagination-navigation">
+        <label class="form-control" for="">Page size</label>
+        <input
+          [(ngModel)]="articleParams.pageSize"
+          type="number"
+          (ngModelChange)="loadArticles()"
+          class="form-control border"
+          aria-describedby="button-addon2"
+          (keydown.enter)="loadArticles()"
+        />
+      </div>
+      <div class="input-group pagination-navigation ml-3">
+        <label class="form-control" for="">Go to page</label>
+        <input
+          [(ngModel)]="articleParams.pageNumber"
+          type="number"
+          class="form-control border"
+          aria-describedby="button-addon2"
+          (keydown.enter)="loadArticles()"
+        />
+      </div>
+    </div>
+
+    <div class="ml-auto">
+      <pagination
+        [boundaryLinks]="true"
+        [totalItems]="pagination.totalItems"
+        [itemsPerPage]="pagination.itemsPerPage"
+        [(ngModel)]="pagination.currentPage"
+        (pageChanged)="pageChanged($event)"
+        previousText="Previous"
+        nextText="Next"
+        firstText="First"
+        lastText="Last"
+      >
+      </pagination>
+    </div>
+  </div>
+</div>

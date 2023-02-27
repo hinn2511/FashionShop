@@ -1,14 +1,17 @@
 using System;
+using System.Net;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 using API.Data;
 using API.DTOs;
 using API.DTOs.Request.AuthenticationRequest;
+using API.DTOs.Response;
 using API.Entities;
 using API.Entities.User;
 using API.Extensions;
 using API.Interfaces;
+using API.Services;
 using API.Services.UserService;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
@@ -25,11 +28,13 @@ namespace API.Controllers
         private readonly ITokenService _tokenService;
         private readonly IMapper _mapper;
         private readonly IUserService _userService;
+        private readonly IRoleService _roleService;
         private readonly UserManager<AppUser> _userManager;
         private readonly SignInManager<AppUser> _signInManager;
-        public AccountController(UserManager<AppUser> userManager, SignInManager<AppUser> signInManager, ITokenService tokenService, IMapper mapper, IUserService userService)
+        public AccountController(IRoleService roleService,UserManager<AppUser> userManager, SignInManager<AppUser> signInManager, ITokenService tokenService, IMapper mapper, IUserService userService)
         {
             _signInManager = signInManager;
+            _roleService = roleService;
             _userManager = userManager;
             _mapper = mapper;
             _userService = userService;
@@ -41,7 +46,7 @@ namespace API.Controllers
         public async Task<ActionResult> Register(RegisterRequest registerRequest)
         {
             if (await UserExist(registerRequest.Username))
-                return BadRequest("Username already taken");
+                return BadRequest(new BaseResponseMessage(false, HttpStatusCode.BadRequest, "Username already taken."));
 
             var user = _mapper.Map<AppUser>(registerRequest);
 
@@ -50,33 +55,25 @@ namespace API.Controllers
             var result = await _userManager.CreateAsync(user, registerRequest.Password);
 
             if (!result.Succeeded) 
-                return BadRequest(result.Errors);
+                return BadRequest(new BaseResponseMessage(false, HttpStatusCode.BadRequest, "Can not register user."));
 
-            var roleResult = await _userManager.AddToRoleAsync(user, "Customer");
+            var role = await _roleService.GetRoleByRoleNameAsync("Customer");
 
-            if(!roleResult.Succeeded) 
-                return BadRequest(result.Errors);
+            if(role != null)
+                await _roleService.ApplyRoleForUserAsync(user, role);
 
-            return Ok();
+            return Ok(new BaseResponseMessage(true, HttpStatusCode.OK, "Register success."));
         }
 
         [AllowAnonymous]
         [HttpPost("authenticate")]
         public async Task<ActionResult> ClientAuthenticate(AuthenticationRequest authenticationRequest)
         {
-            var response = await _userService.Authenticate(authenticationRequest, AuthenticateType.Client, ipAddress());
+            var response = await _userService.Authenticate(authenticationRequest, ipAddress());
             setTokenCookie(response.RefreshToken);
             return Ok(response);
         }
 
-        [AllowAnonymous]
-        [HttpPost("business-authenticate")]
-        public async Task<ActionResult> AdminAuthenticate(AuthenticationRequest authenticationRequest)
-        {
-            var response = await _userService.Authenticate(authenticationRequest, AuthenticateType.Business, ipAddress());
-            setTokenCookie(response.RefreshToken);
-            return Ok(response);
-        }
 
         [AllowAnonymous]
         [HttpPost("refresh-token")]
@@ -90,6 +87,7 @@ namespace API.Controllers
             return Ok(response);
         }
 
+        [Authorize]
         [HttpPost("revoke-token")]
         public async Task<ActionResult> RevokeToken(RevokeTokenRequest model)
         {

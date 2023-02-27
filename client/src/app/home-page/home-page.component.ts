@@ -1,29 +1,49 @@
-import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
-import { AnimationType } from '../_common/animation/carousel.animations';
+import { RouteService } from 'src/app/_services/route.service';
+import { Carousel } from 'src/app/_models/carousel';
+import { ContentService } from 'src/app/_services/content.service';
+import { Component, OnInit, OnDestroy } from '@angular/core';
+import { AnimationType } from 'src/app/_common/animation/carousel.animations';
+import { Subscription } from 'rxjs';
+import { AuthenticationService } from 'src/app/_services/authentication.service';
 
 @Component({
   selector: 'app-home-page',
   templateUrl: './home-page.component.html',
-  styleUrls: ['./home-page.component.css']
+  styleUrls: ['./home-page.component.css'],
 })
-export class HomePageComponent implements OnInit {
+export class HomePageComponent implements OnInit, OnDestroy {
   animationType: AnimationType.Fade;
-  slides: string[] = [
-    "https://images.unsplash.com/photo-1567653418876-5bb0e566e1c2?ixlib=rb-1.2.1&auto=format&fit=crop&w=2000&q=80",
-    "https://images.unsplash.com/photo-1559181567-c3190ca9959b?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=2000&q=80",
-    "https://images.unsplash.com/photo-1557800634-7bf3c7305596?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=2001&q=80",
-    "https://images.unsplash.com/photo-1551410224-699683e15636?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=2000&q=80"
+  carousels: Carousel[] = [];
+  routeSubscription$: Subscription;
+  currentRoute: string = '';
 
-  ];
+  constructor(
+    private contentService: ContentService,
+    private routeService: RouteService,
+    public authenticationService: AuthenticationService
+  ) {}
 
-  constructor(private router: Router) { }
+  ngOnDestroy(): void {
+    this.routeSubscription$.unsubscribe();
+  }
 
   ngOnInit(): void {
+    this.loadCarousels();
+    this.currentRouteSubscribe();
   }
 
-  hasRoute(route: string) {
-    return this.router.url.includes(route);
+  loadCarousels() {
+    this.contentService.getCustomerCarousels().subscribe((result) => {
+      this.carousels = result;
+      for (const carousel of this.carousels) {
+        new Image().src = carousel.imageUrl;
+      }
+    });
   }
 
+  currentRouteSubscribe() {
+    this.routeSubscription$ = this.routeService.route$.subscribe(() => {
+      this.currentRoute = this.routeService.currentRoute;
+    });
+  }
 }

@@ -1,37 +1,36 @@
-<div class="container mt-3">
-    <div class="row w-100 mx-0">
-        <div class="col-12 col-md-4">
-            <div class="img-container position-relative category-container">
-                <img class="img" src="../../../assets/category_1.webp" alt="">
-                <div class="position-absolute category-text">
-                    <h3>Women's Bag</h3>
-                    <div class="d-flex mt-3">
-                        <a href="text-dark">Shop now</a>
-                    </div>
-                </div>
-              </div>
+<div class="container-fluid p-3 px-lg-0">
+  <div class="row w-100 mx-0 px-0 px-lg-1">
+    <div
+      class="col-12 col-md-6 col-lg-4 pb-3 px-0 px-lg-2"
+      *ngFor="let promotedCategory of promotedCategories; let i = index"
+      [class]="{ 'pr-md-3' : i % 2 != 1 || i == 0}"
+    >
+      <div class="position-relative category-container">
+        <img
+          class="position-absolute"
+          src="{{ promotedCategory.categoryImageUrl }}"
+          alt=""
+        />
+
+        <div class="position-absolute category-text p-2">
+          <p class="fw-smaller mb-0">
+            {{ getGenderString(promotedCategory.gender) }}
+          </p>
+          <h3 class="text-uppercase">
+            {{ promotedCategory.categoryName }}
+          </h3>
+          <a
+            class="cs-pointer fw-larger"
+            [routerLink]="['/product']"
+            [queryParams]="{
+              category: promotedCategory.slug,
+              gender: promotedCategory.gender
+            }"
+            >Shop now</a
+          >
         </div>
-        <div class="col-12 col-md-4">
-            <div class="img-container position-relative category-container">
-                <img class="img" src="../../../assets/category_2.webp" alt="">
-                <div class="position-absolute category-text">
-                    <h3>Sneaker</h3>
-                    <div class="d-flex mt-3">
-                        <a href="text-dark">Shop now</a>
-                    </div>
-                </div>
-              </div>
-        </div>
-        <div class="col-12 col-md-4">
-            <div class="img-container position-relative category-container">
-                <img class="img" src="../../../assets/category_3.webp" alt="">
-                <div class="position-absolute category-text">
-                    <h3>Men's Coat</h3>
-                    <div class="d-flex mt-3">
-                        <a href="text-dark">Shop now</a>
-                    </div>
-                </div>
-              </div>
-        </div>
+        <div class="category-text-backdrop position-absolute"></div>
+      </div>
     </div>
+  </div>
 </div>

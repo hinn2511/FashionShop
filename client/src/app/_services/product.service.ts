@@ -1,19 +1,20 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { of, ReplaySubject } from 'rxjs';
-import { map, take } from 'rxjs/operators';
+import { of } from 'rxjs';
+import { map } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
-import { IdArray } from '../_models/adminRequest';
-import { AddProduct, Brand, Category, UpdateProduct, Product, SubCategory, ManagerProduct } from '../_models/product';
-import { ManagerProductParams, ProductParams } from '../_models/productParams';
-import { getPaginatedResult, getPaginationHeaders } from './paginationHelper';
+import { IdArray } from 'src/app/_models/adminRequest';
+import { AddProduct, Brand, UpdateProduct, Product, ManagerProduct } from 'src/app/_models/product';
+import { CustomerColorFilter, ManagerProductParams, ProductParams } from 'src/app/_models/productParams';
+import { getPaginatedResult, getPaginationHeaders } from '../_helpers/paginationHelper';
+import { ResponseMessage } from '../_models/generic';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ProductService {
   baseUrl = environment.apiUrl;
-  products: Product[] = [];
+  recentProducts: Product[] = [];
 
   productCache = new Map();
   productParams: ProductParams;
@@ -49,17 +50,56 @@ export class ProductService {
     localStorage.removeItem("selectedProductId")
   }
 
+  getColorFilter(productParams: ProductParams)
+  {
+    let params = getPaginationHeaders(productParams.pageNumber, productParams.pageSize);
+    params = params.append('category', productParams.category);
+    if (productParams.gender != undefined)
+      params = params.append('gender', productParams.gender);
+    params = params.append('orderBy', productParams.orderBy);
+    params = params.append('size', productParams.size);
+    params = params.append('field', productParams.field);
+    params = params.append('query', productParams.query);
+    params = params.append('minPrice', productParams.minPrice);
+    params = params.append('maxPrice', productParams.maxPrice);
+    params = params.append('isOnSale', productParams.isOnSale);
+
+    return this.http.get<CustomerColorFilter[]>(this.baseUrl + 'filter/color', { params: params})
+  }
+
+  addToRecent(product: Product)
+  {
+    if(this.recentProducts.length >= 5)
+    {
+      this.recentProducts = this.recentProducts.splice(this.recentProducts.length - 1, 1);
+    }
+    this.recentProducts.unshift(product);
+  }
+
+  getRecent()
+  {
+    return this.recentProducts;
+  }
+
   getProducts(productParams: ProductParams) {
-    var response = this.productCache.get(Object.values(productParams).join('-'));
+    let response = this.productCache.get(Object.values(productParams).join('-'));
     if (response) {
       return of(response);
     }
     let params = getPaginationHeaders(productParams.pageNumber, productParams.pageSize);
     params = params.append('category', productParams.category);
-    params = params.append('gender', productParams.gender);
+    if (productParams.gender != undefined)
+      params = params.append('gender', productParams.gender);
     params = params.append('orderBy', productParams.orderBy);
+    params = params.append('colorCode', productParams.colorCode);
+    params = params.append('size', productParams.size);
     params = params.append('field', productParams.field);
     params = params.append('query', productParams.query);
+    params = params.append('minPrice', productParams.minPrice);
+    params = params.append('maxPrice', productParams.maxPrice);
+    params = params.append('isOnSale', productParams.isOnSale);
+    params = params.append('isMostInteresting', productParams.isMostInteresting);
+    params = params.append('isFeatured', productParams.isFeatured);
     return getPaginatedResult<Product[]>(this.baseUrl + 'product', params, this.http).pipe(
       map(response => {
         this.productCache.set(Object.values(productParams).join('-'), response);
@@ -67,14 +107,8 @@ export class ProductService {
       })
     );
   }
-
+  
   getProduct(id: number) {
-    const product = [...this.productCache.values()]
-      .reduce((arr, elm) => arr.concat(elm.result), [])
-      .find((product: Product) => product.id === id);
-    if (product) {
-      return of(product);
-    }
     return this.http.get<Product>(this.baseUrl + 'product/' + id);
   }
 
@@ -101,7 +135,6 @@ export class ProductService {
     this.managerProductParams = new ManagerProductParams();
     return this.managerProductParams;
   }
-
 
   getManagerProducts(productParams: ManagerProductParams) {
     let params = getPaginationHeaders(productParams.pageNumber, productParams.pageSize);
@@ -130,7 +163,28 @@ export class ProductService {
   }
 
   hideProducts(ids: IdArray) {
-    return this.http.put(this.baseUrl + 'product/hide-or-unhide', ids);
+    return this.http.put<ResponseMessage>(this.baseUrl + 'product/hide', ids);
+  }
+
+  activateProducts(ids: IdArray) {
+    return this.http.put<ResponseMessage>(
+      this.baseUrl + 'product/activate',
+      ids
+    );
+  }
+
+  promoteProducts(ids: IdArray) {
+    return this.http.put<ResponseMessage>(
+      this.baseUrl + 'product/promote',
+      ids
+    );
+  }
+
+  demoteProducts(ids: IdArray) {
+    return this.http.put<ResponseMessage>(
+      this.baseUrl + 'product/demote',
+      ids
+    );
   }
 
   deleteProduct(ids: number[]) {
@@ -143,15 +197,6 @@ export class ProductService {
       },
     };
     return this.http.delete(this.baseUrl + 'product/soft-delete', options);
-  }
-  
-
-  getCategories() {
-    return this.http.get<Category[]>(this.baseUrl + 'category/all');
-  }
-
-  getSubCategories(categoryId: number) {
-    return this.http.get<SubCategory[]>(this.baseUrl + 'category/' + categoryId + "/subCategories");
   }
 
   getBrands() {

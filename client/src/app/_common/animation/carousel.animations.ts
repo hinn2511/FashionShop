@@ -135,3 +135,95 @@ export const SlideInOutAnimation = [
       )])
   ]),
 ]
+
+export const RotateAnimation = [
+  trigger('rotatedState', [
+    state('default', style({ transform: 'rotate(0)' })),
+    state('rotated', style({ transform: 'rotate(-180deg)' })),
+    transition('rotated => default', animate('500ms ease-out')),
+    transition('default => rotated', animate('500ms ease-in')),
+  ]),
+];
+
+
+export const slide = trigger("slide", [
+  transition(
+    ":enter", [
+    style({
+      transform: "translateX({{startPos}}%)"
+    }),
+    animate(
+      "500ms",
+      style({
+        transform: "translateX(0)",
+        display: "flex"
+      })
+    )
+  ]),
+  transition(":leave", [
+    style({
+      transform: "translateX(0)",
+      display: "flex"
+    }),
+    animate(
+      "500ms",
+      style({
+        transform: "translateX({{endPos}}%)"
+      })
+    )
+  ])
+]);
+
+export const slideInLeft = trigger("slideInLeft", [
+  transition(":enter", [
+    style({
+      transform: "translateX(-100%)"
+    }),
+    animate(
+      "500ms",
+      style({
+        transform: "translateX(0)",
+        display: "flex"
+      })
+    )
+  ]),
+  transition(":leave", [
+    style({
+      transform: "translateX(0)",
+      display: "flex"
+    }),
+    animate(
+      "500ms",
+      style({
+        transform: "translateX(-100%)"
+      })
+    )
+  ])
+]);
+
+export const slideInRight = trigger("slideInRight", [
+  transition(":enter", [
+    style({
+      transform: "translateX(100%)"
+    }),
+    animate(
+      "500ms",
+      style({
+        transform: "translateX(0)",
+        display: "flex"
+      })
+    )
+  ]),
+  transition(":leave", [
+    style({
+      transform: "translateX(0)",
+      display: "flex"
+    }),
+    animate(
+      "500ms",
+      style({
+        transform: "translateX(100%)"
+      })
+    )
+  ])
+]);

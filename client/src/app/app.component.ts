@@ -1,82 +1,136 @@
-import { animate, animateChild, AUTO_STYLE, group, query, state, style, transition, trigger } from '@angular/animations';
-import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
+import { FadeInAndOut } from './_common/animation/common.animation';
+import { RouteService } from './_services/route.service';
+import { DeviceService } from 'src/app/_services/device.service';
+import { CartService } from 'src/app/_services/cart.service';
+import {
+  animate,
+  state,
+  style,
+  transition,
+  trigger,
+} from '@angular/animations';
+import { Component, OnInit, OnDestroy } from '@angular/core';
+import { NavigationEnd, Router } from '@angular/router';
 import { User } from './_models/user';
 import { AuthenticationService } from './_services/authentication.service';
+import { debounceTime, filter } from 'rxjs/operators';
+import { CartItem } from './_models/cart';
+import { Subscription, fromEvent } from 'rxjs';
+import { fnIsNullOrEmpty, fnSwitchValue } from './_common/function/function';
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css'],
   animations: [
-    trigger('collapse', [
-        state('false', style({ width: AUTO_STYLE, visibility: AUTO_STYLE})),
-      state('true', style({ width: '0', visibility: 'hidden'})),
-      transition('false => true', animate('500ms ease-in')),
-      transition('true => false', animate('500ms ease-out'))
+    trigger('slideInOut', [
+      state(
+        'in',
+        style({
+          transform: 'translate3d(-240px,0,0)',
+        })
+      ),
+      state(
+        'out',
+        style({
+          transform: 'translate3d(0, 0, 0)',
+        })
+      ),
+      transition('in => out', animate('400ms ease-in-out')),
+      transition('out => in', animate('400ms ease-in-out')),
     ]),
-    trigger('rotatedState', [
-        state('default', style({ transform: 'rotate(0)' })),
-        state('rotated', style({ transform: 'rotate(-180deg)' })),
-        transition('rotated => default', animate('500ms ease-out')),
-        transition('default => rotated', animate('500ms ease-in'))
-      ]),
-      trigger('slideInOut', [
-        state(
-          'in',
-          style({
-            transform: 'translate3d(-12vw,0,0)',
-          })
-        ),
-        state(
-          'out',
-          style({
-            transform: 'translate3d(0, 0, 0)',
-          })
-        ),
-        transition('in => out', animate('400ms ease-in-out')),
-        transition('out => in', animate('400ms ease-in-out')),
-      ]),
-  ]
+    FadeInAndOut
+
+  ],
 })
-export class AppComponent implements OnInit {
-    user: User;
-    showSidebar: boolean;
+export class AppComponent implements OnInit, OnDestroy {
+  title = 'Thyme';
+  user: User;
+  focus: boolean = false;
+  sidebarState: string = 'in';
+  cartItems: CartItem[] = [];
+  windowResizeSubscription$: Subscription;
+  routeSubscription$: Subscription;
 
-    state: string = 'default';
+  currentRouteSubscription$: Subscription;
 
-    menuState: string = 'in';
+  currentRoute: string = '';
 
-    constructor(private authenticationService: AuthenticationService, private router: Router) {
-      this.authenticationService.user.subscribe(x => this.user = x);
+  constructor(
+    public authenticationService: AuthenticationService,
+    private cartService: CartService,
+    private routeService: RouteService,
+    private router: Router,
+    private deviceService: DeviceService
+  ) {
+    this.routeSubscribe();
+  }
 
+  ngOnInit(): void {
+    this.updateCart();
+    this.updateDeviceType();
+    this.currentRouteSubscribe();
+  }
+
+  ngOnDestroy(): void {
+    this.windowResizeSubscription$.unsubscribe();
+    this.routeSubscription$.unsubscribe();
+    this.currentRouteSubscription$.unsubscribe();
+  }
+
+  routeSubscribe() {
+    this.routeSubscription$ = this.router.events
+      .pipe(filter((event) => event instanceof NavigationEnd))
+      .subscribe((event) => {
+        this.routeService.updateRoute(this.router.url);
+      });
+  }
+
+  currentRouteSubscribe() {    this.routeSubscription$ = this.routeService.route$.subscribe((result) => {
+      this.currentRoute = result;
+    })
+  }
+
+  private updateDeviceType() {
+    this.deviceService.setWidth(window.innerWidth);
+    this.deviceService.setHeight(window.innerHeight);
+
+    this.windowResizeSubscription$ = fromEvent(window, 'resize')
+      .pipe(debounceTime(500))
+      .subscribe((_) => {
+        this.deviceService.setWidth(window.innerWidth);
+        this.deviceService.setHeight(window.innerHeight);
+      });
+  }
+
+  private updateCart() {
+    if (!fnIsNullOrEmpty(localStorage.getItem('user'))) {
+      this.authenticationService.setUser();
+      let role = this.authenticationService.userValue.roles.find(
+        (x) => x == 'ClientAccess'
+      );
+      if (!fnIsNullOrEmpty(role))
+        this.cartService.getUserCartItems().subscribe((_) => {});
+    } else {
+      this.cartService.setCart(this.cartService.getLocalCartItems());
     }
-    ngOnInit(): void {
-        this.showSidebar = true;
-        if(localStorage.getItem("user") != null && localStorage.getItem("user") != undefined)
-        {
-          this.authenticationService.setUser();
-        }
-    }
+  }
 
-    logout() {
-        this.authenticationService.logout();
-    }
+  logout() {
+    this.authenticationService.logout();
+  }
 
-    hasRoute(route: string) {
-        return this.router.url.includes(route);
-    }
 
-    // sideBarToggle()
-    // {
-    //     this.showSidebar = !this.showSidebar;
-    // }
 
-    toggleMenu() {
-        this.menuState = this.menuState === 'out' ? 'in' : 'out';
-    }
+  toggleSidebar() {
+    fnSwitchValue<string>(this.sidebarState, 'out', 'in');
+  }
 
-    rotate() {
-        this.state = (this.state === 'default' ? 'rotated' : 'default');
-    }
+  setSidebar(value: string) {
+    this.sidebarState = value;
+  }
+
+  setFocus(value: boolean) {
+    this.focus = value;
+  }
 }

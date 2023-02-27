@@ -9,3 +9,10 @@
     top: 30%;
     left: 5%;
 }
+
+
+@media (min-width: 768px) {
+    .center {
+      max-width: 1400px;
+    }
+}
