@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
+using API.Entities.UserModel;
 
 namespace API.Entities.ProductModel
 {
@@ -15,5 +16,6 @@ namespace API.Entities.ProductModel
         public int ProductId { get; set; }
         public double AdditionalPrice { get; set; }
         public int Stock { get; set; }
+        public ICollection<UserReview> UserReviews { get; set; }
     }
 }

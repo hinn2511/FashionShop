@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using API.Entities.User;
+using API.Entities.UserModel;
 
 namespace API.Entities.OrderModel
 {
@@ -7,6 +8,7 @@ namespace API.Entities.OrderModel
     {   public PaymentMethod PaymentMethod { get; set; }
         public List<OrderDetail> OrderDetails { get; set; }
         public List<OrderHistory> OrderHistories { get; set; }
+         public List<UserReview> UserReviews { get; set; }
         public OrderStatus CurrentStatus { get; set; }
         public int UserId { get; set; }
         public AppUser User { get; set; }

@@ -53,14 +53,16 @@ namespace API.Data
                 .HasMany(ur => ur.UserPermissions)
                 .WithOne(u => u.User)
                 .HasForeignKey(ur => ur.UserId)
-                .IsRequired();
+                .IsRequired()
+                .OnDelete(DeleteBehavior.NoAction);
 
             builder.Entity<AppPermission>()
                 .HasMany(ur => ur.UserPermissions)
                 .WithOne(u => u.Role)
                 .HasForeignKey(ur => ur.RoleId)
-                .IsRequired();
-            
+                .IsRequired()
+                .OnDelete(DeleteBehavior.NoAction);
+
             builder.Entity<AppRole>()
                 .HasMany(role => role.RolePermissions)
                 .WithOne(rolePermission => rolePermission.AppRole)
@@ -78,16 +80,53 @@ namespace API.Data
 
             builder.Entity<Category>(c =>
             {
-                c.HasKey(x => x.Id);
-                c.Property(x => x.Gender);
-                c.Property(x => x.CategoryName);
-                c.Property(x => x.Slug);
                 c.HasOne(x => x.Parent)
                     .WithMany(x => x.SubCategories)
                     .HasForeignKey(x => x.ParentId)
                     .IsRequired(false)
                     .OnDelete(DeleteBehavior.Cascade);
             });
+
+
+            builder.Entity<Category>(c =>
+            {
+                c.HasMany(x => x.SubCategories)
+                    .WithOne(x => x.Parent)
+                    .HasForeignKey(x => x.ParentId)
+                    .OnDelete(DeleteBehavior.NoAction);
+            });
+
+            builder.Entity<Option>(o =>
+            {
+                o.HasMany(x => x.UserReviews)
+                    .WithOne(x => x.Option)
+                    .OnDelete(DeleteBehavior.Cascade);
+            });
+
+            builder.Entity<UserReview>(o =>
+           {
+               o.HasOne(x => x.Option)
+               .WithMany(x => x.UserReviews)
+               .HasForeignKey(x => x.OptionId)
+               .IsRequired()
+               .OnDelete(DeleteBehavior.NoAction);
+           });
+
+            builder.Entity<Order>(o =>
+           {
+               o.HasMany(x => x.UserReviews)
+                   .WithOne(x => x.Order)
+                   .OnDelete(DeleteBehavior.Cascade);
+           });
+
+            builder.Entity<UserReview>(o =>
+           {
+               o.HasOne(x => x.Order)
+               .WithMany(x => x.UserReviews)
+               .HasForeignKey(x => x.OrderId)
+               .IsRequired()
+               .OnDelete(DeleteBehavior.NoAction);
+           });
 
             // builder.Entity<Product>()
             //     .HasOne(p => p.SubCategory)
