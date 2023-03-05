@@ -30,7 +30,7 @@
           </div>
         </div>
     </div>
-    <div class="card-body">
+    <div class="card-body chart-container">
       
         <div class="chart" *ngIf="data">
           <ngx-charts-pie-chart
@@ -43,9 +43,9 @@
             [doughnut]="isDoughnut"
           >
           </ngx-charts-pie-chart>
-          <div class="w-100 text-center mt-3">
-            {{selectedTimeFilter.description}}
-          </div>
+        </div>
+        <div class="w-100 text-center mt-3">
+          {{selectedTimeFilter.description}}
         </div>
     </div>
    
