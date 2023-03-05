@@ -1,3 +1,8 @@
+import {
+  SlideLeftToRight,
+  FadeInAndOut,
+  ExpandHeight,
+} from './../../_common/animation/common.animation';
 import { fnUpdateFormControlNumberValue } from 'src/app/_common/function/function';
 import { RotateAnimation } from 'src/app/_common/animation/carousel.animations';
 import { concatMap, catchError } from 'rxjs/operators';
@@ -5,12 +10,7 @@ import { DeviceService } from 'src/app/_services/device.service';
 import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { AuthenticationService } from 'src/app/_services/authentication.service';
-import {
-  Component,
-  EventEmitter,
-  OnInit,
-  Output,
-} from '@angular/core';
+import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { CartItem } from 'src/app/_models/cart';
 import { User } from 'src/app/_models/user';
 import { CartService } from 'src/app/_services/cart.service';
@@ -30,7 +30,7 @@ import { OrderService } from 'src/app/_services/order.service';
   selector: 'app-check-out',
   templateUrl: './check-out.component.html',
   styleUrls: ['./check-out.component.css'],
-  animations: [ RotateAnimation ],
+  animations: [RotateAnimation, SlideLeftToRight, FadeInAndOut, ExpandHeight],
 })
 export class CheckOutComponent implements OnInit {
   @Output() hideCheckout = new EventEmitter<boolean>();
@@ -93,7 +93,7 @@ export class CheckOutComponent implements OnInit {
     );
   }
 
-  initializeForm() {    
+  initializeForm() {
     this.orderDetailForm = this.fb.group({
       receiverName: ['', Validators.required],
       address: ['', [Validators.required]],
@@ -101,7 +101,14 @@ export class CheckOutComponent implements OnInit {
       email: [''],
       cardHolder: [''],
       cardNumber: ['', [Validators.minLength(19), Validators.maxLength(19)]],
-      cvv: ['', [Validators.minLength(3), Validators.maxLength(3),Validators.pattern('[0-9]{3}'),]],
+      cvv: [
+        '',
+        [
+          Validators.minLength(3),
+          Validators.maxLength(3),
+          Validators.pattern('[0-9]{3}'),
+        ],
+      ],
       expiredDate: [
         '',
         [
@@ -138,39 +145,43 @@ export class CheckOutComponent implements OnInit {
       } else {
         this.cardUnsubscribe();
         this.orderDetailForm.controls['cardHolder'].clearValidators();
-        this.orderDetailForm.controls['cardHolder'].patchValue('', { emitEvent: false });
+        this.orderDetailForm.controls['cardHolder'].patchValue('', {
+          emitEvent: false,
+        });
         this.orderDetailForm.controls['cardNumber'].clearValidators();
-        this.orderDetailForm.controls['cardNumber'].patchValue('', { emitEvent: false });
+        this.orderDetailForm.controls['cardNumber'].patchValue('', {
+          emitEvent: false,
+        });
         this.orderDetailForm.controls['cvv'].clearValidators();
-        this.orderDetailForm.controls['cvv'].patchValue('', { emitEvent: false });
+        this.orderDetailForm.controls['cvv'].patchValue('', {
+          emitEvent: false,
+        });
         this.orderDetailForm.controls['expiredDate'].clearValidators();
-        this.orderDetailForm.controls['expiredDate'].patchValue('', { emitEvent: false });
+        this.orderDetailForm.controls['expiredDate'].patchValue('', {
+          emitEvent: false,
+        });
       }
       this.orderDetailForm.controls['cardHolder'].updateValueAndValidity();
       this.orderDetailForm.controls['cardNumber'].updateValueAndValidity();
       this.orderDetailForm.controls['cvv'].updateValueAndValidity();
       this.orderDetailForm.controls['expiredDate'].updateValueAndValidity();
     });
-
-    
   }
 
-  cardUnsubscribe()
-  {
+  cardUnsubscribe() {
     this.cardNumberSubscribe$.unsubscribe();
     this.cardHolderSubscribe$.unsubscribe();
     this.cvvSubscribe$.unsubscribe();
     this.expiredDateSubscribe$.unsubscribe();
   }
 
-  cardSubscribe()
-  {
+  cardSubscribe() {
     this.cardNumberSubscribe$ = this.orderDetailForm
       .get('cardNumber')
       .valueChanges.subscribe((_) => {
         let currentValue = this.orderDetailForm.controls['cardNumber'].value;
         if (currentValue.length > 19)
-          currentValue = currentValue.substring(0,19);
+          currentValue = currentValue.substring(0, 19);
         this.orderDetailForm.controls.cardNumber.setValue(
           this.applySplitter(currentValue, 16, 4, ' '),
           { emitEvent: false }
@@ -182,7 +193,8 @@ export class CheckOutComponent implements OnInit {
       .valueChanges.subscribe((_) => {
         let value = this.orderDetailForm.controls['cardHolder'].value;
         this.orderDetailForm.controls.cardHolder.setValue(
-          value.toLocaleUpperCase(),{ emitEvent: false }
+          value.toLocaleUpperCase(),
+          { emitEvent: false }
         );
       });
 
@@ -190,7 +202,10 @@ export class CheckOutComponent implements OnInit {
       .get('cvv')
       .valueChanges.subscribe((_) => {
         let value = this.orderDetailForm.controls['cvv'].value;
-        this.orderDetailForm.controls.cvv.setValue(value.substring(0, 3).replace(/\s+/g, '').replace(/\D/g, ''), { emitEvent: false });
+        this.orderDetailForm.controls.cvv.setValue(
+          value.substring(0, 3).replace(/\s+/g, '').replace(/\D/g, ''),
+          { emitEvent: false }
+        );
       });
 
     this.expiredDateSubscribe$ = this.orderDetailForm
@@ -238,9 +253,7 @@ export class CheckOutComponent implements OnInit {
       this.selectedPaymentMethod.id == 1
     ) {
       return this.createOrderAndPaid();
-    }
-    else
-      this.createOrder();
+    } else this.createOrder();
   }
 
   private createOrder() {
@@ -268,10 +281,8 @@ export class CheckOutComponent implements OnInit {
     this.orderService
       .createOrder(this.order)
       .pipe(
-        concatMap((result) => this.orderService.payOrderByCard(
-          result,
-          this.paymentInformation
-        )
+        concatMap((result) =>
+          this.orderService.payOrderByCard(result, this.paymentInformation)
         ),
         catchError(async (error) => this.toastr.error(error, 'Error'))
       )
@@ -290,7 +301,10 @@ export class CheckOutComponent implements OnInit {
           this.checkingOrder = false;
         },
         (error) => {
-          this.toastr.error('An error has occurred when we validate your card information. Please check your payment information and try again later in order histories page.', 'Error');
+          this.toastr.error(
+            'An error has occurred when we validate your card information. Please check your payment information and try again later in order histories page.',
+            'Error'
+          );
           this.closeCheckout();
           this.cartService.clearCart();
           this.checkingOrder = false;
@@ -300,12 +314,22 @@ export class CheckOutComponent implements OnInit {
 
   selectShippingMethod(shippingMethod: ShippingMethod) {
     this.selectedShippingMethod = shippingMethod;
-    fnUpdateFormControlNumberValue(this.orderDetailForm, 'shippingMethod', shippingMethod.id, false);
+    fnUpdateFormControlNumberValue(
+      this.orderDetailForm,
+      'shippingMethod',
+      shippingMethod.id,
+      false
+    );
   }
 
   selectPaymentMethod(paymentMethod: PaymentMethod) {
     this.selectedPaymentMethod = paymentMethod;
-    fnUpdateFormControlNumberValue(this.orderDetailForm, 'paymentMethod', paymentMethod.id, false);
+    fnUpdateFormControlNumberValue(
+      this.orderDetailForm,
+      'paymentMethod',
+      paymentMethod.id,
+      false
+    );
   }
 
   expandCheckoutSummaryToggle() {
@@ -313,8 +337,7 @@ export class CheckOutComponent implements OnInit {
   }
 
   isRotate() {
-    if (this.expandCheckoutSummary)
-      return 'default';
+    if (this.expandCheckoutSummary) return 'default';
     return 'rotated';
   }
 
@@ -332,7 +355,7 @@ export class CheckOutComponent implements OnInit {
   goBackToCart() {
     this.backToCart.emit(true);
   }
-  
+
   applySplitter(
     input: string,
     maxLength: number,
