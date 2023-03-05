@@ -1,9 +1,11 @@
 using System;
+using API.Data;
 using API.Extensions;
 using API.Helpers.Authorization;
 using API.Middleware;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -20,21 +22,21 @@ namespace API
 
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddCors();
             services.AddApplicationServices(_config);
             services.AddControllers().AddJsonOptions(x => x.JsonSerializerOptions.IgnoreNullValues = true);
-            services.AddCors();
             services.AddIdentityServices(_config);
+            services.AddDbContext<DataContext>(options =>
+            {
+
+                options.UseSqlServer(_config.GetConnectionString("DefaultConnection"));
+            });
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-
-            // app.UseMiddleware<PreflightRequestMiddleware>();
-
-            //app.UseMiddleware<ExceptionMiddleware>();
-
             app.UseMiddleware<ErrorHandlerMiddleware>();
-            
+
             app.UseMiddleware<JwtMiddleware>();
 
             app.UseRouting();
@@ -47,7 +49,7 @@ namespace API
 
             app.UseHttpsRedirection();
 
-            app.UseHttpsRedirection(); 
+            app.UseHttpsRedirection();
 
             app.UseAuthentication();
 
