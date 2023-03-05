@@ -41,6 +41,6 @@ export class PhotoService {
     let params = getPaginationHeaders(photoParams.pageNumber, photoParams.pageSize);
     params = params.append('orderBy', photoParams.orderBy);
     params = params.append('field', photoParams.field);
-    return getPaginatedResult<Photo[]>(this.baseUrl + '/images', params, this.http);
+    return getPaginatedResult<Photo[]>(this.baseUrl + 'file/images', params, this.http);
   }
 }
