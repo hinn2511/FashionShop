@@ -1,41 +1,61 @@
 .order-item {
-    z-index: 1;
+  z-index: 1;
 }
 
 input[type="checkbox"] {
-    z-index: 100;
+  z-index: 100;
 }
 
 .pagination-navigation > label {
-    max-width: fit-content;
-    min-width: fit-content;
+  max-width: fit-content;
+  min-width: fit-content;
 }
 
 .pagination-navigation > input {
-    max-width: 100px;
+  max-width: 100px;
 }
 
 .status-dropdown {
-    top: 70%;
-    left: 4%;
-    z-index: 100;
+  top: 70%;
+  left: 4%;
+  z-index: 100;
+  width: max(13vw, fit-content);
+  min-width: 13vw;
 }
 
-.status-dropdown, .status-button {
-    width: max(13vw, fit-content);
-    min-width: 13vw;
-}
-
-
-.rect-img-container
-{
+.rect-img-container {
   max-height: 5vh;
   overflow: hidden;
 }
 
-.list-group-item
-{
-    min-width: 100px;
-    margin-right: 1rem;
+li {
+  margin: 0.25rem;
+}
 
+li > div {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+ul {
+  width: 100%;
+}
+
+@media (min-width: 992px) {
+  li {
+    min-width: 100px;
+  }
+}
+
+@media (max-width: 768px) {
+  li {
+    min-width: 200px;
+  }
+}
+
+@media screen and (max-width: 992px) and (min-width: 768px) {
+  li {
+    min-width: 150px;
+  }
 }

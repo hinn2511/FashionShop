@@ -95,7 +95,7 @@ export class AdminSettingComponent implements OnInit {
 
   initializeUploader() {
     let uploadUrl =
-    this.baseUrl + `/image?width=${this.width}&height=${this.height}&ratio=${this.ratio}&cropOption=${this.cropOption}`;
+    this.baseUrl + `file/image?width=${this.width}&height=${this.height}&ratio=${this.ratio}&cropOption=${this.cropOption}`;
     this.uploader = new FileUploader({
       url: uploadUrl,
       authToken: 'Bearer ' + this.authenticationService.userValue.jwtToken,

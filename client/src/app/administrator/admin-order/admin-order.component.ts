@@ -1,5 +1,5 @@
 import { RotateAnimation } from './../../_common/animation/carousel.animations';
-import { Component, OnInit } from '@angular/core';
+import { Component, ElementRef, OnInit, QueryList, ViewChildren, AfterViewInit } from '@angular/core';
 import {
   ManagerOrder,
   ManagerOrderParams,
@@ -26,8 +26,11 @@ import { fnGetOrderStateString } from 'src/app/_common/function/function';
   styleUrls: ['./admin-order.component.css'],
   animations: [ RotateAnimation ],
 })
-export class AdminOrderComponent implements OnInit {
+export class AdminOrderComponent implements OnInit, AfterViewInit {
   orders: ManagerOrder[];
+  @ViewChildren('statusBarItem') items: QueryList<ElementRef>;
+  @ViewChildren('allStatusItem') allStatus: QueryList<ElementRef>;
+  statusBarButtons: ElementRef[];
   pagination: Pagination;
   orderParams: ManagerOrderParams;
   selectAllOrder: boolean;
@@ -71,6 +74,12 @@ export class AdminOrderComponent implements OnInit {
     this.initializeForm();
     this.loadOrders();
     this.loadOrderSummary();
+  }
+
+  ngAfterViewInit() {
+    this.statusBarButtons = this.items.toArray();
+    let allStatusItems = this.allStatus.toArray();    
+    this.statusBarButtons.push(allStatusItems[0]);
   }
 
   // load filter query and date range
@@ -223,7 +232,8 @@ export class AdminOrderComponent implements OnInit {
     this.loadOrders();
   }
 
-  selectStatus(status: number, pendingToCurrentStatus: boolean) {
+  selectStatus(status: number, index: number, pendingToCurrentStatus: boolean) {
+    this.scrollToStatus(index);
     if (pendingToCurrentStatus) {
       if (this.isStatusIncluded(status)) {
         this.orderParams.orderStatusFilter =
@@ -237,6 +247,18 @@ export class AdminOrderComponent implements OnInit {
       this.orderParams.orderStatusFilter = [status];
     }
     this.loadOrders();
+  }
+
+  scrollToStatus(index: number) {
+    setTimeout(() => {
+      if (this.statusBarButtons.length != 0) {
+        this.statusBarButtons[index].nativeElement.scrollIntoView({
+          behavior: 'smooth',
+          block: 'nearest',
+          inline: 'center',
+        });
+      }
+    }, 100);
   }
 
   // order payment method filter
@@ -315,6 +337,7 @@ export class AdminOrderComponent implements OnInit {
   }
 
   viewAllStatusFilter() {
+    this.scrollToStatus(this.statusBarButtons.length -1);
     if (!this.viewAllStatus) {
       this.viewAllStatus = true;
       this.selectAllOrderStatus();

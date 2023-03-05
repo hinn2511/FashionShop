@@ -1,4 +1,4 @@
-import { SlideLeftToRight } from 'src/app/_common/animation/common.animation';
+import { SlideRightToLeft, SlideLeftToRightBoolean } from './../../_common/animation/common.animation';
 import { DeviceService } from 'src/app/_services/device.service';
 import { ProductFilterComponent } from './../product-filter/product-filter.component';
 import { CustomerSizeFilter } from './../../_models/productParams';
@@ -6,7 +6,7 @@ import { CategoryService } from 'src/app/_services/category.service';
 import {
   ActivatedRoute,
 } from '@angular/router';
-import { Component, OnInit, OnDestroy, ViewChild, AfterViewInit, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
 
 import { BreadCrumb } from 'src/app/_models/breadcrumb';
 import { Pagination } from 'src/app/_models/pagination';
@@ -26,7 +26,7 @@ import { ProductFilter } from '../product-filter/product-filter.component';
   selector: 'app-product-list',
   templateUrl: './product-list.component.html',
   styleUrls: ['./product-list.component.css'],
-  animations: [ SlideLeftToRight ]
+  animations: [ SlideLeftToRightBoolean, SlideRightToLeft ]
 })
 export class ProductListComponent implements OnInit, OnDestroy {
   @ViewChild('filterComponent') filterComponent: ProductFilterComponent;
@@ -51,7 +51,7 @@ export class ProductListComponent implements OnInit, OnDestroy {
 
   querySubscribe$: Subscription;
 
-  showFilterMobile: boolean = false;
+  showFilter: boolean = true;
   deviceSubscription$: Subscription;
   deviceType: BehaviorSubject<string> = new BehaviorSubject('');
   deviceTypeValue$ = this.deviceType.asObservable();
@@ -82,6 +82,8 @@ export class ProductListComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
+    if (this.deviceService.getDeviceType() != 'desktop')
+      this.showFilter = false;
     this.querySubscribe$ = this.route.queryParamMap.subscribe((queryParamMap) => {
         this.selectedCategory = queryParamMap.get('category');
         this.selectedGender = +queryParamMap.get('gender');
@@ -97,6 +99,8 @@ export class ProductListComponent implements OnInit, OnDestroy {
     this.deviceSubscription$ = this.deviceService.deviceWidth$.subscribe(
       (_) => {
         this.deviceType.next(this.deviceService.getDeviceType());
+        if (this.deviceType.value == 'desktop')
+          this.showFilter = true;
       }
     );
 
@@ -195,6 +199,10 @@ export class ProductListComponent implements OnInit, OnDestroy {
     this.selectedColor = productFilter.selectedColor;
     this.selectedPriceRange = productFilter.selectedPriceRange;
     this.selectedSize = productFilter.selectedSize;
+    if(this.deviceType.value == 'desktop')
+      this.showFilter = true;
+    else
+      this.showFilter = false;
     this.loadProducts();
   }
 
@@ -211,13 +219,7 @@ export class ProductListComponent implements OnInit, OnDestroy {
   }
 
   mobileFilterToggle() {
-    this.showFilterMobile = !this.showFilterMobile;
+    this.showFilter = !this.showFilter;
   }
 
-  filterState()
-  {
-    if (this.showFilterMobile)
-      return 'out';
-    return 'in'
-  }
 }

@@ -1,3 +1,4 @@
+import { NavigationBarMobileComponent } from './customer/navigation-bar-mobile/navigation-bar-mobile.component';
 import { SettingService } from './_services/setting.service';
 import { APP_INITIALIZER, NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
@@ -44,7 +45,6 @@ import { CartComponent } from './customer/cart/cart.component';
 import { SearchBarComponent } from './customer/search-bar/search-bar.component';
 import { ProductAboutComponent } from './customer/product-about/product-about.component';
 import { LoginComponent } from './customer/login/login.component';
-import { AuthenticationService } from './_services/authentication.service';
 import { OrderHistoryComponent } from './customer/order-history/order-history.component';
 import { AdminSidebarComponent } from './administrator/admin-sidebar/admin-sidebar.component';
 import { AdminLoginComponent } from './administrator/admin-login/admin-login.component';
@@ -200,6 +200,7 @@ import { ImageSelectorComponent } from './_dialog/image-selector/image-selector.
     ChangePasswordDialogComponent,
     AdminSettingComponent,
     ImageSelectorComponent,
+    NavigationBarMobileComponent
 
   ],
   imports: [

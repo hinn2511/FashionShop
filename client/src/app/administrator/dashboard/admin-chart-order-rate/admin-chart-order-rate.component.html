@@ -35,7 +35,7 @@
       </div>
     </div>
   </div>
-  <div class="card-body">
+  <div class="card-body chart-container">
     <div class="chart" *ngIf="data">
       <ngx-charts-number-card
         [scheme]="colorScheme"
@@ -44,9 +44,9 @@
         [cardColor]="cardColor"
       >
       </ngx-charts-number-card>
-      <div class="w-100 text-center mt-3">
-        {{selectedTimeFilter.description}}
-      </div>
+    </div>
+    <div class="w-100 text-center mt-3">
+      {{selectedTimeFilter.description}}
     </div>
   </div>
 </div>

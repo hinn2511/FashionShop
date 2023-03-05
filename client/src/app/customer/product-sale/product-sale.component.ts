@@ -1,8 +1,4 @@
-import { ArticleService } from 'src/app/_services/article.service';
-import {
-  CustomerArticle,
-  CustomerArticleParams,
-} from 'src/app/_models/article';
+import { SlideLeftToRight } from 'src/app/_common/animation/common.animation';
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Subscription, BehaviorSubject } from 'rxjs';
@@ -24,12 +20,12 @@ import {
   ProductFilterComponent,
   ProductFilter,
 } from '../product-filter/product-filter.component';
-import { Carousel } from 'src/app/_models/carousel';
 
 @Component({
   selector: 'app-product-sale',
   templateUrl: './product-sale.component.html',
   styleUrls: ['./product-sale.component.css'],
+  animations: [SlideLeftToRight]
 })
 export class ProductSaleComponent implements OnInit, OnDestroy {
   @ViewChild('filterComponent') filterComponent: ProductFilterComponent;
@@ -53,7 +49,7 @@ export class ProductSaleComponent implements OnInit, OnDestroy {
   // querySubscribe$: Subscription;
   categoryGroups: CustomerCatalogue[] = [];
 
-  showFilterMobile: boolean = false;
+  showFilter: boolean = true;
   deviceSubscription$: Subscription;
   deviceType: BehaviorSubject<string> = new BehaviorSubject('');
   deviceTypeValue$ = this.deviceType.asObservable();
@@ -72,32 +68,23 @@ export class ProductSaleComponent implements OnInit, OnDestroy {
   constructor(
     private productService: ProductService,
     private categoryService: CategoryService,
-    private route: ActivatedRoute,
     private deviceService: DeviceService
   ) {
     this.productParams = this.productService.getProductParams();
   }
   ngOnDestroy(): void {
-    // this.querySubscribe$.unsubscribe();
     this.deviceSubscription$.unsubscribe();
   }
 
   ngOnInit(): void {
-    // this.querySubscribe$ = this.route.queryParamMap.subscribe((queryParamMap) => {
-    //     this.productService.productParams = new ProductParams();
-    //     this.productParams.gender = undefined;
-    //     this.query = queryParamMap.get('q');
-    //     this.productParams.query = this.query;
-    //     this.loadBreadCrumb();
-    //     this.loadColorFilters();
-    //     this.loadProducts();
-    //     this.loadCategoryGroup();
-    //     // }
-    //   });
+    if (this.deviceService.getDeviceType() != 'desktop')
+      this.showFilter = false;
 
     this.deviceSubscription$ = this.deviceService.deviceWidth$.subscribe(
       (_) => {
         this.deviceType.next(this.deviceService.getDeviceType());
+        if (this.deviceType.value == 'desktop')
+          this.showFilter = true;
       }
     );
     this.productParams = this.productService.resetProductParams();
@@ -169,6 +156,10 @@ export class ProductSaleComponent implements OnInit, OnDestroy {
     this.selectedColor = productFilter.selectedColor;
     this.selectedPriceRange = productFilter.selectedPriceRange;
     this.selectedSize = productFilter.selectedSize;
+    if(this.deviceType.value == 'desktop')
+      this.showFilter = true;
+    else
+      this.showFilter = false;
     this.loadProducts();
   }
 
@@ -185,7 +176,7 @@ export class ProductSaleComponent implements OnInit, OnDestroy {
   }
 
   mobileFilterToggle() {
-    this.showFilterMobile = !this.showFilterMobile;
+    this.showFilter = !this.showFilter;
   }
 
   loadCategoryGroup() {

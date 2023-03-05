@@ -141,7 +141,7 @@ accordion-group > .panel > .panel-collapse > .panel-body {
 }
 
 .table-responsive::-webkit-scrollbar{
-  display: none; 
+  display: none;
  }
 
 thead tr:nth-child(1) th {
@@ -155,3 +155,56 @@ thead tr:nth-child(1) th {
 tr:hover > td {
   background-color: rgb(226, 226, 226) !important;
 }
+
+
+.text-accent-1
+{
+  color: hsl(145, 33%, 53%) !important;
+}
+
+.text-accent
+{
+  color: hsl(159, 74%, 30%) !important;
+}
+
+.bg-accent
+{
+  background-color: hsl(159, 74%, 30%) !important;
+}
+
+.border-accent
+{
+  border-color: hsl(159, 74%, 30%) !important;
+}
+
+
+.btn-dark
+{
+  background-color: hsl(159, 74%, 30%) !important;
+  color: white  !important;
+}
+
+.btn-dark:focus
+{
+  background-color: hsl(147, 51%, 45%) !important;
+}
+
+
+.bg-light, .btn-light
+{
+  background-color: #d6f3d5 !important;
+}
+
+.btn-light
+{
+  border-color: #d6f3d5 !important;
+}
+
+
+
+
+
+
+
+
+

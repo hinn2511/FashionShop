@@ -31,7 +31,7 @@ export class ProductFilterComponent implements OnInit {
   @Input() selectedCategory: string;
   @Input() showCategory: boolean = false;
   catalogues: CustomerCatalogue[] = [];
-  @Input() selectedGender: number;  
+  @Input() selectedGender: number;
   @Input()  colorFilters: CustomerColorFilter[] = [];
   @Output() apply = new EventEmitter<ProductFilter>();
   @Output() reset = new EventEmitter<ProductFilter>();
@@ -74,7 +74,6 @@ export class ProductFilterComponent implements OnInit {
   applyAndCloseFilter()
   {
       this.apply.emit(new ProductFilter(this.productParams, this.selectedColor, this.selectedSize, this.selectedPriceRange));
-      this.closeFilter();
   }
 
   applyFilter()
@@ -120,7 +119,7 @@ export class ProductFilterComponent implements OnInit {
     this.applyFilter();
   }
 
-  
+
 
   setPriceRange(priceRangeId: number) {
     if (this.selectedPriceRange != null) {
@@ -163,7 +162,7 @@ export class ProductFilterComponent implements OnInit {
   }
 
   setCategoryFilter(category: string) {
-    if (this.selectedCategory == category)  
+    if (this.selectedCategory == category)
     {
       this.selectedCategory = undefined;
       return;
@@ -172,20 +171,20 @@ export class ProductFilterComponent implements OnInit {
       this.selectedCategory = category;
     this.productParams.category = fnConvertToSlug(category);
     this.showResetCategoryFilterButton = true;
-    
+
     this.applyFilter();
   }
 
   setGender(gender: number)
   {
-    if (this.selectedGender == gender)  
+    if (this.selectedGender == gender)
     this.selectedGender = undefined;
     else
     this.selectedGender = gender;
 
   }
 
-  
+
 
   closeFilter()
   {

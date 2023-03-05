@@ -157,7 +157,7 @@ export const OrderStatusSummaryList = [
   new OrderStatusSummary(4, 'Cancel Requested', 0),
   new OrderStatusSummary(5, 'Cancelled', 0),
   new OrderStatusSummary(10, 'Return Requested', 0),
-  new OrderStatusSummary(11, 'Returned', 0),
+  new OrderStatusSummary(11, 'Returned', 0)
 ];
 
 export class OrderRequest {

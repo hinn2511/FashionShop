@@ -30,7 +30,7 @@ export class SearchBarComponent implements OnInit {
     this.searchQuery = "";
   }
 
-  showSearchResult() {
+  showSearchResult(event) {
     if (this.searchQuery == "" || this.searchQuery == null)
       return;
     this.router.navigate(['/search'], {
