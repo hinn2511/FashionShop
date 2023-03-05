@@ -1,4 +1,4 @@
-import { FadeInAndOut } from './_common/animation/common.animation';
+import { FadeInAndOut, SlideInOut, SlideTopToBottom } from './_common/animation/common.animation';
 import { RouteService } from './_services/route.service';
 import { DeviceService } from 'src/app/_services/device.service';
 import { CartService } from 'src/app/_services/cart.service';
@@ -23,24 +23,8 @@ import { fnIsNullOrEmpty, fnSwitchValue } from './_common/function/function';
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css'],
   animations: [
-    trigger('slideInOut', [
-      state(
-        'in',
-        style({
-          transform: 'translate3d(-240px,0,0)',
-        })
-      ),
-      state(
-        'out',
-        style({
-          transform: 'translate3d(0, 0, 0)',
-        })
-      ),
-      transition('in => out', animate('400ms ease-in-out')),
-      transition('out => in', animate('400ms ease-in-out')),
-    ]),
+    SlideInOut,
     FadeInAndOut
-
   ],
 })
 export class AppComponent implements OnInit, OnDestroy {

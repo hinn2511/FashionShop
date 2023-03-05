@@ -23,7 +23,11 @@
       <div class="w-100">
         <div class="container-fluid pr-md-0">
           <app-admin-sidebar
-            [@slideInOut]="sidebarState"
+            [@slideInOut]="
+            {
+              value: sidebarState,
+              params: { width: '-240px'}
+            }"
             [currentState]="sidebarState"
             (newState)="setSidebar($event)"
           ></app-admin-sidebar>

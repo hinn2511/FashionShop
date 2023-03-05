@@ -6,16 +6,12 @@
   height: 100%;
   background-color: rgba(0, 0, 0, 0.4);
   transition: all 0.5s ease-in-out;
+  height: 120vh;
 }
 
 @media (max-width: 992px) {
   .prevent-scroll {
-    height: 100vh;
+    height: 120vh;
   }
 }
 
-@media (min-width: 992px) {
-  div {
-    min-height: 50vh;
-  }
-}
