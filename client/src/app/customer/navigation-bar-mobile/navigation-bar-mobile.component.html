@@ -1,0 +1,201 @@
+<div class="container-fluid">
+  <!-- Mobile navigation -->
+  <div class="mt-2 col-12" *ngIf="hideCategoryGroupDetail" [@slideLeftToRight]>
+    <ul class="w-100 mt-2 list-group">
+      <li
+        class="my-2 list-group-item d-flex align-items-center p-0 m-0 w-100 bg-transparent border-0"
+      >
+        <a
+          class="text-dark p-2 text-uppercase text-accent"
+          aria-current="page"
+          routerLink="/"
+          >Home</a
+        >
+      </li>
+
+      <li
+        dropdown
+        class="my-2 list-group-item p-0 m-0 w-100 bg-transparent border-0 dropdown d-flex justify-content-between align-items-center"
+        *ngFor="let item of categoryGroups; let i = index"
+        (click)="selectCategoryGroup(i)"
+      >
+        <a class="text-dark p-2 text-uppercase text-accent">{{ item.genderTitle }}</a>
+        <img
+          class="nav-icon icon"
+          src="../../../assets/arrow-right.svg"
+          alt="user"
+        />
+      </li>
+
+      <li
+        class="my-2 list-group-item p-0 m-0 d-flex align-items-center w-100 bg-transparent border-0"
+      >
+        <a
+          class="p-2 text-uppercase text-danger"
+          aria-current="page"
+          routerLink="/sale-off"
+          >Sale off</a
+        >
+      </li>
+
+      <li
+        class="my-2 list-group-item p-0 m-0 d-flex align-items-center w-100 bg-transparent border-0"
+        routerLink="/news"
+      >
+        <a class="text-dark p-2 text-uppercase text-accent">Blogs</a>
+      </li>
+
+      <hr class="w-100" style="height: 1px" />
+
+      <li
+        class="my-2 list-group-item p-0 m-0 w-100 d-flex align-items-center bg-transparent border-0"
+        *ngIf="user"
+      >
+        <a
+          class="p-2 text-uppercase"
+          aria-current="page"
+          (click)="viewAccount('information')"
+          >My account</a
+        >
+      </li>
+
+      <li
+        class="my-2 list-group-item p-0 m-0 d-flex align-items-center w-100 bg-transparent border-0"
+        *ngIf="user"
+      >
+        <a
+          class="p-2 text-uppercase"
+          aria-current="page"
+          (click)="viewAccount('orders')"
+          >My orders</a
+        >
+      </li>
+
+      <li
+        class="my-2 list-group-item p-0 m-0 d-flex align-items-center w-100 bg-transparent border-0"
+        *ngIf="user"
+      >
+        <a
+          class="p-2 text-uppercase"
+          aria-current="page"
+          (click)="viewAccount('favorites')"
+          >Favorites</a
+        >
+      </li>
+
+      <li
+        class="my-2 list-group-item p-0 m-0 d-flex align-items-center w-100 bg-transparent border-0"
+        *ngIf="user"
+      >
+        <a
+          class="p-2 text-uppercase"
+          aria-current="page"
+          (click)="viewAccount('payment')"
+          >Payment methods</a
+        >
+      </li>
+
+      <li
+        class="my-2 list-group-item p-0 m-0 d-flex align-items-center w-100 bg-transparent border-0"
+        *ngIf="user"
+      >
+        <a class="p-2 text-uppercase" aria-current="page" (click)="logout()"
+          >Logout</a
+        >
+      </li>
+
+      <li
+        class="my-2 list-group-item p-0 m-0 d-flex align-items-center w-100 bg-transparent border-0"
+        *ngIf="!user"
+      >
+        <a class="text-dark text-dark p-2 text-uppercase text-accent" routerLink="/login"
+          >Login</a
+        >
+      </li>
+
+      <li
+        class="my-2 list-group-item p-0 m-0 d-flex align-items-center w-100 bg-transparent border-0"
+        *ngIf="!user"
+      >
+        <a
+          class="text-dark p-2 text-uppercase text-accent"
+          *ngIf="!user"
+          routerLink="/register"
+          >Register</a
+        >
+      </li>
+    </ul>
+  </div>
+
+  <!-- Mobile category detail -->
+  <div class="mt-2 col-12" *ngIf="!hideCategoryGroupDetail" [@slideRightToLeft]>
+    <button
+      class="btn btn-transparent d-flex d-inline-block align-items-center pl-0 mt-2"
+      (click)="hideCategoryGroupDetailToggle()"
+    >
+      <img
+        class="nav-icon icon"
+        src="../../../assets/arrow-left.svg"
+        alt="user"
+      />
+      &nbsp;&nbsp;
+      <h5 class="text-capitalize p-0 m-0">
+        {{ selectedCategoryGroup.genderTitle }}
+      </h5>
+    </button>
+    <ul class="pt-4 pt-md-2 w-100 list-group d-inline-block">
+      <li
+        class="my-2 list-group-item p-0 m-0 w-100 bg-transparent border-0"
+        dropdown
+        *ngFor="let category of selectedCategoryGroup.categories"
+      >
+        <div
+          class="my-2 list-group-item d-flex align-items-center justify-content-between p-0 m-0 w-100 bg-transparent border-0"
+          (click)="viewCategory(category, selectedCategoryGroup.gender)"
+        >
+          <a class="text-uppercase text-accent">{{ category.categoryName }}</a>
+          <div *ngIf="category.subCategories.length > 0">
+            <i
+              *ngIf="
+                selectedCategory != undefined &&
+                  selectedCategory.categoryName == category.categoryName;
+                else collapse
+              "
+              class="fa fa-minus"
+            ></i>
+
+            <ng-template #collapse><i class="fa fa-plus"></i></ng-template>
+          </div>
+        </div>
+
+        <ul
+          id="dropdown-basic"
+          class="list-group bg-transparent border-0 ml-3"
+          *ngIf="
+            selectedCategory != undefined &&
+            selectedCategory.categoryName == category.categoryName
+            && selectedCategory.gender == category.gender
+          "
+        >
+          <li
+            class="my-2 list-group-item p-0 m-0 w-100 bg-transparent border-0"
+            *ngFor="let subCategory of category.subCategories"
+            (click)="viewCategory(subCategory, selectedCategoryGroup.gender)"
+          >
+            <a class="text-dark p-2 text-uppercase text-accent-1">{{
+              subCategory.categoryName
+            }}</a>
+          </li>
+          <li
+            class="my-2 list-group-item p-0 m-0 w-100 bg-transparent border-0"
+            (click)="navigateToCategory(category, selectedCategoryGroup.gender)"
+          >
+            <a class="text-dark p-2 text-uppercase text-accent-1">
+              View all {{ category.categoryName }}</a
+            >
+          </li>
+        </ul>
+      </li>
+    </ul>
+  </div>
+</div>
