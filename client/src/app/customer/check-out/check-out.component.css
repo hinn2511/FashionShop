@@ -1,110 +1,109 @@
 
 @media (max-width: 992px) {
-    .container-fluid {
-      min-width: 100vw;
-      height: 95vh;
-      overflow: hidden;
-      overflow-y: scroll;
-      position: relative;
-      align-items: baseline;
-    }
-  
-    .checkout-detail {
-      overflow: hidden;
-      overflow-y: scroll;
-      padding-bottom: 15vh;
-      height: calc(80vh + 50px);
-      -ms-overflow-style: none;
-      scrollbar-width: none;
-    }
-
-    .checkout-item-list
-    {
-      height: 50vh;
-      overflow: hidden;
-      overflow-y: scroll;
-    }
-    
-    .checkout-detail::-webkit-scrollbar, .container-fluid::-webkit-scrollbar {
-      display: none;
-    }
-  
-    .checkout-summary {
-      position: fixed;
-      bottom: 0;
-      left: 0;
-      width: 100%;
-    }
-  
-  
-    div > input.quantity 
-    {
-      max-width: 50px;
-    }
-  
-    .checkout-detail,
-    .checkout-summary {
-      max-width: 100%;
-    }
-  
-    .expand-summary-button
-    {
-      border-radius: 999px;
-    }
-    
-    .expand-summary-button > img
-    {
-      max-width: 15px;
-      max-height: 15px;
-      height: 100%;
-      width: 100%;
-      object-fit: contain;
-    }
+  .container-fluid {
+    min-width: 100vw;
+    height: 95vh;
+    overflow: hidden;
+    overflow-y: scroll;
+    position: relative;
+    align-items: baseline;
   }
-  
-  @media (min-width: 992px) {
-    .checkout-detail,
-    .checkout-summary {
-      height: 95vh;
-      overflow: hidden;
-      overflow-y: scroll;
-    }
 
-    .checkout-item-list
-    {
-      height: 50vh;
-      overflow: hidden;
-      overflow-y: scroll;
-    }
-  
-    .checkout-summary {
-      -ms-overflow-style: none;
-      scrollbar-width: none;
-    }
-  
-    .checkout-summary::-webkit-scrollbar {
-      display: none;
-    }
-  
-    .checkout-item-detail {
-      min-width: 400px;
-    }
-    
-    div > input.quantity 
-    {
-      min-width: 50px;
-      max-width: 100px;
-    }
-  
-    .rect-img-container {
-      min-height: 100%;
-      min-width: 75%;
-      max-width: 100%;
-      overflow: hidden;
-    }
-  
-    .rect-img {
-      height: 100%;
-    }
+  .checkout-detail {
+    overflow: hidden;
+    overflow-y: scroll;
+    padding-bottom: calc(100px + 5vh);
+    height: 80vh;
+    -ms-overflow-style: none;
+    scrollbar-width: none;
   }
-  
+
+  .checkout-item-list
+  {
+    height: 50vh;
+    overflow: hidden;
+    overflow-y: scroll;
+  }
+
+  .checkout-detail::-webkit-scrollbar, .container-fluid::-webkit-scrollbar {
+    display: none;
+  }
+
+  .checkout-summary {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+  }
+
+
+  div > input.quantity
+  {
+    max-width: 50px;
+  }
+
+  .checkout-detail,
+  .checkout-summary {
+    max-width: 100%;
+  }
+
+  .expand-summary-button
+  {
+    border-radius: 999px;
+  }
+
+  .expand-summary-button > img
+  {
+    max-width: 15px;
+    max-height: 15px;
+    height: 100%;
+    width: 100%;
+    object-fit: contain;
+  }
+}
+
+@media (min-width: 992px) {
+  .checkout-detail,
+  .checkout-summary {
+    height: 95vh;
+    overflow: hidden;
+    overflow-y: scroll;
+  }
+
+  .checkout-item-list
+  {
+    height: 50vh;
+    overflow: hidden;
+    overflow-y: scroll;
+  }
+
+  .checkout-summary {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  .checkout-summary::-webkit-scrollbar {
+    display: none;
+  }
+
+  .checkout-item-detail {
+    min-width: 400px;
+  }
+
+  div > input.quantity
+  {
+    min-width: 50px;
+    max-width: 100px;
+  }
+
+  .rect-img-container {
+    min-height: 100%;
+    min-width: 75%;
+    max-width: 100%;
+    overflow: hidden;
+  }
+
+  .rect-img {
+    height: 100%;
+  }
+}

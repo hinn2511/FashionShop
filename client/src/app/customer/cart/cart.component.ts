@@ -1,3 +1,5 @@
+import { FadeInAndOut } from './../../_common/animation/common.animation';
+import { SlideLeftToRight } from 'src/app/_common/animation/common.animation';
 import { RotateAnimation } from 'src/app/_common/animation/carousel.animations';
 import { DeviceService } from 'src/app/_services/device.service';
 import { AccountService } from 'src/app/_services/account.service';
@@ -22,7 +24,7 @@ import { fnCalculatePrice, fnHasValue } from 'src/app/_common/function/function'
   selector: 'app-cart',
   templateUrl: './cart.component.html',
   styleUrls: ['./cart.component.css'],
-  animations: [ RotateAnimation ]
+  animations: [ RotateAnimation, SlideLeftToRight, FadeInAndOut ]
 })
 export class CartComponent implements OnInit, OnDestroy {
   @Output() hideCart = new EventEmitter<boolean>();
@@ -51,7 +53,7 @@ export class CartComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.state = 'out';    
+    this.state = 'out';
     this.deviceSubscribe();
     this.user = this.authenticationService.userValue;
   }
@@ -192,5 +194,5 @@ export class CartComponent implements OnInit, OnDestroy {
     return fnCalculatePrice(item.saleType, (item.price + item.additionalPrice), item.saleOffPercent, item.saleOffValue);
   }
 
-  
+
 }

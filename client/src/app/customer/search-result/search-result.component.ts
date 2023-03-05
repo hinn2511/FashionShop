@@ -51,7 +51,7 @@ export class SearchResultComponent implements OnInit, OnDestroy {
   querySubscribe$: Subscription;
   categoryGroups: CustomerCatalogue[] = [];
 
-  showFilterMobile: boolean = false;
+  showFilter: boolean = false;
   deviceSubscription$: Subscription;
   deviceType: BehaviorSubject<string> = new BehaviorSubject('');
   deviceTypeValue$ = this.deviceType.asObservable();
@@ -81,11 +81,14 @@ export class SearchResultComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
+
+    if (this.deviceService.getDeviceType() != 'desktop')
+      this.showFilter = false;
     this.querySubscribe$ = this.route.queryParamMap.subscribe((queryParamMap) => {
         this.productService.productParams = new ProductParams();
+        this.productParams = this.productService.resetProductParams();
         this.productParams.gender = undefined;
         this.query = queryParamMap.get('q');
-        this.productParams = this.productService.resetProductParams();
         this.productParams.query = this.query;
         this.loadBreadCrumb();
         this.loadColorFilters();
@@ -96,6 +99,8 @@ export class SearchResultComponent implements OnInit, OnDestroy {
     this.deviceSubscription$ = this.deviceService.deviceWidth$.subscribe(
       (_) => {
         this.deviceType.next(this.deviceService.getDeviceType());
+        if (this.deviceType.value == 'desktop')
+          this.showFilter = true;
       }
     );
 
@@ -121,7 +126,6 @@ export class SearchResultComponent implements OnInit, OnDestroy {
       active: false,
     });
 
-  
   }
 
   loadProducts() {
@@ -164,6 +168,10 @@ export class SearchResultComponent implements OnInit, OnDestroy {
     this.selectedColor = productFilter.selectedColor;
     this.selectedPriceRange = productFilter.selectedPriceRange;
     this.selectedSize = productFilter.selectedSize;
+    if(this.deviceType.value == 'desktop')
+      this.showFilter = true;
+    else
+      this.showFilter = false;
     this.loadProducts();
   }
 
@@ -180,13 +188,12 @@ export class SearchResultComponent implements OnInit, OnDestroy {
   }
 
   mobileFilterToggle() {
-    this.showFilterMobile = !this.showFilterMobile;
+    this.showFilter = !this.showFilter;
   }
 
   loadCategoryGroup() {
     this.categoryService.getCatalogue().subscribe((result) => {
       this.categoryGroups = result;
-      
     });
   }
 

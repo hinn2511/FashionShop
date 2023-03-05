@@ -46,7 +46,7 @@ export class FileService {
     uploadForm.append('file', image, image.name);
     this.addToken(accessToken);
     return this.http.post<FileUploadedResponse>(
-      this.baseUrl + `/image?width=${width}&height=${height}&ratio=${ratio}&cropOption=${cropOption}`,
+      this.baseUrl + `file/image?width=${width}&height=${height}&ratio=${ratio}&cropOption=${cropOption}`,
       uploadForm,
       this.options
     );

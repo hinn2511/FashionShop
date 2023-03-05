@@ -4,32 +4,36 @@
   <!-- Status filter -->
   <div class="" *ngIf="orderSummary">
     <ul
-      class="list-group list-group-horizontal flex-wrap bg-light p-1 mobile-horizontal-scroll"
+      class="list-group list-group-horizontal flex-lg-wrap bg-light p-1 mobile-horizontal-scroll tablet-horizontal-scroll"
     >
       <li
-        class="list-group-item rounded border-0 cs-pointer p-2 text-center position-relative my-1"
+        #statusBarItem
+        class="list-group-item rounded border-0 cs-pointer p-2 text-center"
         [class]="{
           'bg-white': showStatus(item.id, true),
           'shadow-sm': showStatus(item.id, true),
           'bg-light': !showStatus(item.id, true)
         }"
         *ngFor="let item of orderStatusSummariesList; let i = index"
-        (click)="selectStatus(item.id, false)"
+        (click)="selectStatus(item.id, i, false)"
       >
-        <p class="p-0 m-0">{{ item.statusString }}</p>
-        <span
-          class="badge position-absolute top-0 end-0"
-          [class]="{
-            'badge-danger': showStatus(item.id, true),
-            'badge-secondary': !showStatus(item.id, true) && item.total > 0,
-            'd-none': item.total == 0
-          }"
-        >
-          {{ item.total }}
-        </span>
+        <div class="w-100 h-100">
+          <p class="p-0 m-0">{{ item.statusString }}</p>
+          <span
+            class="badge top-0 end-0"
+            [class]="{
+              'badge-danger': showStatus(item.id, true),
+              'badge-secondary': !showStatus(item.id, true) && item.total > 0,
+              'd-none': item.total == 0
+            }"
+          >
+            {{ item.total }}
+          </span>
+        </div>
       </li>
       <li
-        class="list-group-item rounded border-0 cs-pointer p-2 text-center my-auto"
+        #allStatusItem
+        class="list-group-item rounded border-0 cs-pointer p-2 text-center"
         [class]="{
           'bg-white': viewAllStatus,
           'shadow-sm': viewAllStatus,
@@ -37,7 +41,9 @@
         }"
         (click)="viewAllStatusFilter()"
       >
-        All status
+        <div class="w-100 h-100">
+          <p class="p-0 m-0">All status</p>
+        </div>
       </li>
     </ul>
   </div>
@@ -212,14 +218,18 @@
                 type="checkbox"
                 class="custom-control-input cs-pointer"
                 [checked]="
-                  orderParams.orderStatusFilter.length == orderStatusSummariesList.length
+                  orderParams.orderStatusFilter.length ==
+                  orderStatusSummariesList.length
                 "
               />
               <label class="custom-control-label">Select all</label>
             </div>
           </li>
 
-          <li class="list-group-item" *ngFor="let item of orderStatusSummariesList">
+          <li
+            class="list-group-item"
+            *ngFor="let item of orderStatusSummariesList"
+          >
             <div
               class="custom-control custom-checkbox"
               (click)="selectStatus(item.id, true)"
@@ -241,7 +251,10 @@
 
   <!-- Order table -->
   <div class="table-responsive w-100" *ngIf="orders">
-    <table class="table table-striped table-borderless" aria-label="order-table">
+    <table
+      class="table table-striped table-borderless"
+      aria-label="order-table"
+    >
       <thead class="bg-light">
         <tr>
           <th scope="col">

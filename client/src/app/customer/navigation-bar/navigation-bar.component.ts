@@ -1,4 +1,4 @@
-import { SlideRightToLeft, SlideTopToBottom, SlideLeftToRight, FadeInAndOut, SlideTopToBottom2 } from './../../_common/animation/common.animation';
+import { SlideRightToLeft, SlideTopToBottom, SlideLeftToRight, FadeInAndOut, SlideTopToBottomBoolean, Fade, ExpandTopToBottom } from './../../_common/animation/common.animation';
 import { CartService } from 'src/app/_services/cart.service';
 import {
   Component,
@@ -19,6 +19,7 @@ import { User } from 'src/app/_models/user';
 import { DeviceService } from 'src/app/_services/device.service';
 import { BehaviorSubject, Subscription } from 'rxjs';
 import { CustomerCatalogue, CustomerCategoryCatalogue } from 'src/app/_models/category';
+import { RouteService } from 'src/app/_services/route.service';
 
 export class NavSettings {
   navHeight: string;
@@ -37,7 +38,7 @@ export class NavSettings {
   selector: 'app-navigation-bar',
   templateUrl: './navigation-bar.component.html',
   styleUrls: ['./navigation-bar.component.css'],
-  animations: [ SlideRightToLeft, SlideTopToBottom, SlideTopToBottom2, SlideLeftToRight, FadeInAndOut ]
+  animations: [ SlideRightToLeft, SlideTopToBottom, SlideTopToBottomBoolean, SlideLeftToRight, FadeInAndOut, Fade, ExpandTopToBottom ]
 })
 export class NavigationBarComponent
   implements OnInit, OnDestroy, AfterViewInit
@@ -48,7 +49,6 @@ export class NavigationBarComponent
   searchQuery: string = '';
   icon: string;
   action: string;
-  collapseNavbar: boolean = true;
   collapseSearchWindow: boolean = true;
   collapseSearchBar: boolean = true;
   collapseCategory: boolean = true;
@@ -61,11 +61,12 @@ export class NavigationBarComponent
   selectedCategory:  CustomerCategoryCatalogue;
   selectedSubCategory:  CustomerCategoryCatalogue;
   user: User;
-  deviceSubscription$: Subscription;
   settings: BehaviorSubject<NavSettings> = new BehaviorSubject(
     new NavSettings('', '', '')
   );
   settingValue$ = this.settings.asObservable();
+  deviceSubscription$: Subscription;
+
   @ViewChild("search") searchTextBox : ElementRef;
 
   @HostListener('click', ['$event'])
@@ -99,6 +100,7 @@ export class NavigationBarComponent
     this.collapseAll();
     this.loadCategoryGroup();
   }
+
 
   ngAfterViewInit(): void {
     this.deviceSubscription$ = this.deviceService.deviceWidth$.subscribe(
@@ -162,13 +164,6 @@ export class NavigationBarComponent
     });
   }
 
-  navigationBarToggle() {
-    let state = this.collapseNavbar;
-    this.collapseAll();
-    this.collapseNavbar = !state;
-    this.focus.emit(state);
-  }
-
   searchWindowToggle() {
     if(this.settings.getValue().deviceType == 'desktop')
     {
@@ -221,7 +216,6 @@ export class NavigationBarComponent
 
   collapseAll() {
     this.collapseCategory = true;
-    this.collapseNavbar = true;
     this.collapseSearchWindow = true;
     this.collapseCartWindow = true;
     this.collapseCheckoutWindow = true;
@@ -285,10 +279,5 @@ export class NavigationBarComponent
     this.router.navigate(['account/'], { queryParams: { tab: tab } });
   }
 
-  convertToString(bool: boolean)
-  {
-    if (bool)
-      return 'in';
-    return 'out';
-  }
+
 }

@@ -35,7 +35,7 @@
       </div>
     </div>
   </div>
-  <div class="card-body">
+  <div class="card-body chart-container">
     <div class="chart" *ngIf="data">
       <ngx-charts-bar-vertical
         [view]="view"
@@ -50,9 +50,9 @@
         [xAxisLabel]="xAxisLabel"
         [yAxisLabel]="yAxisLabel"
       ></ngx-charts-bar-vertical>
-      <div class="w-100 text-center mt-3">
-        {{selectedTimeFilter.description}}
-      </div>
+    </div>
+    <div class="w-100 text-center mt-3">
+      {{selectedTimeFilter.description}}
     </div>
   </div>
 </div>

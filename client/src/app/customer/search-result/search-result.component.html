@@ -4,13 +4,12 @@
     *ngIf="deviceTypeValue$ | async as deviceType"
   >
     <div
-      class="col-12 col-md-4 col-xl-3"
+      class="col-12 col-md-4 col-lg-3 py-lg-3"
       [class]="{
         'mobile-filter': deviceType != 'desktop',
-        'fixed-top': deviceType != 'desktop',
-        'd-none': deviceType != 'desktop' && !showFilterMobile
+        'fixed-top': deviceType != 'desktop'
       }"
-      [@slideLeftToRight]
+      [@slideLeftToRightBoolean]="showFilter"
     >
       <!-- [@slideRightLeft] -->
       <app-product-filter
@@ -23,7 +22,7 @@
         (close)="mobileFilterToggle()"
       ></app-product-filter>
     </div>
-    <div class="col-12 col-md-12 col-xl-9 px-0 px-lg-auto">
+    <div class="col-12 col-md-12 col-lg-9 px-0 px-lg-auto">
       <div>
         <app-breadcrumb
           [breadCrumbList]="breadCrumb"

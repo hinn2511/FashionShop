@@ -18,7 +18,7 @@
           </a>
         </div>
         <div class="mt-4 p-2">
-          <h2 class="">My cart</h2>
+          <h2 class="text-accent">My cart</h2>
           <p class="">{{ cartItemList.totalItem }}&nbsp;items</p>
         </div>
         <!-- Cart item table for desktop device -->
@@ -76,7 +76,7 @@
                       class="p-0 m-0"
                     >
                       {{ calculatePrice(cartItem) | currency }}
-                    </p>                   
+                    </p>
                   </td>
 
                   <!-- Item quantity on desktop -->
@@ -261,22 +261,22 @@
             />
           </div>
         </div>
-        <h4 class="mt-2 mt-lg-5">Summary</h4>
+        <h4 class="mt-2 mt-lg-5 text-accent">Summary</h4>
 
         <!-- Display summary -->
-        <div class="d-flex mt-4" *ngIf="expandCartSummary">
+        <div class="d-flex mt-4" *ngIf="expandCartSummary"  [@fadeInAndOut]>
           <div class="bd-highlight">Subtotal</div>
           <div class="flex-fill text-right fw-bold">
             {{ cartItemList.totalPrice | currency }}
           </div>
         </div>
-        <div class="d-flex mt-2" *ngIf="expandCartSummary">
+        <div class="d-flex mt-2" *ngIf="expandCartSummary"  [@fadeInAndOut]>
           <div class="bd-highlight">Discount</div>
           <div class="flex-fill text-right fw-bold">
             {{ discountAmount | currency }}
           </div>
         </div>
-        <div class="d-flex mt-2" *ngIf="expandCartSummary">
+        <div class="d-flex mt-2" *ngIf="expandCartSummary"  [@fadeInAndOut]>
           <div class="bd-highlight">Tax</div>
           <div class="flex-fill text-right fw-bold">
             {{
@@ -285,11 +285,12 @@
           </div>
         </div>
         <!-- Promo code input -->
-        <div class="mt-4" *ngIf="expandCartSummary">
+        <div class="mt-4" *ngIf="expandCartSummary"  [@fadeInAndOut]>
           <p class="text-uppercase">enter promote code</p>
           <div
             class="input-group mb-3"
             *ngIf="!promoCodeApplied; else applyCode"
+            [@fadeInAndOut]
           >
             <input
               type="text"

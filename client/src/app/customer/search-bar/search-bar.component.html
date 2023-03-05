@@ -6,7 +6,7 @@
       class="form-control"
       [(ngModel)]="searchQuery"
       (ngModelChange)="updateAction()"
-      (keyup.enter)="showSearchResult()"
+      (keydown.enter)="showSearchResult($event)"
       #search
     />
     <p
