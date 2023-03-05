@@ -1,3 +1,6 @@
 {
-    "angular.enable-strict-mode-prompt": false
+    "angular.enable-strict-mode-prompt": false,
+    "appService.preDeployTask": "publish-release",
+    "appService.deploySubpath": "API\\bin\\Release\\net6.0\\publish",
+    "appService.defaultWebAppToDeploy": "/subscriptions/ba9edb92-623c-4867-a013-59d0e4dd810a/resourceGroups/Thyme/providers/Microsoft.Web/sites/Thyme"
 }
