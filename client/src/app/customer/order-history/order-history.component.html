@@ -1,6 +1,6 @@
 <div class="container-fluid">
   <div>
-    <h4>My order</h4>
+    <h4 class="text-app-dark">My order</h4>
     <form
       [formGroup]="orderFilterForm"
       (ngSubmit)="(orderFilterForm.valid)"
@@ -34,11 +34,11 @@
       </div>
     </form>
     <div class="">
-      <ul class="list-group list-group-horizontal justify-content-md-between bg-light p-1 mobile-horizontal-scroll">
+      <ul class="list-group list-group-horizontal justify-content-md-between bg-app-light p-1 mobile-horizontal-scroll">
         <li #statusBarItem class="list-group-item rounded text-center border-0 cs-pointer" 
         [class]="{
           'bg-white': selectedOrderStatus.statusString == item.statusString,
-          'bg-light': selectedOrderStatus.statusString != item.statusString
+          'bg-app-light': selectedOrderStatus.statusString != item.statusString
         }"
         *ngFor="let item of orderStatusList; let i = index"
         (click)="setOrderStatus(i)">
@@ -46,12 +46,12 @@
         </li>
       </ul>
     </div>
-    <div class="w-100 d-flex justify-content-end mb-1" *ngIf="orders.length > 0">
+    <div class="w-100 d-flex justify-content-end my-1" *ngIf="orders.length > 0">
       <div class="btn-group py-1 filter-dropdown" dropdown>
         <button
           dropdownToggle
           type="button"
-          class="btn btn-light dropdown-toggle"
+          class="btn btn-light bg-app-light dropdown-toggle"
           aria-controls="dropdown-basic"
         >
           {{ selectedOrder }}
@@ -85,7 +85,7 @@
       </div>
     </div>
     <ng-template #empty>
-      <div class="d-flex text-center align-items-center" style="min-height: 300px;">
+      <div class="d-flex text-center align-items-center place-holder">
           <h4 class="text-muted w-100">No order available</h4>
       </div>
     </ng-template>

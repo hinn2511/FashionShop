@@ -15,9 +15,9 @@ export interface Product {
     saleOffFrom: Date;
     saleOffTo: Date;
     category: string;
-    categorySlug: string;
+    categoryId: number;
     parentCategory: string;
-    parentCategorySlug: string;
+    parentCategoryId: number;
     brandId: number;
     brandName: string;
     likedByUser: boolean;

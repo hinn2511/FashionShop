@@ -14,11 +14,17 @@ a {
 
 .toggle-btn-container
 {
-  top: 70px;
+  top: 150px;
   right: 15px;
 }
 
-.toggle-btn-container > button
+.lock-btn-container
+{
+  top: 100px;
+  right: 15px;
+}
+
+.toggle-btn-container > button, .lock-btn-container > button
 {
   width: 30px;
   height:  30px;
@@ -27,7 +33,7 @@ a {
   box-shadow: 0.1rem 0 5px -2px #888;
 }
 
-.toggle-btn-container > button > img
+.toggle-btn-container > button > img, .lock-btn-container > button > img
 {
   width: 13px;
   height: 13px;
@@ -36,16 +42,16 @@ a {
 }
 
 .nav-item-active {
-  background-color: rgb(26, 26, 26);
+  background-color: #2e4e3f;
   border-radius: 999px;
   transition: all 0.5s ease-in;
 }
 
 .nav-item-active > a {
   color: white;
-  -webkit-animation: slideIn 1s forwards;
-  -moz-animation: slideIn 1s forwards;
-  animation: slideIn 1s forwards;
+  -webkit-animation: fadeIn 1s forwards;
+  -moz-animation: fadeIn 1s forwards;
+  animation: fadeIn 1s forwards;
 }
 
 :host {
@@ -55,31 +61,32 @@ a {
   left: 0;
   bottom: 0;
   width: 100%;
-  z-index: 10000;
+  z-index: 1030;
   max-width: 300px;
 }
 
-@-webkit-keyframes slideIn {
+@-webkit-keyframes fadeIn {
   0% {
-    transform: translateX(-100px);
+    opacity: 0;
   }
   100% {
-    transform: translateX(0);
+    opacity: 1;
   }
 }
-@-moz-keyframes slideIn {
+@-moz-keyframes fadeIn {
   0% {
-    transform: translateX(-100px);
+    opacity: 0;
   }
   100% {
-    transform: translateX(0);
+    opacity: 1;
   }
 }
-@keyframes slideIn {
+@keyframes fadeIn {
   0% {
-    transform: translateX(-100px);
+    opacity: 0;
   }
   100% {
-    transform: translateX(0);
+    opacity: 1;
   }
 }
+

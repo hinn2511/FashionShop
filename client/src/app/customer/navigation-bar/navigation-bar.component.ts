@@ -76,9 +76,12 @@ export class NavigationBarComponent
 
   @HostListener('document:click', ['$event'])
   clickOutside() {
-    this.collapseAll();
-    this.collapseSearchBar = true;
-    this.focus.emit(false);
+    if (this.settings.getValue().deviceType == 'desktop')
+    {
+      this.collapseAll();
+      this.collapseSearchBar = true;
+      this.focus.emit(false);
+    }
   }
 
   constructor(
@@ -99,6 +102,7 @@ export class NavigationBarComponent
     this.user = this.authenticationService.userValue;
     this.collapseAll();
     this.loadCategoryGroup();
+    
   }
 
 
@@ -266,11 +270,11 @@ export class NavigationBarComponent
     this.selectedCategory = this.selectedCategoryGroup.categories[index];
   }
 
-  viewCategory(categoryName: string, categorySlug: string, gender: number) {
+  viewCategory(categoryName: string, categoryId: number, gender: number) {
     this.categoryService.setCurrentCategory(categoryName, gender);
     this.collapseAll();
     this.router.navigate(['/product'], {
-      queryParams: { category: categorySlug, gender: gender },
+      queryParams: { category: categoryId, gender: gender },
     });
   }
 

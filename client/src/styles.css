@@ -7,7 +7,7 @@ body {
   font-family: "Source Sans Pro", sans-serif;
   margin: 0;
   padding: 0;
-  max-height: 100vh;
+  max-height: min(100vh, -webkit-fill-available, 100svh , 100lvh);
   overflow-y: scroll;
   max-width: 100vw;
   overflow-x: hidden;
@@ -17,7 +17,7 @@ body {
   font-family: "Playfair Display", serif;
 }
 
-@media (min-width: 768px) {
+@media (min-width: 501px) {
   body {
     font-size: 15px;
   }
@@ -31,7 +31,7 @@ body {
   }
 }
 
-@media screen and (max-width: 992px) and (min-width: 768px) {
+@media screen and (max-width: 992px) and (min-width: 501px) {
   .mobile-filter {
     padding-top: 50px;
     max-height: 100vh;
@@ -58,7 +58,7 @@ body {
   }
 }
 
-@media (max-width: 768px) {
+@media (max-width: 501px) {
   .container {
     padding-left: 0;
     padding-right: 0;
@@ -135,6 +135,7 @@ body {
 
 .dropdown {
   z-index: 100;
+  -webkit-appearance: none;
 }
 
 /* Input */
@@ -159,15 +160,30 @@ input[type="color"]:focus,
   -webkit-box-shadow: 0 8px 6px -8px transparent;
   -moz-box-shadow: 0 8px 6px -8px transparent;
   box-shadow: 0 8px 6px -8px rgba(85, 82, 82, 0.521);
-  background-color: rgb(250, 250, 250) !important;
+  background-color: #f9fcf6 !important;
   outline: 0 none;
 }
 
 input {
-  background-color: #f8f9fa !important;
+  background-color: #f9fcf6 !important;
   border: none !important;
   padding-top: 0 !important;
   padding-bottom: 0 !important;
+}
+
+select
+{
+  appearance: none;
+  background-color: transparent;
+      background-image: url(assets/arrow-down.svg);
+      background-repeat: no-repeat;
+      background-position: 97% 52%;
+      background-size: 15px;
+}
+
+.place-holder
+{
+  min-height: 50vh;
 }
 
 input::-webkit-outer-spin-button,
@@ -268,7 +284,7 @@ button:focus {
   left: 0;
   width: 100%;
   object-fit: cover;
-  z-index: 100;
+  z-index: 10;
 }
 
 .carousel-image-next {
@@ -276,7 +292,7 @@ button:focus {
   left: -100%;
   width: 100%;
   object-fit: cover;
-  z-index: 100;
+  z-index: 10;
 }
 
 .carousel-image-prev {
@@ -284,7 +300,7 @@ button:focus {
   left: 100%;
   width: 100%;
   object-fit: cover;
-  z-index: 100;
+  z-index: 10;
 }
 
 .carousel-text {
@@ -297,7 +313,7 @@ button:focus {
   right: 0;
   width: 80%;
   height: 100%;
-  z-index: 101;
+  z-index: 11;
 }
 
 .carousel-text > .carousel-title {
@@ -320,7 +336,7 @@ button:focus {
   padding: 0.5em;
   color: white;
   font-weight: bold;
-  font-size: 3em;
+  font-size: min(30px,3em);
   user-select: none;
   height: 100%;
   opacity: 80%;
@@ -334,11 +350,11 @@ button:focus {
 }
 .carousel-control.carousel-next {
   right: 0;
-  z-index: 101;
+  z-index: 11;
 }
 .carousel-control.carousel-prev {
   left: 0;
-  z-index: 101;
+  z-index: 11;
 }
 
 .carousel-arrow {
@@ -379,13 +395,11 @@ button:focus {
 .carousel-indicator-inactive {
   height: 5px;
   width: 5px;
-  background-color: rgb(224, 229, 233);
 }
 
 .carousel-indicator-active {
   height: 7px;
   width: 7px;
-  background-color: rgb(132, 135, 138);
 }
 
 /* Carousel */
@@ -490,91 +504,7 @@ td {
 .status {
   width: 170px;
 }
-
-.default-status {
-  background-color: rgba(221, 227, 230, 0.3);
-  color: rgb(34, 35, 36);
-}
 /* Default status */
-
-/* Order status */
-.created-status {
-  background-color: rgba(165, 192, 202, 0.3);
-  color: rgb(65, 75, 78);
-}
-
-.checking-status {
-  background-color: rgba(131, 230, 192, 0.3);
-  color: rgb(58, 102, 84);
-}
-
-.paid-status {
-  background-color: rgba(217, 230, 85, 0.3);
-  color: rgba(62, 102, 36);
-}
-
-.processing-status {
-  background-color: rgba(41, 172, 233, 0.3);
-  color: rgb(31, 48, 104);
-}
-
-.shipping-status {
-  background-color: rgba(233, 41, 175, 0.3);
-  color: rgb(102, 31, 104);
-}
-
-.shipped-status {
-  background-color: rgba(131, 41, 233, 0.3);
-  color: rgb(32, 14, 100);
-}
-
-.cancel-requested-status {
-  background-color: rgba(238, 169, 20, 0.3);
-  color: rgb(155, 110, 14);
-}
-
-.cancelled-status {
-  background-color: rgba(221, 83, 83, 0.3);
-  color: rgb(145, 37, 29);
-}
-
-.return-requested-status {
-  background-color: rgba(170, 226, 65, 0.3);
-  color: rgb(57, 85, 26);
-}
-
-.returned-status {
-  background-color: rgba(226, 129, 65, 0.3);
-  color: rgb(85, 50, 26);
-}
-
-.finished-status {
-  background-color: rgba(55, 81, 199, 0.3);
-  color: rgb(16, 29, 104);
-}
-
-/* Order status */
-
-/* Other status */
-.active-status {
-  background-color: rgba(131, 230, 136, 0.3);
-  color: rgb(31, 66, 33);
-}
-
-.hidden-status {
-  background-color: rgba(179, 210, 240, 0.3);
-  color: rgb(47, 56, 52);
-}
-
-.deleted-status {
-  background-color: rgba(252, 95, 95, 0.3);
-  color: rgb(77, 18, 16);
-}
-/* Other status */
-
-.f-b-50 {
-  filter: brightness(50%);
-}
 
 a:hover {
   text-decoration: underline !important;
@@ -584,16 +514,6 @@ a:hover {
 a {
   text-decoration: none;
   transition: all 0.5s ease-in-out;
-}
-
-.bg-bottom-light {
-  background: linear-gradient(
-    180deg,
-    rgba(255, 255, 255, 0) 0%,
-    rgba(255, 255, 255, 0) 50%,
-    rgb(248, 249, 250, 1) 100%,
-    rgba(248, 249, 250, 1) 100%
-  );
 }
 
 sketch-picker,
@@ -614,7 +534,11 @@ chrome-picker {
 }
 
 .icon {
-  min-height: 17px;
-  max-height: 17px;
+  min-height: 18px;
+  max-height: 18px;
   object-position: center;
+}
+
+.shrunk > div {
+  background: linear-gradient(to top, rgba(46,78,63, 0.02) 0%, rgba(46,78,63, 0.07) 10%, rgba(46,78,63, 0.05) 20%, rgba(46,78,63, 0));
 }

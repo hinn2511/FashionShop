@@ -1,12 +1,32 @@
+
+
+@media (min-width: 992px) {
+  .container-fluid {
+    justify-content: center;
+    max-width: 1000px;
+  }
+}
+
+@media screen and (max-width: 992px) and (min-width: 501px) {
+ 
+}
+
+@media (max-width: 501px) {
+  .category-container:first-child {
+    margin-top: 5px;
+  }
+  
+}
+
 .category-container {
-  background-color: #f0faed;
   overflow: hidden;
-  height: calc(150px + 10vh);
-  width: 100%;
+  background-color: #f8f9fa;
+  height: min(200px, 15vh);
+  border: 5px solid white;
 }
 
 .category-container:hover {
-  background-color: #00000011;
+  background-color: #f0faed11;
 }
 
 img {
@@ -15,64 +35,76 @@ img {
 }
 
 .category-container > .category-text {
-  left: 5%;
+  left: 50%;
   top: 50%;
   width: 50%;
-  transform: translate(0, -50%);
+  transform: translate(-50%, -50%);
   transition: all 500ms ease-in-out;
   z-index: 62;
 }
 
 .category-container > .category-text-backdrop {
-  left: 100%;
+  left: -100%;
   top: 0;
   height: 100%;
-  width: 60%;
+  width: 100%;
   transition: all 500ms ease-in-out;
   z-index: 61;
-  background-color: #f0faed;
+  background-color: #f8f9fa;
 }
 
 .category-container:hover > .category-text-backdrop {
-  left: 40%;
+  left: 0%;
   top: 0;
   height: 100%;
-  width: 60%;
+  width: 100%;
   transition: all 500ms ease-in-out;
   z-index: 61;
-  background-color: #2e4e3fd5;
+  background-color: #02020280;
   box-shadow: 0 1rem 1rem rgba(0, 0, 0, 0.25) !important;
 }
 
 .category-container > .category-text > a,
 .category-container > .category-text > p,
-.category-container > .category-text > h3 {
-  color: #2e4e3f;
-  transition: all 500ms ease-in-out;
-}
-.category-container:hover > .category-text > a,
-.category-container:hover > .category-text > p,
-.category-container:hover > .category-text > h3 {
-  color: #f0faed;
+.category-container > .category-text > h5 {
+  color: #f8f9fa;
   transition: all 500ms ease-in-out;
 }
 
-.category-container:hover > .category-text {
-  left: 45%;
-  top: 50%;
-  transform: translate(0, -50%);
+.category-container:hover > .category-text > a,
+.category-container:hover > .category-text > p,
+.category-container:hover > .category-text > h5 {
+  color: #f8f9fa;
+  text-decoration: underline;
+  transition: all 500ms ease-in-out;
+}
+
+.category-container:hover > .category-text {  
   transition: all 500ms ease-in-out;
 }
 
 .category-container > img {
   top: 0px;
-  left: 50%;
+  left: 0%;
+  width: 100%;
+  object-fit: cover;
   transition: all 500ms ease-in-out;
   z-index: 60;
+  filter: brightness(0.4);
 }
+
 
 .category-container:hover > img {
   top: 0px;
   left: 0;
+  transform: scale(1.2);
   transition: all 500ms ease-in-out;
+  filter: brightness(0.1);
+  filter: blur(5px);
+}
+
+.row
+{
+  padding-left: 5px;
+  padding-right: 5px;
 }

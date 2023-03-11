@@ -1,4 +1,4 @@
-@media (max-width: 768px) {
+@media (max-width: 501px) {
 
   .timeline::after {
     left: 31px;
@@ -30,7 +30,7 @@
     }
 }
 
-@media (min-width: 768px) {
+@media (min-width: 501px) {
   .container-fluid {
     max-width: 1400px;
   }

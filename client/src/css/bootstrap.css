@@ -15,8 +15,8 @@ accordion-group > .card > .card-header {
 
 accordion-group.active > .card > .card-header {
   color: #212529;
-  background-color: #f8f9fa;
-  border: 1px solid #343a40 !important;
+  background-color: #f0faed;
+  border: 1px solid #f0faed !important;
 }
 
 accordion-group > .panel:hover {
@@ -41,7 +41,7 @@ accordion-group > .panel > .panel-collapse > .panel-body {
 }
 
 .nav-tabs {
-  background-color: #f8f9fa;
+  background-color: #f0faed;
   padding-top: 0.25rem;
   padding-left: 0.25rem;
   padding-right: 0.25rem;
@@ -75,12 +75,12 @@ accordion-group > .panel > .panel-collapse > .panel-body {
 }
 
 .nav-tabs > .nav-item.active > a > h5 {
-  color: #000000;
+  color: #2e4e3f;
   width: 100%;
 }
 
 .nav-tabs > .nav-item > a > h5 {
-  color: #8e9092;
+  color: #7ea393;
   width: 100%;
 }
 
@@ -112,7 +112,7 @@ accordion-group > .panel > .panel-collapse > .panel-body {
   text-align: center;
   background-color: transparent !important;
   border-color: transparent !important;
-  color: #d6d6d6;
+  color: #7ea393;
 }
 
 .pagination > .pagination-first > a,
@@ -123,13 +123,13 @@ accordion-group > .panel > .panel-collapse > .panel-body {
   text-align: center;
   background-color: transparent !important;
   border-color: transparent !important;
-  color: #000000;
+  color: #2e4e3f;
 }
 
 .pagination > .pagination-page.active > a {
   text-align: center;
-  background-color: black !important;
-  border-color: black !important;
+  background-color: #2e4e3f !important;
+  border-color: #2e4e3f !important;
   border-radius: 3px;
   color: #ffffff;
 }
@@ -140,9 +140,9 @@ accordion-group > .panel > .panel-collapse > .panel-body {
   overflow: scroll;
 }
 
-.table-responsive::-webkit-scrollbar{
+.table-responsive::-webkit-scrollbar {
   display: none;
- }
+}
 
 thead tr:nth-child(1) th {
   position: sticky;
@@ -151,60 +151,11 @@ thead tr:nth-child(1) th {
   background-color: #f8f9fa;
 }
 
-
 tr:hover > td {
   background-color: rgb(226, 226, 226) !important;
 }
 
-
-.text-accent-1
-{
-  color: hsl(145, 33%, 53%) !important;
+.breadcrumb {
+  border-radius: none !important;
+  margin-bottom: 0 !important;
 }
-
-.text-accent
-{
-  color: hsl(159, 74%, 30%) !important;
-}
-
-.bg-accent
-{
-  background-color: hsl(159, 74%, 30%) !important;
-}
-
-.border-accent
-{
-  border-color: hsl(159, 74%, 30%) !important;
-}
-
-
-.btn-dark
-{
-  background-color: hsl(159, 74%, 30%) !important;
-  color: white  !important;
-}
-
-.btn-dark:focus
-{
-  background-color: hsl(147, 51%, 45%) !important;
-}
-
-
-.bg-light, .btn-light
-{
-  background-color: #d6f3d5 !important;
-}
-
-.btn-light
-{
-  border-color: #d6f3d5 !important;
-}
-
-
-
-
-
-
-
-
-

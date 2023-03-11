@@ -1,5 +1,5 @@
 <div class="container-fluid" *ngIf="products">
-    <h4>My favorites</h4>
+    <h4 class="text-app-dark">My favorites</h4>
     <div class="d-flex justify-content-end pr-lg-4" *ngIf="products.length > 0">
         <div class="btn-group py-3 filter-dropdown" dropdown>
             <button
@@ -41,7 +41,7 @@
     </div>
 
     <ng-template #noFavorite>
-        <div class="p-5 text-center">
+        <div class="p-5 text-center place-holder">
             <h4>You have not liked any product yet</h4>
             <a href="" class="text-muted">Click here to find more!</a>
         </div>

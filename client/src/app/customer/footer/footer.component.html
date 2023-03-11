@@ -1,18 +1,17 @@
-<div class="container-fluid bg-light">
+<div class="container-fluid bg-app-light">
   <footer class="p-3 p-md-5">
     <div class="row w-100 mx-auto mt-4 mt-md-0">
       <div class="col-6 col-md-4 col-lg-2 mb-3">
-        <h5 class="text-uppercase text-accent">shop</h5>
+        <h5 class="text-uppercase text-app-dark">shop</h5>
         <ul class="nav flex-column">
-          <li class="nav-item mb-2"><a href="#" class="nav-link p-0 text-dark">Women</a></li>
-          <li class="nav-item mb-2"><a href="#" class="nav-link p-0 text-dark">Men</a></li>
-          <li class="nav-item mb-2"><a href="#" class="nav-link p-0 text-dark">Kids</a></li>
-          <li class="nav-item mb-2"><a href="#" class="nav-link p-0 text-dark">Sale off</a></li>
+          <li *ngFor="let gender of genders" class="nav-item mb-2" (click)="navigateToGenderSummary(gender.id)">
+            <a class="nav-link p-0 text-dark text-capitalize">{{gender.name}}</a>
+          </li>
         </ul>
       </div>
 
       <div class="col-6 col-md-4 col-lg-2 mb-3">
-        <h5 class="text-uppercase text-accent">company info</h5>
+        <h5 class="text-uppercase text-app-dark">company info</h5>
         <ul class="nav flex-column">
           <li class="nav-item mb-2"><a href="#" class="nav-link p-0 text-dark">About us</a></li>
           <li class="nav-item mb-2"><a href="#" class="nav-link p-0 text-dark">Sustainability</a></li>
@@ -22,7 +21,7 @@
       </div>
 
       <div class="col-6 col-md-4 col-lg-2 mb-3">
-        <h5 class="text-uppercase text-accent">support</h5>
+        <h5 class="text-uppercase text-app-dark">support</h5>
         <ul class="nav flex-column">
           <li class="nav-item mb-2"><a href="#" class="nav-link p-0 text-dark">Help</a></li>
           <li class="nav-item mb-2"><a href="#" class="nav-link p-0 text-dark">Shipping</a></li>
@@ -33,7 +32,7 @@
       </div>
 
       <div class="col-6 col-md-4 col-lg-2 mb-3">
-        <h5 class="text-uppercase text-accent">follow us</h5>
+        <h5 class="text-uppercase text-app-dark">follow us</h5>
         <ul class="nav flex-column">
           <li class="nav-item mb-2"><a href="#" class="nav-link p-0 text-dark">Twitter</a></li>
           <li class="nav-item mb-2"><a href="#" class="nav-link p-0 text-dark">Instagram</a></li>
@@ -42,13 +41,13 @@
         </ul>
       </div>
 
-      <div class="col-12 col-md-8 col-lg-4 mb-3 mt-4 mt-md-0 newsletter border-accent">
+      <div class="col-12 col-md-8 col-lg-4 mb-3 mt-4 mt-md-0 border-app-dark">
         <div class="p-4 text-center">
-            <h5 class="text-uppercase mt-2 text-accent">newsletter</h5>
-            <p class="mt-4">Enter your email to get newsletter from us</p>
+            <h5 class="text-uppercase mt-2 text-app-dark">newsletter</h5>
+            <p class="mt-4 text-dark">Enter your email to get newsletter from us</p>
             <div class="input email-holder mx-auto mt-4">
-              <input type="text" class="form-control border bg-white" placeholder="Your email">
-              <button class="btn btn-dark mt-4 text-uppercase" type="button" id="button-addon2">subscribe</button>
+              <input type="text" class="form-control border border-app-dark bg-light" placeholder="Your email">
+              <button class="btn btn-dark bg-app-dark mt-4 text-uppercase" type="button" id="button-addon2">subscribe</button>
             </div>
         </div>
       </div>
@@ -57,7 +56,7 @@
     </div>
 
     <div class="py-4 my-2 px-3 px-md-1">
-      <p>&copy; 2021 Test, Inc. All rights reserved.</p>
+      <p>&copy; 2021 Thyme, Inc. All rights reserved.</p>
     </div>
   </footer>
 </div>

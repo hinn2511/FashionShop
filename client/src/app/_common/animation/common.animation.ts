@@ -25,19 +25,31 @@ export const ExpandWidth = trigger('expandWidth', [
   transition('true => false', animate('500ms ease-out')),
 ]);
 
-// Delete
-export const GrowAnimation = trigger('grow', [
-  state('out', style({})),
+export const GrowBoolean = trigger('growBoolean', [
+  state('true', style({})),
   state(
-    'in',
+    'false',
     style({
-      height: '{{height}}',
+      height: '{{collapseHeight}}',
       overflow: 'hidden',
     }),
-    { params: { height: '100%' } }
+    { params: { collapseHeight: '100%' } }
   ),
-  transition('out => in', animate('0.5s ease-in-out')),
-  transition('in => out', animate('0.5s ease-in-out')),
+  transition('false => true', animate('0.5s ease-in-out')),
+  transition('true => false', animate('0.5s ease-in-out')),
+]);
+
+export const RotateBoolean = trigger('rotateBoolean', [
+  state('true', style({ transform: 'rotate(0)' })),
+  state(
+    'false',
+    style(
+      { transform: 'rotate({{degree}})' }
+    ),
+    { params: { degree: '-180deg' } }
+  ),
+  transition('false => true', animate('0.5s ease-in-out')),
+  transition('true => false', animate('0.5s ease-in-out')),
 ]);
 
 // Slide from left of the screen to target position (ng-If trigger)
@@ -55,7 +67,9 @@ export const SlideLeftToRight = trigger('slideLeftToRight', [
       style({
         transform: 'translateX(-100%)',
         opacity: 0,
-        color: 'transparent'
+        color: 'transparent', 
+        visibility: 'hidden'
+        
       })
     ),
   ]),
@@ -83,10 +97,19 @@ export const SlideRightToLeft = trigger('slideRightToLeft', [
   transition(':leave', [
     animate(
       '500ms ease-in-out',
-      style({ transform: 'translateX(100%)',opacity: 0, color: 'transparent'})
+      style({ transform: 'translateX(100%)',opacity: 0, color: 'transparent', visibility: 'hidden'})
     ),
   ]),
 ]);
+
+// Slide from right of the screen to target position (boolean trigger)
+export const SlideRightToLeftBoolean = trigger('slideRightToLeftBoolean', [
+  state('true', style({ transform: 'translateX(100%)', opacity: 0, color: 'transparent'   })),
+  state('false', style({ transform: 'translateX(0%)', opacity: 1})),
+  transition('false => true', animate('500ms ease-in-out')),
+  transition('true => false', animate('500ms ease-in-out')),
+]);
+
 
 // Expand from top of the screen to target position (ng-If trigger) // lagging
 export const ExpandTopToBottom = trigger('expandTopToBottom', [
@@ -104,10 +127,7 @@ export const ExpandTopToBottom = trigger('expandTopToBottom', [
 export const SlideTopToBottom = trigger('slideTopToBottom', [
   transition(':enter', [
     style({ transform: 'translateY(-100%)', opacity: 0, color: 'transparent' }),
-    animate('500ms ease-in', style({ transform: 'translateY(0%)', opacity: 1})),
-    query('@fade', [
-            animateChild()
-          ])
+    animate('500ms ease-in', style({ transform: 'translateY(0%)', opacity: 1}))
   ]),
   transition(':leave', [animate('500ms ease-out', style({ transform: 'translateY(-100%)', opacity: 0, color: 'transparent' }))]),
 ]);
@@ -152,6 +172,13 @@ export const FadeInAndOut = trigger('fadeInAndOut', [
       style({ opacity: 0, visibility: 'hidden' })
     ),
   ]),
+]);
+
+export const FadeInAndOutBoolean = trigger('fadeInAndOutBoolean', [
+  state('true', style({ opacity: 1 })),
+  state('false', style({ opacity: 0 })),
+  transition('out => in', animate('500ms cubic-bezier(0.785, 0.135, 0.15, 0.86)')),
+  transition('in => out', animate('500ms cubic-bezier(0.785, 0.135, 0.15, 0.86)')),
 ]);
 
 export const SlideInOut =  trigger('slideInOut', [

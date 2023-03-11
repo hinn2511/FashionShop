@@ -1,4 +1,5 @@
-import { SlideLeftToRight } from 'src/app/_common/animation/common.animation';
+import { SlideRightToLeft } from './../../_common/animation/common.animation';
+import { SlideLeftToRight, SlideLeftToRightBoolean } from 'src/app/_common/animation/common.animation';
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Subscription, BehaviorSubject } from 'rxjs';
@@ -25,7 +26,7 @@ import {
   selector: 'app-product-sale',
   templateUrl: './product-sale.component.html',
   styleUrls: ['./product-sale.component.css'],
-  animations: [SlideLeftToRight]
+  animations: [SlideLeftToRightBoolean, SlideRightToLeft]
 })
 export class ProductSaleComponent implements OnInit, OnDestroy {
   @ViewChild('filterComponent') filterComponent: ProductFilterComponent;
@@ -54,7 +55,7 @@ export class ProductSaleComponent implements OnInit, OnDestroy {
   deviceType: BehaviorSubject<string> = new BehaviorSubject('');
   deviceTypeValue$ = this.deviceType.asObservable();
 
-  count = 0;
+  filterApplyCount = 0;
   filterOrders: CustomerFilterOrder[] = [
     new CustomerFilterOrder(0, 'Name', 0, 'Name (A-Z)'),
     new CustomerFilterOrder(1, 'Name', 1, 'Name (Z-A)'),
@@ -92,6 +93,8 @@ export class ProductSaleComponent implements OnInit, OnDestroy {
     this.productParams.field = 'Sold';
     this.productParams.orderBy = 1;
     this.productParams.isOnSale = true;
+    this.productParams.categoryId = -1;
+    this.productParams.gender = null;
     this.selectedOrder = this.filterOrders[0].filterName;
     this.loadBreadCrumb();
     this.loadColorFilters();
@@ -160,6 +163,7 @@ export class ProductSaleComponent implements OnInit, OnDestroy {
       this.showFilter = true;
     else
       this.showFilter = false;
+    this.filterApplyCounting();
     this.loadProducts();
   }
 
@@ -183,5 +187,13 @@ export class ProductSaleComponent implements OnInit, OnDestroy {
     this.categoryService.getCatalogue().subscribe((result) => {
       this.categoryGroups = result;
     });
+  }
+
+  filterApplyCounting() {
+    this.filterApplyCount = 0;
+    if (this.selectedColor != null) this.filterApplyCount++;
+    if (this.selectedSize != null) this.filterApplyCount++;
+    if (this.selectedCategory != null) this.filterApplyCount++;
+    if (this.selectedPriceRange != null) this.filterApplyCount++;
   }
 }

@@ -6,7 +6,7 @@
         class="my-2 list-group-item d-flex align-items-center p-0 m-0 w-100 bg-transparent border-0"
       >
         <a
-          class="text-dark p-2 text-uppercase text-accent"
+          class="text-dark p-2 text-uppercase text-dark"
           aria-current="page"
           routerLink="/"
           >Home</a
@@ -19,7 +19,7 @@
         *ngFor="let item of categoryGroups; let i = index"
         (click)="selectCategoryGroup(i)"
       >
-        <a class="text-dark p-2 text-uppercase text-accent">{{ item.genderTitle }}</a>
+        <a class="text-dark p-2 text-uppercase text-dark">{{ item.genderTitle }}</a>
         <img
           class="nav-icon icon"
           src="../../../assets/arrow-right.svg"
@@ -42,17 +42,17 @@
         class="my-2 list-group-item p-0 m-0 d-flex align-items-center w-100 bg-transparent border-0"
         routerLink="/news"
       >
-        <a class="text-dark p-2 text-uppercase text-accent">Blogs</a>
+        <a class="text-dark p-2 text-uppercase text-dark">Blogs</a>
       </li>
 
-      <hr class="w-100" style="height: 1px" />
+      <hr class="w-100 bg-accent" style="height: 1px" />
 
       <li
         class="my-2 list-group-item p-0 m-0 w-100 d-flex align-items-center bg-transparent border-0"
-        *ngIf="user"
+        *ngIf="isLoggedIn"
       >
         <a
-          class="p-2 text-uppercase"
+          class="p-2 text-uppercase text-dark"
           aria-current="page"
           (click)="viewAccount('information')"
           >My account</a
@@ -61,10 +61,10 @@
 
       <li
         class="my-2 list-group-item p-0 m-0 d-flex align-items-center w-100 bg-transparent border-0"
-        *ngIf="user"
+        *ngIf="isLoggedIn"
       >
         <a
-          class="p-2 text-uppercase"
+          class="p-2 text-uppercase text-dark"
           aria-current="page"
           (click)="viewAccount('orders')"
           >My orders</a
@@ -73,53 +73,41 @@
 
       <li
         class="my-2 list-group-item p-0 m-0 d-flex align-items-center w-100 bg-transparent border-0"
-        *ngIf="user"
+        *ngIf="isLoggedIn"
       >
         <a
-          class="p-2 text-uppercase"
+          class="p-2 text-uppercase text-dark"
           aria-current="page"
           (click)="viewAccount('favorites')"
           >Favorites</a
         >
       </li>
 
-      <li
-        class="my-2 list-group-item p-0 m-0 d-flex align-items-center w-100 bg-transparent border-0"
-        *ngIf="user"
-      >
-        <a
-          class="p-2 text-uppercase"
-          aria-current="page"
-          (click)="viewAccount('payment')"
-          >Payment methods</a
-        >
-      </li>
 
       <li
         class="my-2 list-group-item p-0 m-0 d-flex align-items-center w-100 bg-transparent border-0"
-        *ngIf="user"
+        *ngIf="isLoggedIn"
       >
-        <a class="p-2 text-uppercase" aria-current="page" (click)="logout()"
+        <a class="p-2 text-uppercase text-dark" aria-current="page" (click)="logout()"
           >Logout</a
         >
       </li>
 
       <li
         class="my-2 list-group-item p-0 m-0 d-flex align-items-center w-100 bg-transparent border-0"
-        *ngIf="!user"
+        *ngIf="!isLoggedIn"
       >
-        <a class="text-dark text-dark p-2 text-uppercase text-accent" routerLink="/login"
+        <a class="p-2 text-uppercase text-dark" routerLink="/login"
           >Login</a
         >
       </li>
 
       <li
         class="my-2 list-group-item p-0 m-0 d-flex align-items-center w-100 bg-transparent border-0"
-        *ngIf="!user"
+        *ngIf="!isLoggedIn"
       >
         <a
-          class="text-dark p-2 text-uppercase text-accent"
-          *ngIf="!user"
+          class="p-2 text-uppercase text-dark"
           routerLink="/register"
           >Register</a
         >
@@ -139,7 +127,7 @@
         alt="user"
       />
       &nbsp;&nbsp;
-      <h5 class="text-capitalize p-0 m-0">
+      <h5 class="text-capitalize p-0 m-0 text-dark">
         {{ selectedCategoryGroup.genderTitle }}
       </h5>
     </button>
@@ -153,7 +141,7 @@
           class="my-2 list-group-item d-flex align-items-center justify-content-between p-0 m-0 w-100 bg-transparent border-0"
           (click)="viewCategory(category, selectedCategoryGroup.gender)"
         >
-          <a class="text-uppercase text-accent">{{ category.categoryName }}</a>
+          <a class="text-uppercase text-dark">{{ category.categoryName }}</a>
           <div *ngIf="category.subCategories.length > 0">
             <i
               *ngIf="
@@ -176,13 +164,17 @@
             selectedCategory.categoryName == category.categoryName
             && selectedCategory.gender == category.gender
           "
+          [@grow]="{
+            value: expandDescription,
+            params: { height: '500px' }
+          }"
         >
           <li
             class="my-2 list-group-item p-0 m-0 w-100 bg-transparent border-0"
             *ngFor="let subCategory of category.subCategories"
             (click)="viewCategory(subCategory, selectedCategoryGroup.gender)"
           >
-            <a class="text-dark p-2 text-uppercase text-accent-1">{{
+            <a class="text-dark p-2 text-uppercase text-dark-1">{{
               subCategory.categoryName
             }}</a>
           </li>
@@ -190,7 +182,7 @@
             class="my-2 list-group-item p-0 m-0 w-100 bg-transparent border-0"
             (click)="navigateToCategory(category, selectedCategoryGroup.gender)"
           >
-            <a class="text-dark p-2 text-uppercase text-accent-1">
+            <a class="text-dark p-2 text-uppercase text-dark-1">
               View all {{ category.categoryName }}</a
             >
           </li>

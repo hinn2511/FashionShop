@@ -1,16 +1,16 @@
-.bg-light-0 {
-  background-color: rgb(238, 238, 238);
-}
-
 .btn-like:hover {
   background-color: transparent;
   color: black;
 }
 
-@media (max-width: 768px) {
+@media (max-width: 501px) {
+  input
+  {
+    text-align: center;
+  }
 }
 
-@media (min-width: 768px) {
+@media (min-width: 501px) {
   .container-fluid {
     max-width: 1400px;
   }
@@ -49,3 +49,6 @@
 {
   text-decoration: line-through;
 }
+
+
+

@@ -43,8 +43,14 @@
     bottom: 10%;
     left: 0;
   }
+
+  .selected
+  {
+    display: none;
+  }
 }
 
-.bg-selected {
-  background-color: #e3e8eb;
+.top-new-title
+{
+  font-family: "Playfair Display", serif;
 }

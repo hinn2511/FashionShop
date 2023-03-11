@@ -8,7 +8,7 @@
   transition: all 0.5s ease-in-out;
 }
 
-@media (max-width: 768px) {
+@media (max-width: 501px) {
   .card img {
     height: 100%;
   }

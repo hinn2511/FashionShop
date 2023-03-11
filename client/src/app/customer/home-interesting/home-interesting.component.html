@@ -1,24 +1,21 @@
 <div class="container-fluid py-3" *ngIf="products">
-  <h3 class="text-uppercase">Top interesting</h3>
+  <h3 class="text-uppercase text-app-dark">Top interesting</h3>
   <div class="d-flex flex-wrap text-uppercase p-1">
-    <a class="text-uppercase cs-pointer" [class]="{
-      'text-dark': filter == 'featured',
+    <a class="text-uppercase text-dark cs-pointer" [class]="{
       'fw-bold': filter == 'featured',
       'text-muted': filter != 'featured'
     }"
       (click)="applyFilter('featured')"
     >featured </a><span class="mx-2">&#8901;</span>
 
-    <a class="text-uppercase cs-pointer" [class]="{
-      'text-dark': filter == 'interesting',
+    <a class="text-uppercase text-dark cs-pointer" [class]="{
       'fw-bold': filter == 'interesting',
       'text-muted': filter != 'interesting'
     }"
       (click)="applyFilter('interesting')"
     >most interesting </a><span class="mx-2">&#8901;</span>
 
-    <a class="text-uppercase cs-pointer" [class]="{
-      'text-dark': filter == 'onSale',
+    <a class="text-uppercase text-danger cs-pointer" [class]="{
       'fw-bold': filter == 'onSale',
       'text-muted': filter != 'onSale'
     }"

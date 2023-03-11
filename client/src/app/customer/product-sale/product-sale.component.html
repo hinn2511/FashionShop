@@ -1,8 +1,14 @@
-<div class="container-fluid px-0">
+<div class="container-fluid px-0 pb-lg-4">
   <div
     class="row mx-auto w-100 product-list-container"
     *ngIf="deviceTypeValue$ | async as deviceType"
   >
+    <div class="col-12 px-0">
+      <app-breadcrumb
+        [breadCrumbList]="breadCrumb"
+        [showBackground]="true"
+      ></app-breadcrumb>
+    </div>
     <div
       class="col-12 col-md-4 col-lg-3"
       class="col-12 col-md-6 col-lg-3 pt-lg-3"
@@ -11,7 +17,7 @@
         'fixed-top': deviceType != 'desktop'
       }"
       [@slideLeftToRightBoolean]="showFilter"
-      >
+    >
       <!-- 'd-none': deviceType != 'desktop' && !showFilterMobile -->
       <app-product-filter
         #filterComponent
@@ -25,17 +31,71 @@
       ></app-product-filter>
     </div>
     <div class="col-12 col-lg-9 px-0 px-lg-auto">
-      <div class="mt-lg-2">
-        <app-breadcrumb
-          [breadCrumbList]="breadCrumb"
-          [showBackground]="true"
-        ></app-breadcrumb>
-
+      <div>
         <div
           class="d-flex flex-wrap p-1 justify-content-between align-items-center w-100"
         >
           <!-- Filter applied list -->
-          <div>
+          <div
+          class="d-flex flex-wrap p-1 justify-content-between align-items-center w-100"
+        >
+        <div class="w-100 text-right">
+          <button
+            class="btn btn-light bg-app-light mr-2"
+            [class]="{
+              'border-app-light': filterApplyCount == 0,
+              'border-app-dark': filterApplyCount != 0
+            }"
+            (click)="mobileFilterToggle()"
+            *ngIf="deviceType != 'desktop'"
+          >
+            <div class="d-flex d-inline align-items-center">
+              <img
+                class="icon mr-2"
+                src="../../../assets/filter.svg"
+                alt="filter-icon"
+              />
+              Filter
+              <span
+                class="badge bg-app-dark text-app-light ml-2"
+                *ngIf="filterApplyCount != 0"
+              >
+                {{ filterApplyCount }}
+              </span>
+            </div>
+          </button>
+
+          <!-- Order by filter  -->
+          <div class="btn-group text-right ml-auto filter-dropdown" dropdown>
+            <button
+              dropdownToggle
+              type="button"
+              class="btn btn-light bg-app-light dropdown-toggle"
+              aria-controls="dropdown-basic"
+            >
+              {{ selectedOrder }}
+            </button>
+            <ul
+              id="dropdown-basic"
+              *dropdownMenu
+              class="dropdown-menu dropdown-menu-right"
+              role="menu"
+              aria-labelledby="button-basic"
+            >
+              <li
+                class="dropdown-item"
+                *ngFor="let filterOrder of filterOrders"
+              >
+                <a class="text-dark" (click)="sort(filterOrder.id)">{{
+                  filterOrder.filterName
+                }}</a>
+              </li>
+            </ul>
+          </div>
+        </div>
+        
+          <!-- Filter applied list -->
+          <div *ngIf="deviceType == 'desktop'">
             <button
               class="btn btn-light mr-2 mb-2 mb-lg-0"
               (click)="resetPriceRange()"
@@ -61,52 +121,7 @@
               {{ selectedColor.colorName }}
               <i class="fa fa-times p-1"></i>
             </button>
-          </div>
-
-          <div class="w-100 text-right">
-            <button
-              class="btn btn-light mr-2"
-              (click)="mobileFilterToggle()"
-              *ngIf="deviceType != 'desktop'"
-            >
-              <div class="d-flex d-inline align-items-center">
-                <img
-                  class="icon mr-2"
-                  src="../../../assets/filter.svg"
-                  alt="filter-icon"
-                />
-                Filter
-              </div>
-            </button>
-
-            <!-- Order by filter  -->
-            <div class="btn-group text-right ml-auto filter-dropdown" dropdown>
-              <button
-                dropdownToggle
-                type="button"
-                class="btn btn-light dropdown-toggle"
-                aria-controls="dropdown-basic"
-              >
-                {{ selectedOrder }}
-              </button>
-              <ul
-                id="dropdown-basic"
-                *dropdownMenu
-                class="dropdown-menu dropdown-menu-right"
-                role="menu"
-                aria-labelledby="button-basic"
-              >
-                <li
-                  class="dropdown-item"
-                  *ngFor="let filterOrder of filterOrders"
-                >
-                  <a class="text-dark" (click)="sort(filterOrder.id)">{{
-                    filterOrder.filterName
-                  }}</a>
-                </li>
-              </ul>
-            </div>
-          </div>
+          </div>         
         </div>
 
         <!-- Skeleton loading -->
@@ -147,21 +162,22 @@
           </div>
         </div>
 
-        <!-- Pagination -->
-        <div class="d-flex justify-content-center mt-4" *ngIf="pagination">
-          <pagination
-            [boundaryLinks]="true"
-            [totalItems]="pagination.totalItems"
-            [itemsPerPage]="pagination.itemsPerPage"
-            [(ngModel)]="pagination.currentPage"
-            (pageChanged)="pageChanged($event)"
-            previousText="&#8249;"
-            nextText="&#8250;"
-            firstText="&#171;"
-            lastText="&#187;"
-          >
-          </pagination>
-        </div>
+        
+      </div>
+      <!-- Pagination -->
+      <div class="d-flex justify-content-center mt-4" *ngIf="pagination">
+        <pagination
+          [boundaryLinks]="true"
+          [totalItems]="pagination.totalItems"
+          [itemsPerPage]="pagination.itemsPerPage"
+          [(ngModel)]="pagination.currentPage"
+          (pageChanged)="pageChanged($event)"
+          previousText="&#8249;"
+          nextText="&#8250;"
+          firstText="&#171;"
+          lastText="&#187;"
+        >
+        </pagination>
       </div>
     </div>
   </div>

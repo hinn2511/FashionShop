@@ -1,23 +1,24 @@
-<nav
-  class="d-sm-block sidebar collapse position-fixed"
-  (mouseenter)="expand()"
-  (mouseleave)="collapse()"
->
+<nav class="d-sm-block sidebar collapse position-fixed" (mouseleave)="collapse()" >
   <div
-    class="position-relative h-100 bg-light border-right shadow pt-3 px-2 sidebar-container"
+    class="position-relative h-100 bg-light border-right px-3 shadow pt-3 sidebar-container"
+    (mouseenter)="expand()"
+    
   >
     <ul class="nav flex-column">
       <li class="nav-item">
         <a class="nav-link active" aria-current="page" routerLink="">
-          <h2 class="text-uppercase">Thyme</h2>
+          <h2 class="text-uppercase font-brand text-app-dark">Thyme</h2>
         </a>
       </li>
-      <li class="nav-item" *appHasRole="['DashboardAccess']">
+      <li
+        class="nav-item"
+        *appHasRole="['DashboardAccess']"
+        [class.nav-item-active]="currentRoute == 'Dashboard'"
+      >
         <a
           class="nav-link"
           aria-current="page"
           routerLink="administrator/dashboard"
-          [class.nav-item-active]="currentRoute == 'Dashboard'"
         >
           Dashboard
         </a>
@@ -31,10 +32,7 @@
           Orders
         </a>
       </li>
-      <li
-        class="nav-item"
-        [class.nav-item-active]="currentRoute == 'Products'"
-      >
+      <li class="nav-item" [class.nav-item-active]="currentRoute == 'Products'">
         <a class="nav-link" routerLink="administrator/product-manager">
           Products
         </a>
@@ -78,10 +76,7 @@
           Carousels
         </a>
       </li>
-      <li
-        class="nav-item"
-        [class.nav-item-active]="currentRoute == 'Articles'"
-      >
+      <li class="nav-item" [class.nav-item-active]="currentRoute == 'Articles'">
         <a class="nav-link" routerLink="/administrator/article-manager">
           <span data-feather="file-text"></span>
           Articles
@@ -93,7 +88,6 @@
           Others page
         </a>
       </li>
-
     </ul>
 
     <hr />
@@ -103,28 +97,19 @@
       <span>System management</span>
     </h6>
     <ul class="nav flex-column mb-2">
-      <li
-        class="nav-item"
-        [class.nav-item-active]="currentRoute == 'Users'"
-      >
+      <li class="nav-item" [class.nav-item-active]="currentRoute == 'Users'">
         <a class="nav-link" routerLink="/administrator/user-manager">
           <span data-feather="file-text"></span>
           Users
         </a>
       </li>
-      <li
-        class="nav-item"
-        [class.nav-item-active]="currentRoute == 'Roles'"
-      >
+      <li class="nav-item" [class.nav-item-active]="currentRoute == 'Roles'">
         <a class="nav-link" routerLink="/administrator/role-manager">
           <span data-feather="file-text"></span>
           Roles
         </a>
       </li>
-      <li
-        class="nav-item"
-        [class.nav-item-active]="currentRoute == 'Settings'"
-      >
+      <li class="nav-item" [class.nav-item-active]="currentRoute == 'Settings'">
         <a class="nav-link" routerLink="/administrator/setting-manager">
           <span data-feather="file-text"></span>
           Setting
@@ -145,6 +130,13 @@
         *ngIf="currentState == 'out'"
         aria-hidden="true"
       ></i>
+    </button>
+  </div>
+
+  <div class="position-absolute lock-btn-container">
+    <button class="btn btn-light p-0" (click)="lockToggle()">
+      <i class="fa fa-lock p-1" *ngIf="isLocked" aria-hidden="true"></i>
+      <i class="fa fa-unlock-alt p-1" *ngIf="!isLocked" aria-hidden="true"></i>
     </button>
   </div>
 </nav>

@@ -3,8 +3,8 @@
     <div
       class="filter-top w-100 d-flex justify-content-between align-items-center"
     >
-      <h4 class="fw-bold text-accent p-0 m-0">Filter</h4>
-      <button class="btn btn-light d-lg-none" (click)="closeFilter()">
+      <h4 class="fw-bold text-app-dark p-0 m-0">Filter</h4>
+      <button class="btn btn-light bg-app-light d-lg-none" (click)="closeFilter()">
         <div class="d-flex d-inline align-items-center">
           <img class="icon mr-2" src="../../../assets/x.svg" alt="filter-icon">
           Close
@@ -42,11 +42,13 @@
             [isAnimated]="true"
             *ngIf="catalogue.categories.length > 0"
           >
-            <accordion-group *ngFor="let category of catalogue.categories">
+            <accordion-group *ngFor="let category of catalogue.categories" [class]="{
+              active: category.id == selectedCategory && category.subCategories.length == 0
+            }">
               <div
                 class="d-flex d-inline-block justify-content-between flex-wrap align-items-center p-2"
                 accordion-heading
-                (click)="setCategoryFilter(category.categoryName)"
+                (click)="setCategoryFilter(category.id, category.gender)"
               >
                 <p class="px-2 py-0 m-0">
                   {{ category.categoryName }}
@@ -73,13 +75,13 @@
                 <accordion-group
                   *ngFor="let subCategory of category['subCategories']"
                   [class]="{
-                    active: subCategory.categoryName == selectedCategory
+                    active: subCategory.id == selectedCategory
                   }"
                 >
                   <div
                     class="d-flex d-inline-block flex-wrap align-items-center p-2"
                     accordion-heading
-                    (click)="setCategoryFilter(subCategory.categoryName)"
+                    (click)="setCategoryFilter(subCategory.id, subCategory.gender)"
                   >
                     <p class="px-2 py-0 m-0">
                       {{ subCategory.categoryName }}
@@ -89,13 +91,14 @@
 
                 <accordion-group
                   [class]="{
-                    active: category.categoryName == selectedCategory
+                    active: category.id == selectedCategory
                   }"
                 >
                   <div
                     class="d-flex d-inline-block flex-wrap align-items-center p-2"
                     accordion-heading
-                    (click)="setCategoryFilter(category.categoryName)"
+                    (click)="setCategoryFilter(category.id, category.gender)"
+  
                   >
                     <p class="px-2 py-0 m-0">
                       View all {{ category.categoryName | lowercase }}
@@ -124,10 +127,7 @@
                 selectedPriceRange.id != priceRange.id
               "
               [class]="{
-                'btn-light':
-                  selectedPriceRange != null &&
-                  selectedPriceRange.id == priceRange.id,
-                'border-dark':
+                'bg-app-light':
                   selectedPriceRange != null &&
                   selectedPriceRange.id == priceRange.id
               }"
@@ -153,9 +153,7 @@
           class="btn border rounded mr-2 mb-2"
           [disabled]="selectedSize != null && selectedSize.id != sizeFilter.id"
           [class]="{
-            'btn-light':
-              selectedSize != null && selectedSize.id == sizeFilter.id,
-            'border-dark':
+            'bg-app-light':
               selectedSize != null && selectedSize.id == sizeFilter.id
           }"
           (click)="setSizeFilter(sizeFilter.id)"
@@ -194,10 +192,10 @@
   </div>
 
   <div class="filter-bottom w-100 mt-auto p-3 p-md-0">
-    <button class="btn btn-dark w-100 mt-3" (click)="applyAndCloseFilter()">
+    <button class="btn btn-dark bg-app-dark w-100 mt-3" (click)="applyAndCloseFilter()">
       Filtering
     </button>
-    <button class="btn btn-outline-dark w-100 mt-3" (click)="resetFilter()">
+    <button class="btn btn-transparent w-100 mt-3" (click)="resetFilter()">
       Reset filter
     </button>
   </div>

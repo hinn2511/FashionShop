@@ -2,7 +2,7 @@
   flex: 1;
 }
 
-@media (max-width: 768px) {
+@media (max-width: 501px) {
   .carousel {
     height: 300px;
   }
@@ -12,7 +12,7 @@
   }
 }
 
-@media (min-width: 768px) {
+@media (min-width: 501px) {
   .carousel {
     height: 500px;
   }

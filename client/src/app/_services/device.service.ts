@@ -31,9 +31,14 @@ export class DeviceService {
 
   getDeviceType()
   {
-    if (this.deviceWidth <= 768)
-      return 'mobile';
-    if (this.deviceWidth > 768 && this.deviceWidth < 992)
+    if (this.deviceWidth <= 501)
+    {
+      if (this.deviceWidth < this.deviceHeight)
+        return 'mobile';
+      if (this.deviceWidth >= this.deviceHeight)
+        return 'tablet';
+    }   
+    if (this.deviceWidth > 501 && this.deviceWidth < 992)
       return 'tablet';
     if (this.deviceWidth >= 992)
       return 'desktop';

@@ -1,21 +1,21 @@
+import { DeviceService } from 'src/app/_services/device.service';
+import { FadeInAndOut } from './../../_common/animation/common.animation';
 import { ArticleService } from 'src/app/_services/article.service';
 import { Component, OnInit } from '@angular/core';
 import { ArticleTypeList, CustomerArticle, CustomerArticleParams } from 'src/app/_models/article';
 import { Router } from '@angular/router';
-import { fadeInAnimation, fadeOutAnimation } from 'src/app/_common/animation/common.animation';
 
 @Component({
   selector: 'app-home-news',
   templateUrl: './home-news.component.html',
   styleUrls: ['./home-news.component.css'],
-  animations: [ fadeInAnimation, fadeOutAnimation ]
+  animations: [ FadeInAndOut ]
 })
 export class HomeNewsComponent implements OnInit {
   expandedNew: CustomerArticle;
-
   news: CustomerArticle[] = [];
 
-  constructor(private articleService: ArticleService, private router: Router) {}
+  constructor(private articleService: ArticleService, private deviceService: DeviceService, private router: Router) {}
 
   ngOnInit(): void {
     this.loadNews();
@@ -44,7 +44,8 @@ export class HomeNewsComponent implements OnInit {
 
   expand(article: CustomerArticle)
   {
-    this.expandedNew = article;
+    if(this.deviceService.getDeviceType() == 'desktop')
+      this.expandedNew = article;
   }
 
   viewDetail(article: CustomerArticle) {

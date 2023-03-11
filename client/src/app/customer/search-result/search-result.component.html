@@ -3,6 +3,12 @@
     class="row mx-auto w-100 product-list-container"
     *ngIf="deviceTypeValue$ | async as deviceType"
   >
+  <div class="col-12 px-0">
+    <app-breadcrumb
+    [breadCrumbList]="breadCrumb"
+    [showBackground]="true"
+  ></app-breadcrumb>
+  </div>
     <div
       class="col-12 col-md-4 col-lg-3 py-lg-3"
       [class]="{
@@ -24,16 +30,67 @@
     </div>
     <div class="col-12 col-md-12 col-lg-9 px-0 px-lg-auto">
       <div>
-        <app-breadcrumb
-          [breadCrumbList]="breadCrumb"
-          [showBackground]="true"
-        ></app-breadcrumb>
 
         <div
           class="d-flex flex-wrap p-1 justify-content-between align-items-center w-100"
         >
+        <div class="w-100 text-right">
+          <button
+            class="btn btn-light bg-app-light mr-2"
+            [class]="{
+              'border-app-light': filterApplyCount == 0,
+              'border-app-dark': filterApplyCount != 0
+            }"
+            (click)="mobileFilterToggle()"
+            *ngIf="deviceType != 'desktop'"
+          >
+            <div class="d-flex d-inline align-items-center">
+              <img
+                class="icon mr-2"
+                src="../../../assets/filter.svg"
+                alt="filter-icon"
+              />
+              Filter
+              <span
+                class="badge bg-app-dark text-app-light ml-2"
+                *ngIf="filterApplyCount != 0"
+              >
+                {{ filterApplyCount }}
+              </span>
+            </div>
+          </button>
+
+          <!-- Order by filter  -->
+          <div class="btn-group text-right ml-auto filter-dropdown" dropdown>
+            <button
+              dropdownToggle
+              type="button"
+              class="btn btn-light bg-app-light dropdown-toggle"
+              aria-controls="dropdown-basic"
+            >
+              {{ selectedOrder }}
+            </button>
+            <ul
+              id="dropdown-basic"
+              *dropdownMenu
+              class="dropdown-menu dropdown-menu-right"
+              role="menu"
+              aria-labelledby="button-basic"
+            >
+              <li
+                class="dropdown-item"
+                *ngFor="let filterOrder of filterOrders"
+              >
+                <a class="text-dark" (click)="sort(filterOrder.id)">{{
+                  filterOrder.filterName
+                }}</a>
+              </li>
+            </ul>
+          </div>
+        </div>
+        
           <!-- Filter applied list -->
-          <div>
+          <div *ngIf="deviceType == 'desktop'">
             <button
               class="btn btn-light mr-2 mb-2 mb-lg-0"
               (click)="resetPriceRange()"
@@ -61,54 +118,11 @@
             </button>
           </div>
 
-          <div class="w-100 text-right">
-            <button
-              class="btn btn-light mr-2"
-              (click)="mobileFilterToggle()"
-              *ngIf="deviceType != 'desktop'"
-            >
-              <div class="d-flex d-inline align-items-center">
-                <img
-                  class="icon mr-2"
-                  src="../../../assets/filter.svg"
-                  alt="filter-icon"
-                />
-                Filter
-              </div>
-            </button>
-
-            <!-- Order by filter  -->
-            <div class="btn-group text-right ml-auto filter-dropdown" dropdown>
-              <button
-                dropdownToggle
-                type="button"
-                class="btn btn-light dropdown-toggle"
-                aria-controls="dropdown-basic"
-              >
-                {{ selectedOrder }}
-              </button>
-              <ul
-                id="dropdown-basic"
-                *dropdownMenu
-                class="dropdown-menu dropdown-menu-right"
-                role="menu"
-                aria-labelledby="button-basic"
-              >
-                <li
-                  class="dropdown-item"
-                  *ngFor="let filterOrder of filterOrders"
-                >
-                  <a class="text-dark" (click)="sort(filterOrder.id)">{{
-                    filterOrder.filterName
-                  }}</a>
-                </li>
-              </ul>
-            </div>
-          </div>
+          
         </div>
 
         <!-- Skeleton loading -->
-        <div class="skeleton mt-2" *ngIf="skeletonLoading">
+        <div class="skeleton mt-2" *ngIf="skeletonLoading" [@slideRightToLeft]>
           <div class="row w-100 mx-auto">
             <div
               *ngFor="let key of skeletonItems"
@@ -136,6 +150,7 @@
         <div
           class="row w-100 px-0 mx-0 mt-2 product-list"
           *ngIf="!skeletonLoading"
+          [@slideRightToLeft]
         >
           <div
             *ngFor="let product of products"
@@ -145,8 +160,20 @@
           </div>
         </div>
 
+        <div
+          class="row w-100 px-0 mx-0"
+          *ngIf="!skeletonLoading && products.length == 0"
+          [@fadeInAndOut]
+        >
+          <div
+            class="col-12 p-5 d-flex align-items-center justify-content-center place-holder"
+          >
+            <h5 class="text-muted">No result found</h5>
+          </div>
+        </div>
+
         <!-- Pagination -->
-        <div class="d-flex justify-content-center mt-4" *ngIf="pagination">
+        <div class="d-flex justify-content-center mt-4" *ngIf="pagination && products">
           <pagination
             [boundaryLinks]="true"
             [totalItems]="pagination.totalItems"

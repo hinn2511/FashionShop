@@ -1,6 +1,6 @@
 <div class="container-fluid py-3">
   <h5 class="text-uppercase">What are you looking for ?</h5>
-  <div class="form-group w-100 mb-0 position-relative">
+  <div class="input-group my-0">
     <input
       type="text"
       class="form-control"
@@ -9,18 +9,14 @@
       (keydown.enter)="showSearchResult($event)"
       #search
     />
-    <p
-      class="text-muted position-absolute my-auto mr-2 py-2 cs-pointer top-0 end-0 "
-      *ngIf="action == 'search'; else clear"
-      aria-hidden="true"
-      (click)="showSearchResult()"
-    > Search </p>
-    <ng-template #clear>
-      <p
-        class="text-muted position-absolute my-auto mr-2 py-2 cs-pointer top-0 end-0 "
-        aria-hidden="true"
-        (click)="clearSearchQuery()"
-      >Clear</p>
-    </ng-template>
+    <div class="input-group-append">
+      <button
+        (click)="showSearchResult($event)"
+        class="btn btn-light bg-app-light"
+        type="button"
+      >
+        Search
+      </button>
+    </div>
   </div>
 </div>

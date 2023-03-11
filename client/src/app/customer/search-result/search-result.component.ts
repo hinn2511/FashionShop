@@ -1,6 +1,7 @@
-import { SlideLeftToRight } from 'src/app/_common/animation/common.animation';
+import { SlideRightToLeft, FadeInAndOut } from './../../_common/animation/common.animation';
+import { SlideLeftToRight, SlideLeftToRightBoolean } from 'src/app/_common/animation/common.animation';
 import { DeviceService } from 'src/app/_services/device.service';
-import { ProductFilterComponent } from 'src/app/customer/product-filter/product-filter.component';
+import { ProductFilterComponent, ProductFilter } from 'src/app/customer/product-filter/product-filter.component';
 import { CustomerSizeFilter } from 'src/app/_models/productParams';
 import { CategoryService } from 'src/app/_services/category.service';
 import {
@@ -20,14 +21,13 @@ import {
 import { ProductService } from 'src/app/_services/product.service';
 import { BehaviorSubject, Subscription } from 'rxjs';
 import { CustomerCatalogue } from 'src/app/_models/category';
-import { ProductFilter } from 'src/app/customer/product-filter/product-filter.component';
 
 
 @Component({
   selector: 'app-search-result',
   templateUrl: './search-result.component.html',
   styleUrls: ['./search-result.component.css'],
-  animations: [SlideLeftToRight]
+  animations: [SlideLeftToRight, SlideLeftToRightBoolean, SlideRightToLeft, SlideRightToLeft, FadeInAndOut ]
 })
 export class SearchResultComponent implements OnInit, OnDestroy {
   @ViewChild('filterComponent') filterComponent: ProductFilterComponent;
@@ -56,7 +56,7 @@ export class SearchResultComponent implements OnInit, OnDestroy {
   deviceType: BehaviorSubject<string> = new BehaviorSubject('');
   deviceTypeValue$ = this.deviceType.asObservable();
 
-  count = 0;
+  filterApplyCount = 0;
   filterOrders: CustomerFilterOrder[] = [
     new CustomerFilterOrder(0, 'Name', 0, 'Name (A-Z)'),
     new CustomerFilterOrder(1, 'Name', 1, 'Name (Z-A)'),
@@ -130,11 +130,13 @@ export class SearchResultComponent implements OnInit, OnDestroy {
   }
 
   loadProducts() {
+    this.skeletonLoading = true;
     this.productService.setProductParams(this.productParams);
 
     this.productService
       .getProducts(this.productParams)
       .subscribe((response) => {
+        this.skeletonLoading = false;
         this.products = response.result;
         this.pagination = response.pagination;
       });
@@ -173,6 +175,7 @@ export class SearchResultComponent implements OnInit, OnDestroy {
       this.showFilter = true;
     else
       this.showFilter = false;
+    this.filterApplyCounting();
     this.loadProducts();
   }
 
@@ -196,6 +199,13 @@ export class SearchResultComponent implements OnInit, OnDestroy {
     this.categoryService.getCatalogue().subscribe((result) => {
       this.categoryGroups = result;
     });
+  }
+
+  filterApplyCounting() {
+    this.filterApplyCount = 0;
+    if (this.selectedColor != null) this.filterApplyCount++;
+    if (this.selectedSize != null) this.filterApplyCount++;
+    if (this.selectedPriceRange != null) this.filterApplyCount++;
   }
 
 }

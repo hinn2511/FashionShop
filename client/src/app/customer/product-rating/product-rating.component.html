@@ -1,20 +1,16 @@
-<div
-  class="row mx-0 justify-content-center"
-  style="min-height: 500px"  
->
+<div class="row mx-0 justify-content-center" style="min-height: 500px">
   <div class="col-12 col-md-6 p-0" *ngIf="productReviewSummary">
     <div class="p-md-3">
       <div class="d-inline-block d-flex justify-content-between bg-light p-4">
         <p class="fw-larger my-0">
-          {{ productReviewSummary.averageScore }}/5
-          &nbsp;&nbsp;&nbsp;&nbsp;
+          {{ productReviewSummary.averageScore }}/5 &nbsp;&nbsp;&nbsp;&nbsp;
           <i
             *ngFor="
               let item of [].constructor(
                 getReviewStar(productReviewSummary.averageScore)
               )
             "
-            class="fa fa-star text-warning mr-1"
+            class="fa fa-star text-app-dark mr-1"
           ></i>
           <i
             *ngFor="
@@ -22,22 +18,19 @@
                 5 - getReviewStar(productReviewSummary.averageScore)
               )
             "
-            class="fa fa-star text-muted mr-1"
+            class="fa fa-star text-app-dark-muted mr-1"
           ></i>
         </p>
         <p class="mt-1 my-0 text-capitalize">
           {{ productReviewSummary.total }} reviews
         </p>
       </div>
-      <div
-        class="my-4 d-inline flex-wrap"
-        *ngFor="let item of productReviewSummary.scores"
-      >
+      <div class="my-4 d-flex d-inline flex-wrap">
         <button
-          class="btn rounded mr-2 mt-2"
+          *ngFor="let item of productReviewSummary.scores; let i = index"
+          class="btn btn-light rounded mb-2 mr-2 text-app-dark"
           [class]="{
-            'btn-light': item.score != selectedScore,
-            'btn-dark': item.score == selectedScore
+            'bg-app-light': item.score == selectedScore
           }"
           (click)="selectScore(item.score)"
         >
@@ -49,7 +42,10 @@
     </div>
   </div>
 
-  <div class="col-12 col-md-6 p-0 mt-1 mt-md-0" *ngIf="reviews && reviews.length > 0; else noReview">
+  <div
+    class="col-12 col-md-6 p-0 mt-1 mt-md-0"
+    *ngIf="reviews && reviews.length > 0; else noReview"
+  >
     <div class="card my-2" *ngFor="let item of reviews">
       <div class="card-body">
         <div class="d-inline-block d-flex flex-wrap justify-content-between">
@@ -68,7 +64,8 @@
           <p>{{ item.dateCreated | date : "dd/MM/yyyy" }}</p>
         </div>
         <p class="fw-smaller">
-          Color: {{ item.colorName }}&nbsp;&#8901;&nbsp;Size: {{ item.sizeName }}
+          Color: {{ item.colorName }}&nbsp;&#8901;&nbsp;Size:
+          {{ item.sizeName }}
         </p>
         <hr class="my-2" />
         <div>
@@ -102,4 +99,3 @@
     </div>
   </ng-template>
 </div>
-
