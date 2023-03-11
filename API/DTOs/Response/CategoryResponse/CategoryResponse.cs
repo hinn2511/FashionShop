@@ -7,6 +7,7 @@ namespace API.DTOs.Response.CategoryResponse
 {
     public class CategoryResponse
     {
+        public int Id { get; set; }
         public string Slug { get; set; }
         public string CategoryName { get; set; }
         public int ParentId { get; set; }
@@ -41,7 +42,6 @@ namespace API.DTOs.Response.CategoryResponse
     {
         public string GenderName { get; set; }
         public Status Status { get; set; }
-        public int Id { get; set; }
         public string ParentCategory { get; set; }
         public bool IsPromoted { get; set; }
     }
@@ -76,7 +76,6 @@ namespace API.DTOs.Response.CategoryResponse
 
     public class AdminCatalogueCategoryResponse : CategoryResponse
     {
-        public int Id { get; set; }
         public List<AdminCatalogueCategoryResponse> SubCategories { get; set; }
     }
 
