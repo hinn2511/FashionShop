@@ -45,9 +45,9 @@ namespace API.DTOs.Response.ProductResponse
     public class CustomerProductDetailResponse : ProductResponse
     {
         public string Category { get; set; }
-        public string CategorySlug { get; set; }
+        public string CategoryId { get; set; }
         public string ParentCategory { get; set; }
-        public string ParentCategorySlug { get; set; }
+        public string ParentCategoryId { get; set; }
         public int BrandId { get; set; }
         public string BrandName { get; set; }
         public bool LikedByUser { get; set; }

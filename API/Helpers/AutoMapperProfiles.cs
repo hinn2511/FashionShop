@@ -217,22 +217,28 @@ namespace API.Helpers
                           src => src.Brand.Name))
                 .ForMember(dest => dest.Category, opt => opt.MapFrom(
                           src => src.Category.CategoryName))
-                .ForMember(dest => dest.CategorySlug, opt => opt.MapFrom(
-                          src => src.Category.Slug))
+                .ForMember(dest => dest.CategoryId, opt => opt.MapFrom(
+                          src => src.Category.Id))
                 .ForMember(dest => dest.ParentCategory, opt => opt.MapFrom(
                           src => src.Category.Parent.CategoryName))
-                .ForMember(dest => dest.ParentCategorySlug, opt => opt.MapFrom(
-                          src => src.Category.Parent.Slug))
+                .ForMember(dest => dest.ParentCategoryId, opt => opt.MapFrom(
+                          src => src.Category.Parent.Id))
                 .ForMember(dest => dest.Gender, opt => opt.MapFrom(
                           src => (Gender)src.Category.Gender));
 
             CreateMap<ProductPhoto, CustomerProductPhotoResponse>();
 
-            CreateMap<Category, CustomerCategoryResponse>();
+            CreateMap<Category, CustomerCategoryResponse>()
+                .ForMember(dest => dest.CategoryImageUrl, opt => opt.MapFrom(
+                          src => src.CategoryImageUrl));
 
             CreateMap<ITree<Category>, CustomerCategoryResponse>()
                 .ForMember(dest => dest.CategoryName, opt => opt.MapFrom(
                           src => src.Data.CategoryName))
+                .ForMember(dest => dest.CategoryImageUrl, opt => opt.MapFrom(
+                          src => src.Data.CategoryImageUrl))
+                .ForMember(dest => dest.Id, opt => opt.MapFrom(
+                          src => src.Data.Id))
                 .ForMember(dest => dest.Gender, opt => opt.MapFrom(
                           src => src.Data.Gender))
                 .ForMember(dest => dest.Slug, opt => opt.MapFrom(
