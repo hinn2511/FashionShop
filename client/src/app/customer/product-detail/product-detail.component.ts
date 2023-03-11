@@ -1,7 +1,6 @@
-import { FadeInAndOut } from './../../_common/animation/common.animation';
+import { FadeInAndOut, GrowBoolean } from './../../_common/animation/common.animation';
 import { concatMap } from 'rxjs/operators';
-import { fnGetGenderName, Category } from 'src/app/_models/category';
-import { CategoryService } from 'src/app/_services/category.service';
+import { fnGetGenderName } from 'src/app/_models/category';
 import { Carousel } from 'src/app/_models/carousel';
 import { AccountService } from 'src/app/_services/account.service';
 import { AuthenticationService } from './../../_services/authentication.service';
@@ -20,14 +19,13 @@ import { ProductService } from 'src/app/_services/product.service';
 import { CartItem, NewCartItem } from 'src/app/_models/cart';
 import { User } from 'src/app/_models/user';
 import { ToastrService } from 'ngx-toastr';
-import { GrowAnimation } from 'src/app/_common/animation/common.animation';
 import { fnCalculatePrice } from 'src/app/_common/function/function';
 
 @Component({
   selector: 'app-product-detail',
   templateUrl: './product-detail.component.html',
   styleUrls: ['./product-detail.component.css'],
-  animations: [GrowAnimation, FadeInAndOut],
+  animations: [FadeInAndOut, GrowBoolean],
 })
 export class ProductDetailComponent implements OnInit {
   product: Product;
@@ -39,8 +37,10 @@ export class ProductDetailComponent implements OnInit {
   selectedSize: CustomerOptionSize;
   selectedColor: CustomerOptionColor;
   user: User;
-  expandDescription: string = 'in';
+  expandDescription: boolean = false;
   price: number = 0;
+
+  gender: string;
 
   @ViewChild('descriptionTitle') descriptionTitleRef: ElementRef;
 
@@ -63,23 +63,22 @@ export class ProductDetailComponent implements OnInit {
   }
 
   loadProduct(id: number) {
-    this.productService.getProduct(id).pipe(
-      concatMap(
-        (result) =>
-        {
+    this.productService
+      .getProduct(id)
+      .pipe(
+        concatMap((result) => {
           this.product = result;
           this.productService.addToRecent(this.product);
+          this.gender = fnGetGenderName(this.product.gender);
           this.loadProductImageCarousel();
           this.loadBreadCrumb();
           return this.optionService.getCustomerProductOption(id);
-        }
+        })
       )
-    ).subscribe(
-      result => {
+      .subscribe((result) => {
         this.options = result;
         this.chooseColor(this.options[0].color);
       });
-    
   }
 
   loadProductImageCarousel() {
@@ -98,25 +97,29 @@ export class ProductDetailComponent implements OnInit {
       },
     ];
 
-    this.breadCrumb.push({
-      name: `${fnGetGenderName(this.product.gender)}`,
-      route: ``,
-      active: false,
-    });
-
-    if (this.product.parentCategory != null) {
+    if (this.product.parentCategoryId > 0) {
       this.breadCrumb.push({
-        name: `${this.product.parentCategory}`,
-        route: `/product?category=${this.product.parentCategorySlug}&gender=${this.product.gender}`,
+        name: `${this.gender} ${
+          this.product.parentCategory
+        }`,
+        route: `/product?category=${this.product.parentCategoryId}&gender=${this.product.gender}`,
+        active: true,
+      });
+
+      this.breadCrumb.push({
+        name: `${this.product.category}`,
+        route: `/product?category=${this.product.categoryId}&gender=${this.product.gender}`,
+        active: true,
+      });
+    } else {
+      this.breadCrumb.push({
+        name: `${this.gender} ${
+          this.product.category
+        }`,
+        route: `/product?category=${this.product.categoryId}&gender=${this.product.gender}`,
         active: true,
       });
     }
-
-    this.breadCrumb.push({
-      name: `${this.product.category}`,
-      route: `/product?category=${this.product.categorySlug}&gender=${this.product.gender}`,
-      active: true,
-    });
 
     this.breadCrumb.push({
       name: `${this.product.productName}`,
@@ -134,10 +137,14 @@ export class ProductDetailComponent implements OnInit {
     this.updatePrice();
   }
 
-  private updatePrice() {    
-    let totalPrice = this.product.price + this.selectedSize.additionalPrice;    
-    this.price = fnCalculatePrice(this.product.saleType, 
-      totalPrice, this.product.saleOffPercent, this.product.saleOffValue);
+  private updatePrice() {
+    let totalPrice = this.product.price + this.selectedSize.additionalPrice;
+    this.price = fnCalculatePrice(
+      this.product.saleType,
+      totalPrice,
+      this.product.saleOffPercent,
+      this.product.saleOffValue
+    );
   }
 
   onSizeChange(size: any) {
@@ -240,8 +247,8 @@ export class ProductDetailComponent implements OnInit {
   }
 
   expandDescriptionToggle() {
-    this.expandDescription = this.expandDescription === 'in' ? 'out' : 'in';
-    if (this.expandDescription === 'in')
+    this.expandDescription = !this.expandDescription;
+    if (this.expandDescription)
       this.descriptionTitleRef.nativeElement.scrollIntoView({
         behavior: 'smooth',
       });
@@ -254,8 +261,12 @@ export class ProductDetailComponent implements OnInit {
     saleOffValue: number
   ) {
     return (
-      fnCalculatePrice(saleType, price + this.selectedSize.additionalPrice, saleOffPercent, saleOffValue) *
-      this.quantity
+      fnCalculatePrice(
+        saleType,
+        price + this.selectedSize.additionalPrice,
+        saleOffPercent,
+        saleOffValue
+      ) * this.quantity
     );
   }
 

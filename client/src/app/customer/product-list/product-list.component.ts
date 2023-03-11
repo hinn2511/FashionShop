@@ -1,11 +1,13 @@
-import { SlideRightToLeft, SlideLeftToRightBoolean } from './../../_common/animation/common.animation';
+import {
+  SlideRightToLeft,
+  SlideLeftToRightBoolean,
+  FadeInAndOut,
+} from './../../_common/animation/common.animation';
 import { DeviceService } from 'src/app/_services/device.service';
 import { ProductFilterComponent } from './../product-filter/product-filter.component';
 import { CustomerSizeFilter } from './../../_models/productParams';
 import { CategoryService } from 'src/app/_services/category.service';
-import {
-  ActivatedRoute,
-} from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
 
 import { BreadCrumb } from 'src/app/_models/breadcrumb';
@@ -26,14 +28,13 @@ import { ProductFilter } from '../product-filter/product-filter.component';
   selector: 'app-product-list',
   templateUrl: './product-list.component.html',
   styleUrls: ['./product-list.component.css'],
-  animations: [ SlideLeftToRightBoolean, SlideRightToLeft ]
+  animations: [SlideLeftToRightBoolean, SlideRightToLeft, FadeInAndOut],
 })
 export class ProductListComponent implements OnInit, OnDestroy {
   @ViewChild('filterComponent') filterComponent: ProductFilterComponent;
   products: Product[];
   skeletonItems: number[];
   skeletonLoading: boolean = false;
-  loadingCount: number = 0;
   pagination: Pagination;
   productParams: ProductParams;
   breadCrumb: BreadCrumb[];
@@ -43,7 +44,7 @@ export class ProductListComponent implements OnInit, OnDestroy {
   selectedSize: CustomerSizeFilter;
   selectedColor: CustomerColorFilter;
   selectedOrder: string;
-  selectedCategory: string;
+  selectedCategory: number;
   selectedGender: number;
   selectedGenderString: string;
 
@@ -56,7 +57,7 @@ export class ProductListComponent implements OnInit, OnDestroy {
   deviceType: BehaviorSubject<string> = new BehaviorSubject('');
   deviceTypeValue$ = this.deviceType.asObservable();
 
-  count = 0;
+  filterApplyCount = 0;
   filterOrders: CustomerFilterOrder[] = [
     new CustomerFilterOrder(0, 'Name', 0, 'Name (A-Z)'),
     new CustomerFilterOrder(1, 'Name', 1, 'Name (Z-A)'),
@@ -84,23 +85,24 @@ export class ProductListComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     if (this.deviceService.getDeviceType() != 'desktop')
       this.showFilter = false;
-    this.querySubscribe$ = this.route.queryParamMap.subscribe((queryParamMap) => {
-        this.selectedCategory = queryParamMap.get('category');
+    this.querySubscribe$ = this.route.queryParamMap.subscribe(
+      (queryParamMap) => {
+        this.selectedCategory = +queryParamMap.get('category');
         this.selectedGender = +queryParamMap.get('gender');
         this.selectedGenderString = fnGetGenderName(this.selectedGender);
-        this.productParams.category = this.selectedCategory;
+        this.productParams.categoryId = this.selectedCategory;
         this.productParams.gender = this.selectedGender;
         this.loadCategory();
         this.loadColorFilters();
         this.loadProducts();
         // }
-      });
+      }
+    );
 
     this.deviceSubscription$ = this.deviceService.deviceWidth$.subscribe(
       (_) => {
         this.deviceType.next(this.deviceService.getDeviceType());
-        if (this.deviceType.value == 'desktop')
-          this.showFilter = true;
+        if (this.deviceType.value == 'desktop') this.showFilter = true;
       }
     );
 
@@ -120,42 +122,35 @@ export class ProductListComponent implements OnInit, OnDestroy {
       },
     ];
 
-    this.breadCrumb.push({
-      name: `${this.selectedGenderString}`,
-      route: ``,
-      active: false,
-    });
-
     if (this.category.parent != null) {
       this.breadCrumb.push({
-        name: `${this.category.parent.categoryName}`,
-        route: `/product?category=${this.category.parent.slug}&gender=${this.selectedGender}`,
+        name: `${this.selectedGenderString} ${this.category.parent.categoryName}`,
+        route: `/product?category=${this.category.parent.id}&gender=${this.selectedGender}`,
+        active: true,
+      });
+
+      this.breadCrumb.push({
+        name: `${this.category.categoryName}`,
+        route: `/product?category=${this.category.id}&gender=${this.selectedGender}`,
+        active: true,
+      });
+    } else {
+      this.breadCrumb.push({
+        name: `${this.selectedGenderString} ${this.category.categoryName}`,
+        route: `/product?category=${this.category.id}&gender=${this.selectedGender}`,
         active: true,
       });
     }
-
-    this.breadCrumb.push({
-      name: `${this.category.categoryName}`,
-      route: `/product?category=${this.category.slug}&gender=${this.selectedGender}`,
-      active: true,
-    });
   }
 
   loadProducts() {
-    // if (this.loadingCount == 0) this.skeletonLoading = true;
-    // this.skeletonLoading = true;
+    this.skeletonLoading = true;
     this.productService.setProductParams(this.productParams);
 
     this.productService
       .getProducts(this.productParams)
       .subscribe((response) => {
-        // if (this.loadingCount == 0) {
-        //   this.loadingCount++;
-        //   setTimeout(() => {
-        //     this.skeletonLoading = false;
-        //   }, 500);
-        // this.skeletonLoading = false;
-        // }
+        this.skeletonLoading = false;
         this.products = response.result;
         this.pagination = response.pagination;
       });
@@ -171,7 +166,10 @@ export class ProductListComponent implements OnInit, OnDestroy {
 
   loadCategory() {
     this.categoryService
-      .getCategoryDetail(this.productParams.category, this.productParams.gender)
+      .getCategoryDetail(
+        this.productParams.categoryId,
+        this.productParams.gender
+      )
       .subscribe((result) => {
         this.category = result;
         this.loadBreadCrumb();
@@ -199,10 +197,9 @@ export class ProductListComponent implements OnInit, OnDestroy {
     this.selectedColor = productFilter.selectedColor;
     this.selectedPriceRange = productFilter.selectedPriceRange;
     this.selectedSize = productFilter.selectedSize;
-    if(this.deviceType.value == 'desktop')
-      this.showFilter = true;
-    else
-      this.showFilter = false;
+    if (this.deviceType.value == 'desktop') this.showFilter = true;
+    else this.showFilter = false;
+    this.filterApplyCounting();
     this.loadProducts();
   }
 
@@ -222,4 +219,10 @@ export class ProductListComponent implements OnInit, OnDestroy {
     this.showFilter = !this.showFilter;
   }
 
+  filterApplyCounting() {
+    this.filterApplyCount = 0;
+    if (this.selectedColor != null) this.filterApplyCount++;
+    if (this.selectedSize != null) this.filterApplyCount++;
+    if (this.selectedPriceRange != null) this.filterApplyCount++;
+  }
 }

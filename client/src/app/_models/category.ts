@@ -13,6 +13,7 @@ export interface CustomerCategoryCatalogue {
   categoryName: string;
   parentId: number;
   gender: number;
+  id: number;
 }
 
 export interface CustomerCatalogue {
@@ -116,8 +117,8 @@ export class ManagerCategoryParams extends Params {
 export const GenderList = [
   new Gender(0, 'Men'),
   new Gender(1, 'Women'),
-  new Gender(2, 'Kid'),
-  new Gender(3, 'Unisex'),
+  new Gender(2, 'Unisex'),
+  new Gender(3, 'Kid'),
 ];
 
 export function fnGetGenderName(id: number) {

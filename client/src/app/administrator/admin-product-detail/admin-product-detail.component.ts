@@ -1,5 +1,6 @@
+import { GrowBoolean } from 'src/app/_common/animation/common.animation';
 import { Router } from '@angular/router';
-import { Component, OnInit } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { ManagerProduct } from 'src/app/_models/product';
 import { ProductService } from 'src/app/_services/product.service';
 import { IdArray } from 'src/app/_models/adminRequest';
@@ -9,11 +10,14 @@ import { fnGetObjectStateString, fnGetObjectStateStyle } from 'src/app/_common/f
 @Component({
   selector: 'app-admin-product-detail',
   templateUrl: './admin-product-detail.component.html',
-  styleUrls: ['./admin-product-detail.component.css']
+  styleUrls: ['./admin-product-detail.component.css'],
+  animations: [GrowBoolean]
 })
 export class AdminProductDetailComponent implements OnInit {
   product: ManagerProduct;
   descriptionReview: boolean;
+  expandDescription: boolean = false;
+  @ViewChild('description') descriptionRef: ElementRef;
 
   id: IdArray = {
     ids: [this.productService.getSelectedProductId()],
@@ -72,5 +76,13 @@ export class AdminProductDetailComponent implements OnInit {
     {
       this.toastr.error("Something wrong happen!", 'Error');
     });
+  }
+
+  expandDescriptionToggle() {
+    this.expandDescription = !this.expandDescription;
+    if (this.expandDescription)
+      this.descriptionRef.nativeElement.scrollIntoView({
+        behavior: 'smooth',
+      });
   }
 }

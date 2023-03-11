@@ -5,7 +5,7 @@
 >
   <ol
     class="breadcrumb"
-    [class]="{ 'bg-light': showBackground, 'bg-transparent': !showBackground }"
+    [class]="{ 'bg-app-light': showBackground, 'bg-transparent': !showBackground }"
   >
     <li
       *ngFor="let item of breadCrumbList; let i = index"
@@ -14,19 +14,20 @@
     >
       <a
         *ngIf="i < breadCrumbList.length - 1"
-        class="link"
+        class="link fw-smaller"
         [class]="{
-          'text-muted': !item.active,
+          'text-app-dark-muted': !item.active,
           'cs-pointer': item.active,
-          'text-dark': item.active
+          'text-app-dark': item.active
         }"
         (click)="navigatingTo(item)"
       >
         {{ item.name }}
       </a>
     </li>
-    <li class="breadcrumb-item text-muted" >
-      {{ breadCrumbList[breadCrumbList.length - 1].name }}
+    <li class="breadcrumb-item" >
+      <a class="disabled text-muted fw-smaller">{{ breadCrumbList[breadCrumbList.length - 1].name }}</a>
+      
     </li>
   </ol>
 </nav>

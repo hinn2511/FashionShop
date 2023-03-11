@@ -31,9 +31,19 @@ namespace API.Data
             if (customerProductParams.Gender != null)
                 query = query.Where(p => p.Category.Gender == customerProductParams.Gender);
 
-            if (customerProductParams.Category != null)
-                query = query.Where(p => p.Category.CategoryName == customerProductParams.Category);
+            if (customerProductParams.CategoryId > 0)
+            {
+                var category = await _context.Categories.FirstOrDefaultAsync(x => x.Id == customerProductParams.CategoryId);
+                if (category != null)
+                {
+                    if (category.ParentId == 0)
+                        query = query.Where(x => x.Category.Id == customerProductParams.CategoryId || x.Category.ParentId == customerProductParams.CategoryId);
+                    else
+                        query = query.Where(x => x.Category.Id == customerProductParams.CategoryId);
 
+                }
+            }
+            
             if (!string.IsNullOrEmpty(customerProductParams.Query))
             {
                 var words = customerProductParams.Query.RemoveSpecialCharacters().ToUpper().Split(" ").Distinct();

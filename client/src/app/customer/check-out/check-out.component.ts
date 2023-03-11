@@ -5,7 +5,7 @@ import {
 } from './../../_common/animation/common.animation';
 import { fnUpdateFormControlNumberValue } from 'src/app/_common/function/function';
 import { RotateAnimation } from 'src/app/_common/animation/carousel.animations';
-import { concatMap, catchError } from 'rxjs/operators';
+import { concatMap, catchError, delay, map } from 'rxjs/operators';
 import { DeviceService } from 'src/app/_services/device.service';
 import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
@@ -14,8 +14,16 @@ import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { CartItem } from 'src/app/_models/cart';
 import { User } from 'src/app/_models/user';
 import { CartService } from 'src/app/_services/cart.service';
-import { Subscription } from 'rxjs';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { Subscription, Observable, BehaviorSubject } from 'rxjs';
+import {
+  AbstractControl,
+  AsyncValidatorFn,
+  FormBuilder,
+  FormGroup,
+  ValidationErrors,
+  ValidatorFn,
+  Validators,
+} from '@angular/forms';
 import {
   CustomerNewOrder,
   CustomerCardInformation,
@@ -66,6 +74,7 @@ export class CheckOutComponent implements OnInit {
   ) {}
 
   ngOnDestroy(): void {
+    this.cardUnsubscribe();
     this.deviceSubscription$.unsubscribe();
   }
 
@@ -73,7 +82,6 @@ export class CheckOutComponent implements OnInit {
     this.selectedShippingMethod = this.shippingMethods[0];
     this.selectedPaymentMethod = this.paymentMethods[0];
     this.initializeForm();
-    this.cardSubscribe();
     this.updateOrder();
     this.updatePaymentInformation();
     this.order.shippingMethod = this.selectedShippingMethod.id;
@@ -99,11 +107,19 @@ export class CheckOutComponent implements OnInit {
       address: ['', [Validators.required]],
       phoneNumber: ['', [Validators.required]],
       email: [''],
-      cardHolder: [''],
-      cardNumber: ['', [Validators.minLength(19), Validators.maxLength(19)]],
+      cardHolder: ['', [Validators.required]],
+      cardNumber: [
+        '',
+        [
+          Validators.required,
+          Validators.minLength(19),
+          Validators.maxLength(19),
+        ],
+      ],
       cvv: [
         '',
         [
+          Validators.required,
           Validators.minLength(3),
           Validators.maxLength(3),
           Validators.pattern('[0-9]{3}'),
@@ -112,6 +128,7 @@ export class CheckOutComponent implements OnInit {
       expiredDate: [
         '',
         [
+          Validators.required,
           Validators.minLength(5),
           Validators.maxLength(5),
           Validators.pattern('(0[1-9]|1[0-2])/[0-9]{2}'),
@@ -120,52 +137,8 @@ export class CheckOutComponent implements OnInit {
       shippingMethod: [this.selectedShippingMethod.id, [Validators.required]],
       paymentMethod: [this.selectedPaymentMethod.id, [Validators.required]],
     });
-    this.orderDetailForm.get('paymentMethod').valueChanges.subscribe((val) => {
-      if (
-        this.selectedPaymentMethod.id == 0 ||
-        this.selectedPaymentMethod.id == 1
-      ) {
-        this.cardSubscribe();
-        this.orderDetailForm.controls['cardNumber'].setValidators([
-          Validators.required,
-          Validators.minLength(19),
-          Validators.maxLength(19),
-        ]);
-        this.orderDetailForm.controls['cvv'].setValidators([
-          Validators.required,
-          Validators.minLength(3),
-          Validators.maxLength(3),
-        ]);
-        this.orderDetailForm.controls['expiredDate'].setValidators([
-          Validators.required,
-          Validators.minLength(5),
-          Validators.maxLength(5),
-          Validators.pattern('(0[1-9]|1[0-2])/[0-9]{2}'),
-        ]);
-      } else {
-        this.cardUnsubscribe();
-        this.orderDetailForm.controls['cardHolder'].clearValidators();
-        this.orderDetailForm.controls['cardHolder'].patchValue('', {
-          emitEvent: false,
-        });
-        this.orderDetailForm.controls['cardNumber'].clearValidators();
-        this.orderDetailForm.controls['cardNumber'].patchValue('', {
-          emitEvent: false,
-        });
-        this.orderDetailForm.controls['cvv'].clearValidators();
-        this.orderDetailForm.controls['cvv'].patchValue('', {
-          emitEvent: false,
-        });
-        this.orderDetailForm.controls['expiredDate'].clearValidators();
-        this.orderDetailForm.controls['expiredDate'].patchValue('', {
-          emitEvent: false,
-        });
-      }
-      this.orderDetailForm.controls['cardHolder'].updateValueAndValidity();
-      this.orderDetailForm.controls['cardNumber'].updateValueAndValidity();
-      this.orderDetailForm.controls['cvv'].updateValueAndValidity();
-      this.orderDetailForm.controls['expiredDate'].updateValueAndValidity();
-    });
+
+    this.cardSubscribe();
   }
 
   cardUnsubscribe() {
@@ -247,6 +220,8 @@ export class CheckOutComponent implements OnInit {
     this.updatePaymentInformation();
     this.updateOrder();
 
+    if (!this.orderDetailForm.valid) return;
+
     this.checkingOrder = true;
     if (
       this.selectedPaymentMethod.id == 0 ||
@@ -324,12 +299,71 @@ export class CheckOutComponent implements OnInit {
 
   selectPaymentMethod(paymentMethod: PaymentMethod) {
     this.selectedPaymentMethod = paymentMethod;
+    
     fnUpdateFormControlNumberValue(
       this.orderDetailForm,
       'paymentMethod',
       paymentMethod.id,
       false
     );
+
+    if (
+      this.selectedPaymentMethod.id < 2
+    ) {
+      this.orderDetailForm.controls['cardNumber'].setValidators([
+        Validators.required,
+        Validators.minLength(19),
+        Validators.maxLength(19),
+      ]);
+      this.orderDetailForm.controls['cvv'].setValidators([
+        Validators.required,
+        Validators.minLength(3),
+        Validators.maxLength(3),
+      ]);
+      this.orderDetailForm.controls['expiredDate'].setValidators([
+        Validators.required,
+        Validators.minLength(5),
+        Validators.maxLength(5),
+        Validators.pattern('(0[1-9]|1[0-2])/[0-9]{2}'),
+      ]);
+      this.orderDetailForm.controls['cardHolder'].patchValue('', {
+        emitEvent: false,
+      });
+      this.orderDetailForm.controls['cardNumber'].patchValue('', {
+        emitEvent: false,
+      });
+      this.orderDetailForm.controls['cvv'].patchValue('', {
+        emitEvent: false,
+      });
+      this.orderDetailForm.controls['expiredDate'].patchValue('', {
+        emitEvent: false,
+      });
+    } else {
+      this.orderDetailForm.controls['cardHolder'].clearValidators();
+      this.orderDetailForm.controls['cardHolder'].patchValue('', {
+        emitEvent: false,
+      });
+      this.orderDetailForm.controls['cardNumber'].clearValidators();
+      this.orderDetailForm.controls['cardNumber'].patchValue('', {
+        emitEvent: false,
+      });
+      this.orderDetailForm.controls['cvv'].clearValidators();
+      this.orderDetailForm.controls['cvv'].patchValue('', {
+        emitEvent: false,
+      });
+      this.orderDetailForm.controls['expiredDate'].clearValidators();
+      this.orderDetailForm.controls['expiredDate'].patchValue('', {
+        emitEvent: false,
+      });
+    }
+    this.orderDetailForm.controls['cardHolder'].updateValueAndValidity();
+    this.orderDetailForm.controls['cardNumber'].updateValueAndValidity();
+    this.orderDetailForm.controls['cvv'].updateValueAndValidity();
+    this.orderDetailForm.controls['expiredDate'].updateValueAndValidity();
+
+   
+
+   
   }
 
   expandCheckoutSummaryToggle() {

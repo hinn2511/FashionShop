@@ -91,6 +91,8 @@ namespace API.Controllers
             foreach (var item in result)
             {
                 item.LikedByUser = true;
+                item.Options = item.Options.GroupBy(g => g.ColorName)
+                           .Select(g => g.First()).ToList();
             }
 
             return Ok(result);

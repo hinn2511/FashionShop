@@ -8,7 +8,7 @@
           [formGroup]="loginForm"
           (ngSubmit)="loginForm.valid && onSubmit()"
         >
-          <h3 class="card-header pt-4 text-uppercase text-accent">Login</h3>
+          <h3 class="card-header pt-4 text-uppercase text-app-dark">Login</h3>
           <div class="form-group mb-4 px-4">
             <span class="text-muted"> Don't have an account? </span>
             <a class="text-dark" routerLink="/register">Sign in now</a>
@@ -33,7 +33,7 @@
             <a class="text-dark cs-pointer">Forget password?</a>
             <button
               [disabled]="loading && !loginForm.valid"
-              class="btn btn-dark py-2 mt-2 w-100"
+              class="btn btn-dark bg-app-dark py-2 mt-2 w-100"
             >
               <span
                 *ngIf="loading"
@@ -104,7 +104,7 @@
       </div>
     </div>
   </div>
-  <div class="position-absolute ml-4 mt-2 logo text-accent">
+  <div class="position-absolute ml-4 mt-2 logo text-app-dark">
     <h1 class="font-brand text-uppercase cs-pointer" routerLink="/">
       Thyme
     </h1>

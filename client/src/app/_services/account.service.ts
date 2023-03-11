@@ -38,7 +38,7 @@ export class AccountService {
     let response = this.favoriteCache.get(
       Object.values(productParams).join('-')
     );
-    if (response) {
+    if (response) {      
       return of(response);
     }
     let params = getPaginationHeaders(

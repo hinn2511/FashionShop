@@ -6,7 +6,7 @@ namespace API.DTOs.Params
 {
     public class BaseProductParams : PaginationParams
     {
-        public string Category { get; set; }
+        public int CategoryId { get; set; }
         public Gender? Gender { get; set; }
         public double MinPrice { get; set; }
         public double MaxPrice { get; set; }

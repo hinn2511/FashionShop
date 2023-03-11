@@ -10,7 +10,7 @@ import { AccountService } from 'src/app/_services/account.service';
   styleUrls: ['./account-information.component.css']
 })
 export class AccountInformationComponent implements OnInit {
-  @Input() account: Account;
+  account: Account;
   accountInformationForm: FormGroup;
   isEditMode: boolean = false;
 

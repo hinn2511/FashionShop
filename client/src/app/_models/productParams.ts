@@ -1,5 +1,5 @@
 export class ProductParams {
-  category = '';
+  categoryId = 0;
   colorCode =  '';
   size = '';
   gender = 0;

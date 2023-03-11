@@ -38,16 +38,17 @@ namespace API.Data
             if (productParams.MaxPrice > 0)
                 query = query.Where(p => p.Price <= productParams.MaxPrice);
 
-            if (!string.IsNullOrEmpty(productParams.Category))
+             if (productParams.CategoryId > 0)
             {
-                var category = await _context.Categories.FirstOrDefaultAsync(x => x.Slug == productParams.Category);
-
-                if (category.ParentId == null)
+                var category = await _context.Categories.FirstOrDefaultAsync(x => x.Id == productParams.CategoryId);
+                if (category != null)
                 {
-                    query = query.Where(p => p.Category.ParentId == category.Id || p.Category.Id == category.Id);
+                    if (category.ParentId == 0 || category.ParentId == null)
+                        query = query.Where(x => x.Category.Id == productParams.CategoryId || x.Category.ParentId == productParams.CategoryId);
+                    else
+                        query = query.Where(x => x.Category.Id == productParams.CategoryId);
+
                 }
-                else
-                    query = query.Where(p => p.Category.Id == category.Id);
             }
 
             if (productParams.IsOnSale)
@@ -130,8 +131,18 @@ namespace API.Data
             if (productParams.Gender != null)
                 query = query.Where(p => p.Category.Gender == productParams.Gender);
 
-            if (productParams.Category != null)
-                query = query.Where(p => p.Category.CategoryName == productParams.Category);
+             if (productParams.CategoryId > 0)
+            {
+                var category = await _context.Categories.FirstOrDefaultAsync(x => x.Id == productParams.CategoryId);
+                if (category != null)
+                {
+                    if (category.ParentId == 0)
+                        query = query.Where(x => x.Category.Id == productParams.CategoryId || x.Category.ParentId == productParams.CategoryId);
+                    else
+                        query = query.Where(x => x.Category.Id == productParams.CategoryId);
+
+                }
+            }
 
             if (productParams.MinPrice > 0)
                 query = query.Where(p => p.Price >= productParams.MinPrice);
@@ -219,16 +230,16 @@ namespace API.Data
             if (productParams.MaxPrice > 0)
                 query = query.Where(p => p.Price <= productParams.MaxPrice);
 
-            if (!string.IsNullOrEmpty(productParams.Category))
+            if (productParams.CategoryId > 0)
             {
-                var category = await _context.Categories.FirstOrDefaultAsync(x => x.Slug == productParams.Category);
-
-                if (category.ParentId == null)
+                var category = await _context.Categories.FirstOrDefaultAsync(x => x.Id == productParams.CategoryId);
+                if (category != null)
                 {
-                    query = query.Where(p => p.Category.ParentId == category.Id || p.Category.Id == category.Id);
+                    if (category.ParentId == 0)
+                        query = query.Where(x => x.Category.Id == productParams.CategoryId || x.Category.ParentId == productParams.CategoryId);
+                    else
+                        query = query.Where(x => x.Category.Id == productParams.CategoryId);
                 }
-                else
-                    query = query.Where(p => p.Category.Id == category.Id);
             }
 
             if (productParams.IsOnSale)

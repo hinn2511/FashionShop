@@ -1,3 +1,4 @@
+import { CategorySummaryComponent } from './customer/category-summary/category-summary.component';
 import { ProductSaleComponent } from './customer/product-sale/product-sale.component';
 import { AdminDashboardComponent } from './administrator/dashboard/admin-dashboard/admin-dashboard.component';
 import { OrderReviewComponent } from './customer/order-review/order-review.component';
@@ -41,12 +42,12 @@ import { AdminUserComponent } from './administrator/admin-user/admin-user.compon
 import { AdminUserDetailComponent } from './administrator/admin-user-detail/admin-user-detail.component';
 import { AdminSettingComponent } from './administrator/admin-setting/admin-setting.component';
 
-const routes: Routes = [
-  {path: '', component: HomePageComponent },
+export const routes: Routes = [
+  {path: '', component: HomePageComponent, pathMatch: 'full', data: { state: 'home' }},
 
-  {path: 'register', component: RegisterComponent },
+  {path: 'register', component: RegisterComponent, data: { state: 'register' } },
   
-  {path: 'login', component: LoginComponent },
+  {path: 'login', component: LoginComponent, data: { state: 'login' } },
   {path: 'administrator/login', component: AdminLoginComponent},
 
   {
@@ -55,17 +56,30 @@ const routes: Routes = [
       {
         path: '',
         component: ProductListComponent,
+        data: { state: 'product' }
       },
       {
         path: ':slug',
         component: ProductDetailComponent,
+        data: { state: 'product-detail' }
       }     
     ],
   },
 
-  { path: 'search', component: SearchResultComponent },
+  {
+    path: 'categories',
+    children: [
+      {
+        path: '',
+        component: CategorySummaryComponent,
+        data: { state: 'categories' }
+      }
+    ],
+  },
 
-  { path: 'sale-off', component: ProductSaleComponent },
+  { path: 'search', component: SearchResultComponent, data: { state: 'search' } },
+
+  { path: 'sale-off', component: ProductSaleComponent, data: { state: 'product-sale' }},
 
   {
     path: 'news',
@@ -73,10 +87,12 @@ const routes: Routes = [
       {
         path: '',
         component: NewsComponent,
+        data: { state: 'news' }
       },
       {
         path: ':slug',
         component: NewsDetailComponent,
+        data: { state: 'new-detail' }
       },
     ],
   },
@@ -89,16 +105,18 @@ const routes: Routes = [
         path: '',
         component: OrderDetailComponent,
         canActivate: [AuthGuard],
+        data: { state: 'order' }
       },
       {
         path: 'review',
         component: OrderReviewComponent,
         canActivate: [AuthGuard],
+        data: { state: 'order-preview' }
       }
     ],
   },
 
-  { path: 'account', component: AccountComponent, canActivate: [AuthGuard] },
+  { path: 'account', component: AccountComponent, canActivate: [AuthGuard], data: { state: 'account' }},
   
   {
     path: 'administrator/dashboard',

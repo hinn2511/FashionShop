@@ -28,7 +28,7 @@ export class ProductFilter {
 })
 export class ProductFilterComponent implements OnInit {
   @Input() productParams: ProductParams;
-  @Input() selectedCategory: string;
+  @Input() selectedCategory: number;
   @Input() showCategory: boolean = false;
   catalogues: CustomerCatalogue[] = [];
   @Input() selectedGender: number;
@@ -85,7 +85,7 @@ export class ProductFilterComponent implements OnInit {
     this.resetPriceRange();
     this.resetSize();
     this.resetColor();
-    this.productParams.category = this.selectedCategory;
+    this.productParams.categoryId = this.selectedCategory;
     this.productParams.gender = this.selectedGender;
     this.applyFilter();
   }
@@ -113,9 +113,9 @@ export class ProductFilterComponent implements OnInit {
   }
 
   resetCategory() {
-    this.selectedCategory = '';
+    this.selectedCategory = 0;
     this.showResetSizeFilterButton = false;
-    this.productParams.category = '';
+    this.productParams.categoryId = 0;
     this.applyFilter();
   }
 
@@ -160,15 +160,18 @@ export class ProductFilterComponent implements OnInit {
     this.applyFilter();
   }
 
-  setCategoryFilter(category: string) {
-    if (this.selectedCategory == category)
+  setCategoryFilter(categoryId: number, gender: number) {
+    console.log(`gender ${gender} categoryId ${categoryId}`);
+    
+    if (this.selectedCategory == categoryId)
     {
       this.selectedCategory = undefined;
       return;
     }
     else
-      this.selectedCategory = category;
-    this.productParams.category = fnConvertToSlug(category);
+      this.selectedCategory = categoryId;
+    this.productParams.categoryId = categoryId;
+    this.productParams.gender = gender;
     this.showResetCategoryFilterButton = true;
     this.applyFilter();
   }

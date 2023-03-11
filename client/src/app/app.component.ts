@@ -1,14 +1,10 @@
-import { FadeInAndOut, SlideInOut, SlideTopToBottom } from './_common/animation/common.animation';
+import {
+  FadeInAndOut,
+  SlideInOut,
+} from './_common/animation/common.animation';
 import { RouteService } from './_services/route.service';
 import { DeviceService } from 'src/app/_services/device.service';
 import { CartService } from 'src/app/_services/cart.service';
-import {
-  animate,
-  state,
-  style,
-  transition,
-  trigger,
-} from '@angular/animations';
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { NavigationEnd, Router } from '@angular/router';
 import { User } from './_models/user';
@@ -17,15 +13,16 @@ import { debounceTime, filter } from 'rxjs/operators';
 import { CartItem } from './_models/cart';
 import { Subscription, fromEvent } from 'rxjs';
 import { fnIsNullOrEmpty, fnSwitchValue } from './_common/function/function';
+import { FadeInAndOutRoute } from './_common/animation/route.animation';
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css'],
   animations: [
-    SlideInOut,
-    FadeInAndOut
-  ],
+    FadeInAndOutRoute, 
+    SlideInOut, 
+    FadeInAndOut ]
 })
 export class AppComponent implements OnInit, OnDestroy {
   title = 'Thyme';
@@ -70,9 +67,10 @@ export class AppComponent implements OnInit, OnDestroy {
       });
   }
 
-  currentRouteSubscribe() {    this.routeSubscription$ = this.routeService.route$.subscribe((result) => {
+  currentRouteSubscribe() {
+    this.routeSubscription$ = this.routeService.route$.subscribe((result) => {
       this.currentRoute = result;
-    })
+    });
   }
 
   private updateDeviceType() {
@@ -104,8 +102,6 @@ export class AppComponent implements OnInit, OnDestroy {
     this.authenticationService.logout();
   }
 
-
-
   toggleSidebar() {
     fnSwitchValue<string>(this.sidebarState, 'out', 'in');
   }
@@ -116,5 +112,17 @@ export class AppComponent implements OnInit, OnDestroy {
 
   setFocus(value: boolean) {
     this.focus = value;
+  }
+
+  scrollToTop() {
+    window.scroll({
+      top: 0,
+      left: 0,
+      behavior: 'smooth',
+    });
+  }
+
+  getState(outlet) {
+    return outlet.activatedRouteData.state;
   }
 }

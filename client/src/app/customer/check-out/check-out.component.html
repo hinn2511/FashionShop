@@ -12,7 +12,7 @@
       (click)="closeCheckout()"
     ></div>
 
-    <div class="col-12 col-lg-7 bg-white p-0">
+    <div class="col-12 col-lg-6 col-xl-7 bg-white p-0">
       <div class="checkout-detail px-4 pt-4 pb-lg-4">
         <div class="d-flex d-inline align-items-center">
           <img
@@ -30,7 +30,7 @@
           (ngSubmit)="orderDetailForm.valid && submit()"
           autocomplete="off"
         >
-          <h4 class="mt-3 text-uppercase text-accent">Place an order</h4>
+          <h4 class="mt-3 text-app-dark">Place an order</h4>
 
           <div [class.d-none]="currentOrderStage == 'order summary'">
             <div class="d-flex d-inline-block align-items-center my-4">
@@ -74,14 +74,15 @@
               class="d-flex rounded mb-2 btn"
               [class]="{
                 'bg-light': selectedShippingMethod.id != item.id,
-                shadow: selectedShippingMethod.id == item.id
+                shadow: selectedShippingMethod.id == item.id,
+                'bg-app-light': selectedShippingMethod.id == item.id
               }"
               *ngFor="let item of shippingMethods"
               (click)="selectShippingMethod(item)"
             >
               <div class="p-3 my-auto">
                 <i
-                  class="fa fa-check"
+                  class="fa fa-check text-app-dark"
                   *ngIf="selectedShippingMethod.id == item.id"
                 ></i>
               </div>
@@ -89,7 +90,13 @@
                 class="flex-fill d-flex align-item-center justify-content-between p-3"
               >
                 <div class="flex-fill text-left">
-                  <p class="m-0 p-0 fw-bold">
+                  <p
+                    class="m-0 p-0 fw-bold"
+                    [class]="{
+                      'text-muted': selectedShippingMethod.id != item.id,
+                      'text-app-dark': selectedShippingMethod.id == item.id
+                    }"
+                  >
                     {{ item.name }}
                   </p>
                   <p class="m-0 p-0 text-muted">
@@ -114,6 +121,7 @@
               class="d-flex rounded mb-2 btn"
               [class]="{
                 'bg-light': selectedPaymentMethod.id != item.id,
+                'bg-app-light': selectedPaymentMethod.id == item.id,
                 shadow: selectedPaymentMethod.id == item.id
               }"
               *ngFor="let item of paymentMethods"
@@ -121,12 +129,18 @@
             >
               <div class="p-3 my-auto">
                 <i
-                  class="fa fa-check"
+                  class="fa fa-check text-app-dark"
                   *ngIf="selectedPaymentMethod.id == item.id"
                 ></i>
               </div>
               <div class="flex-fill d-flex align-item-center p-2">
-                <p class="m-0 p-0 my-auto fw-bold">
+                <p
+                  class="m-0 p-0 my-auto fw-bold"
+                  [class]="{
+                    'text-muted': selectedPaymentMethod.id != item.id,
+                    'text-app-dark': selectedPaymentMethod.id == item.id
+                  }"
+                >
                   {{ item.name }}
                 </p>
               </div>
@@ -159,7 +173,7 @@
               ></app-text-input>
 
               <div class="row">
-                <div class="col-4">
+                <div class="col-6">
                   <label for="cvv">CVV/CCV</label>
                   <app-text-input
                     [formControl]="orderDetailForm.controls['cvv']"
@@ -167,7 +181,7 @@
                     [separatorCount]="0"
                   ></app-text-input>
                 </div>
-                <div class="col-8">
+                <div class="col-6">
                   <label for="expiredDate">Expired date</label>
                   <app-text-input
                     [formControl]="orderDetailForm.controls['expiredDate']"
@@ -179,26 +193,11 @@
               </div>
             </div>
           </div>
-
-          <!-- <div class="form-group mt-4 text-right">
-            <button
-              [disabled]="!orderDetailForm.valid"
-              class="btn btn-dark text-capitalize ml-2"
-              name="save"
-              type="submit"
-            >
-              <span
-                *ngIf="checkingOrder"
-                class="spinner-border spinner-border-sm mr-1"
-              ></span>
-              <h6 *ngIf="!checkingOrder" class="p-0 m-0">Submit</h6>
-            </button>
-          </div> -->
         </form>
       </div>
     </div>
     <!-- Checkout items summary -->
-    <div class="col-12 col-lg-3 p-0">
+    <div class="col-12 col-lg-4 col-xl-3 p-0">
       <div
         class="checkout-summary shadow bg-light d-flex flex-column p-4 p-lg-5"
         [class.shadow]="deviceType != 'desktop'"
@@ -215,7 +214,7 @@
             />
           </div>
         </div>
-        <h4 class="my-2 mt-lg-0 text-accent">Items</h4>
+        <h4 class="my-2 mt-lg-0 text-app-dark">Items</h4>
 
         <!-- Display summary -->
         <div *ngIf="expandCheckoutSummary" [@fadeInAndOut]>
@@ -233,15 +232,12 @@
               <div class="d-flex justify-content-between mb-4">
                 <div>
                   <h6 (click)="viewProduct(cartItems)">
-                    {{ cartItems.productName }}&nbsp;-&nbsp;{{
-                      cartItems.sizeName
-                    }}
+                    {{ cartItems.productName }}
                   </h6>
                   <p class="m-0 p-0 fw-smaller">
-                    {{ cartItems.colorName }}&nbsp;<i
-                      class="fa fa-circle"
-                      [ngStyle]="{ color: cartItems.colorCode }"
-                    ></i>
+                    {{ cartItems.colorName }},&nbsp;Size:&nbsp;{{
+                      cartItems.sizeName
+                    }}
                   </p>
                 </div>
                 <div class="text-right">
@@ -253,21 +249,22 @@
               </div>
             </ng-container>
           </div>
+          <hr class="bg-app-dark" *ngIf="deviceType != 'desktop'">
           <div class="d-flex mt-4">
             <div class="bd-highlight">Subtotal</div>
-            <div class="flex-fill text-right fw-bold">
+            <div class="flex-fill text-right">
               {{ cartItemList.totalPrice | currency }}
             </div>
           </div>
           <div class="d-flex mt-2">
             <div class="bd-highlight">Discount</div>
-            <div class="flex-fill text-right fw-bold">
+            <div class="flex-fill text-right">
               {{ discountAmount | currency }}
             </div>
           </div>
           <div class="d-flex mt-2">
             <div class="bd-highlight">Tax</div>
-            <div class="flex-fill text-right fw-bold">
+            <div class="flex-fill text-right">
               {{
                 ((cartItemList.totalPrice - discountAmount) * 10) / 100
                   | currency
@@ -276,7 +273,7 @@
           </div>
           <div class="d-flex mt-2">
             <div class="bd-highlight">Shipping fee</div>
-            <div class="flex-fill text-right fw-bold">
+            <div class="flex-fill text-right">
               {{ selectedShippingMethod.price | currency }}
             </div>
           </div>
@@ -286,7 +283,7 @@
         <div class="mt-2 mt-lg-auto">
           <div class="d-flex mt-lg-auto">
             <div class="fw-bold">Total</div>
-            <div class="flex-fill text-right fw-bold">
+            <div class="flex-fill text-right fw-bold text-app-dark">
               {{
                 cartItemList.totalPrice -
                   discountAmount +
@@ -299,8 +296,10 @@
         </div>
 
         <button
-          class="btn btn-dark w-100 mt-4 text-uppercase"
-          [disabled]="!orderDetailForm.valid"
+          class="btn btn-dark bg-app-dark w-100 mt-4 text-uppercase"
+          [class]="{
+            'bg-app-dark-muted': !orderDetailForm.valid
+          }"
           name="button"
           type="button"
           (click)="submit()"

@@ -1,8 +1,10 @@
-<div class="container-fluid w-100 px-0" *ngIf="product">
+<div class="container-fluid w-100 px-0 pb-2" *ngIf="product">
   <div class="row mx-0" *ngIf="options">
     <div class="col-12 col-md-7 col-lg-8 p-0">
       <div class="product-image">
-        <app-breadcrumb [breadCrumbList]="breadCrumb"></app-breadcrumb>
+        <div class="pb-2 pl-lg-2">
+          <app-breadcrumb [breadCrumbList]="breadCrumb"></app-breadcrumb>
+        </div>
         <app-product-images
           *ngIf="carousels.length > 0"
           [carousels]="carousels"
@@ -13,39 +15,40 @@
     <div class="col-12 col-md-5 col-lg-4" *ngIf="selectedSize">
       <div class="pl-md-4 mt-3 mt-lg-5">
         <div class="d-inline-block d-flex">
-          <a class="text-muted p-0 m-0" routerLink="/">
-            {{ product.brandName }}
+          <a class="text-muted p-0 m-0">
+            {{ gender }}
           </a>
           <p class="text-muted p-0 m-0">&nbsp;&#8901;&nbsp;</p>
-          <a class="text-muted p-0 m-0" routerLink="/">
-            {{ product.category }}
+
+          <a class="text-muted p-0 m-0">
+            {{ product.brandName }}
           </a>
         </div>
 
-        <h2 class="text-uppercase my-0 py-0">
+        <h3 class="text-uppercase mt-2 mb-0 py-0">
           {{ product.productName }}
-        </h2>      
+        </h3>
 
         <h4 class="mt-2" *ngIf="product.saleType == 0; else onSale">
           {{ price | currency }}
         </h4>
 
         <p *ngIf="product.saleType == 1" class="text-danger my-2">
-            -{{ product.saleOffPercent }}% off from {{product.saleOffFrom | date}} to {{product.saleOffTo | date }}
+          -{{ product.saleOffPercent }}% off from
+          {{ product.saleOffFrom | date }} to {{ product.saleOffTo | date }}
         </p>
-        <p  *ngIf="product.saleType == 2" class="text-danger my-2">
-          -{{ product.saleOffValue | currency }} off from {{product.saleOffFrom | date}} to {{product.saleOffTo | date}}
+        <p *ngIf="product.saleType == 2" class="text-danger my-2">
+          -{{ product.saleOffValue | currency }} off from
+          {{ product.saleOffFrom | date }} to {{ product.saleOffTo | date }}
         </p>
 
         <ng-template #onSale>
           <div class="d-flex d-inline align-items-center mt-2">
             <h4 class="mr-1 my-0 py-0 text-danger">
-              {{
-                price | currency
-              }}
+              {{ price | currency }}
             </h4>
             <p class="my-0 py-0 h-100 old-price fw-smaller">
-              {{ product.price + selectedSize.additionalPrice| currency }}
+              {{ product.price + selectedSize.additionalPrice | currency }}
             </p>
           </div>
         </ng-template>
@@ -70,8 +73,9 @@
             <label for="size">Size</label>
             <div class="input-group mb-3">
               <select
-              [ngModel]="selectedSize" (ngModelChange)="onSizeChange($event)"
-                class="form-select w-100 bg-light border-0 p-2"
+                [ngModel]="selectedSize"
+                (ngModelChange)="onSizeChange($event)"
+                class="form-select w-100 bg-app-light border-0 p-2"
               >
                 <option [ngValue]="size" *ngFor="let size of sizes">
                   {{ size.sizeName }}
@@ -83,7 +87,7 @@
             <label for="size">Quantity</label>
             <div class="input-group quantity mb-3">
               <button
-                class="btn btn-light border-top-right-0 border-bottom-right-0"
+                class="btn btn-light bg-app-light border-top-right-0 border-bottom-right-0"
                 type="button"
                 (click)="decreaseQuantity()"
                 id="button-addon1"
@@ -96,10 +100,10 @@
                 [min]="0"
                 [max]="99"
                 [value]="quantity"
-                class="form-control bg-light border-0"
+                class="form-control bg-app-light border-0"
               />
               <button
-                class="btn btn-light border-top-left-0 border-bottom-left-0"
+                class="btn btn-light bg-app-light border-top-left-0 border-bottom-left-0"
                 type="button"
                 (click)="increaseQuantity()"
                 id="button-addon2"
@@ -111,7 +115,10 @@
         </div>
 
         <div class="mt-2">
-          <button class="btn btn-dark w-100 text-center" (click)="addToCart()">
+          <button
+            class="btn btn-dark bg-app-dark w-100 text-center"
+            (click)="addToCart()"
+          >
             <h6 class="text-uppercase m-0 py-2">add to cart</h6>
           </button>
           <div class="text-center mt-2">
@@ -148,9 +155,12 @@
         <div #descriptionTitle *ngIf="product.description != undefined">
           <div
             class="description d-flex justify-content-center"
-            [@grow]="{
+            [class]="{
+              'shrunk': !expandDescription
+            }"
+            [@growBoolean]="{
               value: expandDescription,
-              params: { height: '500px' }
+              params: { collapseHeight: '500px' }
             }"
           >
             <div
@@ -158,11 +168,11 @@
               [innerHTML]="product.description | safeUrl"
             ></div>
           </div>
-          <div class="description-btn w-100 text-center bg-light">
+          <div class="description-btn w-100 text-center bg-app-light">
             <button
               class="btn p-2 w-100 h-100 border-0"
               (click)="expandDescriptionToggle()"
-              *ngIf="expandDescription === 'in'; else hide"
+              *ngIf="expandDescription; else hide"
             >
               More
             </button>

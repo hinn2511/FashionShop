@@ -1,4 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import { GrowBoolean } from './../../_common/animation/common.animation';
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { fnGetObjectStateString, fnGetObjectStateStyle } from 'src/app/_common/function/style-class';
@@ -9,12 +10,16 @@ import { ArticleService } from 'src/app/_services/article.service';
 @Component({
   selector: 'app-admin-article-detail',
   templateUrl: './admin-article-detail.component.html',
-  styleUrls: ['./admin-article-detail.component.css']
+  styleUrls: ['./admin-article-detail.component.css'],
+  animations: [GrowBoolean]
 })
 export class AdminArticleDetailComponent implements OnInit {
     article: ManagerArticle;
     type: string;
     id: IdArray;
+
+    expandContent: boolean = false;
+  @ViewChild('content') contentRef: ElementRef;
 
     constructor(private articleService: ArticleService, private router: Router, private route: ActivatedRoute, private toastr: ToastrService) { }
   
@@ -75,5 +80,13 @@ export class AdminArticleDetailComponent implements OnInit {
     convertToArticleTypeString()
     {
       return ArticleTypeList.find(x => x.id == this.article.contentType).name;
+    }
+
+    expandContentToggle() {
+      this.expandContent = !this.expandContent;
+      if (this.expandContent)
+        this.contentRef.nativeElement.scrollIntoView({
+          behavior: 'smooth',
+        });
     }
   }

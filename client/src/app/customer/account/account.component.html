@@ -1,20 +1,27 @@
-<div class="container-fluid" *ngIf="account">
+<div class="container-fluid">
   <div class="row py-2 py-md-4">
     <div class="col-12 col-lg-3 d-none d-lg-block">
       <div class="card border-0 shadow-sm mt-2 mt-md-5">
-        <div class="card-body">
-          <div class="px-lg-2 mt-lg-2">
+        <div class="card-body p-0">
+          <div class="p-3 rounded">
             <ul class="list-group tab-list mobile-horizontal-scroll">
               <li
                 class="list-group-item border-0 cs-pointer d-flex align-items-center p-lg-3"
                 *ngFor="let tab of tabs"
                 [class]="{
-                  'list-group-item': activeTab.queryParam != tab.queryParam,
-                  'list-group-item-active': activeTab.queryParam == tab.queryParam
+                  'bg-white': activeTab.queryParam != tab.queryParam,
+                  'bg-app-light': activeTab.queryParam == tab.queryParam
                 }"
                 (click)="selectTab(tab.queryParam)"
               >
-                <p class="text-dark">{{ tab.name }}</p>
+                <p
+                  [class]="{
+                    'text-muted': activeTab.queryParam != tab.queryParam,
+                    'text-dark': activeTab.queryParam == tab.queryParam
+                  }"
+                >
+                  {{ tab.name }}
+                </p>
               </li>
             </ul>
           </div>
@@ -23,15 +30,13 @@
     </div>
     <div class="col-12 col-lg-9 p-0">
       <div class="p-lg-2 h-100 mt-3 mt-lg-5">
-        <ng-container *ngIf="activeTab.queryParam == 'information'">
-          <app-account-information
-            [account]="account"
-          ></app-account-information>
+        <ng-container *ngIf="activeTab.queryParam == 'information'" [@slideRightToLeft]>
+          <app-account-information></app-account-information>
         </ng-container>
-        <ng-container *ngIf="activeTab.queryParam == 'favorites'">
+        <ng-container *ngIf="activeTab.queryParam == 'favorites'" [@slideRightToLeft]>
           <app-favorites></app-favorites>
         </ng-container>
-        <ng-container *ngIf="activeTab.queryParam == 'orders'">
+        <ng-container *ngIf="activeTab.queryParam == 'orders'" [@slideRightToLeft]>
           <app-order-history></app-order-history>
         </ng-container>
       </div>

@@ -116,7 +116,7 @@ namespace API.Helpers.Authorization
 
         {
 
-            using (RNGCryptoServiceProvider rng = new RNGCryptoServiceProvider())
+            using (var rng = RandomNumberGenerator.Create())
 
             {
 

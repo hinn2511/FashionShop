@@ -10,7 +10,7 @@
     ></div>
     <!-- Cart items list -->
     <div class="col-12 col-lg-7 p-0 bg-white">
-      <div class="cart-detail px-2 pt-2 px-lg-4 pt-lg-4 p-md-5">
+      <div class="cart-detail px-2 pt-2 px-lg-4 pt-lg-4 p-md-3">
         <div class="d-flex d-inline align-items-center">
           <img class="icon mr-2" src="../../../assets/arrow-left.svg" alt="cart" />
           <a class="text-muted" (click)="closeCart()">
@@ -18,7 +18,7 @@
           </a>
         </div>
         <div class="mt-4 p-2">
-          <h2 class="text-accent">My cart</h2>
+          <h4 class="text-app-dark">My cart</h4>
           <p class="">{{ cartItemList.totalItem }}&nbsp;items</p>
         </div>
         <!-- Cart item table for desktop device -->
@@ -30,11 +30,11 @@
             <thead>
               <!-- Cart item table header -->
               <tr>
-                <th class="text-muted">Items</th>
-                <th class="text-muted text-center">Price</th>
-                <th class="text-muted text-center">Quantity</th>
-                <th class="text-muted text-center">Total</th>
-                <th class="text-muted text-center">Delete</th>
+                <th class="bg-app-light text-app-dark">Items</th>
+                <th class="bg-app-light text-app-dark text-center">Price</th>
+                <th class="bg-app-light text-app-dark text-center">Quantity</th>
+                <th class="bg-app-light text-app-dark text-center">Total</th>
+                <th class="bg-app-light text-app-dark text-center">Delete</th>
               </tr>
             </thead>
             <tbody>
@@ -57,7 +57,7 @@
                       <!-- Item detail (name, size, color) on desktop -->
                       <div class="col-6 col-md-8 pl-0 my-auto va-middle">
                         <h6
-                          class="p-0 m-0 text-dark fw-bold cs-pointer"
+                          class="p-0 m-0 text-dark text-app-dark cs-pointer"
                           (click)="viewProduct(cartItem)"
                         >
                           {{ cartItem.productName }}
@@ -84,7 +84,7 @@
                     <div class="d-flex d-inline-block justify-content-center">
                       <button
                         #decreaseButton
-                        class="btn btn-light border-top-right-0 border-bottom-right-0"
+                        class="btn btn-light bg-app-light border-top-right-0 border-bottom-right-0"
                         (click)="decreaseQuantity(cartItem)"
                         appDebounceClick
                         (debounceClick)="updateCart(cartItem)"
@@ -96,11 +96,11 @@
                       <input
                         type="number"
                         [value]="cartItem.quantity"
-                        class="form-control rounded-0 text-center quantity bg-light border-0"
+                        class="form-control rounded-0 text-center quantity bg-app-light border-0"
                       />
                       <button
                         #increaseButton
-                        class="btn btn-light border-top-left-0 border-bottom-left-0"
+                        class="btn btn-light bg-app-light border-top-left-0 border-bottom-left-0"
                         (click)="increaseQuantity(cartItem)"
                         appDebounceClick
                         (debounceClick)="updateCart(cartItem)"
@@ -135,7 +135,7 @@
                   <td>
                     <div class="d-flex flex-column text-center mx-auto">
                       <button
-                        class="btn btn-light"
+                        class="btn btn-transparent text-app-dark"
                         (click)="deleteCartItem(cartItem)"
                       >
                         <i class="fa fa-trash-o"></i>
@@ -166,14 +166,14 @@
               </div>
               <div class="col-7 my-auto px-0 va-middle">
                 <p
-                  class="p-0 m-0 text-dark fw-bold"
+                  class="p-0 m-0 text-app-dark"
                   (click)="viewProduct(cartItem)"
                 >
-                  {{ cartItem.productName }}&nbsp;-&nbsp;{{
-                    cartItem.colorName
-                  }}
+                  {{ cartItem.productName }}
                 </p>
-                <p class="m-0 p-0">Size:&nbsp;{{ cartItem.sizeName }}</p>
+                <p class="m-0 p-0">{{
+                  cartItem.colorName
+                }},&nbsp;Size:&nbsp;{{ cartItem.sizeName }}</p>
                 <div class="d-flex d-inline">
                   <p
                     class="p-0 m-0"
@@ -195,7 +195,7 @@
                 <div class="d-flex d-inline-block mt-2">
                   <button
                     #decreaseButton
-                    class="btn btn-light border-top-right-0 border-bottom-right-0"
+                    class="btn btn-light bg-app-light border-top-right-0 border-bottom-right-0"
                     (click)="decreaseQuantity(cartItem)"
                     appDebounceClick
                     (debounceClick)="updateCart(cartItem)"
@@ -207,11 +207,11 @@
                   <input
                     type="number"
                     [value]="cartItem.quantity"
-                    class="form-control rounded-0 text-center quantity bg-light border-0"
+                    class="form-control rounded-0 text-center quantity bg-app-light border-0"
                   />
                   <button
                     #increaseButton
-                    class="btn btn-light border-top-left-0 border-bottom-left-0"
+                    class="btn btn-light bg-app-light border-top-left-0 border-bottom-left-0"
                     (click)="increaseQuantity(cartItem)"
                     appDebounceClick
                     (debounceClick)="updateCart(cartItem)"
@@ -246,7 +246,7 @@
     <!-- Cart items summary -->
     <div class="col-12 col-lg-3 p-0 cart-summary-container">
       <div
-        class="cart-summary bg-white d-flex flex-column p-3 p-lg-5"
+        class="cart-summary bg-light d-flex flex-column p-3 p-lg-5"
         [class.shadow-lg]="deviceType != 'desktop'"
       >
         <div
@@ -261,24 +261,24 @@
             />
           </div>
         </div>
-        <h4 class="mt-2 mt-lg-5 text-accent">Summary</h4>
+        <h4 class="mt-2 mt-lg-5 text-app-dark">Summary</h4>
 
         <!-- Display summary -->
         <div class="d-flex mt-4" *ngIf="expandCartSummary"  [@fadeInAndOut]>
           <div class="bd-highlight">Subtotal</div>
-          <div class="flex-fill text-right fw-bold">
+          <div class="flex-fill text-right">
             {{ cartItemList.totalPrice | currency }}
           </div>
         </div>
         <div class="d-flex mt-2" *ngIf="expandCartSummary"  [@fadeInAndOut]>
           <div class="bd-highlight">Discount</div>
-          <div class="flex-fill text-right fw-bold">
+          <div class="flex-fill text-right">
             {{ discountAmount | currency }}
           </div>
         </div>
         <div class="d-flex mt-2" *ngIf="expandCartSummary"  [@fadeInAndOut]>
           <div class="bd-highlight">Tax</div>
-          <div class="flex-fill text-right fw-bold">
+          <div class="flex-fill text-right">
             {{
               ((cartItemList.totalPrice - discountAmount) * 10) / 100 | currency
             }}
@@ -286,7 +286,7 @@
         </div>
         <!-- Promo code input -->
         <div class="mt-4" *ngIf="expandCartSummary"  [@fadeInAndOut]>
-          <p class="text-uppercase">enter promote code</p>
+          <p class="text-capitalize">enter discount</p>
           <div
             class="input-group mb-3"
             *ngIf="!promoCodeApplied; else applyCode"
@@ -301,7 +301,7 @@
               aria-describedby="button-addon2"
             />
             <button
-              class="btn btn-light border-top-left-0 border-bottom-left-0"
+              class="btn btn-light bg-app-light border-top-left-0 border-bottom-left-0"
               type="button"
               (click)="applyDiscountCode()"
             >
@@ -331,7 +331,7 @@
         <div class="mt-auto">
           <div class="d-flex">
             <div class="bd-highlight">Estimated total</div>
-            <div class="flex-fill text-right fw-bold">
+            <div class="flex-fill text-right fw-bold text-app-dark">
               {{
                 cartItemList.totalPrice -
                   discountAmount +
@@ -341,7 +341,7 @@
             </div>
           </div>
           <button
-            class="btn btn-dark w-100 mt-3 text-uppercase"
+            class="btn btn-dark bg-app-dark w-100 mt-3 text-uppercase"
             (click)="goToCheckoutWindow()"
             [disabled]="cartItemList.cartItems.length <= 0"
           >

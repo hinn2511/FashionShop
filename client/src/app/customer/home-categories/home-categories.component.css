@@ -1,5 +1,5 @@
 .category-container {
-  background-color: #f8f9fa91;
+  background-color: #f0faed;
   overflow: hidden;
   height: calc(150px + 10vh);
   width: 100%;
@@ -20,7 +20,7 @@ img {
   width: 50%;
   transform: translate(0, -50%);
   transition: all 500ms ease-in-out;
-  z-index: 102;
+  z-index: 62;
 }
 
 .category-container > .category-text-backdrop {
@@ -29,8 +29,8 @@ img {
   height: 100%;
   width: 60%;
   transition: all 500ms ease-in-out;
-  z-index: 101;
-  background-color: #f8f9fa;
+  z-index: 61;
+  background-color: #f0faed;
 }
 
 .category-container:hover > .category-text-backdrop {
@@ -39,33 +39,28 @@ img {
   height: 100%;
   width: 60%;
   transition: all 500ms ease-in-out;
-  z-index: 101;
-  background-color: #000000d5;
+  z-index: 61;
+  background-color: #2e4e3fd5;
   box-shadow: 0 1rem 1rem rgba(0, 0, 0, 0.25) !important;
 }
 
-.category-container > .category-text > a {
-  color: black;
+.category-container > .category-text > a,
+.category-container > .category-text > p,
+.category-container > .category-text > h3 {
+  color: #2e4e3f;
+  transition: all 500ms ease-in-out;
 }
-
-.category-container > .category-text > p {
-  padding-left: 3px;
+.category-container:hover > .category-text > a,
+.category-container:hover > .category-text > p,
+.category-container:hover > .category-text > h3 {
+  color: #f0faed;
   transition: all 500ms ease-in-out;
 }
 
 .category-container:hover > .category-text {
   left: 45%;
   top: 50%;
-  color: #f8f9fa;
   transform: translate(0, -50%);
-  transition: all 500ms ease-in-out;
-}
-
-.category-container:hover > .category-text > a {
-  color: #f8f9fa;
-}
-
-.category-container:hover > .category-text > h3 {
   transition: all 500ms ease-in-out;
 }
 
@@ -73,7 +68,7 @@ img {
   top: 0px;
   left: 50%;
   transition: all 500ms ease-in-out;
-  z-index: 90;
+  z-index: 60;
 }
 
 .category-container:hover > img {

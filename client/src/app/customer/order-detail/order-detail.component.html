@@ -1,6 +1,6 @@
 <div class="container-fluid py-2 py-lg-5" *ngIf="order">
   <div class="row p-md-2">
-    <div class="col-12 col-md-6 col-lg-8">
+    <div class="col-12 col-lg-8">
       <div class="card border-0 p-3">
         <div class="d-flex d-inline align-items-center">
           <img class="icon mr-2" src="../../../assets/arrow-left.svg" alt="cart" />
@@ -10,13 +10,13 @@
         </div>
 
         <div class="mt-3 mt-lg-3">
-          <div class="p-2 bg-light text-uppercase text-muted my-2">
+          <div class="p-2 bg-light text-uppercase bg-app-light my-2">
             {{ order.currentStatusString }}
           </div>
         </div>
 
         <div class="p-lg-2">
-          <h4 class="p-0 m-0">Order #{{ order.externalId }}</h4>
+          <h4 class="p-0 m-0 text-app-dark">Order #{{ order.externalId }}</h4>
           <p>Date: {{ order.dateCreated | date }}</p>
           <div class="d-flex d-inline-block align-items-center my-4">
             <h6 class="text-muted p-0 my-auto mr-2">Order information</h6>
@@ -82,7 +82,7 @@
         </div>
       </div>
       <div class="card border-0 p-3 p-lg-4 mt-3">
-        <h4 class="mt-3">Tracking</h4>
+        <h5 class="mt-3 text-app-dark">Tracking</h5>
         <div
           [class]="{
             timeline: !order.isFinished,
@@ -103,9 +103,9 @@
         </div>
       </div>
     </div>
-    <div class="col-12 col-md-6 col-lg-4">
+    <div class="col-12 col-lg-4 mt-2 mt-lg-0">
       <div class="card border-0 p-3 p-lg-4 mt-3 mt-md-0">
-        <h4 class="mt-3">Items</h4>
+        <h5 class="mt-3  text-app-dark">Items</h5>
         <p class="fw-smaller">{{ order.totalItem }}&nbsp;item(s)</p>
         <div class="my-2">
           <div *ngFor="let item of order.orderDetails; let i = index">
@@ -116,17 +116,13 @@
               <div class="flex-fill pl-2">
                 <div class="d-flex d-inline-block">
                   <p class="m-0 p-0 flex-fill">
-                    {{ item.productName }}&nbsp;-&nbsp;{{ item.sizeName }}
+                    {{ item.productName }}
                   </p>
                   <p class="m-0 p-0 fw-smaller">x{{ item.quantity }}</p>
                 </div>
                 <div class="d-flex d-inline-block">
                   <p class="m-0 p-0 fw-smaller flex-fill">
-                    <i
-                      class="fa fa-circle"
-                      [ngStyle]="{ color: item.colorCode }"
-                    ></i
-                    >&nbsp;{{ item.colorName }}
+                    {{ item.colorName }},&nbsp;Size:&nbsp;{{ item.sizeName }}
                   </p>
                   <p class="m-0 p-0 fw-smaller">{{ item.price | currency }}</p>
                 </div>
@@ -136,7 +132,7 @@
         </div>
       </div>
       <div class="card border-0 p-3 p-lg-4 mt-3">
-        <h4 class="mt-3">Summary</h4>
+        <h5 class="mt-3 text-app-dark">Summary</h5>
         <div class="d-flex mt-4">
           <div class="bd-highlight">Subtotal</div>
           <div class="flex-fill text-right">
