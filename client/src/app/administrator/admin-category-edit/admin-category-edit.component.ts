@@ -37,6 +37,7 @@ export class AdminCategoryEditComponent implements OnInit {
   selectedButton: any;
   catalogue: ManagerCatalogue[] = [];
   selectedParentCategoryName: string = '';
+  imageUrl: string = "";
 
   constructor(
     private fb: FormBuilder,
@@ -60,8 +61,10 @@ export class AdminCategoryEditComponent implements OnInit {
       this.category = result;
       this.initializeForm();
       this.imagePreviewUrl = this.category.categoryImageUrl;
+      this.imageUrl = this.category.categoryImageUrl;
       if (this.category.parent != undefined)
         this.selectedParentCategoryName = `${this.category.genderName} - ${this.category.categoryName}`;
+      
     });
   }
 
@@ -69,14 +72,43 @@ export class AdminCategoryEditComponent implements OnInit {
     this.editCategoryForm = this.fb.group({
       categoryName: [this.category.categoryName, Validators.required],
       categoryImageUrl: [this.category.categoryImageUrl, Validators.required],
-      parentId: [this.category.parent ?? 0],
+      parentId: [this.category.parentId ?? 0],
       gender: [this.category.gender, Validators.required],
     });
   }
 
-  editNewCategory(event) {
+  editNewCategory(event) {    
     this.selectedButton = event;
     this.isUploadingFile = true;
+    if (this.imageUrl != this.imagePreviewUrl)
+    {
+      this.editCategoryWithNewImage();
+    }
+    else
+    {
+      this.editCategory();
+    }
+  }
+
+  private editCategory() {
+    let editedCategory: UpdateCategory = this.convertToCategory(this.imageUrl);
+    this.categoryService.editCategory(this.category.id, editedCategory).subscribe(
+      (result) => {
+        this.isUploadingFile = false;
+        this.toastr.success('Category have been added', 'Success');
+        if (this.selectedButton.submitter.name == 'saveAndContinue') {
+          this.initializeForm();
+          this.router.navigateByUrl('/administrator/category-manager/add');
+        } else
+          this.router.navigateByUrl('/administrator/category-manager');
+      },
+      (error) => {
+        this.toastr.error(error, 'Error');
+      }
+    );
+  }
+
+  private editCategoryWithNewImage() {
     this.fileService
       .uploadImage(
         this.image,
@@ -88,7 +120,7 @@ export class AdminCategoryEditComponent implements OnInit {
       )
       .pipe(
         concatMap((uploadResult) => {
-          let editedCategory: UpdateCategory = this.convertToCategory(uploadResult);
+          let editedCategory: UpdateCategory = this.convertToCategory(uploadResult.url);
           return this.categoryService.editCategory(this.category.id, editedCategory);
         })
       )
@@ -99,7 +131,8 @@ export class AdminCategoryEditComponent implements OnInit {
           if (this.selectedButton.submitter.name == 'saveAndContinue') {
             this.initializeForm();
             this.router.navigateByUrl('/administrator/category-manager/add');
-          } else this.router.navigateByUrl('/administrator/category-manager');
+          } else
+            this.router.navigateByUrl('/administrator/category-manager');
         },
         (error) => {
           this.toastr.error(error, 'Error');
@@ -108,14 +141,14 @@ export class AdminCategoryEditComponent implements OnInit {
   }
 
   private convertToCategory(
-    uploadResult: FileUploadedResponse
+    imageUrl: string
   ): UpdateCategory {
     return {
       categoryName: fnGetFormControlValue(
         this.editCategoryForm,
         'categoryName'
       ),
-      categoryImageUrl: uploadResult.url,
+      categoryImageUrl: imageUrl,
       parentId: fnGetFormControlValue(this.editCategoryForm, 'parentId'),
       gender: +fnGetFormControlValue(this.editCategoryForm, 'gender'),
     };
@@ -166,5 +199,10 @@ export class AdminCategoryEditComponent implements OnInit {
       };
       reader.readAsDataURL(event.target.files[0]);
     }
+  }
+
+  resetImage()
+  {
+    this.imagePreviewUrl = this.imageUrl;
   }
 }

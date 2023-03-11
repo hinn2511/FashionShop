@@ -11,3 +11,13 @@
   position: relative;
   align-items: baseline;
 }
+
+.list-group
+{
+  max-height: 90vh;
+  overflow-y: scroll;
+}
+
+.list-group::-webkit-scrollbar {
+  display: none;
+}

@@ -151,14 +151,42 @@
       </div>
   
       <div class="col-12 col-lg-8">
+
         <label for="basic-url">Content</label>
-        <div class="p-3 border">
+        <div class="border" #content *ngIf="article.content != undefined">
           <div
-            class="ck-content"
-            [innerHTML]="article.content | safeUrl"
-          ></div>
+            class="d-flex justify-content-center"
+            [class]="{
+              'shrunk': !expandContent
+            }"
+            [@growBoolean]="{
+              value: expandContent,
+              params: { collapseHeight: '500px' }
+            }"
+          >
+            <div
+              class="ck-content p-2 p-lg-3"
+              [innerHTML]="article.content | safeUrl"
+            ></div>
+          </div>
+          <div class="w-100 text-center bg-light">
+            <button
+              class="btn p-2 w-100 h-100 border-0"
+              (click)="expandContentToggle()"
+              *ngIf="expandContent === 'in'; else hide"
+            >
+              More
+            </button>
+            <ng-template #hide>
+              <button
+                class="btn p-2 w-100 h-100 border-0"
+                (click)="expandContentToggle()"
+              >
+                Hide
+              </button>
+            </ng-template>
+          </div>
         </div>
-      </div>
     </div>
   </div>
   

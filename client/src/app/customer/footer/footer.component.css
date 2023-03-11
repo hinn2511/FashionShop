@@ -1,7 +1,4 @@
-.newsletter {
-    border: 2px solid ;
-    border-radius: 3px;
-}
+
 
 div > ul {
     margin-top: 3vh;
@@ -11,7 +8,7 @@ div > input {
     background-color: rgb(235, 235, 235);
 }
 
-.bg-light-1
+.border-app-dark
 {
-    background-color: #c3c5c73d;
+    border: 1px solid;
 }

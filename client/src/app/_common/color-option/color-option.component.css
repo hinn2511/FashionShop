@@ -39,7 +39,6 @@
     left: 50%;
     transform: translate(-50%,-50%);
     mix-blend-mode: hard-light;
-    color: rgb(46, 41, 41);
 }
 
 .disabled

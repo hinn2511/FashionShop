@@ -33,10 +33,10 @@ export class HomeInterestingComponent
   deviceType: string = 'desktop';
 
   productParams: ProductParams = {
-    category: '',
+    categoryId: 0,
     colorCode: '',
     size: '',
-    gender: 0,
+    gender: null,
     brand: '',
     pageNumber: 1,
     pageSize: 8,

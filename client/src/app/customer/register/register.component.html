@@ -13,7 +13,7 @@
           [formGroup]="registerForm"
           (ngSubmit)="registerForm.valid && onSubmit()"
         >
-          <h3 class="card-header pt-4 text-uppercase text-center text-accent">Sign in</h3>
+          <h3 class="card-header pt-4 text-uppercase text-center text-app-dark">Sign in</h3>
           <div class="form-group mb-4 px-4 text-center">
             <span class="text-muted"> Already have an account? </span>
             <a class="text-dark" routerLink="/login">Log in</a>
@@ -74,7 +74,7 @@
           <div class="form-group my-4 px-4">
             <label for="username">Gender</label>
             <select
-              class="form-select w-100"
+              class="custom-select w-100"
               [formControl]="registerForm.controls['gender']"
             >
               <option [value]="'male'">Male</option>
@@ -93,7 +93,7 @@
           <div class="my-4 px-4">
             <button
               [disabled]="loading && !registerForm.valid"
-              class="btn btn-dark py-2 mt-2 w-100"
+              class="btn btn-dark bg-app-dark py-2 mt-2 w-100"
             >
               <span
                 *ngIf="loading"
@@ -106,7 +106,7 @@
       </div>
     </div>
   </div>
-  <div class="position-absolute ml-4 mt-2 logo text-accent">
+  <div class="position-absolute ml-4 mt-2 logo text-app-dark">
     <h1 class="font-brand text-uppercase cs-pointer" routerLink="/">Thyme</h1>
   </div>
 </div>

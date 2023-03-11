@@ -1,5 +1,17 @@
 <div class="container-fluid">
-  <h4 class="card-title">My information</h4>
+  <div class="d-flex d-inline justify-content-between">
+    <h4 class="card-title text-app-dark">My information</h4>
+    <button
+      *ngIf="!isEditMode"
+      (click)="editModeToggle()"
+      class="btn btn-light bg-app-light"
+      name="edit"
+      type="button"
+    >
+      <span><i class="fa fa-pencil"></i></span>&nbsp;Edit
+    </button>
+  </div>
+
   <form
     [formGroup]="accountInformationForm"
     (ngSubmit)="accountInformationForm.valid && updateAccountInformation()"
@@ -37,7 +49,7 @@
 
     <div class="form-group">
       <select
-        class="form-select w-100"
+        class="custom-select w-100"
         [formControl]="accountInformationForm.controls['gender']"
       >
         <option [value]="'male'">Male</option>
@@ -57,28 +69,19 @@
       <button
         *ngIf="isEditMode"
         (click)="cancelEdit()"
-        class="btn btn-danger mr-2"
+        class="btn btn-transparent mr-3"
         name="cancel"
         type="button"
       >
-        <span><i class="fa fa-times"></i></span>&nbsp;Cancel
+        Cancel
       </button>
       <button
         *ngIf="isEditMode"
-        class="btn btn-success mr-2"
+        class="btn btn-dark bg-app-dark"
         name="save"
         type="submit"
       >
-        <span><i class="fa fa-check"></i></span>&nbsp;Save
-      </button>
-      <button
-        *ngIf="!isEditMode"
-        (click)="editModeToggle()"
-        class="btn btn-primary"
-        name="edit"
-        type="button"
-      >
-        <span><i class="fa fa-pencil"></i></span>&nbsp;Edit
+        Save
       </button>
     </div>
   </form>

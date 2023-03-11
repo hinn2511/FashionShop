@@ -9,4 +9,12 @@
 .progress {
     border-radius: 0 !important;
 }
+.btn-score
+{
+    width: 20%;
+}
 
+.d-inline > button
+{
+    min-width: 17%;
+}

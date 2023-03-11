@@ -20,7 +20,7 @@
         <div class="w-100 h-100">
           <p class="p-0 m-0">{{ item.statusString }}</p>
           <span
-            class="badge top-0 end-0"
+            class="badge ml-2"
             [class]="{
               'badge-danger': showStatus(item.id, true),
               'badge-secondary': !showStatus(item.id, true) && item.total > 0,
@@ -54,7 +54,7 @@
       (ngSubmit)="(orderFilterForm.valid)"
       autocomplete="off"
     >
-      <div class="d-flex d-inline align-items-center">
+      <div class="d-flex d-inline align-items-center filter-container">
         <!-- Query filter -->
         <div class="mr-4 d-flex d-inline-block align-items-center">
           <app-icon-text-input

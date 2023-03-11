@@ -1,7 +1,14 @@
 import { Subscription } from 'rxjs';
 import { RouteService } from 'src/app/_services/route.service';
-import { Component, Input, OnInit, Output, EventEmitter, HostListener, OnDestroy } from '@angular/core';
-import { Router } from '@angular/router';
+import {
+  Component,
+  Input,
+  OnInit,
+  Output,
+  EventEmitter,
+  HostListener,
+  OnDestroy,
+} from '@angular/core';
 
 @Component({
   selector: 'app-admin-sidebar',
@@ -9,14 +16,14 @@ import { Router } from '@angular/router';
   styleUrls: ['./admin-sidebar.component.css']
 })
 export class AdminSidebarComponent implements OnInit, OnDestroy {
-  @Input() currentState: string = "in";
+  @Input() currentState: string = 'in';
   @Output() newState = new EventEmitter<string>();
 
   state: string;
 
   routeSubscription$: Subscription;
-  currentRoute: string = "";
-
+  currentRoute: string = '';
+  isLocked: boolean = false;
 
   @HostListener('click', ['$event'])
   clickInside($event) {
@@ -28,7 +35,7 @@ export class AdminSidebarComponent implements OnInit, OnDestroy {
     this.collapse();
   }
 
-  constructor(private routeService: RouteService) { }
+  constructor(private routeService: RouteService) {}
 
   ngOnDestroy(): void {
     this.routeSubscription$.unsubscribe();
@@ -45,21 +52,27 @@ export class AdminSidebarComponent implements OnInit, OnDestroy {
     });
   }
 
-  toggle()
-  {
-    this.state = this.state === 'in' ? "out" : "in";
-    this.newState.emit(this.state)
+  toggle() {
+    if(this.isLocked)
+      return;
+    this.state = this.state === 'in' ? 'out' : 'in';
+    this.newState.emit(this.state);
   }
 
-  expand()
-  {
-    this.newState.emit('out')
+  expand() {
+    if(this.isLocked)
+      return;
+    this.newState.emit('out');
   }
 
-  collapse()
-  {
-    this.newState.emit('in')
+  collapse() {
+    if(this.isLocked)
+      return;
+    this.newState.emit('in');
   }
 
-
+  lockToggle()
+  {
+    this.isLocked = !this.isLocked;
+  }
 }

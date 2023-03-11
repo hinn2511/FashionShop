@@ -1,12 +1,12 @@
-<div class="container-fluid" *ngIf="news && expandedNew">
-  <h3 class="text-uppercase">What's new in this week</h3>
+<div class="container-fluid pb-2" *ngIf="news && expandedNew">
+  <h3 class="text-uppercase text-app-dark">What's new in this week</h3>
   <div class="row mt-3 mt-lg-5">
     <div class="col-12 col-lg-8 px-lg-0 bg-light">
       <div *ngFor="let item of news">
         <div
           class="top-new cs-pointer w-100 position-relative"
           *ngIf="expandedNew.id === item.id"
-          [@fadeIn]="{ value: '', params: { time: '500ms' } }"
+          [@fadeInAndOut]
           [ngStyle]="{
             'background-image': 'url(' + expandedNew.thumbnailUrl + ')'
           }"
@@ -28,7 +28,8 @@
         <div>
           <div
             [class]="{
-              'bg-selected': expandedNew.id == item.id
+              'bg-app-light': expandedNew.id == item.id,
+              'selected': expandedNew.id == item.id
             }"
             class="w-100 cs-pointer p-3 pb-lg-4"
             routerLink=""

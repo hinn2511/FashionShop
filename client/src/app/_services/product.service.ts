@@ -53,7 +53,7 @@ export class ProductService {
   getColorFilter(productParams: ProductParams)
   {
     let params = getPaginationHeaders(productParams.pageNumber, productParams.pageSize);
-    params = params.append('category', productParams.category);
+    params = params.append('categoryId', productParams.categoryId);
     if (productParams.gender != undefined)
       params = params.append('gender', productParams.gender);
     params = params.append('orderBy', productParams.orderBy);
@@ -87,7 +87,7 @@ export class ProductService {
       return of(response);
     }
     let params = getPaginationHeaders(productParams.pageNumber, productParams.pageSize);
-    params = params.append('category', productParams.category);
+    params = params.append('categoryId', productParams.categoryId);
     if (productParams.gender != undefined)
       params = params.append('gender', productParams.gender);
     params = params.append('orderBy', productParams.orderBy);
@@ -102,7 +102,7 @@ export class ProductService {
     params = params.append('isFeatured', productParams.isFeatured);
     return getPaginatedResult<Product[]>(this.baseUrl + 'product', params, this.http).pipe(
       map(response => {
-        this.productCache.set(Object.values(productParams).join('-'), response);
+        this.productCache.set(Object.values(productParams).join('-'), response);        
         return response;
       })
     );

@@ -149,7 +149,7 @@ export class CategoryService {
     return this.http.get<Category[]>(this.baseUrl + 'category/promoted');
   }
 
-  getCategoryDetail(slug: string, gender: number) {
-    return this.http.get<Category>(this.baseUrl + `category/detail?slug=${slug}&gender=${gender}`);
+  getCategoryDetail(id: number, gender: number) {
+    return this.http.get<Category>(this.baseUrl + `category/${id}/detail?&gender=${gender}`);
   }
 }

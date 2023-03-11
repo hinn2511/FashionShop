@@ -1,3 +1,4 @@
+import { NotInRolesDirective } from './_directives/not-in-role.directive';
 import { NavigationBarMobileComponent } from './customer/navigation-bar-mobile/navigation-bar-mobile.component';
 import { SettingService } from './_services/setting.service';
 import { APP_INITIALIZER, NgModule } from '@angular/core';
@@ -5,7 +6,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 
 import { AppComponent } from './app.component';
-import { AppRoutingModule } from './app-routing.module';
+import { AppRoutingModule, routes } from './app-routing.module';
 import { SharedModule } from './_modules/shared.module';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
@@ -108,6 +109,8 @@ import { AdminUserEditComponent } from './administrator/admin-user-edit/admin-us
 import { ChangePasswordDialogComponent } from './_dialog/change-password-dialog/change-password-dialog.component';
 import { AdminSettingComponent } from './administrator/admin-setting/admin-setting.component';
 import { ImageSelectorComponent } from './_dialog/image-selector/image-selector.component';
+import { CategorySummaryComponent } from './customer/category-summary/category-summary.component';
+import { RouterModule } from '@angular/router';
 
 @NgModule({
   declarations: [
@@ -131,6 +134,7 @@ import { ImageSelectorComponent } from './_dialog/image-selector/image-selector.
     ProductAboutComponent,
     LoginComponent,
     HasRoleDirective,
+    NotInRolesDirective,
     AdminSidebarComponent,
     AdminLoginComponent,
     AdminProductComponent,
@@ -200,7 +204,8 @@ import { ImageSelectorComponent } from './_dialog/image-selector/image-selector.
     ChangePasswordDialogComponent,
     AdminSettingComponent,
     ImageSelectorComponent,
-    NavigationBarMobileComponent
+    NavigationBarMobileComponent,
+    CategorySummaryComponent
 
   ],
   imports: [
@@ -211,7 +216,8 @@ import { ImageSelectorComponent } from './_dialog/image-selector/image-selector.
     ReactiveFormsModule,
     BrowserAnimationsModule,
     CKEditorModule,
-    SharedModule
+    SharedModule,
+    RouterModule.forRoot(routes)
   ],
   providers: [
     // { provide: APP_INITIALIZER, useFactory: appInitializer, multi: true, deps: [AuthenticationService] },

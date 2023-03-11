@@ -2,61 +2,96 @@
   <app-admin-login></app-admin-login>
 </ng-container>
 
+<div
+  class="fixed-bottom go-top justify-content-end"
+  [class]="{
+    'd-none':
+      currentRoute == 'Administrator Login' ||
+      currentRoute == 'Client Login' ||
+      currentRoute == 'Client Register',
+    'd-flex':
+      currentRoute != 'Administrator Login' &&
+      currentRoute != 'Client Login' &&
+      currentRoute != 'Client Register'
+  }"
+
+  *notInRoles="['AdministratorAccess']"
+>
+  <button
+    class="btn sticky bg-app-dark btn-go-top btn-dark shadow rounded-circle mr-4 mb-4 border-app-dark"
+    (click)="scrollToTop()"
+  >
+    <i class="fa fa-arrow-up text-app-light fw-smaller" aria-hidden="true"></i>
+  </button>
+</div>
+
 <div [class]="{ 'prevent-scroll': focus }">
   <ng-container *ngIf="currentRoute != 'Administrator Login'">
     <div *appHasRole="['Anonymous', 'ClientAccess']" class="position-relative">
-      <ng-container *ngIf="currentRoute != 'Client Login' && currentRoute != 'Client Register'">
+      <ng-container
+        *ngIf="
+          currentRoute != 'Client Login' && currentRoute != 'Client Register'
+        "
+      >
         <app-navigation-bar (focus)="setFocus($event)"></app-navigation-bar>
       </ng-container>
 
-      <div class="container-fluid w-100 px-0">
-        <router-outlet></router-outlet>
-      </div>
+      <main class="container-fluid w-100 px-0" [@routerTransition]="getState(o)">
+        <router-outlet #o="outlet"></router-outlet>
+      </main>
 
-      <ng-container *ngIf="currentRoute != 'Client Login' && currentRoute != 'Client Register'">
+      <ng-container
+        *ngIf="
+          currentRoute != 'Client Login' && currentRoute != 'Client Register'
+        "
+      >
         <app-footer></app-footer>
       </ng-container>
-      <div *ngIf="focus" [@fadeInAndOut] class="position-absolute focus-mode"></div>
+      <div
+        *ngIf="focus"
+        [@fadeInAndOut]
+        class="position-absolute focus-mode"
+      ></div>
+      <!-- <div *ngIf="!focus" class="position-absolute btn-go-top">
+      </div> -->
     </div>
 
     <div *appHasRole="['AdministratorAccess']">
       <div class="w-100">
         <div class="container-fluid pr-md-0">
           <app-admin-sidebar
-            [@slideInOut]="
-            {
+            [@slideInOut]="{
               value: sidebarState,
-              params: { width: '-240px'}
+              params: { width: '-240px' }
             }"
             [currentState]="sidebarState"
             (newState)="setSidebar($event)"
           ></app-admin-sidebar>
 
-          <main class="ms-sm-auto px-0 position-relative">
+          <div class="ms-sm-auto px-0 position-relative">
             <nav
               class="w-100 py-2 d-flex d-inline justify-content-between align-items-center sticky-top bg-white border-bottom"
             >
-            <h5 class="py-0 my-0 ml-5">
-              {{currentRoute}}
-            </h5>
-            <span>
-              <button
-              class="btn btn-transparent"
-              *ngIf="authenticationService.currentUser$ | async as user"
-            >
-              Hi, {{ user.username }}
-            </button>
-            <button class="btn btn-transparent" (click)="logout()">
-              Log out
-            </button>
-            </span>
-
+              <h5 class="py-0 my-0 ml-5">
+                {{ currentRoute }}
+              </h5>
+              <span>
+                <button
+                  class="btn btn-transparent"
+                  *ngIf="authenticationService.currentUser$ | async as user"
+                >
+                  Hi, {{ user.username }}
+                </button>
+                <button class="btn btn-transparent" (click)="logout()">
+                  Log out
+                </button>
+              </span>
             </nav>
 
-            <div class="ml-4 ml-lg-5 mt-4">
+            <main class="ml-4 ml-lg-5 mt-4">
               <router-outlet></router-outlet>
-            </div>
-          </main>
+            </main>
+          </div>
         </div>
       </div>
     </div>

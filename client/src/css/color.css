@@ -1,0 +1,152 @@
+/* Color */
+.bg-app-light, .btn-transparent:focus
+{
+  background-color: #f0faed !important;
+  border-color: #f0faed !important;
+}
+
+.border-app-light
+{
+  border-color: #f0faed !important;
+}
+
+.text-app-light
+{
+  color: #f0faed !important;
+}
+
+.bg-app-dark
+{
+  background-color: #2e4e3f !important;
+}
+
+.border-app-dark
+{
+  border-color: #2e4e3f !important;
+}
+
+.text-app-dark
+{
+  color: #2e4e3f !important;
+}
+
+.bg-app-dark-muted
+{
+  background-color: #7ea393 !important;
+  border-color: #7ea393 !important;
+}
+
+.border-app-dark-muted
+{
+  border-color: #7ea393 !important;
+}
+
+.text-app-dark-muted
+{
+  color: #7ea393 !important;
+}
+
+.bg-app-medium
+{
+  background-color: #64ae6f !important;
+}
+
+.border-app-medium
+{
+  border-color: #64ae6f !important;
+}
+
+.text-app-medium
+{
+  color: #64ae6f !important;
+}
+
+
+.carousel-indicator-inactive {
+  background-color: #7ea393;
+}
+
+.carousel-indicator-active {
+  background-color: #2e4e3f;
+}
+
+.default-status {
+  background-color: rgba(221, 227, 230, 0.3);
+  color: rgb(34, 35, 36);
+}
+/* Default status */
+
+/* Order status */
+.created-status {
+  background-color: rgba(165, 192, 202, 0.3);
+  color: rgb(65, 75, 78);
+}
+
+.checking-status {
+  background-color: rgba(131, 230, 192, 0.3);
+  color: rgb(58, 102, 84);
+}
+
+.paid-status {
+  background-color: rgba(217, 230, 85, 0.3);
+  color: rgba(62, 102, 36);
+}
+
+.processing-status {
+  background-color: rgba(41, 172, 233, 0.3);
+  color: rgb(31, 48, 104);
+}
+
+.shipping-status {
+  background-color: rgba(233, 41, 175, 0.3);
+  color: rgb(102, 31, 104);
+}
+
+.shipped-status {
+  background-color: rgba(131, 41, 233, 0.3);
+  color: rgb(32, 14, 100);
+}
+
+.cancel-requested-status {
+  background-color: rgba(238, 169, 20, 0.3);
+  color: rgb(155, 110, 14);
+}
+
+.cancelled-status {
+  background-color: rgba(221, 83, 83, 0.3);
+  color: rgb(145, 37, 29);
+}
+
+.return-requested-status {
+  background-color: rgba(170, 226, 65, 0.3);
+  color: rgb(57, 85, 26);
+}
+
+.returned-status {
+  background-color: rgba(226, 129, 65, 0.3);
+  color: rgb(85, 50, 26);
+}
+
+.finished-status {
+  background-color: rgba(55, 81, 199, 0.3);
+  color: rgb(16, 29, 104);
+}
+
+/* Order status */
+
+/* Other status */
+.active-status {
+  background-color: rgba(131, 230, 136, 0.3);
+  color: rgb(31, 66, 33);
+}
+
+.hidden-status {
+  background-color: rgba(179, 210, 240, 0.3);
+  color: rgb(47, 56, 52);
+}
+
+.deleted-status {
+  background-color: rgba(252, 95, 95, 0.3);
+  color: rgb(77, 18, 16);
+}
+/* Other status */

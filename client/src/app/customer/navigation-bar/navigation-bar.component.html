@@ -10,14 +10,14 @@
     <!-- Mobile navigation bar button -->
     <div class="nav-container" *ngIf="setting.deviceType != 'desktop'">
       <button
-        class="navbar-toggler p-1"
+        class="btn navbar-toggler nav-btn d-flex p-1"
         type="button"
         [class]="{
-          'bg-light': !collapseCategory
+          'bg-app-light': !collapseCategory
         }"
         (click)="categoryWindowToggle()"
       >
-        <span class="navbar-toggler-icon"></span>
+        <img class="icon" src="../../../assets/menu.svg" />
       </button>
     </div>
 
@@ -25,7 +25,7 @@
     <div
       class="nav-container d-flex flex-fill justify-content-center justify-content-lg-start d-inline-block"
     >
-      <h2 class="my-0 py-0 nav-brand f font-brand text-uppercase text-accent" href="#">
+      <h2 class="mt-0 py-0 mb-1 mb-lg-0 nav-brand f font-brand text-uppercase text-app-dark" href="#">
         THYME
       </h2>
       <!-- Desktop navigation -->
@@ -47,7 +47,7 @@
           <a
             class="nav-link text-uppercase"
             [class]="{
-              'bg-light': selectedCategoryGroup.gender == item.gender
+              'bg-app-light': selectedCategoryGroup.gender == item.gender
             }"
             (mouseenter)="setCollapseCategory(false)"
             (mouseenter)="selectCategoryGroup(i)"
@@ -76,25 +76,25 @@
 
     <!-- Right navigation icon (both mobile and desktop) -->
     <div class="d-flex d-inline-block nav-container justify-content-end">
-      <button class="btn nav-btn d-lg-none" (click)="searchWindowToggle()">
+      <button class="btn btn-transparent d-flex nav-btn d-lg-none" (click)="searchWindowToggle()">
         <img
-          class="nav-icon-mobile"
+          class="icon"
           src="../../../assets/search.svg"
           alt="search"
         />
       </button>
       <button
-        class="btn position-relative nav-btn cart-btn d-lg-none"
+        class="btn btn-transparent d-flex position-relative nav-btn cart-btn d-lg-none"
         (click)="cartWindowToggle()"
       >
         <img
-          class="nav-icon-mobile"
+          class="icon"
           src="../../../assets/cart.svg"
           alt="cart"
         />
         <span
           *ngIf="cartService.currentCarts$ | async as cartItemList"
-          class="position-absolute text-light translate-middle badge p-1 bg-accent"
+          class="position-absolute text-light translate-middle badge p-1 bg-app-dark"
         >
           {{ cartItemList.totalItem }}
         </span>
@@ -103,52 +103,42 @@
 
     <div class="d-none d-lg-block">
       <div class="d-flex flex-fill justify-content-lg-end">
-        <div
-          class="mr-2 desktop-search-bar-container"
-          *ngIf="!collapseSearchBar && setting.deviceType == 'desktop'"
-          [@fadeInAndOut]
-        >
-          <div class="form-group w-100 mb-0 position-relative">
-            <input
-              type="text"
-              class="form-control"
-              [(ngModel)]="searchQuery"
-              (ngModelChange)="updateAction()"
-              (keyup.enter)="showSearchResult()"
-              #search
-            />
-            <p
-              class="text-muted position-absolute my-auto mr-2 py-2 cs-pointer top-0 end-0"
-              *ngIf="action == 'search'; else clear"
-              aria-hidden="true"
-              (click)="showSearchResult()"
+
+        <div class="input-group my-0 mr-2 desktop-search-bar-container" *ngIf="!collapseSearchBar && setting.deviceType == 'desktop'"
+        [@slideRightToLeft]>
+          <input
+            type="text"
+            class="form-control"
+            [(ngModel)]="searchQuery"
+            (ngModelChange)="updateAction()"
+            (keydown.enter)="showSearchResult($event)"
+            #search
+          />
+          <div class="input-group-append">
+            <button
+              (click)="showSearchResult($event)"
+              class="btn bg-app-light fw-smaller"
+              type="button"
             >
               Search
-            </p>
-            <ng-template #clear>
-              <p
-                class="text-muted position-absolute my-auto mr-2 py-2 cs-pointer top-0 end-0"
-                aria-hidden="true"
-                (click)="clearSearchQuery()"
-              >
-                Clear
-              </p>
-            </ng-template>
+            </button>
           </div>
         </div>
+
         <button
           *ngIf="collapseSearchBar && setting.deviceType == 'desktop'"
+          [@slideRightToLeft]
           class="btn nav-btn position-relative p-2"
           (click)="searchWindowToggle()"
         >
-          <img class="nav-icon" src="../../../assets/search.svg" />
+          <img class="icon" src="../../../assets/search.svg" />
         </button>
 
         <button
           class="btn nav-btn position-relative py-2 pl-2 cart-btn"
           (click)="cartWindowToggle()"
         >
-          <img class="nav-icon" src="../../../assets/cart.svg" alt="cart" />
+          <img class="icon" src="../../../assets/cart.svg" alt="cart" />
           <span
             *ngIf="cartService.currentCarts$ | async as cartItemList"
             class="position-absolute text-light translate-middle badge p-1 bg-danger"
@@ -162,7 +152,7 @@
           (click)="viewAccount('favorites')"
         >
           <img
-            class="nav-icon"
+            class="icon"
             src="../../../assets/heart.svg"
             alt="favorites"
           />
@@ -173,7 +163,7 @@
             dropdownToggle
             (click)="collapseAll()"
           >
-            <img class="nav-icon" src="../../../assets/user.svg" alt="user" />
+            <img class="icon" src="../../../assets/user.svg" alt="user" />
           </button>
           <div class="dropdown-menu dropdown-menu-end mt-3" *dropdownMenu>
             <a (click)="viewAccount('information')" class="dropdown-item"
@@ -190,14 +180,14 @@
         </div>
 
         <a
-          class="text-dark p-2 text-uppercase"
+          class="text-app-dark p-2 text-uppercase"
           *ngIf="!user"
           routerLink="/login"
           >Login</a
         >
 
         <a
-          class="text-dark p-2 text-uppercase"
+          class="text-app-dark p-2 text-uppercase"
           *ngIf="!user"
           routerLink="/register"
           >Register</a
@@ -272,7 +262,7 @@
         selectedCategoryGroup &&
         selectedCategoryGroup.gender >= 0
       "
-      [@slideTopToBottom]
+      [@fadeInAndOut]
     >
       <div class="p-2">
         <div class="row category-list-container">
@@ -281,28 +271,28 @@
             *ngFor="let category of selectedCategoryGroup.categories"
           >
             <div
-              class="p-3 cs-pointer category-name"
+              class="p-2 cs-pointer category-name"
               (click)="
                 viewCategory(
                   category.categoryName,
-                  category.slug,
+                  category.id,
                   selectedCategoryGroup.gender
                 )
               "
             >
-              <h4 class="m-0 p-0">
+              <h5 class="m-0 p-0 text-app-dark">
                 {{ category.categoryName }}
-              </h4>
+              </h5>
             </div>
-            <hr />
-            <ul class="list-group my-1">
+            <hr class="bg-app-dark"/>
+            <ul class="list-group mt-1">
               <li
-                class="list-group-item bg-transparent border-0 cs-pointer sub-category-name"
+                class="list-group-item border-0 cs-pointer sub-category-name"
                 *ngFor="let subCategory of category.subCategories"
                 (click)="
                   viewCategory(
                     subCategory.categoryName,
-                    subCategory.slug,
+                    subCategory.id,
                     selectedCategoryGroup.gender
                   )
                 "
